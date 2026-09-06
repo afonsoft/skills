@@ -4,13 +4,15 @@ description: "Use when the user wants to manage WordPress sites via MCP (Model C
 license: MIT
 compatibility: WordPress 6.9+ (mcp-adapter) or 6.0+ (AI Engine). PHP 7.4+ (mcp-adapter) or 8.1+ (AI Engine). WP-CLI recommended for automated install. MCP clients need HTTP/streamable-HTTP support. Works on any hosting (aaPanel, cPanel, Docker, bare LEMP).
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
   homepage: https://github.com/wordpress/mcp-adapter
   sources: https://github.com/wordpress/mcp-adapter, https://wordpress.org/plugins/ai-engine/, https://lobehub.com/skills/openclaw-skills-wordpress-mcp
 ---
+
+> **v1.1.0 changelog:** Added complete AI Engine tool reference (109+ tools), `wp_write_blocks` block schema, real-world workflows (theme switch, media upload with permission fix, menu creation, Gutenberg rewrite), Cloudflare cache-busting, SVG-to-PNG conversion, WP-CLI menu command corrections.
 
 # WordPress MCP — mcp-adapter (official) + AI Engine (skill)
 
@@ -264,22 +266,36 @@ curl -s -X POST "$URL" \
   -d '{"jsonrpc":"2.0","id":2,"method":"tools/list"}'
 ```
 
-### Available tools (43 by default)
+### Available tools (43 core, 109+ with all features)
+
+The AI Engine MCP exposes **43 core tools** by default, expanding to **109+** when all feature flags are enabled (plugins, themes, WooCommerce, SEO, social, Polylang, database, dynamic REST).
 
 | Category | Tools |
 |----------|-------|
 | **System** | `mcp_ping` |
-| **Posts/Pages** | `wp_list_posts`, `wp_get_post`, `wp_create_post`, `wp_update_post`, `wp_delete_post` |
+| **Posts/Pages** | `wp_get_posts`, `wp_get_post`, `wp_get_post_snapshot`, `wp_create_post`, `wp_update_post`, `wp_alter_post`, `wp_delete_post`, **`wp_write_blocks`** |
 | **Users** | `wp_get_users`, `wp_create_user`, `wp_update_user`, `wp_delete_user` |
 | **Comments** | `wp_get_comments`, `wp_create_comment`, `wp_update_comment`, `wp_delete_comment` |
-| **Plugins** | `wp_list_plugins`, `wp_activate_plugin`, `wp_deactivate_plugin` |
+| **Taxonomy** | `wp_get_terms`, `wp_create_term`, `wp_add_post_terms`, `wp_count_terms` |
+| **Media** | `wp_list_media`, `wp_get_media`, `wp_upload_media`, `wp_set_featured_image`, `wp_count_media` |
+| **AI** | **`mwai_image`** (image generation), **`mwai_vision`** (image analysis) |
 | **Options** | `wp_get_option`, `wp_update_option` |
-| **Media** | `wp_list_media`, `wp_get_media`, `wp_upload_media` |
-| **Taxonomy** | `wp_list_categories`, `wp_create_category`, `wp_list_tags` |
 | **Settings** | `wp_get_settings`, `wp_update_settings` |
-| **Post types** | `wp_list_post_types` |
+| **Plugins** | `wp_list_plugins`, `wp_activate_plugin`, `wp_deactivate_plugin` |
+| **Post types** | `wp_list_post_types`, `wp_count_posts` |
+| **Feature-gated** | plugins, themes, database, polylang, woocommerce, seo_engine, social_engine, dynamic_rest |
 
-> Run `tools/list` to discover the exact tools available on your site (varies by enabled features).
+> **Key tools added since v1.0:**
+> - `wp_write_blocks` — replace or append Gutenberg blocks (structured input, no raw HTML needed)
+> - `wp_get_post_snapshot` — get post content + meta + terms at a point in time
+> - `wp_alter_post` — status changes (publish, draft, trash, restore)
+> - `mwai_image` / `mwai_vision` — AI image generation and vision analysis (requires API key in AI Engine settings)
+> - `wp_set_featured_image` — set post thumbnail
+> - `wp_count_posts`, `wp_count_terms`, `wp_count_media` — count operations
+
+> **See `references/ai-engine-tools.md`** for the complete tool reference with arguments, block schema for `wp_write_blocks`, and feature flag enabling instructions.
+
+> Run `tools/list` on the live endpoint to discover the exact tools available on your site (varies by enabled features).
 
 ---
 
@@ -455,11 +471,92 @@ Then execute a specific ability:
 
 ---
 
+# Real-world workflows
+
+These are end-to-end recipes from managing a live WordPress site via MCP + WP-CLI. See **`references/real-world-workflows.md`** for full details.
+
+## Convert posts homepage to static front page
+
+```bash
+wp option update show_on_front page --path=$WP_PATH
+wp option update page_on_front <home_id> --path=$WP_PATH
+wp option update page_for_posts <blog_id> --path=$WP_PATH
+```
+
+## Rewrite homepage with Gutenberg blocks
+
+**Option A — `wp_write_blocks` (structured, < 20 blocks):**
+```json
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"wp_write_blocks","arguments":{
+  "ID": 10, "mode": "replace",
+  "blocks": [{"type":"heading","level":1,"content":"Title"},{"type":"paragraph","content":"Content"}]
+}}}
+```
+
+**Option B — `wp_update_post` with raw HTML (robust, 30+ blocks):**
+```json
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"wp_update_post","arguments":{
+  "ID": 10,
+  "fields": {"post_content": "<!-- wp:heading --><h1>Title</h1><!-- /wp:heading -->\n<!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph -->"}
+}}}
+```
+
+> **When to use which:** `wp_write_blocks` is clean but can drop the MCP connection on large payloads. `wp_update_post` with raw Gutenberg HTML is more robust for large rewrites and handles `wp:html` blocks with inline styles.
+
+## Switch to a professional theme
+
+```bash
+# If wp theme install fails (permission denied on upgrade dir):
+cd /tmp && curl -sL "https://downloads.wordpress.org/theme/blocksy.2.1.56.zip" -o blocksy.zip
+unzip -q blocksy.zip -d /tmp/blocksy-extract
+sudo cp -r /tmp/blocksy-extract/blocksy $WP_PATH/wp-content/themes/blocksy
+sudo chown -R www:www $WP_PATH/wp-content/themes/blocksy
+wp theme activate blocksy --path=$WP_PATH
+```
+
+> **Rollback:** `wp theme activate twentytwentyfive --path=$WP_PATH` — old themes are never deleted.
+
+## Create navigation menu
+
+```bash
+MENU_ID=$(wp menu create "Principal" --porcelain --path=$WP_PATH 2>/dev/null | tail -1)
+wp menu item add-post $MENU_ID 10 --title="Início" --path=$WP_PATH    # NOT add-post-type!
+wp menu item add-custom $MENU_ID "GitHub" "https://github.com/user" --path=$WP_PATH
+wp menu location assign $MENU_ID menu_1 --path=$WP_PATH
+```
+
+> **Gotcha:** The WP-CLI subcommand is `wp menu item add-post` (not `add-post-type`).
+
+## Upload media when wp_upload_media fails (permission denied)
+
+```bash
+sudo cp /tmp/image.png $WP_PATH/wp-content/uploads/2026/09/image.png
+sudo chown www:www $WP_PATH/wp-content/uploads/2026/09/image.png
+ATTACHMENT_ID=$(wp post create --post_type=attachment --post_status=inherit \
+  --post_title="Image" --post_mime_type="image/png" \
+  --guid="https://yourdomain.com/wp-content/uploads/2026/09/image.png" \
+  --porcelain --path=$WP_PATH 2>/dev/null | tail -1)
+wp post meta update $ATTACHMENT_ID _wp_attached_file "2026/09/image.png" --path=$WP_PATH
+```
+
+## Verify changes bypassing Cloudflare cache
+
+```bash
+curl -s "https://yourdomain.com/?nocache=1" | grep "new content"
+# Increment: ?nocache=2, ?nocache=3, ...
+```
+
+> `wp cache flush` does NOT purge Cloudflare. Use cache-busting query strings or the Cloudflare API.
+
+---
+
 # References
 
+- **`references/ai-engine-tools.md`** — Complete AI Engine tool reference (109+ tools with arguments, `wp_write_blocks` block schema, feature flags).
+- **`references/real-world-workflows.md`** — End-to-end workflows from a live site (static front page, Gutenberg rewrite, theme switch, menu creation, media upload with permission fix, custom CSS, blog posts with categories, Cloudflare cache-busting, SVG-to-PNG conversion).
 - **`references/mcp-config.md`** — Full per-platform JSON/TOML config blocks (Claude Code, Devin CLI, OpenCode, Gemini CLI, AGY, Codex, OpenClaw).
 - **`references/platform-quirks.md`** — Cross-platform MCP config quirks matrix (httpUrl vs url, mcp vs mcpServers, TOML sub-tables).
-- **`references/troubleshooting.md`** — Extended troubleshooting (composer, app passwords, session flow, feature flags).
+- **`references/troubleshooting.md`** — Extended troubleshooting (composer, app passwords, session flow, feature flags, media upload permissions, Cloudflare cache, WP-CLI menu commands, theme install without upgrade dir).
 - **`scripts/setup_wordpress_mcp.sh`** — Detects all installed MCP clients and patches each with the correct format.
 - **`scripts/verify_wordpress_mcp.sh`** — End-to-end connectivity check for both endpoints.
 - **`scripts/install_wp_plugin.sh`** — Installs mcp-adapter or ai-engine plugin via WP-CLI (handles composer, downloads, activation).

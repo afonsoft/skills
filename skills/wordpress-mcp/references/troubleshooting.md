@@ -267,3 +267,191 @@ sudo /etc/init.d/php-fpm-85 restart
 # or
 sudo systemctl restart php8.5-fpm
 ```
+
+---
+
+## Media & uploads
+
+### Media upload fails with permission error
+
+**Symptom:** `wp_upload_media` (MCP) or `wp media import` (WP-CLI) returns:
+```
+Warning: Unable to import file 'image.png'. Reason: O arquivo enviado não pode ser movido para wp-content/uploads/YYYY/MM.
+```
+
+**Cause:** The uploads directory is owned by the web user (`www:www` on aaPanel). WP-CLI runs as `ubuntu` or `root`, which cannot write to that directory.
+
+**Fix — manual copy + register as attachment:**
+```bash
+WP_PATH=/www/wwwroot/yourdomain.com
+UPLOAD_DIR=$WP_PATH/wp-content/uploads/2026/09
+
+# 1. Copy with sudo
+sudo cp /tmp/image.png $UPLOAD_DIR/image.png
+sudo chown www:www $UPLOAD_DIR/image.png
+sudo chmod 644 $UPLOAD_DIR/image.png
+
+# 2. Register as WordPress attachment
+ATTACHMENT_ID=$(wp post create \
+  --post_type=attachment \
+  --post_status=inherit \
+  --post_title="My Image" \
+  --post_mime_type="image/png" \
+  --guid="https://yourdomain.com/wp-content/uploads/2026/09/image.png" \
+  --porcelain --path=$WP_PATH 2>/dev/null | tail -1)
+
+# 3. Set _wp_attached_file meta (critical!)
+wp post meta update $ATTACHMENT_ID _wp_attached_file "2026/09/image.png" --path=$WP_PATH
+```
+
+> **Why `wp media import` fails but `wp post create` works:** `wp media import` tries to move the file into the uploads directory (needs write permission). `wp post create` only creates the database record (no file move). The file is already in place from the `sudo cp` step.
+
+### `mwai_image` returns "No API Key provided"
+
+**Symptom:**
+```
+The tool "mwai_image" failed: No API Key provided. Please visit the Settings. (ChatML Engine)
+```
+
+**Cause:** AI Engine's image generation module has no API key configured.
+
+**Fix:** Configure an API key in WordPress Admin → AI Engine → Settings → API Keys. Add a key for an image provider (OpenAI DALL-E, Stability AI, etc.). There is no WP-CLI shortcut for this — it must be done in the admin UI.
+
+> **Alternative:** If you only need technology logos or icons (not AI-generated art), download them from SimpleIcons CDN and upload manually (see `references/real-world-workflows.md` → "Convert SVG icons to PNG and upload").
+
+---
+
+## Cloudflare cache
+
+### Changes not visible on the live site
+
+**Symptom:** Content updated via MCP, but `curl https://yourdomain.com/` still shows old content.
+
+**Cause:** Cloudflare caches full pages and assets. `wp cache flush` only clears the WordPress object cache, NOT Cloudflare.
+
+**Fix — cache-busting query strings:**
+```bash
+# Bypass Cloudflare cache for verification
+curl -s "https://yourdomain.com/?nocache=1" | grep "new content"
+curl -s "https://yourdomain.com/?nocache=2"
+# Increment the number each time
+
+# For specific assets:
+curl -sI "https://yourdomain.com/wp-content/uploads/2026/09/image.png?nocache=1"
+```
+
+**Fix — purge via Cloudflare API (requires API token + zone ID):**
+```bash
+# Get zone ID
+ZONE_ID=$(curl -s "https://api.cloudflare.com/client/v4/zones?name=yourdomain.com" \
+  -H "Authorization: Bearer $CF_API_TOKEN" | python3 -c "import sys,json; print(json.load(sys.stdin)['result'][0]['id'])")
+
+# Purge everything (use sparingly)
+curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/purge_cache" \
+  -H "Authorization: Bearer $CF_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"purge_everything": true}'
+
+# Or purge specific URLs
+curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/purge_cache" \
+  -H "Authorization: Bearer $CF_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"files": ["https://yourdomain.com/", "https://yourdomain.com/wp-content/uploads/2026/09/image.png"]}'
+```
+
+> **Cloudflare Tunnel note:** If using Cloudflare Tunnel (`cloudflared`), the tunnel config is at `~/.cloudflared/config.yml`. The tunnel itself doesn't control cache — cache rules are in the Cloudflare dashboard.
+
+---
+
+## WP-CLI command issues
+
+### `wp menu item add-post-type` is not a valid subcommand
+
+**Symptom:**
+```
+Error: 'add-post-type' is not a registered subcommand of 'menu item'.
+```
+
+**Cause:** The correct subcommand is `add-post` (for a specific post), not `add-post-type`.
+
+**Fix:**
+```bash
+# ✅ Correct — adds a specific page/post to the menu
+wp menu item add-post <menu_id_or_slug> <post_id> --title="Title" --path=$WP_PATH
+
+# ❌ Wrong — this subcommand does not exist
+wp menu item add-post-type <menu> <post_id>
+```
+
+Available `wp menu item` subcommands:
+- `add-custom` — add a custom (external) link
+- `add-post` — add a WordPress post/page by ID
+- `add-term` — add a taxonomy term
+- `delete` — delete a menu item
+- `list` — list menu items
+- `update` — update a menu item
+
+### `wp theme install` fails with "Não foi possível criar o diretório"
+
+**Symptom:**
+```
+Warning: Não foi possível criar o diretório. "/wp-content/upgrade/theme.slug"
+Error: No themes installed.
+```
+
+**Cause:** The `wp-content/upgrade/` directory is not writable by the WP-CLI user.
+
+**Fix — download and copy manually:**
+```bash
+cd /tmp
+curl -sL "https://downloads.wordpress.org/theme/<slug>.<version>.zip" -o theme.zip
+unzip -q theme.zip -d /tmp/theme-extract
+sudo cp -r /tmp/theme-extract/<slug> $WP_PATH/wp-content/themes/<slug>
+sudo chown -R www:www $WP_PATH/wp-content/themes/<slug>
+wp theme activate <slug> --path=$WP_PATH
+```
+
+### WP-CLI output includes PHP deprecation warnings
+
+**Symptom:**
+```
+Deprecated: Case statements followed by a semicolon (;) are deprecated...
+```
+
+**Cause:** PHP 8.x deprecation notices from WordPress core or plugins. These are warnings, not errors.
+
+**Fix:** Filter them out in scripts:
+```bash
+wp theme list --path=$WP_PATH 2>/dev/null | grep -v Deprecated | grep -v "PHP Warning"
+```
+
+Or suppress in wp-cli.yml:
+```yaml
+# wp-cli.yml
+php: /www/server/php/85/bin/php
+```
+
+---
+
+## SVG to PNG conversion
+
+### ImageMagick produces empty PNG from SVG
+
+**Symptom:** `convert -background none icon.svg -resize 256x256 icon.png` produces a 332-byte (empty) PNG.
+
+**Cause:** The SVG has no `fill` attribute on the root `<svg>` element, and ImageMagick doesn't apply a default fill to `<path>` elements.
+
+**Fix — use cairosvg:**
+```bash
+pip3 install cairosvg --break-system-packages
+python3 -c "import cairosvg; cairosvg.svg2png(url='icon.svg', write_to='icon.png', output_width=256, output_height=256)"
+```
+
+**Fix — add fill to the SVG root:**
+```bash
+# If the SVG has no fill on the root <svg> element:
+sed -i 's|<svg |<svg fill="#2496ED" |' icon.svg
+convert -background none -density 300 icon.svg -resize 256x256 icon.png
+```
+
+> **SimpleIcons CDN tip:** `https://cdn.simpleicons.org/<slug>/<hex-color>` returns SVG with the fill on the root `<svg>` element (converts reliably). `https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/<slug>.svg` returns SVG with fill on `<path>` or no fill at all (may need cairosvg).
