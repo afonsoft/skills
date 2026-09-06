@@ -1,11 +1,12 @@
 # WordPress MCP — per-platform config reference
 
-Two MCP servers can be configured. Each has its own endpoint and auth.
+Three MCP servers can be configured. Each has its own endpoint and auth.
 
-| Server | Endpoint path | Auth header |
-|--------|---------------|-------------|
-| `wordpress-mcp` (mcp-adapter) | `/wp-json/mcp/mcp-adapter-default-server` | `Authorization: Basic <base64(user:app_password)>` |
-| `wordpress-ai-engine` (AI Engine) | `/wp-json/mcp/v1/http` | `Authorization: Bearer <token>` |
+| Server | Endpoint path | Auth header | Transport |
+|--------|---------------|-------------|-----------|
+| `wordpress-mcp` (mcp-adapter) | `/wp-json/mcp/mcp-adapter-default-server` | `Authorization: Basic <base64(user:app_password)>` | HTTP + STDIO |
+| `wordpress-ai-engine` (AI Engine) | `/wp-json/mcp/v1/http` | `Authorization: Bearer <token>` | HTTP only |
+| `wordpress-ultimate` (wp-mcp-ultimate) | `/wp-json/mcp-ultimate/v1` | `Authorization: Basic <base64(user:app_password)>` | HTTP only |
 
 Replace `https://yourdomain.com` with your actual WordPress URL.
 
@@ -49,10 +50,19 @@ File: `~/.claude.json`
       "headers": {
         "Authorization": "Bearer <token>"
       }
+    },
+    "wordpress-ultimate": {
+      "type": "http",
+      "url": "https://yourdomain.com/wp-json/mcp-ultimate/v1",
+      "headers": {
+        "Authorization": "Basic <base64>"
+      }
     }
   }
 }
 ```
+
+> For `wordpress-ultimate`, the Basic Auth value is the same format as `wordpress-mcp` (Application Password).
 
 ---
 
@@ -246,3 +256,73 @@ echo -n "admin:xxxx xxxx xxxx xxxx xxxx xxxx" | base64
 ```
 
 Use this as the `Authorization: Basic <value>` header.
+
+---
+
+## STDIO transport (mcp-adapter only, local sites)
+
+The mcp-adapter supports STDIO via WP-CLI. This works on all MCP clients that support `command`-based servers (Claude Code, Claude Desktop, Cursor, Devin, OpenCode, Gemini CLI, Codex).
+
+### Direct STDIO (wp binary on same machine)
+
+```jsonc
+// Claude Code / Cursor / Devin / OpenCode
+{
+  "mcpServers": {
+    "wordpress-stdio": {
+      "command": "wp",
+      "args": [
+        "--path=/path/to/wordpress",
+        "mcp-adapter",
+        "serve",
+        "--server=mcp-adapter-default-server",
+        "--user=admin"
+      ]
+    }
+  }
+}
+```
+
+```toml
+# Codex (~/.codex/config.toml)
+[mcp_servers.wordpress-stdio]
+command = "wp"
+args = ["--path=/path/to/wordpress", "mcp-adapter", "serve", "--user=admin"]
+```
+
+> **Gemini CLI / AGY:** STDIO servers use `command` + `args` (not `httpUrl`). Gemini supports both `command` (STDIO) and `httpUrl` (HTTP) — use the right one for your transport.
+
+### Remote HTTP via STDIO proxy (@automattic/mcp-wordpress-remote)
+
+For MCP clients that only support STDIO but the WordPress site is remote:
+
+```jsonc
+{
+  "mcpServers": {
+    "wordpress-remote": {
+      "command": "npx",
+      "args": ["-y", "@automattic/mcp-wordpress-remote@latest"],
+      "env": {
+        "WP_API_URL": "https://yourdomain.com/wp-json/mcp/mcp-adapter-default-server",
+        "WP_API_USERNAME": "admin",
+        "WP_API_PASSWORD": "xxxx xxxx xxxx xxxx xxxx xxxx",
+        "LOG_FILE": "/tmp/mcp-adapter.log"
+      }
+    }
+  }
+}
+```
+
+```toml
+# Codex
+[mcp_servers.wordpress-remote]
+command = "npx"
+args = ["-y", "@automattic/mcp-wordpress-remote@latest"]
+
+[mcp_servers.wordpress-remote.env]
+WP_API_URL = "https://yourdomain.com/wp-json/mcp/mcp-adapter-default-server"
+WP_API_USERNAME = "admin"
+WP_API_PASSWORD = "xxxx xxxx xxxx xxxx xxxx xxxx"
+```
+
+> **Env substitution:** For platforms that support it (Claude Code, Devin, OpenCode), use `${WP_API_PASSWORD}` instead of the literal value. For Codex/Gemini, use literal values and protect the file with `chmod 600`.

@@ -12,10 +12,93 @@ wp plugin status mcp-adapter --path=$WP_PATH --allow-root
 # If not active:
 wp plugin activate mcp-adapter --path=$WP_PATH --allow-root
 
-# If vendor/ is missing:
+# If vendor/ is missing (only when installed from source, not from release ZIP):
 cd $WP_PATH/wp-content/plugins/mcp-adapter
 composer install --no-dev --no-interaction --optimize-autoloader
 wp rewrite flush --path=$WP_PATH --allow-root
+```
+
+> **v0.6.0+ note:** The release ZIP ships with `vendor/` pre-built. If you installed via `wp plugin install .../mcp-adapter.zip`, `vendor/` is already there. The `composer install` step is only needed when installing from source (git clone or trunk ZIP).
+
+### `discover-abilities` returns empty list
+
+**Cause:** No abilities are registered, or registered abilities don't have `meta.public` (or `meta.mcp.public`) set to `true`. Abilities are **private by default**.
+
+**Fix:** Set `meta.public => true` when registering abilities:
+
+```php
+add_action( 'wp_abilities_api_init', function() {
+    wp_register_ability( 'my-plugin/my-ability', [
+        // ... other args ...
+        'meta' => [
+            'public' => true,  // REQUIRED to expose via MCP
+        ],
+    ] );
+} );
+```
+
+> **Abilities API on WP < 6.9:** The Abilities API is built into WP 6.9+ core. On older WordPress, install the [Abilities API plugin](https://github.com/WordPress/abilities-api) separately, or use [wp-mcp-ultimate](../wp-mcp-ultimate.md) which includes a polyfill.
+
+### STDIO transport: `wp mcp-adapter serve` returns "No MCP servers available"
+
+**Cause:** No servers are registered via `mcp_adapter_init` hook, or the plugin is not active.
+
+**Fix:**
+```bash
+# Check if plugin is active
+wp plugin status mcp-adapter --path=$WP_PATH
+
+# List registered servers
+wp mcp-adapter list --path=$WP_PATH
+
+# If empty, the default server should be created automatically on activation.
+# Try deactivating and reactivating:
+wp plugin deactivate mcp-adapter --path=$WP_PATH
+wp plugin activate mcp-adapter --path=$WP_PATH
+wp mcp-adapter list --path=$WP_PATH
+```
+
+### STDIO transport: "Invalid user ID, email or login"
+
+**Cause:** The `--user` flag passed to `wp mcp-adapter serve` doesn't match a valid WordPress user.
+
+**Fix:**
+```bash
+# List admin users
+wp user list --role=administrator --fields=ID,user_login --path=$WP_PATH
+
+# Use the correct user login or ID
+wp mcp-adapter serve --user=admin --path=$WP_PATH
+# or
+wp mcp-adapter serve --user=1 --path=$WP_PATH
+```
+
+### `@automattic/mcp-wordpress-remote` proxy returns auth error
+
+**Cause:** Wrong Application Password, or Application Passwords disabled on the WordPress site.
+
+**Fix:**
+```bash
+# Verify the Application Password works with curl
+AUTH=$(echo -n "admin:xxxx xxxx xxxx xxxx xxxx xxxx" | base64)
+curl -s -X POST "https://yourdomain.com/wp-json/mcp/mcp-adapter-default-server" \
+  -H "Authorization: Basic $AUTH" \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"test","version":"1.0"}}}'
+
+# If 401, regenerate the Application Password:
+wp user application-password delete 1 <uuid> --path=$WP_PATH
+wp user application-password create 1 "mcp-proxy" --path=$WP_PATH
+```
+
+Then update the proxy env vars:
+```jsonc
+{
+  "env": {
+    "WP_API_USERNAME": "admin",
+    "WP_API_PASSWORD": "new xxxx xxxx xxxx xxxx xxxx xxxx"
+  }
+}
 ```
 
 ### `composer install` fails with jetpack-autoloader error
@@ -455,3 +538,54 @@ convert -background none -density 300 icon.svg -resize 256x256 icon.png
 ```
 
 > **SimpleIcons CDN tip:** `https://cdn.simpleicons.org/<slug>/<hex-color>` returns SVG with the fill on the root `<svg>` element (converts reliably). `https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/<slug>.svg` returns SVG with fill on `<path>` or no fill at all (may need cairosvg).
+
+---
+
+## wp-mcp-ultimate (Path C)
+
+### Plugin conflict warning on activation
+
+**Symptom:** Admin notice: "Conflict detected: MCP Adapter / MCP Expose Abilities / Abilities API is also active."
+
+**Cause:** wp-mcp-ultimate includes an Abilities API polyfill and detects when other MCP-related plugins are active. Running multiple MCP plugins can cause ability duplication.
+
+**Fix:** Choose one MCP plugin, or run them on separate endpoints:
+- If you need **custom abilities** → keep mcp-adapter, deactivate wp-mcp-ultimate
+- If you need **58 ready-to-use abilities** → keep wp-mcp-ultimate, deactivate mcp-adapter
+- If you need **AI image generation** → keep AI Engine (it doesn't conflict with either)
+
+### OAuth 2.1 flow fails with Claude Web/Mobile
+
+**Symptom:** Claude Web/Mobile connector can't complete OAuth flow.
+
+**Cause:** The OAuth endpoint requires HTTPS and the site must be publicly reachable. Self-signed certs or localhost won't work with Claude's cloud-based OAuth validation.
+
+**Fix:**
+1. Ensure the site is on HTTPS with a valid certificate (Let's Encrypt or Cloudflare origin cert)
+2. Ensure the site is publicly reachable (not behind a firewall without tunnel)
+3. Point the Claude connector at: `https://yourdomain.com/wp-json/mcp-ultimate/v1`
+4. The plugin auto-discovers the OAuth endpoints via `.well-known` URLs
+
+### `plugins/upload` ability doesn't auto-activate the plugin
+
+**Symptom:** Plugin uploaded via `plugins/upload` but not activated.
+
+**Cause:** Since a recent version, plugin installs no longer auto-activate (security measure). This is intentional.
+
+**Fix:** Call `plugins/activate` separately after `plugins/upload`:
+```json
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"execute-ability","arguments":{"ability_id":"plugins/activate","parameters":{"plugin":"my-plugin/plugin-file.php"}}}}
+```
+
+### MCP endpoint returns 403 Forbidden
+
+**Cause:** The user authenticated via Application Password doesn't have the `edit_posts` capability (the default capability required to reach the MCP endpoint).
+
+**Fix:**
+1. Use an admin user's Application Password, or
+2. Filter the capability requirement in `functions.php` or a mu-plugin:
+```php
+add_filter( 'wp_mcp_ultimate_required_capability', function() {
+    return 'read';  // Lower the bar to 'read' capability
+} );
+```

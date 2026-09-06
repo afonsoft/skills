@@ -1,36 +1,47 @@
 ---
 name: wordpress-mcp
-description: "Use when the user wants to manage WordPress sites via MCP (Model Context Protocol). Covers two official paths \u2014 (A) the WordPress/mcp-adapter plugin (Abilities API, 3 meta-tools) and (B) the AI Engine plugin (43 admin tools: posts, users, media, plugins, options, SEO, social). Includes plugin install via WP-CLI, Application Password / Bearer Token setup, per-platform MCP config (Claude Code, Devin, OpenCode, Gemini, Codex, AGY, OpenClaw), endpoint verification, and troubleshooting. Trigger when the user says \"WordPress MCP\", \"mcp-adapter\", \"AI Engine MCP\", \"configure WordPress for agents\", or wants to expose WordPress to AI agents over MCP. Part of the afonsoft/skills collection."
+description: "Use when the user wants to manage WordPress sites via MCP (Model Context Protocol). Covers three paths \u2014 (A) the official WordPress/mcp-adapter plugin (Abilities API, 3 meta-tools, HTTP+STDIO transport, v0.6.1+ no composer needed), (B) the AI Engine plugin (43-109+ admin tools: posts, users, media, plugins, options, SEO, social, AI image gen, Gutenberg blocks), and (C) wp-mcp-ultimate (community, 58 abilities, OAuth 2.1, self-contained, WP 6.7+). Includes plugin install via WP-CLI, Application Password / Bearer Token / OAuth setup, STDIO + HTTP transport, per-platform MCP config (Claude Code, Devin, OpenCode, Gemini, Codex, AGY, OpenClaw), endpoint verification, and troubleshooting. Trigger when the user says \"WordPress MCP\", \"mcp-adapter\", \"AI Engine MCP\", \"wp-mcp-ultimate\", \"configure WordPress for agents\", or wants to expose WordPress to AI agents over MCP. Part of the afonsoft/skills collection."
 license: MIT
 compatibility: WordPress 6.9+ (mcp-adapter) or 6.0+ (AI Engine). PHP 7.4+ (mcp-adapter) or 8.1+ (AI Engine). WP-CLI recommended for automated install. MCP clients need HTTP/streamable-HTTP support. Works on any hosting (aaPanel, cPanel, Docker, bare LEMP).
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
   homepage: https://github.com/wordpress/mcp-adapter
-  sources: https://github.com/wordpress/mcp-adapter, https://wordpress.org/plugins/ai-engine/, https://lobehub.com/skills/openclaw-skills-wordpress-mcp
+  sources: https://github.com/wordpress/mcp-adapter, https://wordpress.org/plugins/ai-engine/, https://github.com/AgriciDaniel/wp-mcp-ultimate, https://lobehub.com/skills/openclaw-skills-wordpress-mcp
 ---
 
+> **v1.2.0 changelog:** Added Path C (wp-mcp-ultimate, 58 abilities, OAuth 2.1). Updated Path A: mcp-adapter v0.6.1+ ships pre-built ZIP (no composer needed), STDIO transport via `wp mcp-adapter serve`, HTTP proxy via `@automattic/mcp-wordpress-remote`, Abilities API guide, migration from deprecated Automattic/wordpress-mcp. Added `references/mcp-adapter-guide.md` and `references/wp-mcp-ultimate.md`.
+>
 > **v1.1.0 changelog:** Added complete AI Engine tool reference (109+ tools), `wp_write_blocks` block schema, real-world workflows (theme switch, media upload with permission fix, menu creation, Gutenberg rewrite), Cloudflare cache-busting, SVG-to-PNG conversion, WP-CLI menu command corrections.
 
-# WordPress MCP — mcp-adapter (official) + AI Engine (skill)
+# WordPress MCP — three paths (mcp-adapter + AI Engine + wp-mcp-ultimate)
 
-Expose WordPress to AI agents over MCP. This skill covers **two complementary paths**:
+Expose WordPress to AI agents over MCP. This skill covers **three complementary paths**:
 
-| Path | Plugin | Endpoint | Auth | Tools | When to use |
-|------|--------|----------|------|-------|-------------|
-| **A. mcp-adapter** (official) | `wordpress/mcp-adapter` (GitHub) | `/wp-json/mcp/mcp-adapter-default-server` | Basic Auth (Application Password) | 3 meta-tools (discover/get-info/execute abilities) | Extensible, official, abilities-API driven. Use when you want to expose custom abilities or follow the WordPress core direction. |
-| **B. AI Engine** (community) | `ai-engine` (WP.org) | `/wp-json/mcp/v1/http` | Bearer Token (static) | 43 admin tools (posts, users, comments, plugins, options, media, SEO, social, Polylang, WooCommerce) | Ready-to-use admin tools. Use when you want immediate WordPress management without writing PHP. |
+| Path | Plugin | Endpoint | Auth | Tools | Transport | When to use |
+|------|--------|----------|------|-------|-----------|-------------|
+| **A. mcp-adapter** (official) | `wordpress/mcp-adapter` v0.6.1+ (GitHub) | `/wp-json/mcp/mcp-adapter-default-server` | Basic Auth (Application Password) | 3 meta-tools (discover/get-info/execute abilities) | HTTP + STDIO | Extensible, official, abilities-API driven. Use when you want to expose custom abilities, need STDIO transport, or follow the WordPress core direction. **No composer needed** with release ZIP. |
+| **B. AI Engine** (community) | `ai-engine` (WP.org) | `/wp-json/mcp/v1/http` | Bearer Token (static) | 43-109+ admin tools (posts, users, comments, plugins, options, media, SEO, social, AI image gen, Gutenberg blocks) | HTTP only | Ready-to-use admin tools. Use when you want immediate WordPress management without writing PHP. Includes `wp_write_blocks` and `mwai_image`. |
+| **C. wp-mcp-ultimate** (community) | `wp-mcp-ultimate` (GitHub) | `/wp-json/mcp-ultimate/v1` | App Passwords + OAuth 2.1 | 58 abilities (3 meta-tools pattern) | HTTP only | Self-contained, 58 pre-built abilities, OAuth 2.1 for Claude Web/Mobile, admin dashboard. Use on WP 6.7+ without needing the Abilities API in core. |
 
-Both paths can coexist on the same site (different endpoints, different auth). The LobeHub skill `openclaw-skills-wordpress-mcp` targets path B (AI Engine).
+All three paths can coexist on the same site (different endpoints, different auth). Use the one that fits your needs, or combine them.
+
+> **Deprecated:** `Automattic/wordpress-mcp` is archived. Migrate to `wordpress/mcp-adapter` (Path A). See `references/mcp-adapter-guide.md` → "Migration from Automattic/wordpress-mcp".
+
+The LobeHub skill `openclaw-skills-wordpress-mcp` targets path B (AI Engine).
 
 ## When to use
 
-- The user says "configure WordPress MCP", "expose my WordPress to agents", "mcp-adapter", "AI Engine MCP".
+- The user says "configure WordPress MCP", "expose my WordPress to agents", "mcp-adapter", "AI Engine MCP", "wp-mcp-ultimate".
 - An agent needs to create/edit posts, manage users, install plugins, or run WP admin tasks via MCP tool calls.
 - `devin mcp list` / `claude mcp list` shows a `wordpress-*` server failing to list tools (auth or endpoint issue).
 - The user wants to install the LobeHub skill `openclaw-skills-wordpress-mcp` (which requires AI Engine).
+- The user wants to register **custom WordPress abilities** and expose them to AI agents (Path A).
+- The user needs **STDIO transport** for local MCP client integration (Path A).
+- The user needs **OAuth 2.1** for Claude Web/Mobile connectors (Path C).
+- The user is on **WordPress 6.7-6.8** and can't use mcp-adapter (needs 6.9+) (Path C).
 
 ## When NOT to use
 
@@ -61,21 +72,29 @@ Both paths can coexist on the same site (different endpoints, different auth). T
 The plugin is not yet on the WordPress.org directory. Install from GitHub:
 
 ```bash
-# Via the bundled helper (recommended — handles composer install too):
+# Option 1: Release ZIP (recommended — v0.6.0+ ships with vendor/, NO composer needed)
+wp plugin install https://github.com/WordPress/mcp-adapter/releases/latest/download/mcp-adapter.zip --activate --path=$WP_PATH
+wp rewrite flush --path=$WP_PATH
+
+# Option 2: Via the bundled helper script
 bash skills/wordpress-mcp/scripts/install_wp_plugin.sh mcp-adapter --wp-path=/var/www/html
 
-# Manual:
+# Option 3: From source (developers — requires composer)
 cd /tmp
 curl -L -o mcp-adapter.zip "https://github.com/WordPress/mcp-adapter/archive/refs/heads/trunk.zip"
 unzip -q mcp-adapter.zip -d /tmp/mcp-adapter-extract
-mv /tmp/mcp-adapter-extract/mcp-adapter-trunk /var/www/html/wp-content/plugins/mcp-adapter
-cd /var/www/html/wp-content/plugins/mcp-adapter
+mv /tmp/mcp-adapter-extract/mcp-adapter-trunk $WP_PATH/wp-content/plugins/mcp-adapter
+cd $WP_PATH/wp-content/plugins/mcp-adapter
 composer install --no-dev --no-interaction --optimize-autoloader
-wp plugin activate mcp-adapter --allow-root --path=/var/www/html
-wp rewrite flush --allow-root --path=/var/www/html
+wp plugin activate mcp-adapter --path=$WP_PATH
+wp rewrite flush --path=$WP_PATH
 ```
 
-> **Composer required**: the plugin ships without `vendor/`. Without `composer install`, the autoloader is missing and the endpoint returns 404 with no error. If the server's Composer is < 2.2, update first: `composer self-update --2`.
+> **v0.6.0+ note:** The release ZIP ships with `vendor/` pre-built. No `composer install` needed. Only use Option 3 (from source) if you need to modify the plugin or use a specific branch.
+
+> **Abilities API:** WP 6.9+ has the Abilities API built into core. For WP < 6.9, install the [Abilities API plugin](https://github.com/WordPress/abilities-api) separately, or use [wp-mcp-ultimate](#path-c--wp-mcp-ultimate-community-58-abilities) which includes a polyfill.
+
+> **See `references/mcp-adapter-guide.md`** for the complete guide: installation options, Application Passwords, HTTP + STDIO transports, Abilities API, creating custom abilities, WP-CLI commands, and migration from deprecated Automattic/wordpress-mcp.
 
 ### aaPanel / BT-Panel notes
 
@@ -296,6 +315,119 @@ The AI Engine MCP exposes **43 core tools** by default, expanding to **109+** wh
 > **See `references/ai-engine-tools.md`** for the complete tool reference with arguments, block schema for `wp_write_blocks`, and feature flag enabling instructions.
 
 > Run `tools/list` on the live endpoint to discover the exact tools available on your site (varies by enabled features).
+
+---
+
+# PATH C — wp-mcp-ultimate (community, 58 abilities)
+
+A self-contained MCP server plugin with 58 pre-built WordPress abilities. No composer, no Abilities API plugin needed (includes polyfill for WP < 6.9).
+
+## C.1 Install the plugin
+
+```bash
+# Via WP-CLI
+wp plugin install https://github.com/AgriciDaniel/wp-mcp-ultimate/releases/latest/download/wp-mcp-ultimate.zip --activate --path=$WP_PATH
+wp rewrite flush --path=$WP_PATH
+
+# Or git clone
+cd $WP_PATH/wp-content/plugins/
+git clone https://github.com/AgriciDaniel/wp-mcp-ultimate.git
+wp plugin activate wp-mcp-ultimate --path=$WP_PATH
+```
+
+## C.2 Authentication
+
+Two methods supported:
+
+1. **Application Passwords** (Basic Auth) — works with all MCP clients
+2. **OAuth 2.1** (PKCE + dynamic client registration) — for Claude Web/Mobile connectors
+
+Generate an Application Password via admin UI: **Tools → MCP Ultimate → Generate**, or via WP-CLI:
+```bash
+wp user application-password create 1 "mcp-ultimate" --path=$WP_PATH
+```
+
+## C.3 The MCP endpoint
+
+```
+POST https://yourdomain.com/wp-json/mcp-ultimate/v1
+Authorization: Basic <base64(user:app_password)>
+Content-Type: application/json
+```
+
+Uses the **3 meta-tools pattern** (same as mcp-adapter):
+- `discover-abilities` — list all 58 abilities
+- `get-ability-info` — get details about a specific ability
+- `execute-ability` — execute an ability
+
+## C.4 Available abilities (58 across 9 domains)
+
+| Domain | Count | Abilities |
+|--------|-------|-----------|
+| Posts | 6 | list, get, create, update, delete, patch |
+| Pages | 6 | list, get, create, update, delete, patch |
+| Taxonomy | 4 | list-categories, create-category, list-tags, create-tag |
+| Search | 1 | search |
+| Revisions | 2 | list, get |
+| Media | 5 | list, upload, get, update, delete |
+| Users | 6 | list, get, create, update, delete, list-extended |
+| Plugins | 6 | upload, upload-base64, list, delete, activate, deactivate |
+| Menus | 7 | list, get-items, create, add-item, update-item, delete-item, assign-location |
+| Widgets | 3 | list-sidebars, get-sidebar, list-available |
+| Comments | 6 | list, get, update-status, reply, create, delete |
+| Options | 3 | get, update, list |
+| System | 3 | get-transient, debug-log, toggle-debug |
+
+> **See `references/wp-mcp-ultimate.md`** for the complete ability reference with capabilities, admin dashboard features, and MCP client config snippets.
+
+---
+
+# STDIO transport (Path A — local development)
+
+The mcp-adapter supports STDIO transport via WP-CLI, useful for local development and MCP clients that launch subprocesses:
+
+```bash
+# Serve the default MCP server via STDIO
+wp mcp-adapter serve --user=admin --path=$WP_PATH
+
+# List available servers
+wp mcp-adapter list --path=$WP_PATH
+
+# Test with a JSON-RPC request
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | \
+  wp mcp-adapter serve --user=admin --path=$WP_PATH
+```
+
+MCP client config for STDIO (local sites):
+```jsonc
+{
+  "mcpServers": {
+    "wordpress": {
+      "command": "wp",
+      "args": ["--path=/path/to/wordpress", "mcp-adapter", "serve", "--user=admin"]
+    }
+  }
+}
+```
+
+For remote sites via STDIO clients, use the [`@automattic/mcp-wordpress-remote`](https://www.npmjs.com/package/@automattic/mcp-wordpress-remote) npm proxy:
+```jsonc
+{
+  "mcpServers": {
+    "wordpress": {
+      "command": "npx",
+      "args": ["-y", "@automattic/mcp-wordpress-remote@latest"],
+      "env": {
+        "WP_API_URL": "https://your-site.com/wp-json/mcp/mcp-adapter-default-server",
+        "WP_API_USERNAME": "your-username",
+        "WP_API_PASSWORD": "your-application-password"
+      }
+    }
+  }
+}
+```
+
+> **See `references/mcp-adapter-guide.md`** → "Transports" for the full STDIO and proxy guide.
 
 ---
 
@@ -552,16 +684,22 @@ curl -s "https://yourdomain.com/?nocache=1" | grep "new content"
 
 # References
 
-- **`references/ai-engine-tools.md`** — Complete AI Engine tool reference (109+ tools with arguments, `wp_write_blocks` block schema, feature flags).
+- **`references/mcp-adapter-guide.md`** — Complete mcp-adapter (Path A) guide: installation (release ZIP, source, composer), Application Passwords, HTTP + STDIO transports, npm proxy, Abilities API, creating custom abilities, WP-CLI commands, migration from deprecated Automattic/wordpress-mcp, comparison with AI Engine.
+- **`references/wp-mcp-ultimate.md`** — Complete wp-mcp-ultimate (Path C) guide: installation, Application Passwords + OAuth 2.1 auth, 58 abilities reference (9 domains), admin dashboard, MCP client config, comparison with other paths.
+- **`references/ai-engine-tools.md`** — Complete AI Engine (Path B) tool reference (109+ tools with arguments, `wp_write_blocks` block schema, feature flags).
 - **`references/real-world-workflows.md`** — End-to-end workflows from a live site (static front page, Gutenberg rewrite, theme switch, menu creation, media upload with permission fix, custom CSS, blog posts with categories, Cloudflare cache-busting, SVG-to-PNG conversion).
-- **`references/mcp-config.md`** — Full per-platform JSON/TOML config blocks (Claude Code, Devin CLI, OpenCode, Gemini CLI, AGY, Codex, OpenClaw).
+- **`references/mcp-config.md`** — Full per-platform JSON/TOML config blocks (Claude Code, Devin CLI, OpenCode, Gemini CLI, AGY, Codex, OpenClaw) + STDIO transport + npm proxy config.
 - **`references/platform-quirks.md`** — Cross-platform MCP config quirks matrix (httpUrl vs url, mcp vs mcpServers, TOML sub-tables).
-- **`references/troubleshooting.md`** — Extended troubleshooting (composer, app passwords, session flow, feature flags, media upload permissions, Cloudflare cache, WP-CLI menu commands, theme install without upgrade dir).
+- **`references/troubleshooting.md`** — Extended troubleshooting (composer, app passwords, session flow, feature flags, media upload permissions, Cloudflare cache, WP-CLI menu commands, theme install without upgrade dir, Abilities API, STDIO transport, npm proxy, wp-mcp-ultimate conflicts, OAuth 2.1).
 - **`scripts/setup_wordpress_mcp.sh`** — Detects all installed MCP clients and patches each with the correct format.
 - **`scripts/verify_wordpress_mcp.sh`** — End-to-end connectivity check for both endpoints.
 - **`scripts/install_wp_plugin.sh`** — Installs mcp-adapter or ai-engine plugin via WP-CLI (handles composer, downloads, activation).
-- [WordPress MCP Adapter (GitHub)](https://github.com/wordpress/mcp-adapter)
-- [AI Engine (WP.org)](https://wordpress.org/plugins/ai-engine/)
+- [WordPress MCP Adapter (GitHub)](https://github.com/wordpress/mcp-adapter) — official Path A
+- [AI Engine (WP.org)](https://wordpress.org/plugins/ai-engine/) — Path B
+- [WP MCP Ultimate (GitHub)](https://github.com/AgriciDaniel/wp-mcp-ultimate) — Path C
+- [Abilities API (GitHub)](https://github.com/WordPress/abilities-api) — required by mcp-adapter on WP < 6.9
+- [@automattic/mcp-wordpress-remote (npm)](https://www.npmjs.com/package/@automattic/mcp-wordpress-remote) — STDIO→HTTP proxy for mcp-adapter
+- [Automattic/wordpress-mcp (archived)](https://github.com/Automattic/wordpress-mcp) — deprecated, migrate to mcp-adapter
 - [LobeHub skill](https://lobehub.com/skills/openclaw-skills-wordpress-mcp)
 - [Application Passwords docs](https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/)
 - [Devin CLI MCP configuration](https://docs.devin.ai/cli/extensibility/mcp/configuration)
