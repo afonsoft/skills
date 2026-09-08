@@ -7,8 +7,9 @@ Complete command reference for the `composio` binary. Covers the core execution 
 | Command | Purpose | Key flags |
 |---------|---------|-----------|
 | `composio search <query...>` | Find tools by semantic use case | `--toolkits`, `--limit`, `--human` |
-| `composio execute <slug>` | Run a tool by slug | `-d/--data`, `--account`, `--file`, `--dry-run`, `--get-schema`, `-p/--parallel` |
+| `composio execute <slug>` | Run a tool by slug | `-d/--data`, `--account`, `--file`, `--dry-run`, `--get-schema`, `-p/--parallel`, `--skip-*` |
 | `composio link <toolkit>` | Connect an external account | `--alias`, `--no-browser`, `--no-wait`, `--list` |
+| `composio listen` | Subscribe to trigger events | `--toolkit`, `--trigger` |
 | `composio run <code>` | Run inline TS/JS with injected helpers | `-f/--file`, `--dry-run`, `--debug`, `--logs-off` |
 | `composio proxy <url>` | Raw API access through a toolkit | `--toolkit`, `--account`, `-X`, `-H`, `-d` |
 | `composio login` | Authenticate the CLI | `--user-api-key ak_*`, `--no-browser`, `--no-wait`, `--key <session>`, `--yes`, `--org` |
@@ -49,11 +50,13 @@ composio execute --parallel \
 
 - `-d, --data`: JSON/JS-style object, `@file`, or `-` (stdin)
 - `--account <alias|word_id|id>`: pick a connected account
-- `--file <path>`: inject a local file into a file_uploadable input
+- `--file <path>`: inject a local file into a file_uploadable input (only works when the tool exposes exactly one uploadable file argument)
 - `--dry-run`: validate and preview without executing
 - `--get-schema`: print the input schema only
 - `-p, --parallel`: run independent calls concurrently
-- `--skip-checks`: bypass connection and schema validation
+- `--skip-connection-check`: skip the connected-account check
+- `--skip-tool-params-check`: skip input validation against cached schema
+- `--skip-checks`: bypass both checks above
 
 **Flow:** `search` → `execute` (with `link` when the toolkit is not connected).
 
@@ -66,6 +69,14 @@ composio link github
 composio link gmail --alias work
 composio link gmail --list            # list existing connections
 composio link gmail --no-browser      # headless
+```
+
+## `composio listen`
+
+Subscribe to toolkit trigger events and stream them to stdout.
+
+```bash
+composio listen --toolkit github --trigger GITHUB_COMMIT_EVENT
 ```
 
 ## `composio run`

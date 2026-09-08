@@ -104,6 +104,7 @@ The CLI has two layers: **core commands** for everyday use and **`composio dev`*
 | `composio search` | Semantic tool discovery | `composio search "send an email"` |
 | `composio execute` | Run a tool | `composio execute GMAIL_SEND_EMAIL -d '{...}'` |
 | `composio link` | Connect an app account | `composio link github` |
+| `composio listen` | Subscribe to trigger events | `composio listen --toolkit github --trigger GITHUB_COMMIT_EVENT` |
 | `composio run` | Inline TS/JS with helpers | `composio run 'await execute("...")'` |
 | `composio proxy` | Raw API access | `composio proxy https://api.github.com/user --toolkit github` |
 | `composio login` | Authenticate | `composio login --user-api-key ak_...` |
@@ -112,34 +113,60 @@ The CLI has two layers: **core commands** for everyday use and **`composio dev`*
 | `composio orgs` | Manage orgs | `composio orgs list` |
 | `composio config` | CLI config | `composio config` |
 
-### Discovery workflow (search → execute)
+### Default workflow (execute → search → link)
+
+1. **Start with `composio execute <slug>`** whenever the slug is known.
+2. **Parallel calls** → `composio execute -p/--parallel` with repeated `<slug> -d <json>` groups.
+3. **Toolkit not connected?** → `composio link <toolkit>` and retry.
+4. **Arguments unclear?** → `composio execute <slug> --get-schema` or `--dry-run` before guessing.
+5. **Slug unknown?** → `composio search "<task>"` (batch related queries into one call).
 
 ```bash
-# 1. Search by intent — returns slugs, descriptions, schemas
+# Known slug — just execute
+composio execute GITHUB_GET_THE_AUTHENTICATED_USER -d '{}'
+
+# Unknown slug — search first
 composio search "create a github issue"
-composio search "send email" --toolkits gmail --limit 5
+composio search "send an email" --toolkits gmail
 
-# 2. Inspect the schema before executing
+# Inspect before executing
 composio execute GITHUB_CREATE_ISSUE --get-schema
-composio tools info GMAIL_SEND_EMAIL
-
-# 3. Dry-run to validate inputs
 composio execute GITHUB_CREATE_ISSUE --dry-run -d '{ owner: "acme", repo: "app", title: "Bug" }'
 
-# 4. Execute
-composio execute GITHUB_CREATE_ISSUE -d '{ owner: "acme", repo: "app", title: "Bug" }'
+# Pass data from file or stdin
+composio execute GITHUB_CREATE_ISSUE -d @issue.json
+cat issue.json | composio execute GITHUB_CREATE_ISSUE -d -
 
-# 5. If "toolkit not connected":
-composio link github          # browser OAuth
-composio link github --no-browser   # headless: print URL
+# Upload a local file
+composio execute SLACK_UPLOAD_OR_CREATE_A_FILE_IN_SLACK \
+  --file ./image.png \
+  -d '{ channels: "C123" }'
 
-# 6. Parallel independent calls
+# Parallel independent calls
 composio execute --parallel \
   GMAIL_SEND_EMAIL -d '{ recipient_email: "a@b.com", subject: "Hi" }' \
   GITHUB_CREATE_ISSUE -d '{ owner: "acme", repo: "app", title: "Bug" }'
+
+# Skip connection check (when you know the account is linked)
+composio execute GITHUB_CREATE_ISSUE --skip-connection-check -d '{...}'
 ```
 
+**Key flags:**
+
+| Flag | Purpose |
+|------|---------|
+| `--get-schema` | Inspect required arguments without executing |
+| `--dry-run` | Preview the request shape without performing the action |
+| `--file <path>` | Inject a local file into a tool with exactly one uploadable file input |
+| `--account <alias>` | Pick a connected account when multiple exist for the same toolkit |
+| `--parallel` / `-p` | Execute multiple independent tool calls in the same invocation |
+| `--skip-connection-check` | Skip the connected-account check |
+| `--skip-tool-params-check` | Skip input validation against cached schema |
+| `--skip-checks` | Skip both checks above |
+
 ### `composio run` — scripting without SDK
+
+`composio run` executes an inline ESM JavaScript/TypeScript snippet with authenticated `execute()`, `search()`, `proxy()`, and the experimental `experimental_subAgent()` helper pre-injected. No SDK setup required.
 
 ```bash
 composio run '
@@ -157,7 +184,28 @@ composio run '
 '
 ```
 
+**Structured output with zod:**
+
+```bash
+composio run --logs-off '
+  const emails = await execute("GMAIL_FETCH_EMAILS", { max_results: 5 });
+  const brief = await experimental_subAgent(
+    `Summarize these emails and count them.\n\n${emails.prompt()}`,
+    { schema: z.object({ summary: z.string(), count: z.number() }) }
+  );
+  console.log(brief.structuredOutput);
+'
+```
+
 **Injected helpers:** `execute()`, `search()`, `proxy()`, `experimental_subAgent()`, `result.prompt()`, `z` (zod).
+
+### `composio listen` — subscribe to trigger events
+
+```bash
+composio listen --toolkit github --trigger GITHUB_COMMIT_EVENT
+```
+
+Subscribe to toolkit trigger events and stream them to stdout. Useful for reactive workflows and automation.
 
 ### `composio dev` — advanced workflows
 
@@ -397,6 +445,7 @@ When the MCP endpoint is unreachable or unconfigured, the CLI can perform every 
 | `mcp__composio__GMAIL_SEND_EMAIL` | `composio execute GMAIL_SEND_EMAIL -d '{...}'` |
 | Tool discovery | `composio search "<task>"` |
 | Account linking | `composio link <toolkit>` |
+| Trigger subscription | `composio listen --toolkit <toolkit> --trigger <slug>` |
 | Raw API calls | `composio proxy <url> --toolkit <toolkit>` |
 | Multi-step workflows | `composio run '<code>'` |
 
