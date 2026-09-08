@@ -43,6 +43,27 @@ As skills estão organizadas em quatro pilares principais: **Engenharia de Harne
 
 > 📚 **Documentação:** cada skill tem uma página de doc dedicada em [`docs/en/`](docs/en/) (Inglês) e [`docs/pt-br/`](docs/pt-br/) (Português).
 
+## 🛡️ Auditoria de Segurança
+
+Resultados mais recentes da auditoria de terceiros do [skills.sh](https://skills.sh) (**Gen Agent Trust Hub**, **Socket**, **Snyk**). Clique em **Ver** para ver o relatório completo de cada skill.
+
+> **Atualizado em:** 2026-09-08
+
+| Skill | Gen Agent Trust Hub | Socket alerts | Snyk | Detalhes |
+|-------|---------------------|---------------|------|----------|
+| `building-mcp-servers` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/building-mcp-servers) |
+| `code-review-and-quality` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/code-review-and-quality) |
+| `composio-mcp` | ✅ safe | 1 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/composio-mcp) |
+| `create-agent-harness` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/create-agent-harness) |
+| `create-readme` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/create-readme) |
+| `drawio-architecture` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/drawio-architecture) |
+| `notebooklm-mcp` | ✅ safe | 2 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/notebooklm-mcp) |
+| `observability-and-instrumentation` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/observability-and-instrumentation) |
+| `obsidian` | 🟠 high | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/obsidian) |
+| `quality-test-implementation` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/quality-test-implementation) |
+| `sonarqube-review` | ✅ safe | 1 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/sonarqube-review) |
+| `wordpress-mcp` | ⚪ unknown | - | ⚪ unknown | [Ver](https://skills.sh/afonsoft/skills/wordpress-mcp) |
+
 ---
 
 ## 📦 Instalação
