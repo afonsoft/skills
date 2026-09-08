@@ -4,7 +4,7 @@ description: Use when the user wants to connect AI agents to external apps (Gmai
 license: MIT
 compatibility: CLI mode needs Node.js + `composio` on PATH (npm i -g composio-core @composio/cli or via `composio setup`). MCP fallback mode needs an HTTP-capable MCP client and a `ck_*` consumer key from the Composio dashboard. Works on macOS/Linux/Windows.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -14,14 +14,24 @@ metadata:
 
 # Composio — CLI (primary) + MCP (fallback)
 
-Connect AI agents to 1000+ external apps through Composio. This skill covers **two execution paths**:
+Connect AI agents to 1000+ external apps through Composio. This skill covers **two execution paths** and the full tool surface.
 
 | Path | Transport | Auth | When to use |
 |------|-----------|------|-------------|
-| **A. CLI (primary)** | `composio` binary on PATH | `ak_*` project API key (CLI login) | Headless servers, scripts, any agent with shell access. Already works once `composio login` succeeds. |
-| **B. MCP (fallback)** | HTTP `https://connect.composio.dev/mcp` | `ck_*` consumer key in `x-consumer-api-key` header | MCP-native agents (Claude Code, Cursor, Devin) that prefer tool calls over shell. Needs the consumer key from the dashboard. |
+| **A. CLI (primary)** | `composio` binary on PATH | `ak_*` project API key | Headless servers, scripts, any agent with shell access. Works once `composio login` succeeds. |
+| **B. MCP (fallback)** | HTTP `https://connect.composio.dev/mcp` | `ck_*` consumer key in `x-consumer-api-key` | MCP-native agents that prefer tool calls over shell. Needs the consumer key from the dashboard. |
 
-Both paths talk to the same Composio backend and expose the same 1000+ toolkits. The CLI is the path of least resistance on headless boxes because it ships its own auth (`composio login`).
+Both paths talk to the same Composio backend and expose the same toolkits. The CLI is the path of least resistance on headless boxes because it ships its own auth (`composio login`).
+
+## Decision flow
+
+```
+Need to use Composio?
+├─ Agent has shell access? → Use CLI (Path A) → composio search/execute/link/run/proxy
+└─ Agent is MCP-native only? → Use MCP (Path B) → mcp__composio__* tool calls
+```
+
+**CLI fallback pattern:** When the MCP server is down or unconfigured, the CLI can perform every operation the MCP would do — `composio execute` replaces MCP tool calls, `composio search` replaces MCP search, `composio link` replaces MCP auth flows.
 
 ## When to use
 
@@ -85,34 +95,92 @@ If `whoami` fails, re-run `composio login`.
 
 ## A.3 Use the CLI
 
+The CLI has two layers: **core commands** for everyday use and **`composio dev`** for advanced project workflows.
+
+### Core command surface
+
+| Command | Purpose | Example |
+|---------|---------|---------|
+| `composio search` | Semantic tool discovery | `composio search "send an email"` |
+| `composio execute` | Run a tool | `composio execute GMAIL_SEND_EMAIL -d '{...}'` |
+| `composio link` | Connect an app account | `composio link github` |
+| `composio run` | Inline TS/JS with helpers | `composio run 'await execute("...")'` |
+| `composio proxy` | Raw API access | `composio proxy https://api.github.com/user --toolkit github` |
+| `composio login` | Authenticate | `composio login --user-api-key ak_...` |
+| `composio whoami` | Check auth | `composio whoami` |
+| `composio setup` | Install plugins | `composio setup --target auto` |
+| `composio orgs` | Manage orgs | `composio orgs list` |
+| `composio config` | CLI config | `composio config` |
+
+### Discovery workflow (search → execute)
+
 ```bash
-# Find the right tool
+# 1. Search by intent — returns slugs, descriptions, schemas
 composio search "create a github issue"
-composio search "send an email" --toolkits gmail
+composio search "send email" --toolkits gmail --limit 5
 
-# Inspect required inputs without executing
-composio execute GITHUB_CREATE_AN_ISSUE --get-schema
+# 2. Inspect the schema before executing
+composio execute GITHUB_CREATE_ISSUE --get-schema
+composio tools info GMAIL_SEND_EMAIL
 
-# Dry-run (validates, does not perform the action)
-composio execute GITHUB_CREATE_AN_ISSUE --dry-run -d '{ owner: "acme", repo: "app", title: "Bug" }'
+# 3. Dry-run to validate inputs
+composio execute GITHUB_CREATE_ISSUE --dry-run -d '{ owner: "acme", repo: "app", title: "Bug" }'
 
-# Execute
-composio execute GITHUB_CREATE_AN_ISSUE -d '{ owner: "acme", repo: "app", title: "Bug" }'
+# 4. Execute
+composio execute GITHUB_CREATE_ISSUE -d '{ owner: "acme", repo: "app", title: "Bug" }'
 
-# If "toolkit not connected":
-composio link github          # opens browser to authorize
-composio link github --no-browser   # headless: print URL, authorize elsewhere
+# 5. If "toolkit not connected":
+composio link github          # browser OAuth
+composio link github --no-browser   # headless: print URL
 
-# Parallel independent calls
+# 6. Parallel independent calls
 composio execute --parallel \
   GMAIL_SEND_EMAIL -d '{ recipient_email: "a@b.com", subject: "Hi" }' \
-  GITHUB_CREATE_AN_ISSUE -d '{ owner: "acme", repo: "app", title: "Bug" }'
-
-# Scripting with injected execute()/search()/proxy()
-composio run 'const me = await execute("GITHUB_GET_THE_AUTHENTICATED_USER"); console.log(me.data.login)'
+  GITHUB_CREATE_ISSUE -d '{ owner: "acme", repo: "app", title: "Bug" }'
 ```
 
-See the upstream `composio-cli` skill for the full command reference.
+### `composio run` — scripting without SDK
+
+```bash
+composio run '
+  const me = await execute("GITHUB_GET_THE_AUTHENTICATED_USER");
+  console.log(me.data.login);
+'
+
+composio run '
+  const [emails, issues] = await Promise.all([
+    execute("GMAIL_FETCH_EMAILS", { max_results: 5 }),
+    execute("GITHUB_LIST_REPOSITORY_ISSUES", { owner: "acme", repo: "app", state: "open" }),
+  ]);
+  const brief = await experimental_subAgent(`Summarize:\n${emails.prompt()}\n${issues.prompt()}`);
+  console.log(brief);
+'
+```
+
+**Injected helpers:** `execute()`, `search()`, `proxy()`, `experimental_subAgent()`, `result.prompt()`, `z` (zod).
+
+### `composio dev` — advanced workflows
+
+Developer-scoped management: scaffolding, playground execution, logs, connected accounts, triggers, projects.
+
+```bash
+composio dev init                          # scaffold a project
+composio dev toolkits list                 # browse all toolkits
+composio dev toolkits info github          # inspect a toolkit
+composio dev auth-configs list             # auth configs
+composio dev connected-accounts list       # connected accounts
+composio dev triggers list                 # trigger types
+composio dev playground-execute            # playground execution
+composio dev logs tools                    # browse tool logs
+```
+
+### `composio generate` — type stubs
+
+```bash
+composio generate --toolkits github gmail --output-dir ./src/types
+```
+
+See **`references/cli-reference.md`** for the full command surface.
 
 ---
 
@@ -217,7 +285,7 @@ After configuring, restart the agent and check:
 
 ```bash
 # From the agent (Claude Code / Devin):
-#   mcp_list_tools for composio should return 1000+ tools
+#   mcp_list_tools for composio should return tools
 
 # From the shell, test the endpoint directly:
 curl -sS -X POST "https://connect.composio.dev/mcp" \
@@ -229,7 +297,11 @@ curl -sS -X POST "https://connect.composio.dev/mcp" \
 
 If you see `{"error":"Authorization required"}`, the consumer key is missing, wrong, or revoked. Re-check the dashboard and rotate if needed.
 
-## B.4 Optional: enforce API key on the MCP server (org-level)
+## B.4 MCP tool surface
+
+The MCP endpoint exposes the same toolkits as the CLI. When `mcp_list_tools` succeeds, tools appear as `mcp__composio__<SLUG>` (e.g. `mcp__composio__GMAIL_SEND_EMAIL`). The underlying slugs are identical to the CLI — `composio search` and `composio execute` use the same names.
+
+## B.5 Optional: enforce API key on the MCP server (org-level)
 
 Orgs can require that **every** MCP request carry a valid project API key (`ak_*`) in addition to the consumer key:
 
@@ -267,10 +339,68 @@ When enabled, MCP requests must include **both** `x-consumer-api-key` (ck_) and 
 │  MCP path (ck_*)                                            │
 │  dashboard → Connect Settings → copy ck_*                   │
 │  patch mcp config: headers.x-consumer-api-key = ck_*        │
-│  restart agent → mcp_list_tools(composio) → 1000+ tools     │
+│  restart agent → mcp_list_tools(composio) → tools            │
 │  (optional) require_mcp_api_key=true → also send x-api-key  │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+# Tool discovery & consultation
+
+## How to find the right tool
+
+1. **Semantic search** — `composio search "<describe the task>"` uses semantic search across all toolkits. This is the primary discovery mechanism.
+2. **Narrow by toolkit** — when you know the app, filter: `--toolkits <slug>`.
+3. **Inspect the schema** — `composio execute <slug> --get-schema` shows required inputs before running.
+4. **Dry-run** — `composio execute <slug> --dry-run -d '{...}'` validates without side effects.
+
+## Tool inventory
+
+The live catalog is 30 toolkits / ~3300 tools / ~170 triggers. See **`references/tools-inventory.md`** for the full toolkit breakdown and common tool patterns.
+
+| Toolkit | Slug | Tools | Triggers |
+|---------|------|-------|----------|
+| Gmail | `gmail` | 61 | 2 |
+| GitHub | `github` | 871 | 46 |
+| Slack | `slack` | 158 | 9 |
+| Google Calendar | `googlecalendar` | 45 | 7 |
+| Notion | `notion` | 53 | 8 |
+| Jira | `jira` | 97 | 17 |
+| HubSpot | `hubspot` | 244 | 2 |
+| … | … | … | … |
+
+## Tags
+
+Tools are tagged for filtering. Common tags:
+
+| Tag | Meaning |
+|-----|---------|
+| `important` | Core/high-value tools |
+| `destructiveHint` | Irreversible or data-destroying |
+| `idempotentHint` | Safe to retry |
+| `createHint` | Creates a resource |
+| `updateHint` | Modifies a resource |
+| `deleteHint` | Deletes a resource |
+| `readOnlyHint` | No side effects |
+| `openWorldHint` | Results depend on external state |
+| `batch` | Bulk operation |
+
+---
+
+# CLI as MCP fallback
+
+When the MCP endpoint is unreachable or unconfigured, the CLI can perform every operation the MCP would do:
+
+| MCP operation | CLI equivalent |
+|---------------|----------------|
+| `mcp__composio__GMAIL_SEND_EMAIL` | `composio execute GMAIL_SEND_EMAIL -d '{...}'` |
+| Tool discovery | `composio search "<task>"` |
+| Account linking | `composio link <toolkit>` |
+| Raw API calls | `composio proxy <url> --toolkit <toolkit>` |
+| Multi-step workflows | `composio run '<code>'` |
+
+The CLI path is more reliable on headless servers because it handles auth locally (`ak_*` key in `~/.composio/user_data.json`) and does not depend on the MCP endpoint or consumer key.
 
 ---
 
@@ -285,11 +415,14 @@ When enabled, MCP requests must include **both** `x-consumer-api-key` (ck_) and 
 | MCP `Authorization required: No Authorization header` | No header at all | Add `x-consumer-api-key` header to the MCP config |
 | `composio login` hangs on headless box | Browser flow needs a display | Use `--no-browser --no-wait` then `--key <session>` or `--user-api-key ak_...` |
 | Tools appear but execute returns 401 | `require_mcp_api_key` enabled, no `x-api-key` | Add `x-api-key: ak_*` header alongside `x-consumer-api-key` |
+| `composio search` returns no results | Cache stale or org not set | `rm -rf ~/.composio/toolkits.json` then retry |
 
 ---
 
 # References
 
+- **`references/cli-reference.md`** — Full `composio` CLI command reference (core + `dev` + `generate` + `setup`).
+- **`references/tools-inventory.md`** — Live toolkit inventory (~3300 tools across 30 toolkits) and common tool patterns.
 - **`references/mcp-config.md`** — Full per-platform JSON config blocks (Claude Code/Desktop, Cursor, Devin CLI/Desktop, OpenCode, Antigravity IDE/CLI, OpenClaw).
 - **`references/platform-quirks.md`** — Cross-platform MCP config quirks matrix (serverUrl vs url, mcp vs mcpServers, environment vs env, env substitution syntax, OpenClaw CDP ports).
 - **`references/troubleshooting.md`** — Extended troubleshooting (CLI cache, pending-login, org picker, `composio dev` projects).
