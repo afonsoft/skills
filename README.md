@@ -19,25 +19,29 @@ The skills are organized into four main pillars: **Harness Engineering**, **Code
 
 ### 🏗️ Harness Engineering
 *Foundation for creating and managing AI agents.*
-- **`create-agent-harness`**: The starting point. Use this to bootstrap a complete agent environment (CLAUDE.md, rules, skills) in any repo.
-- **`create-readme`**: Professionalizes the repository landing page. Generates evidence-based READMEs and SemVer-compliant CHANGELOGs.
-- **`observability-and-instrumentation`**: Once the harness is set, use this to ensure the agent's actions and the application's behavior are visible and diagnosable in production.
+- **[`create-agent-harness`](docs/en/create-agent-harness.md)**: The starting point. Use this to bootstrap a complete agent environment (CLAUDE.md, rules, skills) in any repo.
+- **[`create-readme`](docs/en/create-readme.md)**: Professionalizes the repository landing page. Generates evidence-based READMEs and SemVer-compliant CHANGELOGs.
+- **[`observability-and-instrumentation`](docs/en/observability-and-instrumentation.md)**: Once the harness is set, use this to ensure the agent's actions and the application's behavior are visible and diagnosable in production.
 
 ### 💎 Code Quality & Review
 *Ensuring the output meets professional standards.*
-- **`code-review-and-quality`**: The primary gatekeeper. Performs multi-axis reviews (correctness, security, performance) before any code is merged.
-- **`sonarqube-review`**: The automated auditor. Integrates with SonarQube to identify and fix technical debt and smells systematically.
+- **[`code-review-and-quality`](docs/en/code-review-and-quality.md)**: The primary gatekeeper. Performs multi-axis reviews (correctness, security, performance) before any code is merged.
+- **[`quality-test-implementation`](docs/en/quality-test-implementation.md)**: The whole-repo quality intervention. Fixes static-analysis warnings (Roslyn/Sonar, SpotBugs/Checkstyle, Bandit/Ruff), resolves security CVEs, and applies SOLID/DDD/Clean Architecture across .NET, Java, or Python repositories.
+- **[`sonarqube-review`](docs/en/sonarqube-review.md)**: The automated auditor. Integrates with SonarQube to identify and fix technical debt and smells systematically.
 
 ### 🔌 Extensibility & Integration
 *Expanding what the agent can actually do.*
-- **`building-mcp-servers`**: The power-user tool. Teaches agents how to build their own Model Context Protocol (MCP) servers to connect to any API or database.
-- **`drawio-architecture`**: Visual intelligence. Merges architecture diagram authoring with the official draw.io MCP server for automated system design.
+- **[`building-mcp-servers`](docs/en/building-mcp-servers.md)**: The power-user tool. Teaches agents how to build their own Model Context Protocol (MCP) servers to connect to any API or database.
+- **[`drawio-architecture`](docs/en/drawio-architecture.md)**: Visual intelligence. Merges architecture diagram authoring with the official draw.io MCP server for automated system design.
+- **[`obsidian`](docs/en/obsidian.md)**: Obsidian vault operations. Runs the Obsidian CLI (read/create/search/manage notes, tasks, properties), builds Bases (.base views/filters/formulas), writes Obsidian Flavored Markdown (wikilinks, embeds, callouts), and develops/debugs plugins and themes.
 
 ### 🔗 MCP Integrations
 *Configuring, authenticating, and using external MCP servers across all supported agent platforms.*
-- **`composio-mcp`**: Connects AI agents to 1000+ external apps (Gmail, GitHub, Slack, Notion, Linear, Jira) via Composio. CLI-first path (`ak_*` project key) with MCP fallback (`ck_*` consumer key via `x-consumer-api-key` header). Includes multi-platform setup script (handles `serverUrl` vs `url`, `mcp` vs `mcpServers`, `environment` vs `env` across Claude Code/Desktop, Cursor, Devin CLI/Desktop, OpenCode, Antigravity IDE/CLI, OpenClaw), verify script, per-platform config reference, and cross-platform quirks matrix.
-- **`notebooklm-mcp`**: Google NotebookLM (Gemini Notebook) integration via the `nlm` CLI and `notebooklm-mcp` server. Cookie-based auth for headless servers with three methods (OpenClaw CDP provider preferred, manual `cookies.txt` file, desktop auto + copy) and multi-platform setup script covering all 8 supported agent platforms. Includes verify, cookie-extraction helper, per-platform config reference, and cross-platform quirks matrix.
-- **`wordpress-mcp`**: Expose WordPress to AI agents over MCP. Two paths: (A) `wordpress/mcp-adapter` official plugin (Abilities API, 3 meta-tools) and (B) AI Engine plugin (43 admin tools: posts, users, media, plugins, SEO, social). Includes WP-CLI install scripts, Application Password / Bearer Token setup, per-platform MCP config (Claude Code, Devin, OpenCode, Gemini, Codex, AGY, OpenClaw), endpoint verification, and troubleshooting.
+- **[`composio-mcp`](docs/en/composio-mcp.md)**: Connects AI agents to 1000+ external apps (Gmail, GitHub, Slack, Notion, Linear, Jira) via Composio. CLI-first path (`ak_*` project key) with MCP fallback (`ck_*` consumer key via `x-consumer-api-key` header). Includes multi-platform setup script (handles `serverUrl` vs `url`, `mcp` vs `mcpServers`, `environment` vs `env` across Claude Code/Desktop, Cursor, Devin CLI/Desktop, OpenCode, Antigravity IDE/CLI, OpenClaw), verify script, per-platform config reference, and cross-platform quirks matrix.
+- **[`notebooklm-mcp`](docs/en/notebooklm-mcp.md)**: Google NotebookLM (Gemini Notebook) integration via the `nlm` CLI and `notebooklm-mcp` server. Cookie-based auth for headless servers with three methods (OpenClaw CDP provider preferred, manual `cookies.txt` file, desktop auto + copy) and multi-platform setup script covering all 8 supported agent platforms. Includes verify, cookie-extraction helper, per-platform config reference, and cross-platform quirks matrix.
+- **[`wordpress-mcp`](docs/en/wordpress-mcp.md)**: Expose WordPress to AI agents over MCP. Three paths: (A) `wordpress/mcp-adapter` official plugin (Abilities API, 3 meta-tools, HTTP+STDIO), (B) AI Engine plugin (43–109+ admin tools: posts, users, media, plugins, SEO, social), and (C) wp-mcp-ultimate (58 abilities, OAuth 2.1, WP 6.7+). Includes WP-CLI install scripts, Application Password / Bearer Token / OAuth setup, per-platform MCP config (Claude Code, Devin, OpenCode, Gemini, Codex, AGY, OpenClaw), endpoint verification, and troubleshooting.
+
+> 📚 **Documentation:** each skill has a dedicated doc page in [`docs/en/`](docs/en/) (English) and [`docs/pt-br/`](docs/pt-br/) (Português).
 
 ---
 
