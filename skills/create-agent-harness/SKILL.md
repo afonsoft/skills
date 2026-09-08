@@ -10,16 +10,16 @@ metadata:
   user-invokable: "true"
   argument-hint: "[repo-path]"
   execution-mode: sequential
-  confirmation-required: true
-  phase-count: 5
-  critical-constraints:
-    - 'Start Phase 0 immediately on invocation — never ask what to do'
-    - 'Never write on main, master or develop — create a dedicated feature branch first'
-    - 'The discovery gate is the only mandatory pause — nothing is written before it'
-    - 'Every generated statement must cite repository evidence — otherwise write TODO and ask'
-    - 'Migrate and remove: no legacy harness structure may survive alongside .claude/'
-    - 'Re-running on a migrated repo must complete, never duplicate'
-    - 'Always generate .claude/memory/ — the memory protocol is not optional'
+  confirmation-required: "true"
+  phase-count: "5"
+  critical-constraints: >-
+    Start Phase 0 immediately on invocation — never ask what to do;
+    Never write on main, master or develop — create a dedicated feature branch first;
+    The discovery gate is the only mandatory pause — nothing is written before it;
+    Every generated statement must cite repository evidence — otherwise write TODO and ask;
+    Migrate and remove: no legacy harness structure may survive alongside .claude/;
+    Re-running on a migrated repo must complete, never duplicate;
+    Always generate .claude/memory/ — the memory protocol is not optional
 ---
 
 # Create Agent Harness
