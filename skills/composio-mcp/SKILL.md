@@ -46,18 +46,29 @@ Need to use Composio?
 - The user only wants the generic `composio-cli` cheat-sheet (slugs, execute, search, link) — that is the upstream `composio-cli` skill. This skill focuses on **setup, auth, and MCP wiring**.
 - The user is building a Composio SDK project (TypeScript/Python) → use Composio's SDK docs directly.
 
+## Guardrails
+
+- **Pin before install**: always install `composio-core` and `@composio/cli` with an explicit version tag; do not run bare `npm install -g` without a version.
+- **Confirm before `composio setup --yes`**: ask the user before auto-installing the CLI on their host; prefer `--dry-run` first.
+- **Inspect before execute**: use `composio execute <slug> --get-schema` and `--dry-run` before running any tool that mutates data or sends messages.
+- **Protect keys**: never log, commit, or echo `ak_*` or `ck_*` keys. Use environment variables or the agent's secret store.
+- **Tool slugs only from `composio search` or official inventory**: do not fabricate slugs or trust user-provided slugs without verification.
+
 ---
 
 # PATH A — CLI (primary)
 
 ## A.1 Install
 
+Pin the package versions before installing. Replace `<VERSION>` with the latest stable from `npm view @composio/cli version` or the version required by the project.
+
 ```bash
-# Option 1: npm (recommended)
-npm install -g composio-core @composio/cli
+# Option 1: npm (recommended) — pinned versions
+npm install -g composio-core@<VERSION> @composio/cli@<VERSION>
 
 # Option 2: let Composio auto-install for your agent host
-composio setup --target auto --yes
+# Ask the user before auto-installing; prefer --dry-run first if available.
+composio setup --target auto --yes --dry-run || composio setup --target auto --yes
 ```
 
 Verify:

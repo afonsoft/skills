@@ -17,24 +17,31 @@ A single skill for everything Obsidian: the **CLI**, **Bases** (`.base` files), 
 
 ## When to Use
 
-- Interact with a vault from the command line (create/read/search notes, tasks, properties).
+- Interact with a vault from the command line (create/read/search/manage notes, tasks, properties).
 - Build or edit a **Base** (database-like view over notes) with filters and formulas.
 - Author **Obsidian Flavored Markdown** (wikilinks, embeds, callouts, properties).
 - Develop or debug an Obsidian **plugin or theme**.
+
+## When NOT to Use
+
+- Do not use for generic Markdown files or note-taking tools that are not Obsidian.
+- Do not target a vault the user has not explicitly named.
+- Do not auto-install the `mcp-obsidian-cli` package or run the `obsidian` binary without user confirmation.
+
+## Security & Guardrails
+
+- **Human confirmation first**: confirm the target vault and any `obsidian` command with the user before execution.
+- **No auto-execution**: only run commands that read or modify the named vault; do not run system-wide commands or execute arbitrary plugins/themes without explicit consent.
+- **MCP fallback is opt-in**: if the `obsidian` CLI is missing, present `mcp-obsidian-cli` as an optional fallback and wait for the user to approve its installation.
+- **Stay inside the vault**: do not use Obsidian CLI to access files outside the vault root.
 
 ## Three areas
 
 ### 1. CLI
 Run `obsidian` against a running Obsidian instance — vault operations, plugin/theme dev, DOM/screenshot inspection.
-See [`references/obsidian-cli.md`](references/obsidian-cli.md).
+See the full command reference and quick-start examples in [`references/obsidian-cli.md`](references/obsidian-cli.md).
 
-Quick start:
-```bash
-# enable: Settings → General → Command line interface → Register CLI
-which obsidian && obsidian --version
-obsidian create name="New Note" content="# Hello" silent
-obsidian search query="search term" limit=10
-```
+> Before running any `obsidian` command, verify which vault the user wants to target and confirm the command. Do not auto-install `mcp-obsidian-cli` or any Obsidian plugin without explicit user consent.
 
 ### 2. Bases
 `.base` files are valid YAML defining filters, formulas, and views (table/cards/list/map) over notes.
@@ -71,8 +78,8 @@ See [`references/obsidian-markdown.md`](references/obsidian-markdown.md), plus [
 4. Validate YAML (watch quoting rules); open in Obsidian to confirm rendering.
 
 ### Register CLI / develop a plugin
-1. Settings → General → Command line interface → **Register CLI**; restart terminal.
-2. After code changes: `obsidian plugin:reload id=my-plugin` → `obsidian dev:errors` → `obsidian dev:screenshot`.
+1. Guide the user to **Settings → General → Command line interface → Register CLI**; restart the terminal.
+2. After the user confirms code changes, run `obsidian plugin:reload` and `obsidian dev:screenshot` only for the explicitly named plugin.
 
 ## Common Mistakes
 

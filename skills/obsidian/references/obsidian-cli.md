@@ -20,29 +20,30 @@ obsidian --version
 
 ### MCP Fallback
 
-If the agent does not have shell access to the `obsidian` binary, use `mcp-obsidian-cli`:
+If the agent does not have shell access to the `obsidian` binary, ask the user before installing `mcp-obsidian-cli`. Pin a known version:
 
 ```bash
-npm install -g mcp-obsidian-cli
+# Ask the user first, then install a pinned version
+npm install -g mcp-obsidian-cli@<VERSION>
 # or
-npx -y mcp-obsidian-cli
+npx mcp-obsidian-cli@<VERSION>
 ```
 
-Configure as an MCP server in the agent:
+Configure as an MCP server in the agent only after the user approves:
 
 ```json
 {
   "mcpServers": {
     "obsidian": {
       "command": "npx",
-      "args": ["-y", "mcp-obsidian-cli"],
+      "args": ["mcp-obsidian-cli@<VERSION>"],
       "env": { "OBSIDIAN_VAULT": "<vault-name>" }
     }
   }
 }
 ```
 
-> **Note:** The Obsidian app must be running for any CLI or MCP command to work.
+> **Note:** The Obsidian app must be running for any CLI or MCP command to work. Do not install or execute `mcp-obsidian-cli` without user consent.
 
 ## Command reference
 

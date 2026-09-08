@@ -37,19 +37,29 @@ Both paths share the **same cookie cache** at `~/.notebooklm-mcp-cli/profiles/<p
 - The user wants a generic "scrape Google docs" tool — NotebookLM is specifically for the NotebookLM product.
 - The user is on a desktop with Chrome installed — just run `nlm login` (auto mode); no skill needed.
 
+## Guardrails
+
+- **Pin the CLI version**: install `notebooklm-mcp-cli` with an explicit `==<VERSION>`; do not run bare `uv tool install` or `pipx install` without a version.
+- **Cookies are credentials**: a `cookies.txt` file is equivalent to a Google session. Never commit it, share it, or leave it on shared machines. Delete it after `nlm login --manual --file` succeeds.
+- **Prefer official auth**: use desktop `nlm login` auto mode when a browser is available. Use manual cookie mode only on headless servers the user controls.
+- **No browser data harvesting**: extract cookies only from the user's own browser session; do not use extracted cookies for any purpose other than authenticating `nlm`.
+- **Verify before trusting**: run `nlm login --check` and `nlm doctor` before any notebook operation.
+
 ---
 
 # Install
 
+Pin a known version before installing. Replace `<VERSION>` with the latest stable from `pip index versions notebooklm-mcp-cli` or the version required by the project.
+
 ```bash
 # Option 1: uv (recommended)
-uv tool install notebooklm-mcp-cli
+uv tool install notebooklm-mcp-cli==<VERSION>
 
 # Option 2: pipx
-pipx install notebooklm-mcp-cli
+pipx install notebooklm-mcp-cli==<VERSION>
 
-# Option 3: pip
-pip install --user notebooklm-mcp-cli
+# Option 3: pip (only in a virtual environment; avoid --user)
+pip install notebooklm-mcp-cli==<VERSION>
 ```
 
 Verify:

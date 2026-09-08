@@ -95,8 +95,8 @@ ng test --code-coverage --watch=false
 ng lint
 
 # Formatting
-npx prettier --write src/
-npx eslint --fix src/
+npx prettier@<VERSION> --write src/
+npx eslint@<VERSION> --fix src/
 
 # Build for validation
 ng build --configuration=production
@@ -279,7 +279,7 @@ The skill automatically integrates external tools per stack to validate and form
 | Stack | Linter | Command |
 |---|---|---|
 | Java/Kotlin | Checkstyle, PMD | `mvn checkstyle:check pmd:check` |
-| JavaScript/TypeScript | ESLint | `npx eslint src/` |
+| JavaScript/TypeScript | ESLint | `npx eslint@<VERSION> src/` |
 | Python | Pylint, Flake8 | `python -m pylint src/` |
 | C#/.NET | StyleCop, Roslyn Analyzers | `dotnet build /p:RunAnalyzersDuringBuild=true` |
 | Go | golint, golangci-lint | `golangci-lint run` |
@@ -292,7 +292,7 @@ The skill automatically integrates external tools per stack to validate and form
 | Stack | Formatter | Command |
 |---|---|---|
 | Java/Kotlin | Spotless, Google Java Format | `mvn spotless:apply` |
-| JavaScript/TypeScript | Prettier | `npx prettier --write src/` |
+| JavaScript/TypeScript | Prettier | `npx prettier@<VERSION> --write src/` |
 | Python | Black, isort | `python -m black src/` |
 | C#/.NET | dotnet format | `dotnet format` |
 | Go | gofmt, goimports | `gofmt -w .` |
@@ -304,7 +304,7 @@ The skill automatically integrates external tools per stack to validate and form
 | Stack | Tool | Command |
 |---|---|---|
 | Java/Kotlin | JaCoCo | `mvn jacoco:report` |
-| JavaScript/TypeScript | Istanbul | `npx vitest run --coverage` |
+| JavaScript/TypeScript | Istanbul | `npx vitest@<VERSION> run --coverage` |
 | Python | Coverage.py | `python -m coverage run -m pytest` |
 | C#/.NET | OpenCover, Cobertura | `dotnet test /p:CollectCoverage=true /p:CoverageFormat=cobertura` |
 | Go | go test -cover | `go test -cover ./...` |
@@ -444,9 +444,9 @@ yarn install --offline --verbose
 pnpm install
 pnpm install --verbose
 
-# npx ✅ ALLOWED (any parameter)
-npx vitest run --coverage
-npx eslint src/
+# npx ✅ ALLOWED only with pinned versions
+npx vitest@<VERSION> run --coverage
+npx eslint@<VERSION> src/
 ```
 
 ### Python
@@ -534,22 +534,12 @@ Analyze the output and:
 
 ### Cleanup of Isolated Environments (Optional)
 
-If you want to remove isolated environments after completion:
+If the user asks to remove isolated environments after completion, **list the paths first and ask for explicit confirmation** before deleting anything. Do not run `rm -rf` or `find -exec rm -rf` without consent.
 
 ```bash
-# Python venv
-rm -rf .venv
-
-# Maven local repository (keeps src/pom.xml intact)
-rm -rf .m2
-
-# Node modules (if needed)
-rm -rf node_modules .npm
-
-# Other caches
-find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
-find . -type d -name ".pytest_cache" -exec rm -rf {} + 2>/dev/null || true
-find . -type d -name "node_modules/.cache" -exec rm -rf {} + 2>/dev/null || true
+# List what would be removed (do not delete automatically)
+echo "The following paths could be removed: .venv .m2 node_modules .npm __pycache__ .pytest_cache"
+# Ask the user to confirm before proceeding. Prefer `git clean` for tracked artifacts.
 ```
 
 **Important:** Verify that the isolated environments are in `.gitignore`:
