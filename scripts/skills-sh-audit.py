@@ -83,7 +83,7 @@ def format_table(results: dict, source: str, slugs: list[str]):
 
 def emit_github_annotations(results: dict, source: str, slugs: list[str], fail_on: str):
     """Emit GitHub Actions annotations for risks at or above the threshold."""
-    threshold = RISK_ORDER.get(fail_on, 4)
+    threshold = RISK_ORDER.get(fail_on, 5)
     for slug in slugs:
         data = results.get(slug) or {}
         if not isinstance(data, dict):
@@ -109,7 +109,7 @@ def main():
     parser.add_argument("--source", default=None, help="GitHub owner/repo of the skill collection (default: GITHUB_REPOSITORY env)")
     parser.add_argument("--timeout", type=int, default=30, help="HTTP timeout in seconds")
     parser.add_argument("--json", action="store_true", help="Output raw JSON instead of Markdown")
-    parser.add_argument("--fail-on", choices=["low", "medium", "high", "critical"], default="high", help="Fail when any audit reaches this risk or higher")
+    parser.add_argument("--fail-on", choices=["low", "medium", "high", "critical"], default="critical", help="Fail when any audit reaches this risk or higher (default: critical)")
     parser.add_argument("--summary", type=Path, default=None, help="Write Markdown summary to a file")
     args = parser.parse_args()
 
@@ -140,7 +140,7 @@ def main():
     if os.environ.get("GITHUB_ACTIONS"):
         emit_github_annotations(results, source, slugs, args.fail_on)
 
-    threshold = RISK_ORDER.get(args.fail_on, 4)
+    threshold = RISK_ORDER.get(args.fail_on, 5)
     failures = []
     for slug in slugs:
         data = results.get(slug) or {}

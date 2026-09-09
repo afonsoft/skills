@@ -35,6 +35,8 @@ metadata:
 
 # WordPress MCP — three paths (mcp-adapter + AI Engine + wp-mcp-ultimate)
 
+> **Security notice**: This skill configures high-trust WordPress admin integrations. Application Passwords, Bearer Tokens, and OAuth credentials are secrets. Never commit them, print them in logs, or paste them into untrusted clients. Always install plugins from official pinned releases (GitHub releases or wordpress.org) and verify the site is one the user controls before enabling MCP.
+
 Expose WordPress to AI agents over MCP. This skill covers **three complementary paths**:
 
 | Path | Plugin | Endpoint | Auth | Tools | Transport | When to use |

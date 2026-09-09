@@ -1,5 +1,7 @@
 # NotebookLM — authentication deep dive
 
+> **Security notice**: NotebookLM (Gemini Notebook) has **no official API**. The only supported authentication path is to extract Google browser cookies and cache them locally. A `cookies.txt` file or `auth.json` cache is equivalent to a Google session. Treat them as secrets. Never commit, share, or expose them in logs, screenshots, or chat messages.
+
 NotebookLM (Gemini Notebook) has **no official API**. Authentication is done by extracting **Google browser cookies** from a logged-in session and caching them. The CLI/MCP refreshes CSRF tokens and session IDs automatically from those cookies.
 
 ## Where tokens are stored
@@ -164,3 +166,35 @@ nlm doctor
 ```
 
 Fix: use manual file mode or OpenClaw CDP. See the headless flow diagram in `SKILL.md`.
+
+## Security hardening
+
+### File permissions
+
+Set restrictive permissions on the cookie cache after creation:
+
+```bash
+chmod 600 ~/.notebooklm-mcp-cli/profiles/default/auth.json
+find ~/.notebooklm-mcp-cli/profiles -type f -name "*.json" -exec chmod 600 {} \;
+```
+
+### Redact before logging
+
+Before sharing `nlm` output or MCP tool results, redact cookies and bearer values:
+
+```bash
+nlm doctor 2>&1 | sed -E 's/(SID|HSID|SSID|APISID|SAPISID|__Secure-[0-9]PSID)[^=]*=[^; ]*/\1=REDACTED/g'
+```
+
+### CDP endpoint trust
+
+Only use OpenClaw CDP URLs that the user explicitly configured and controls. Validate the endpoint with `openclaw config get browser.profiles` before running `nlm login --provider openclaw`.
+
+### Audit the actual implementation
+
+When using this skill with real data, confirm:
+
+1. `auth.json` is never written to version control.
+2. Cookies are not printed to stdout/stderr by the upstream `nlm` binary.
+3. Temporary `cookies.txt` files are deleted after `nlm login --manual --file` succeeds.
+4. The MCP server only talks to `notebooklm.google.com` and `*.google.com` domains.
