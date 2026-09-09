@@ -112,32 +112,67 @@ Os gaps aprovados devem ser transformados em Issues por `/create-issues`. O GitH
 
 ## Fase 4 - Execucao
 
-Use slices verticais pequenos. Tarefas independentes podem ser executadas em paralelo com worktrees isoladas. Tarefas que alterem schema, autenticacao, APIs publicas ou dados exigem confirmacao humana.
+O Orchestrator executa as Issues fatiadas em um loop continuo ate que todas as implementacoes das SPECs aprovadas estejam concluidas. O foco e slices verticais pequenos, um de cada vez, com re-validacao constante.
 
-O orchestrator delega para skills especializadas, por exemplo:
+### Regras gerais
 
-- `/tdd-spec` para implementacao orientada a testes a partir da SPEC aprovada;
-- `/diagnose` para bugs e regressao;
-- `/query-docs` para APIs de terceiros.
+- Slices independentes podem rodar em paralelo em worktrees isoladas; slices que alteram schema, autenticacao, APIs publicas ou dados exigem confirmacao humana.
+- Antes de cada slice, o agente deve ler a `.specs/SPEC-{YYYYMMDD}-{slug}.md` aprovada e a Issue correspondente.
+- Depois de cada slice, revalidar: build, testes, lint, type check.
+- Nao pular para a proxima slice enquanto a atual nao estiver verde.
+
+### Ciclo de execucao por slice
+
+```text
+1. READ    → SPEC aprovada + Issue GitHub
+2. TDD     → /tdd-spec (red-green-refactor) usando os criterios de aceite
+3. ARCH    → se a arquitetura degradar, /improve-codebase-architecture
+4. DIAGNOSE → se surgir bug ou falha misteriosa, /diagnose
+5. CLARIFY  → se a SPEC for ambigua, /grill-me-with-spec
+6. VERIFY   → build, testes, lint passam
+7. COMMIT   → conventional commit, reference a Issue
+8. LOOP     → proxima slice da fila
+```
+
+### Delegacao de skills por situacao
+
+| Situacao | Skill |
+| --- | --- |
+| Implementar a partir da SPEC | `/tdd-spec` |
+| Bug, regresso ou falha de build misteriosa | `/diagnose` |
+| Arquitetura degradada / acoplado demais | `/improve-codebase-architecture` |
+| Ambiguidade na SPEC | `/grill-me-with-spec` |
+| Criar/atualizar Issues do Epic | `/create-issues` |
+| Necessita conhecimento de API/lib de terceiro | manual / subagente de pesquisa |
 
 ### Fila sequencial para Epics fatiados de um PRD
 
 Quando as Issues vierem do caso especial "projeto novo com apenas um PRD" (Fase 1), a execucao **nao** e paralela: despachar **um unico agente por vez**, na ordem de dependencia das Issues.
 
-1. Para o Epic atual, processar suas Issues fatiadas uma a uma: desenvolver -> QA (Fase 5) -> commit -> proxima Issue da fila. Repetir ate esgotar todas as Issues do Epic.
-2. Epic esgotado -> abrir PR da branch de trabalho para `develop`.
+1. Para o Epic atual, processar suas Issues fatiadas uma a uma:
+   - desenvolver com `/tdd-spec`;
+   - QA (Fase 5);
+   - commit;
+   - proxima Issue da fila.
+   Repetir ate esgotar todas as Issues do Epic.
+2. Ao concluir o Epic, invocar `/qa-analyst` e depois `/create-readme` para refletir o que foi entregue.
+3. Epic esgotado -> abrir PR da branch de trabalho para `develop`.
    * PR verde (CI/testes passam) -> merge em `develop`.
-   * PR falhar -> corrigir os problemas, reexecutar a verificacao e so entao mergear.
-3. Apos o merge, voltar para a branch `develop` e avancar para o proximo Epic da fila, repetindo o loop ate que todos os Epics do PRD estejam finalizados.
-4. Ao concluir todos os Epics, abrir o merge final de `develop` para `main`.
+   * PR falhar -> corrigir com `/diagnose`, reexecutar a verificacao e so entao mergear.
+4. Apos o merge, voltar para a branch `develop` e avancar para o proximo Epic da fila, repetindo o loop ate que todos os Epics do PRD estejam finalizados.
+5. Ao concluir todos os Epics, abrir o merge final de `develop` para `main`.
 
 ## Fase 5 - Verificacao e QA
 
-Depois de cada tarefa, execute verificacoes proporcionais e registre evidencia. Se falhar, invoque `/diagnose` antes de continuar.
+Depois de cada slice e ao final de cada Epic/DAG:
 
-Quando a DAG estiver concluida, invoque obrigatoriamente `/qa-analyst`, sem excecao de tier. O QA deve confrontar requisitos, Issues, implementacao, testes, cenarios de erro e mudancas fora de escopo. Falhas reabrem Issues ou criam novas tarefas.
+1. Execute verificacoes proporcionais: testes, lint, type check, build.
+2. Se falhar, invoque `/diagnose` antes de continuar.
+3. Quando a DAG estiver concluida, invoque obrigatoriamente `/qa-analyst`, sem excecao de tier. O QA deve confrontar requisitos, Issues, implementacao, testes, cenarios de erro e mudancas fora de escopo. Falhas reabrem Issues ou criam novas tarefas.
+4. Apos aprovacao do QA, invoque `/create-readme` para atualizar o `README.md` com as funcionalidades, stack e instrucoes entregues.
+5. Somente depois disso pode ocorrer a entrega por PR. Se nao existir uma skill de fluxo Git/PR instalada, descreva os passos e solicite confirmacao humana; nunca invoque uma skill inexistente.
 
-Somente depois da aprovacao do QA pode ocorrer a entrega por PR. Se nao existir uma skill de fluxo Git/PR instalada, descreva os passos e solicite confirmacao humana; nunca invoque uma skill inexistente.
+Ao final do projeto ou release, certifique-se de que o `README.md` reflete o estado atual do sistema.
 
 ## References
 
