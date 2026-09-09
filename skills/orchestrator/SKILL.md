@@ -74,8 +74,8 @@ Quando o repositorio for inicializado a partir de uma pasta que contem somente u
 2. Criar e fazer checkout da branch `develop` a partir da branch padrao.
 3. Invocar `/grill-me-with-spec` para transformar o PRD em uma ou mais SPECs SDD em `.specs/SPEC-{YYYYMMDD}-{slug}.md`, uma por Epic ou area bem delimitada.
 4. Revisar e aprovar as SPECs; atualizar `Status` para `Approved` em cada uma.
-5. Com base nas SPECs aprovadas, abrir Issue(s) no GitHub usando `/github-issues` (uma Issue por Epic, ou Issue mestre com os Epics listados).
-6. Usar `/github-issues` para fatiar cada Epic em Issues atomicas (slices verticais, rastreaveis, com criterios de aceite), registrando o mapeamento `.specs/SPEC-*.md` -> Issue.
+5. Com base nas SPECs aprovadas, abrir Issue(s) no GitHub usando `/create-issues` (uma Issue por Epic, ou Issue mestre com os Epics listados).
+6. Usar `/create-issues` para fatiar cada Epic em Issues atomicas (slices verticais, rastreaveis, com criterios de aceite), registrando o mapeamento `.specs/SPEC-*.md` -> Issue.
 7. Seguir para a Fase 4 usando o modo de fila sequencial descrito abaixo.
 
 ## Fase 2 - Auditoria
