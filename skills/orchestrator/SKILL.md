@@ -59,7 +59,7 @@ Nao substitua o GitHub silenciosamente por tracker local. GitHub e a fonte de ra
 
 ## Fase 1 - Provisionamento documental
 
-1. Invocar `/create-agent-harness` para completar `AGENTS.md` ou `CLAUDE.md`, `CONTEXT.md`, `docs/agents/` e `docs/adr/`.
+1. Invocar `/create-agent-harness` para gerar `CLAUDE.md`, `AGENTS.md` (thin reference), `.claude/` (settings, rules, agents, memory, context), `docs/` (technologies, architecture, decisions) e `.specs/`.
 2. Invocar `/grill-me-with-spec` para consolidar linguagem de dominio e decisoes arquiteturais, produzindo a SPEC SDD em `.specs/SPEC-{YYYYMMDD}-{feature}.md` antes de qualquer implementacao.
 3. Em repositorio vazio, invocar `/scaffold-mvp` apos o alinhamento de dominio.
 4. Revisar e persistir a documentacao e a SPEC aprovada antes de iniciar implementacao.
