@@ -142,6 +142,43 @@ The workflow restores both credential files, verifies auth, then runs `./publish
 
 After publishing, skills appear at `market.lobehub.com/s/skills/afonsoft-skills-<name>` and are searchable at [lobehub.com/skills?q=afonsoft](https://lobehub.com/skills?q=afonsoft).
 
+### ClawHub
+[ClawHub](https://clawhub.ai/) is the public skill registry for OpenClaw. Each `skills/<name>/SKILL.md` directory becomes a versioned, installable skill under the `afonsoft` publisher.
+
+**Install from ClawHub:**
+
+```bash
+# Search for a skill
+clawhub search "afonsoft"
+
+# Install one skill
+clawhub install @afonsoft/<skill-name>
+
+# Or install with OpenClaw directly
+openclaw skills install @afonsoft/<skill-name>
+```
+
+**Publish all skills locally:**
+
+```bash
+npm i -g clawhub
+clawhub login
+./publish-clawhub.sh          # publish new/changed skills
+./publish-clawhub.sh --dry-run # preview the publish plan
+```
+
+The `clawhub` CLI uses `clawhub sync` to compare local fingerprints against the registry and publishes only new or changed skills, defaulting to the next patch version.
+
+**Automatic publishing via GitHub Actions:**
+
+A workflow (`.github/workflows/clawhub-publish.yml`) publishes all skills on every push to `main`. To enable it, add the repository secret:
+
+1. **`CLAWHUB_TOKEN`** — your ClawHub publisher token (`clawhub token create` or from https://clawhub.ai/settings/tokens)
+
+```bash
+gh secret set CLAWHUB_TOKEN
+```
+
 ## 📖 How to use
 
 1. **Install** the collection using one of the methods above.

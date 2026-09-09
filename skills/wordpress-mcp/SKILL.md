@@ -10,6 +10,15 @@ metadata:
   url: https://github.com/afonsoft/skills
   homepage: https://github.com/wordpress/mcp-adapter
   sources: https://github.com/wordpress/mcp-adapter, https://wordpress.org/plugins/ai-engine/, https://github.com/AgriciDaniel/wp-mcp-ultimate, https://lobehub.com/skills/openclaw-skills-wordpress-mcp
+  openclaw:
+    requires:
+      anyBins:
+        - wp
+        - npx
+    envVars:
+      - name: WP_PATH
+        required: false
+        description: Optional path to the WordPress installation on the server.
 ---
 
 > **v1.2.0 changelog:** Added Path C (wp-mcp-ultimate, 58 abilities, OAuth 2.1). Updated Path A: mcp-adapter v0.6.1+ ships pre-built ZIP (no composer needed), STDIO transport via `wp mcp-adapter serve`, HTTP proxy via `@automattic/mcp-wordpress-remote`, Abilities API guide, migration from deprecated Automattic/wordpress-mcp. Added `references/mcp-adapter-guide.md` and `references/wp-mcp-ultimate.md`.

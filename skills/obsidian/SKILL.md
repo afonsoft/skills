@@ -7,6 +7,10 @@ metadata:
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
+  openclaw:
+    requires:
+      bins:
+        - obsidian
 ---
 
 # Obsidian

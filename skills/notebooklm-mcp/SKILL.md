@@ -10,6 +10,20 @@ metadata:
   url: https://github.com/afonsoft/skills
   homepage: https://github.com/jacob-bd/notebooklm-mcp-cli
   sources: https://github.com/jacob-bd/notebooklm-mcp-cli/blob/main/docs/AUTHENTICATION.md, https://github.com/jacob-bd/notebooklm-mcp-cli/blob/main/docs/MCP_GUIDE.md, https://github.com/jacob-bd/notebooklm-mcp-cli/blob/main/docs/CLI_GUIDE.md, https://pypi.org/project/notebooklm-mcp-cli/
+  openclaw:
+    requires:
+      anyBins:
+        - nlm
+        - notebooklm-mcp
+    envVars:
+      - name: NOTEBOOKLM_MCP_TRANSPORT
+        required: false
+      - name: NOTEBOOKLM_MCP_PORT
+        required: false
+      - name: NOTEBOOKLM_MCP_DEBUG
+        required: false
+      - name: NOTEBOOKLM_BASE_URL
+        required: false
 ---
 
 # NotebookLM (Gemini Notebook) — CLI + MCP

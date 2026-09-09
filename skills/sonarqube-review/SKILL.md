@@ -10,6 +10,25 @@ metadata:
   subagent: "false"
   user-invokable: "true"
   argument-hint: "<project-name> [--new-code-only] [--issues=<issue-id1,issue-id2,...>]"
+  openclaw:
+    requires:
+      bins:
+        - sonar-scanner
+    envVars:
+      - name: SONARQUBE_CUSTOM_URL
+        required: false
+      - name: SONARQUBE_CUSTOM_TOKEN
+        required: false
+      - name: SONARQUBE_ENTERPRISE_TOKEN
+        required: false
+      - name: SONARQUBE_ENTERPRISE_URL
+        required: false
+      - name: SONARQUBE_OPEN_TOKEN
+        required: false
+      - name: SONAR_TK
+        required: false
+      - name: SONARQUBE_OPEN_URL
+        required: false
 ---
 
 # SonarQube Review Skill

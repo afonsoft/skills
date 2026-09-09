@@ -1,0 +1,30 @@
+name: Publish to ClawHub
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Preview publish plan without uploading'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+concurrency:
+  group: clawhub-publish
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    name: Publish skills to ClawHub
+    uses: openclaw/clawhub/.github/workflows/skill-publish.yml@main
+    with:
+      owner: afonsoft
+      root: skills
+      dry_run: ${{ github.event.inputs.dry_run == 'true' }}
+    secrets:
+      clawhub_token: ${{ secrets.CLAWHUB_TOKEN }}

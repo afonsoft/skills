@@ -10,6 +10,14 @@ metadata:
   url: https://github.com/afonsoft/skills
   homepage: https://github.com/jgraph/drawio-mcp
   sources: https://github.com/Agents365-ai/drawio-skill, https://github.com/scarr05/claude-skills-pub, https://www.drawio.com/docs/manual/generate/drawio-mcp-server/, https://dev.to/rushier/how-to-use-claude-ai-drawio-to-create-architecture-diagrams-for-projects-17i1, https://github.com/jgraph/drawio-mcp
+  openclaw:
+    requires:
+      bins:
+        - npx
+    envVars:
+      - name: DRAWIO_BASE_URL
+        required: false
+        description: Optional self-hosted draw.io base URL.
 ---
 
 # Draw.io Architecture Diagrams + MCP Integration

@@ -10,6 +10,14 @@ metadata:
   url: https://github.com/afonsoft/skills
   homepage: https://docs.composio.dev
   sources: https://docs.composio.dev/docs/composio-connect, https://github.com/ComposioHQ/composio, https://docs.composio.dev/kb/guide/consumer-project-boundaries-and-auth-selection
+  openclaw:
+    envVars:
+      - name: COMPOSIO_API_KEY
+        required: false
+        description: Project API key (ak_*) for the CLI path.
+      - name: COMPOSIO_CONSUMER_KEY
+        required: false
+        description: Consumer key (ck_*) for the MCP fallback path.
 ---
 
 # Composio — CLI (primary) + MCP (fallback)
