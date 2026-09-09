@@ -23,6 +23,17 @@ The skills are organized into four main pillars: **Harness Engineering**, **Code
 - **[`create-readme`](docs/en/create-readme.md)**: Professionalizes the repository landing page. Generates evidence-based READMEs and SemVer-compliant CHANGELOGs.
 - **[`observability-and-instrumentation`](docs/en/observability-and-instrumentation.md)**: Once the harness is set, use this to ensure the agent's actions and the application's behavior are visible and diagnosable in production.
 
+### 🧭 Orchestration & Delivery
+*Planning, execution, verification, and documentation for agent-driven projects.*
+- **[`orchestrator`](skills/orchestrator/SKILL.md)**: Central control skill. Audits preconditions, creates documentation, turns gaps into GitHub Issues, and coordinates execution, tests, QA, and PR in a continuous loop. Uses `references/ESTADO_ORQUESTRATOR.md` to persist state.
+- **[`grill-me-with-spec`](skills/grill-me-with-spec/SKILL.md)**: Interviews the user in Portuguese to consolidate domain language and produce an approved `.specs/SPEC-{YYYYMMDD}-{feature}.md` before implementation.
+- **[`scaffold-mvp`](skills/scaffold-mvp/SKILL.md)**: Bootstraps a new repository after domain/spec alignment. Proposes a stack and generates a lean README, lockfiles, and stubs.
+- **[`create-issues`](skills/create-issues/SKILL.md)**: Turns approved gaps, roadmap, and specs into GitHub Issues with vertical slices and dependency links.
+- **[`tdd-spec`](skills/tdd-spec/SKILL.md)**: Test-driven development using the approved SPEC SDD as the source of truth. Red-green-refactor one vertical slice at a time.
+- **[`qa-analyst`](skills/qa-analyst/SKILL.md)**: Full QA cycle — requirements analysis, test planning, test cases, execution, bug reports, and process improvement.
+- **[`diagnose`](skills/diagnose/SKILL.md)**: Disciplined diagnosis and re-validation loop for hard bugs and performance regressions.
+- **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Finds architectural deepening opportunities by reading `.claude/CONTEXT.md` and `docs/adr/`, and produces an HTML report.
+
 ### 💎 Code Quality & Review
 *Ensuring the output meets professional standards.*
 - **[`code-review-and-quality`](docs/en/code-review-and-quality.md)**: The primary gatekeeper. Performs multi-axis reviews (correctness, security, performance) before any code is merged.
@@ -47,23 +58,31 @@ The skills are organized into four main pillars: **Harness Engineering**, **Code
 
 Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen Agent Trust Hub**, **Socket**, **Snyk**). Click **View** to see the full report for a skill.
 
-> **Updated:** 2026-09-08
 
-| Skill | Gen Agent Trust Hub | Socket alerts | Snyk | Details |
-|-------|---------------------|---------------|------|---------|
-| `building-mcp-servers` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/building-mcp-servers) |
-| `code-review-and-quality` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/code-review-and-quality) |
-| `composio-mcp` | ✅ safe | 1 | 🟢 low | [View](https://skills.sh/afonsoft/skills/composio-mcp) |
-| `create-agent-harness` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/create-agent-harness) |
-| `create-readme` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/create-readme) |
-| `drawio-architecture` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/drawio-architecture) |
-| `notebooklm-mcp` | ✅ safe | 2 | 🟢 low | [View](https://skills.sh/afonsoft/skills/notebooklm-mcp) |
-| `observability-and-instrumentation` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/observability-and-instrumentation) |
-| `obsidian` | 🟠 high | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/obsidian) |
-| `quality-test-implementation` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/quality-test-implementation) |
-| `sonarqube-review` | ✅ safe | 1 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/sonarqube-review) |
-| `wordpress-mcp` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/wordpress-mcp) |
+> **Updated:** 2026-09-09
 
+|| Skill | Gen Agent Trust Hub | Socket alerts | Snyk | Details |
+||-------|---------------------|---------------|------|---------|
+|| `building-mcp-servers` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/building-mcp-servers) |
+|| `code-review-and-quality` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/code-review-and-quality) |
+|| `composio-mcp` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/composio-mcp) |
+|| `create-agent-harness` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/create-agent-harness) |
+|| `create-issues` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/create-issues) |
+|| `create-readme` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/create-readme) |
+|| `diagnose` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/diagnose) |
+|| `drawio-architecture` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/drawio-architecture) |
+|| `grill-me-with-spec` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/grill-me-with-spec) |
+|| `improve-codebase-architecture` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/improve-codebase-architecture) |
+|| `notebooklm-mcp` | ✅ safe | 2 | 🟢 low | [View](https://skills.sh/afonsoft/skills/notebooklm-mcp) |
+|| `observability-and-instrumentation` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/observability-and-instrumentation) |
+|| `obsidian` | 🟡 medium | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/obsidian) |
+|| `orchestrator` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/orchestrator) |
+|| `qa-analyst` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/qa-analyst) |
+|| `quality-test-implementation` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/quality-test-implementation) |
+|| `scaffold-mvp` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/scaffold-mvp) |
+|| `sonarqube-review` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/sonarqube-review) |
+|| `tdd-spec` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/tdd-spec) |
+|| `wordpress-mcp` | ✅ safe | 2 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/wordpress-mcp) |
 ---
 
 ## 📦 Installation
