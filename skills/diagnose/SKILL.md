@@ -13,7 +13,7 @@ metadata:
 
 A discipline for hard bugs and regressions. Skip phases only when explicitly justified. All questions and findings reported to the user must be in **Portuguese (pt-BR)**.
 
-When exploring the codebase, use the project's domain glossary from `.claude/CONTEXT.md` to get a clear mental model of the relevant modules, and check `docs/adr/` for decisions in the area you are touching.
+When exploring the codebase, use the project's domain glossary from `.claude/CONTEXT.md` to get a clear mental model of the relevant modules, and check `docs/architecture/` for decisions in the area you are touching.
 
 **Re-validation loop**: after every hypothesis, fix, or change, re-run the reproduction and the regression checks before declaring the bug resolved.
 

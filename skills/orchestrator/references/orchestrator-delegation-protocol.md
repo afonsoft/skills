@@ -17,7 +17,7 @@ O Orquestrador reconhece tarefas T1 (limpeza, documentações simples que não a
 - **Ação**: Executa silenciosamente → Loga no `ESTADO_ORQUESTRATOR.md` → Finaliza o PR da mudança atômica.
 
 ### Tier 2: Execução em Batch (Risco Médio)
-- **Configuração de ambiente**: Instalação de linters e formatadores, instrumentação de cobertura de testes, criação de ADRs estruturais e melhorias de performance localizada sem breaking changes.
+- **Configuração de ambiente**: Instalação de linters e formatadores, instrumentação de cobertura de testes, criação de decisões de arquitetura estruturais e melhorias de performance localizada sem breaking changes.
 - **Burocracia Reduzida**: Exige alinhamento com o `/roadmap` ativo antes de rodar os batches, mas permite agregação de commits.
 - **Ação**: Executa o lote sob guardrail do TDD → Loga no `ESTADO_ORQUESTRATOR.md` → Reporta no final do batch.
 
