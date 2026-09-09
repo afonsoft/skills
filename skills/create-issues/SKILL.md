@@ -1,9 +1,9 @@
 ---
 name: create-issues
 license: MIT
-description: Transforma planos, specs, PRDs e Epics em GitHub Issues rastreaveis usando IDs estaveis, links diretos, slices verticais, dependencias e criterios de aceite verificaveis. Part of the afonsoft/skills collection.
+description: Use when turning plans, specs, PRDs, and Epics into trackable GitHub Issues. Creates stable Epic IDs, direct links, vertical slices, dependencies, and verifiable acceptance criteria using the GitHub CLI (gh). Part of the afonsoft/skills collection.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -11,100 +11,193 @@ metadata:
 
 # Create Issues
 
-Use GitHub como tracker obrigatorio. Se o remote ou acesso nao estiver configurado, pare e invoque `/create-agent-harness`.
+Use GitHub as the single source of truth for work tracking. This skill turns roadmaps, PRDs, and SPEC files into stable, linked, verifiable GitHub Issues.
 
-## Contrato de rastreabilidade de Epics
+If the repository is not on GitHub or `gh` is not authenticated, stop and invoke `/create-agent-harness` first.
 
-Cada Epic do `ORCHESTRATOR-ROADMAP.md` deve possuir:
+## When to Use
 
-1. um identificador estavel no formato `E10`, `E11`, `E12`;
-2. uma GitHub Issue correspondente;
-3. um link direto para essa Issue no titulo ou linha principal do roadmap;
-4. descricao, estado e criterios de sucesso sincronizados com a Issue.
+- Converting `ORCHESTRATOR-ROADMAP.md` or `.specs/SPEC-*.md` into GitHub Issues.
+- Slicing an Epic into small, vertical, trackable Issues.
+- Creating a new batch of Issues from a release plan or PRD.
+- Keeping roadmap, Epics, and GitHub Issues in sync.
 
-Formato obrigatorio no roadmap:
+## When NOT to Use
+
+- Do not use when the only task is to close or modify existing Issues — use GitHub directly.
+- Do not use when GitHub access is not confirmed.
+
+## Prerequisites
+
+- `gh` CLI installed and authenticated.
+- Remote `origin` pointing to the correct GitHub repository.
+- `ORCHESTRATOR-ROADMAP.md` or `.specs/SPEC-*.md` with the work to track.
+
+Check access with:
+
+```bash
+gh auth status
+gh repo view
+```
+
+## Epic Traceability Contract
+
+Every Epic must have:
+
+1. A stable identifier in the format `E10`, `E11`, `E12`.
+2. A matching GitHub Issue.
+3. A direct link to that Issue in the roadmap or spec.
+4. Description, state, and success criteria kept in sync with the Issue.
+
+Required roadmap format:
 
 ```markdown
 ## Epics
 
-- [**[E10] Fundacao do produto**](https://github.com/OWNER/REPO/issues/101) - `in_progress`
-- [**[E11] Fluxo de notificacoes**](https://github.com/OWNER/REPO/issues/102) - `todo`
+- [**[E10] Product foundation**](https://github.com/OWNER/REPO/issues/101) - `in_progress`
+- [**[E11] Notification flow**](https://github.com/OWNER/REPO/issues/102) - `todo`
 ```
 
-O identificador `E##` nao pode ser reutilizado, mesmo quando uma Epic for concluida. O numero da Issue GitHub nao substitui o identificador da Epic: `E10` permanece estavel mesmo se a Issue for editada.
+`E##` IDs are never reused, even after an Epic is done. The GitHub Issue number does not replace the Epic ID: `E10` stays stable even if the Issue is edited.
 
-## Processo
+## Process
 
-1. Leia `ORCHESTRATOR-ROADMAP.md`, contexto, ADRs, requisitos e comentarios da Issue pai, quando houver.
-2. Liste todas as Epics existentes e extraia seus IDs, estados e links.
-3. Para cada Epic sem ID, atribua o proximo ID disponivel sem renumerar Epics existentes.
-4. Para cada Epic sem link, localize a Issue correspondente por titulo, labels e corpo; se nao existir, crie uma Issue no GitHub.
-5. Atualize o roadmap com o link direto no formato `[**[E10] Titulo**](URL)`.
-6. Valide que nao restaram Epics sem ID, sem Issue ou sem link.
-7. Divida a Epic aprovada em slices verticais completos, pequenos e verificaveis.
-8. Marque cada slice como HITL ou AFK e defina dependencias.
-9. Apresente a proposta ao usuario quando houver decisao de granularidade, risco ou arquitetura.
-10. Publique as Issues em ordem de dependencia e use IDs reais no campo `Blocked by`.
-11. Atualize a Issue da Epic com links para as slices filhas e mantenha o roadmap sincronizado.
-12. Nunca feche ou altere uma Issue pai sem autorizacao explicita.
+1. Read `ORCHESTRATOR-ROADMAP.md`, `.specs/SPEC-*.md`, ADRs, requirements, and any parent Issue comments.
+2. List existing Epics and extract their IDs, states, and links.
+3. Assign the next available `E##` ID to each Epic that does not have one. Do not renumber existing Epics.
+4. For each Epic without a link, find the matching GitHub Issue by title, labels, and body. If none exists, create one with `gh`.
+5. Update the roadmap with the direct link `[**[E10] Title**](URL)`.
+6. Validate that no Epic is missing an ID, Issue, or link.
+7. Split each approved Epic into complete, small, vertical slices.
+8. Mark each slice as HITL (human-in-the-loop) or AFK (autonomous) and define dependencies.
+9. Present the proposal to the user when there are decisions about granularity, risk, or architecture.
+10. Publish slices in dependency order, using real issue numbers in `Blocked by`.
+11. Update the Epic Issue with links to child slices and keep the roadmap in sync.
+12. Never close or edit a parent Issue without explicit user approval.
 
-## Validacao obrigatoria
+## Using the GitHub CLI
 
-Antes de concluir, confirme:
+### Check the repository
+
+```bash
+gh repo view
+```
+
+### Create an Epic Issue
+
+```bash
+gh issue create \
+  --title "E10 - Product foundation" \
+  --label "epic" \
+  --body-file /path/to/epic-body.md
+```
+
+Save the returned issue number. Add the link back to the roadmap.
+
+### Create a slice Issue
+
+```bash
+gh issue create \
+  --title "[E10] Set up project harness" \
+  --label "slice" \
+  --body-file /path/to/slice-body.md
+```
+
+### Add dependencies (`Blocked by`)
+
+```bash
+gh issue edit 124 --add-linked-issue 123 --link-type blocked_by
+```
+
+### Add labels
+
+```bash
+gh label create epic --color "FF0000" --description "High-level deliverable"
+gh label create slice --color "00FF00" --description "Vertical work item"
+```
+
+### Add issues to a milestone or project
+
+```bash
+gh issue edit 101 --milestone "v1.0"
+gh project item-add 23 --content-id "<node_id_of_issue>" --owner "@me"
+```
+
+To get an issue node id:
+
+```bash
+gh issue view 101 --json id
+```
+
+### Bulk creation from a file
+
+When creating many Issues, generate a `issues.json` list and loop over it:
+
+```bash
+while IFS= read -r title; do
+  gh issue create --title "$title" --label slice --body-file "slices/${title}.md"
+done < slices.txt
+```
+
+Always capture the returned issue numbers and update the Epic Issue body with the child links.
+
+## Mandatory Validation
+
+Before finishing, confirm:
 
 ```text
-[ ] Todo Epic possui identificador E##
-[ ] Todo Epic possui uma GitHub Issue
-[ ] Todo Epic possui link direto no roadmap
-[ ] Todo link aponta para /issues/<numero>
-[ ] Nenhum ID de Epic esta duplicado
-[ ] Issue da Epic referencia suas slices filhas
-[ ] Estados do roadmap e GitHub estao coerentes
+[ ] Every Epic has an E## identifier
+[ ] Every Epic has a GitHub Issue
+[ ] Every Epic has a direct link in the roadmap/spec
+[ ] Every link points to /issues/<number>
+[ ] No Epic ID is duplicated
+[ ] Epic Issue references its child slices
+[ ] Roadmap and GitHub states are consistent
 ```
 
-Se o roadmap estiver ausente, informe que nao ha Epics locais para mapear e nao invente Epics. Se o GitHub estiver indisponivel, pare antes de publicar ou declarar uma Epic como rastreada.
+If the roadmap is missing, report that there are no local Epics to map and do not invent Epics. If GitHub is unavailable, stop before publishing or declaring any Epic as tracked.
 
-## Template da Issue de Epic
+## Epic Issue Template
 
 ```markdown
 ## Epic
 
-E10 - Nome da Epic
+E10 - Product foundation
 
-## Objetivo
+## Goal
 
-Resultado de negocio ou tecnico esperado.
+The business or technical result expected.
 
-## Criterios de sucesso
+## Success criteria
 
-- [ ] Criterio verificavel 1
-- [ ] Criterio verificavel 2
+- [ ] Verifiable criterion 1
+- [ ] Verifiable criterion 2
 
 ## Slices
 
-- [ ] #123 - Slice vertical 1
-- [ ] #124 - Slice vertical 2
+- [ ] #123 - Vertical slice 1
+- [ ] #124 - Vertical slice 2
 
-## Estado
+## State
 
 todo | in_progress | done
 ```
 
-## Template da Issue de slice
+## Slice Issue Template
 
 ```markdown
 ## Parent
 
-Epic: E10 - [link para a Issue da Epic]
+Epic: E10 - [link to Epic issue]
 
 ## What to build
 
-Descricao concisa do comportamento completo da slice.
+Concise description of the complete behavior of this slice.
 
 ## Acceptance criteria
 
-- [ ] Criterio verificavel 1
-- [ ] Criterio verificavel 2
+- [ ] Verifiable criterion 1
+- [ ] Verifiable criterion 2
 
 ## Blocked by
 
@@ -112,5 +205,20 @@ Descricao concisa do comportamento completo da slice.
 
 ## Verification
 
-Comandos, testes ou evidencia esperada.
+Commands, tests, or expected evidence.
 ```
+
+## Common Mistakes
+
+| Mistake | Fix |
+| --- | --- |
+| Reusing an `E##` ID | Always assign the next unused number. |
+| Creating slices before the Epic Issue | Create the Epic first, then reference its number in child Issues. |
+| Missing `Blocked by` links | Link dependencies explicitly with `gh issue edit --add-linked-issue`. |
+| Inventing Epics without a roadmap/spec | Stop and ask the user or the owning skill for the source of truth. |
+
+## References
+
+- `gh` CLI docs: https://cli.github.com/manual/
+- `orchestrator` skill for the full agentic workflow
+- `grill-me-with-spec` for producing the `.specs/SPEC-*.md` files
