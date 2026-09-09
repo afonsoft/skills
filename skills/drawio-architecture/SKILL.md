@@ -1,23 +1,29 @@
 ---
 name: drawio-architecture
-description: Use when generating architecture diagrams, system/service diagrams, network topology, cloud architecture, flowcharts, ER diagrams, or any draw.io/diagrams.net visualization, AND you need to wire up the official draw.io MCP server (npx @drawio/mcp) or actually open diagrams through MCP tools (open_drawio_xml, open_drawio_mermaid, open_drawio_csv, search_shapes, list/get/set_page). Covers MCP server configuration across Claude Desktop, Claude Code, VS Code/Copilot, Cursor, OpenCode and other stdio MCP clients, plus native .drawio XML authoring (layered/swimlane/nested-container layouts, cloud icons, edge routing, libavoid/ELK layout passes). Do NOT use for non-diagram code generation or image editing. Part of the afonsoft/skills collection.
+description: Use when generating architecture diagrams, system/service diagrams, network
+  topology, cloud architecture, flowcharts, ER diagrams, or any draw.io/diagrams.net
+  visualization, AND you need to wire up the official draw.io MCP server (npx @drawio/mcp)
+  or actually open diagrams through MCP tools (open_drawio_xml, open_drawio_mermaid,
+  open_drawio_csv, search_shapes, list/get/set_page). Covers MCP server configuration
+  across Claude Desktop, Claude Code, VS Code/Copilot, Cursor, OpenCode and other
+  stdio MCP clients, plus native .drawio XML authoring (layered/swimlane/nested-container
+  layouts, cloud icons, edge routing, libavoid/ELK layout passes). Do NOT use for
+  non-diagram code generation or image editing. Part of the afonsoft/skills collection.
 license: MIT
-compatibility: MCP mode needs Node.js + `npx @drawio/mcp` (or a self-hosted draw.io instance via DRAWIO_BASE_URL). Local export mode needs the draw.io desktop CLI on PATH. Works on macOS/Linux/Windows.
+compatibility: MCP mode needs Node.js + `npx @drawio/mcp` (or a self-hosted draw.io
+  instance via DRAWIO_BASE_URL). Local export mode needs the draw.io desktop CLI on
+  PATH. Works on macOS/Linux/Windows.
 metadata:
-  version: "1.0.0"
+  version: 1.0.0
   visibility: public
   author: merged from Agents365-ai/drawio-skill, scarr05/claude-skills-pub, jgraph/drawio-mcp
   url: https://github.com/afonsoft/skills
   homepage: https://github.com/jgraph/drawio-mcp
-  sources: https://github.com/Agents365-ai/drawio-skill, https://github.com/scarr05/claude-skills-pub, https://www.drawio.com/docs/manual/generate/drawio-mcp-server/, https://dev.to/rushier/how-to-use-claude-ai-drawio-to-create-architecture-diagrams-for-projects-17i1, https://github.com/jgraph/drawio-mcp
-  openclaw:
-    requires:
-      bins:
-        - npx
-    envVars:
-      - name: DRAWIO_BASE_URL
-        required: false
-        description: Optional self-hosted draw.io base URL.
+  sources: https://github.com/Agents365-ai/drawio-skill, https://github.com/scarr05/claude-skills-pub,
+    https://www.drawio.com/docs/manual/generate/drawio-mcp-server/, https://dev.to/rushier/how-to-use-claude-ai-drawio-to-create-architecture-diagrams-for-projects-17i1,
+    https://github.com/jgraph/drawio-mcp
+  openclaw: '{"requires":{"bins":["npx"]},"envVars":[{"name":"DRAWIO_BASE_URL","required":false,"description":"Optional
+    self-hosted draw.io base URL."}]}'
 ---
 
 # Draw.io Architecture Diagrams + MCP Integration

@@ -1,29 +1,31 @@
 ---
 name: notebooklm-mcp
-description: Use when the user wants to use Google NotebookLM (Gemini Notebook) with an AI agent via the `nlm` CLI or the `notebooklm-mcp` MCP server, when `devin mcp list` / `claude mcp list` shows `notebooklm-mcp` failing to list tools, when `nlm login --check` fails with `ClientAuthenticationError`, when authenticating NotebookLM on a headless server without a browser, when extracting Google cookies manually or via an external CDP provider (OpenClaw), or when the user asks to configure/authenticate/use NotebookLM MCP. Covers cookie-based auth (manual file mode + OpenClaw CDP), MCP server setup across platforms, and the full `nlm` CLI command surface. Do NOT use for building a new MCP server (use building-mcp-servers). Part of the afonsoft/skills collection.
+description: Use when the user wants to use Google NotebookLM (Gemini Notebook) with
+  an AI agent via the `nlm` CLI or the `notebooklm-mcp` MCP server, when `devin mcp
+  list` / `claude mcp list` shows `notebooklm-mcp` failing to list tools, when `nlm
+  login --check` fails with `ClientAuthenticationError`, when authenticating NotebookLM
+  on a headless server without a browser, when extracting Google cookies manually
+  or via an external CDP provider (OpenClaw), or when the user asks to configure/authenticate/use
+  NotebookLM MCP. Covers cookie-based auth (manual file mode + OpenClaw CDP), MCP
+  server setup across platforms, and the full `nlm` CLI command surface. Do NOT use
+  for building a new MCP server (use building-mcp-servers). Part of the afonsoft/skills
+  collection.
 license: MIT
-compatibility: Needs Python 3.10+ and `notebooklm-mcp-cli` (`uv tool install notebooklm-mcp-cli` or `pipx install notebooklm-mcp-cli`), providing the `nlm` and `notebooklm-mcp` binaries. Auto auth mode needs a Chromium-family browser (Chrome/Chromium/Brave/Edge/Arc) or Firefox installed. Headless servers use manual cookie file mode or an external CDP provider (OpenClaw). Works on macOS/Linux/Windows.
+compatibility: Needs Python 3.10+ and `notebooklm-mcp-cli` (`uv tool install notebooklm-mcp-cli`
+  or `pipx install notebooklm-mcp-cli`), providing the `nlm` and `notebooklm-mcp`
+  binaries. Auto auth mode needs a Chromium-family browser (Chrome/Chromium/Brave/Edge/Arc)
+  or Firefox installed. Headless servers use manual cookie file mode or an external
+  CDP provider (OpenClaw). Works on macOS/Linux/Windows.
 metadata:
-  version: "1.0.0"
+  version: 1.0.0
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
   homepage: https://github.com/jacob-bd/notebooklm-mcp-cli
-  sources: https://github.com/jacob-bd/notebooklm-mcp-cli/blob/main/docs/AUTHENTICATION.md, https://github.com/jacob-bd/notebooklm-mcp-cli/blob/main/docs/MCP_GUIDE.md, https://github.com/jacob-bd/notebooklm-mcp-cli/blob/main/docs/CLI_GUIDE.md, https://pypi.org/project/notebooklm-mcp-cli/
-  openclaw:
-    requires:
-      anyBins:
-        - nlm
-        - notebooklm-mcp
-    envVars:
-      - name: NOTEBOOKLM_MCP_TRANSPORT
-        required: false
-      - name: NOTEBOOKLM_MCP_PORT
-        required: false
-      - name: NOTEBOOKLM_MCP_DEBUG
-        required: false
-      - name: NOTEBOOKLM_BASE_URL
-        required: false
+  sources: https://github.com/jacob-bd/notebooklm-mcp-cli/blob/main/docs/AUTHENTICATION.md,
+    https://github.com/jacob-bd/notebooklm-mcp-cli/blob/main/docs/MCP_GUIDE.md, https://github.com/jacob-bd/notebooklm-mcp-cli/blob/main/docs/CLI_GUIDE.md,
+    https://pypi.org/project/notebooklm-mcp-cli/
+  openclaw: '{"requires":{"anyBins":["nlm","notebooklm-mcp"]},"envVars":[{"name":"NOTEBOOKLM_MCP_TRANSPORT","required":false},{"name":"NOTEBOOKLM_MCP_PORT","required":false},{"name":"NOTEBOOKLM_MCP_DEBUG","required":false},{"name":"NOTEBOOKLM_BASE_URL","required":false}]}'
 ---
 
 # NotebookLM (Gemini Notebook) — CLI + MCP
