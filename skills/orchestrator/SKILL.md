@@ -17,7 +17,7 @@ Planeja, governa, audita e delega execucao. Nao execute tarefas complexas direta
 
 Esta verificacao deve ocorrer no inicio de toda execucao do orchestrator, antes das pre-condicoes do projeto.
 
-1. Identifique de onde as skills foram instaladas. Para cada skill carregada, resolva o caminho real do link e procure o clone que contem `.claude-plugin/plugin.json` e `scripts/setup-alltomatos-skills.sh`.
+1. Identifique de onde as skills foram instaladas. Para cada skill carregada, resolva o caminho real do link e procure o clone que contem `README.md` e `SKILL.md` do catalogo.
 2. No clone encontrado, leia o remote `origin`, a branch atual e o commit local instalado.
 3. Consulte o remote do framework com `git fetch origin --quiet` ou mecanismo equivalente de leitura. Nunca faca `pull`, merge ou reset no clone do framework.
 4. Compare o commit local com `origin/<branch>` ou com a referencia remota equivalente.
@@ -25,19 +25,19 @@ Esta verificacao deve ocorrer no inicio de toda execucao do orchestrator, antes 
 
 ```text
 Atualizacao do framework disponivel
-- Framework: alltomatos/skills
+- Framework: afonsoft/skills
 - Instalado: <commit ou data>
 - Disponivel: <commit ou data>
 - Novidades: <resumo dos commits ou arquivos alterados>
-- Acao: execute novamente o instalador apos revisar as mudancas
+- Acao: reinstale o catalogo com `npx skills add afonsoft/skills`
 ```
 
-6. Se houver commits novos, informe a atualizacao disponivel e execute o re-deploy das skills nos ambientes em uso. Use o instalador em modo nao interativo, por exemplo `scripts/setup-alltomatos-skills.sh --redeploy <diretorios-detectados>`. O re-deploy deve acontecer depois do `fetch`, sem sobrescrever backups existentes.
-7. Depois do re-deploy, confirme que `orchestrator` e `setup-skills` apontam para a revisao nova e informe o resultado ao usuario antes de continuar.
+6. Se houver commits novos, informe a atualizacao disponivel e oriente o usuario a reinstalar as skills com `npx skills add afonsoft/skills`.
+7. Depois do re-deploy, confirme que `orchestrator` e `create-agent-harness` apontam para a revisao nova e informe o resultado ao usuario antes de continuar.
 8. Se nao houver mudancas, registre `Framework atualizado (<commit>)` sem interromper o fluxo.
 9. Se nao for possivel localizar o clone, o remote ou a rede, informe `Nao foi possivel verificar atualizacoes do framework` e continue apenas se as skills locais estiverem disponiveis. Nao faca re-deploy sem confirmar uma revisao nova.
 
-Quando uma revisao nova for confirmada, o re-deploy e automatico e faz parte do contrato do orchestrator. Para uma instalacao inicial ou troca de ambientes, a decisao continua sendo explicita do usuario por meio de `scripts/setup-alltomatos-skills.sh`.
+Quando uma revisao nova for confirmada, oriente o usuario a reinstalar as skills com `npx skills add afonsoft/skills`.
 
 ## Fase 0 - Pre-condicoes de governanca
 
