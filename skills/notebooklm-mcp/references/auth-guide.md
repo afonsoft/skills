@@ -171,12 +171,20 @@ Fix: use manual file mode or OpenClaw CDP. See the headless flow diagram in `SKI
 
 ### File permissions
 
-Set restrictive permissions on the cookie cache after creation:
+Set restrictive permissions on the cookie cache immediately after creation:
 
 ```bash
 chmod 600 ~/.notebooklm-mcp-cli/profiles/default/auth.json
 find ~/.notebooklm-mcp-cli/profiles -type f -name "*.json" -exec chmod 600 {} \;
 ```
+
+On first setup, also create the directory with a restrictive umask:
+
+```bash
+install -d -m 700 ~/.notebooklm-mcp-cli
+```
+
+If the environment supports it, prefer encrypting `auth.json` at rest (`gpg --symmetric`, `ansible-vault`, or the platform's keychain).
 
 ### Redact before logging
 
@@ -195,6 +203,10 @@ Only use OpenClaw CDP URLs that the user explicitly configured and controls. Val
 When using this skill with real data, confirm:
 
 1. `auth.json` is never written to version control.
-2. Cookies are not printed to stdout/stderr by the upstream `nlm` binary.
-3. Temporary `cookies.txt` files are deleted after `nlm login --manual --file` succeeds.
-4. The MCP server only talks to `notebooklm.google.com` and `*.google.com` domains.
+2. `auth.json` and any `cookies.txt` are stored with `0600` permissions or encrypted at rest.
+3. Cookies are not printed to stdout/stderr by the upstream `nlm` binary.
+4. Temporary `cookies.txt` files are deleted immediately after `nlm login --manual --file` succeeds.
+5. The OpenClaw CDP IP/port is explicitly allowlisted and controlled by the user.
+6. The `notebooklm-mcp-cli` package is installed from [PyPI](https://pypi.org/project/notebooklm-mcp-cli/) with a pinned version, not an untrusted source.
+7. The user has permission to use the Google account in this way (no shared or borrowed sessions).
+8. The MCP server only talks to `notebooklm.google.com` and `*.google.com` domains.
