@@ -30,7 +30,9 @@ metadata:
 
 # NotebookLM (Gemini Notebook) — CLI + MCP
 
-Google NotebookLM has no official API. The `notebooklm-mcp-cli` package (`nlm` CLI + `notebooklm-mcp` server) authenticates by extracting **browser cookies** from a logged-in Google session and caching them. This skill covers the two headless-friendly auth methods and the MCP server wiring.
+Google NotebookLM has no official API. The `notebooklm-mcp-cli` package (`nlm` CLI + `notebooklm-mcp` server) is a **third-party, unofficial client** that authenticates by extracting **browser cookies** from a logged-in Google session and caching them. This skill covers the two headless-friendly auth methods and the MCP server wiring.
+
+> **Security note**: a `cookies.txt` file or the cached `auth.json` is equivalent to a Google session. The agent must never extract, read, or forward cookie values without the user's explicit consent.
 
 | Path | Binary | Transport | When to use |
 |------|--------|-----------|-------------|
@@ -56,7 +58,10 @@ Both paths share the **same cookie cache** at `~/.notebooklm-mcp-cli/profiles/<p
 ## Guardrails
 
 - **Pin the CLI version**: install `notebooklm-mcp-cli` with an explicit `==<VERSION>`; do not run bare `uv tool install` or `pipx install` without a version.
-- **Cookies are credentials**: a `cookies.txt` file is equivalent to a Google session. Never commit it, share it, or leave it on shared machines. Delete it after `nlm login --manual --file` succeeds.
+- **Verify upstream before install**: confirm the package name and version on [PyPI](https://pypi.org/project/notebooklm-mcp-cli/) and the upstream source. Treat it as an unofficial client.
+- **Human confirmation required**: the agent must ask the user before extracting or importing cookies. Do not automate cookie collection from a browser the user does not control.
+- **Cookies are credentials**: a `cookies.txt` file or the cached `auth.json` is equivalent to a Google session. Never commit, share, log, or screenshot them. Delete `cookies.txt` immediately after `nlm login --manual --file` succeeds.
+- **No credential brokering**: run `nlm login` as a black-box command. Do not read, parse, or transmit the contents of `cookies.txt` or `auth.json`.
 - **Prefer official auth**: use desktop `nlm login` auto mode when a browser is available. Use manual cookie mode only on headless servers the user controls.
 - **No browser data harvesting**: extract cookies only from the user's own browser session; do not use extracted cookies for any purpose other than authenticating `nlm`.
 - **Verify before trusting**: run `nlm login --check` and `nlm doctor` before any notebook operation.
