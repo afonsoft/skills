@@ -236,7 +236,7 @@ When Issues come from the special case "new project with only a PRD" (Phase 1), 
    - commit;
    - next Issue in the queue.
    Repeat until all Issues of the Epic are exhausted.
-2. When the Epic is complete, invoke `/qa-analyst` and then `/code-review-and-quality` for the accumulated diff, then `/create-readme` to reflect what was delivered.
+2. When the Epic is complete, invoke `/qa-analyst`, then `/code-review-and-quality` for the accumulated diff, then `/drawio-architecture` to refresh the system diagram, then `/create-readme` to reflect what was delivered.
 3. Epic exhausted → open a PR from the working branch to `develop`.
    * Green PR (CI/tests pass) → merge into `develop`.
    * Failed PR → fix with `/diagnose`, re-run verification, then merge.
@@ -251,8 +251,9 @@ After each slice and at the end of each Epic/DAG:
 2. If it fails, invoke `/diagnose` before continuing.
 3. When the DAG is complete, invoke `/qa-analyst` without exception of tier. QA must confront requirements, Issues, implementation, tests, error scenarios, and out-of-scope changes. Failures reopen Issues or create new tasks.
 4. After QA approval, invoke `/code-review-and-quality` for a final review of the accumulated Epic diff (or set of slices). Quality failures reopen Issues or create new tasks.
-5. After review approval, invoke `/create-readme` to update `README.md` with the delivered features, stack, and instructions.
-6. Only after that can delivery by PR occur. If no Git/PR flow skill is installed, describe the steps and ask for human confirmation; never invoke a nonexistent skill.
+5. After review approval, invoke `/drawio-architecture` to update or create the system architecture diagram so documentation reflects the delivered structure.
+6. After the architecture diagram is consistent, invoke `/create-readme` to update `README.md` with the delivered features, stack, and instructions.
+7. Only after that can delivery by PR occur. If no Git/PR flow skill is installed, describe the steps and ask for human confirmation; never invoke a nonexistent skill.
 
 At the end of the project or release, ensure `README.md` reflects the current system state.
 
@@ -273,6 +274,7 @@ At the end of the project or release, ensure `README.md` reflects the current sy
 | Phase 4 — SPEC ambiguity | `/grill-me-with-spec` | Missing or conflicting requirement | Updated SPEC with new decisions |
 | Phase 5 — QA gate | `/qa-analyst` | Mandatory pre-PR verification | QA approval or new Issues |
 | Phase 5 — final review | `/code-review-and-quality` | Accumulated Epic diff review | Final approval or rework |
+| Phase 5 — architecture diagram | `/drawio-architecture` | Update system diagram after delivery | SVG/PNG architecture diagram |
 | Phase 5 — documentation | `/create-readme` | Keep `README.md` in sync with delivery | Updated README |
 
 ### Decision Tree
