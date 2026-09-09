@@ -78,16 +78,21 @@ Quando o repositorio for inicializado a partir de uma pasta que contem somente u
 
 ## Fase 2 - Auditoria
 
-Verifique:
+Verifique a estrutura gerada pelo `create-agent-harness`:
 
 ```text
 [ ] Git inicializado
 [ ] Remote GitHub configurado e acessivel
-[ ] AGENTS.md ou CLAUDE.md
-[ ] CONTEXT.md ou CONTEXT-MAP.md
-[ ] docs/agents/ com tracker e labels
-[ ] docs/adr/ quando houver decisoes relevantes
-[ ] ORCHESTRATOR-ROADMAP.md
+[ ] CLAUDE.md (single source of truth) e AGENTS.md (thin reference)
+[ ] .claude/settings.json (permissoes, hooks, env)
+[ ] .claude/rules/global-rules.md e rules/ scoped por stack
+[ ] .claude/agents/ (review.md, plan.md, test.md)
+[ ] .claude/memory/ e .claude/MEMORY.md
+[ ] .claude/CONTEXT.md, .claude/RULES.md, .claude/TOOLS.md, .claude/WORKFLOWS.md
+[ ] .claude/README.md (infraestrutura do harness)
+[ ] .specs/ para SPEC SDD quando houver features em andamento
+[ ] docs/agents/ quando houver tracker e labels de dominio
+[ ] docs/adr/ quando houver decisoes arquiteturais relevantes
 [ ] Skills instaladas no ambiente escolhido
 ```
 
