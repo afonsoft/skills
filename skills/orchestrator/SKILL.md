@@ -124,14 +124,15 @@ O Orchestrator executa as Issues fatiadas em um loop continuo ate que todas as i
 ### Ciclo de execucao por slice
 
 ```text
-1. READ    → SPEC aprovada + Issue GitHub
-2. TDD     → /tdd-spec (red-green-refactor) usando os criterios de aceite
-3. ARCH    → se a arquitetura degradar, /improve-codebase-architecture
-4. DIAGNOSE → se surgir bug ou falha misteriosa, /diagnose
-5. CLARIFY  → se a SPEC for ambigua, /grill-me-with-spec
-6. VERIFY   → build, testes, lint passam
-7. COMMIT   → conventional commit, reference a Issue
-8. LOOP     → proxima slice da fila
+1. READ         → SPEC aprovada + Issue GitHub
+2. TDD          → /tdd-spec (red-green-refactor) usando os criterios de aceite
+3. CODE REVIEW  → /code-review-and-quality sobre o diff do slice
+4. ARCH         → se a arquitetura degradar, /improve-codebase-architecture
+5. DIAGNOSE     → se surgir bug ou falha misteriosa, /diagnose
+6. CLARIFY      → se a SPEC for ambigua, /grill-me-with-spec
+7. VERIFY       → build, testes, lint passam
+8. COMMIT       → conventional commit, reference a Issue
+9. LOOP         → proxima slice da fila
 ```
 
 ### Delegacao de skills por situacao
@@ -139,6 +140,7 @@ O Orchestrator executa as Issues fatiadas em um loop continuo ate que todas as i
 | Situacao | Skill |
 | --- | --- |
 | Implementar a partir da SPEC | `/tdd-spec` |
+| Revisar diff antes de seguir | `/code-review-and-quality` |
 | Bug, regresso ou falha de build misteriosa | `/diagnose` |
 | Arquitetura degradada / acoplado demais | `/improve-codebase-architecture` |
 | Ambiguidade na SPEC | `/grill-me-with-spec` |
@@ -169,8 +171,9 @@ Depois de cada slice e ao final de cada Epic/DAG:
 1. Execute verificacoes proporcionais: testes, lint, type check, build.
 2. Se falhar, invoque `/diagnose` antes de continuar.
 3. Quando a DAG estiver concluida, invoque obrigatoriamente `/qa-analyst`, sem excecao de tier. O QA deve confrontar requisitos, Issues, implementacao, testes, cenarios de erro e mudancas fora de escopo. Falhas reabrem Issues ou criam novas tarefas.
-4. Apos aprovacao do QA, invoque `/create-readme` para atualizar o `README.md` com as funcionalidades, stack e instrucoes entregues.
-5. Somente depois disso pode ocorrer a entrega por PR. Se nao existir uma skill de fluxo Git/PR instalada, descreva os passos e solicite confirmacao humana; nunca invoque uma skill inexistente.
+4. Apos aprovacao do QA, invoque `/code-review-and-quality` para uma revisao final do diff acumulado do Epic (ou do conjunto de slices). Falhas de qualidade reabrem Issues ou geram novas tarefas.
+5. Apos aprovacao do review, invoque `/create-readme` para atualizar o `README.md` com as funcionalidades, stack e instrucoes entregues.
+6. Somente depois disso pode ocorrer a entrega por PR. Se nao existir uma skill de fluxo Git/PR instalada, descreva os passos e solicite confirmacao humana; nunca invoque uma skill inexistente.
 
 Ao final do projeto ou release, certifique-se de que o `README.md` reflete o estado atual do sistema.
 
