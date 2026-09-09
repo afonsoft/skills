@@ -115,7 +115,9 @@ if [ "$PLUGIN" = "mcp-adapter" ]; then
 
   # Check whether we need elevated privileges
   if [ ! -w "$PLUGINS_DIR" ]; then
-    echo "→ Plugins dir not writable; using sudo..."
+    echo "⚠ Plugins dir is not writable by the current user."
+    echo "  This script will use sudo to copy files into $PLUGINS_DIR."
+    echo "  Make sure the site is one you control and the backup is up to date."
     SUDO="sudo"
   else
     SUDO=""
@@ -133,7 +135,11 @@ if [ "$PLUGIN" = "mcp-adapter" ]; then
     else
       cd "$PLUGINS_DIR/mcp-adapter"
       # Run composer as the web user when possible so vendor is not owned by root
-      if id -u "$WEB_USER" >/dev/null 2>&1 && [ "$(id -u)" -eq 0 ]; then
+      if [ "$(id -u)" -eq 0 ] && ! id -u "$WEB_USER" >/dev/null 2>&1; then
+        echo "Error: composer must not run as root. Re-run with --web-user=<user> or as a non-root user." >&2
+        exit 1
+      fi
+      if [ "$(id -u)" -eq 0 ]; then
         sudo -u "$WEB_USER" composer install --no-dev --no-interaction --optimize-autoloader 2>&1 | tail -5
       else
         composer install --no-dev --no-interaction --optimize-autoloader 2>&1 | tail -5
@@ -248,9 +254,8 @@ update_option("mwai_options", $o);
     TOKEN_FILE="$HOME/.wp-mcp-ai-engine-token"
     printf '%s\n' "$TOKEN" > "$TOKEN_FILE"
     chmod 0600 "$TOKEN_FILE"
-    echo "✓ Bearer Token generated and saved to: $TOKEN_FILE"
-    echo "  Load it with: cat $TOKEN_FILE"
-    echo "  Keep it secret — do not commit or share it."
+    echo "✓ Bearer Token generated and saved to: $TOKEN_FILE (permissions 0600)"
+    echo "  Read it securely when needed. Never commit, share, log, or print this token."
   else
     echo "  Bearer Token already set (hidden for security)."
   fi
