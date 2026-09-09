@@ -21,6 +21,9 @@ concurrency:
 jobs:
   publish:
     name: Publish skills to ClawHub
+    permissions:
+      id-token: write
+      contents: read
     uses: openclaw/clawhub/.github/workflows/skill-publish.yml@main
     with:
       owner: afonsoft
