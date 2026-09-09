@@ -28,30 +28,38 @@
 
 ### Convenção de ID
 
-- `TASK-<NNN>` — identificador único.
+- `TASK-<NNN>` — identificador unico.
 - `depends_on: ["TASK-<MMM>", ...]` — lista de IDs das tarefas predecessoras.
+- `issue_ref` — numero da Issue no GitHub (#123).
+- `spec_ref` — `.specs/SPEC-{YYYYMMDD}-{slug}.md` vinculado.
 
 ### Tarefas Pendentes
 
 ```yaml
 - id: TASK-001
-  desc: "Extrair validação de email para validators/email.ts"
-  skill: /refactor
+  desc: "Extract email validation into validators/email.ts"
+  skill: /tdd-spec
   gap_ref: GAP-002
+  issue_ref: "#101"
+  spec_ref: ".specs/SPEC-20260908-email-validation.md"
   depends_on: []
   status: ready
 
 - id: TASK-002
-  desc: "Criar testes para validators/email.ts"
-  skill: /tdd
+  desc: "Create tests for validators/email.ts"
+  skill: /qa-analyst
   gap_ref: GAP-002
+  issue_ref: "#102"
+  spec_ref: ".specs/SPEC-20260908-email-validation.md"
   depends_on: [TASK-001]
   status: blocked
 
 - id: TASK-003
-  desc: "Atualizar ADR de autenticação"
-  skill: /grill-with-docs
+  desc: "Update auth ADR"
+  skill: /grill-me-with-spec
   gap_ref: GAP-002
+  issue_ref: "#103"
+  spec_ref: ".specs/SPEC-20260908-auth-adr.md"
   depends_on: []
   status: ready
 ```
@@ -60,9 +68,11 @@
 
 ```yaml
 - id: TASK-000
-  desc: "Exemplo de tarefa concluída"
-  skill: /setup-skills
+  desc: "Example of completed task"
+  skill: /create-agent-harness
   gap_ref: GAP-000
+  issue_ref: "#100"
+  spec_ref: ".specs/SPEC-20260908-harness.md"
   depends_on: []
   status: done
   concluido_em: "YYYY-MM-DD HH:MM:SS"
@@ -94,4 +104,4 @@
 
 | # | GAP | Tarefa | Skill | Status |
 |---|-----|--------|-------|--------|
-| 1 | GAP-002 | Criar testes unitários para `auth.ts` | /tdd | 🟡 pending_approval |
+| 1 | GAP-002 | Create unit tests for `auth.ts` | /tdd-spec | 🟡 pending_approval |

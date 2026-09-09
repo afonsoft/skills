@@ -1,183 +1,213 @@
 ---
 name: orchestrator
 license: MIT
-description: Governa projetos com agentes, audita pre-condicoes, cria documentacao, transforma gaps em GitHub Issues e coordena execucao, testes e QA. Part of the afonsoft/skills collection.
+description: "Govern agent-driven projects, audit preconditions, create documentation, turn gaps into GitHub Issues, and coordinate execution, tests, and QA in a continuous loop. Use when starting or running a software project with the afonsoft agent harness. User-facing questions and confirmations must be in Portuguese (pt-BR). Part of the afonsoft/skills collection."
 metadata:
-  version: "1.0.0"
+  version: "2.0.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
 ---
 
-# ORCHESTRATOR - Central de Controle
+# Orchestrator
 
-Planeja, governa, audita e delega execucao. Nao execute tarefas complexas diretamente quando uma skill especializada existir.
+The central control skill for agent-driven projects. It plans, governs, audits, delegates, and re-validates. It never executes complex work directly when a specialized skill exists.
 
-## Fase - Atualizacao do framework
+All questions and confirmations directed at the user must be in **Portuguese (pt-BR)**. Internal reasoning and documentation are in English.
 
-Esta verificacao deve ocorrer no inicio de toda execucao do orchestrator, antes das pre-condicoes do projeto.
+## When to Use
 
-1. Identifique de onde as skills foram instaladas. Para cada skill carregada, resolva o caminho real do link e procure o clone que contem `README.md` e `SKILL.md` do catalogo.
-2. No clone encontrado, leia o remote `origin`, a branch atual e o commit local instalado.
-3. Consulte o remote do framework com `git fetch origin --quiet` ou mecanismo equivalente de leitura. Nunca faca `pull`, merge ou reset no clone do framework.
-4. Compare o commit local com `origin/<branch>` ou com a referencia remota equivalente.
-5. Se houver commits novos, informe imediatamente:
+- Starting a new project or repository.
+- Resuming an existing project with unclear state.
+- Planning a feature, Epic, or release.
+- Coordinating implementation of a SPEC SDD.
+- Preparing a PR after implementation.
+
+## When NOT to Use
+
+- Do not use when the task is a single, well-scoped code change — use `/tdd-spec` directly.
+- Do not use when only a code review is needed — use `/code-review-and-quality`.
+- Do not use when only a bug fix is needed — use `/diagnose`.
+
+## State File
+
+The Orchestrator must read `references/ESTADO_ORQUESTRATOR.md` at the start of every session and write to it after every phase. This state file persists the DAG, task status, and decisions across sessions. See [references/ESTADO_ORQUESTRATOR.md](references/ESTADO_ORQUESTRATOR.md).
+
+## Phase -1 — Framework Update
+
+Run this at the start of every Orchestrator session, before project preconditions.
+
+1. Find where the skills were installed from. For each loaded skill, resolve the real path of the link and locate the catalog clone that contains `README.md` and `SKILL.md`.
+2. In the found clone, read `origin` remote, current branch, and local installed commit.
+3. Check the framework remote with `git fetch origin --quiet`. Never pull, merge, or reset the framework clone.
+4. Compare local commit with `origin/<branch>` or the equivalent remote reference.
+5. If there are new commits, report immediately:
 
 ```text
-Atualizacao do framework disponivel
+Framework update available
 - Framework: afonsoft/skills
-- Instalado: <commit ou data>
-- Disponivel: <commit ou data>
-- Novidades: <resumo dos commits ou arquivos alterados>
-- Acao: reinstale o catalogo com `npx skills add afonsoft/skills`
+- Installed: <commit or date>
+- Available: <commit or date>
+- Changes: <summary of commits or files>
+- Action: reinstall the catalog with `npx skills add afonsoft/skills`
 ```
 
-6. Se houver commits novos, informe a atualizacao disponivel e oriente o usuario a reinstalar as skills com `npx skills add afonsoft/skills`.
-7. Depois do re-deploy, confirme que `orchestrator` e `create-agent-harness` apontam para a revisao nova e informe o resultado ao usuario antes de continuar.
-8. Se nao houver mudancas, registre `Framework atualizado (<commit>)` sem interromper o fluxo.
-9. Se nao for possivel localizar o clone, o remote ou a rede, informe `Nao foi possivel verificar atualizacoes do framework` e continue apenas se as skills locais estiverem disponiveis. Nao faca re-deploy sem confirmar uma revisao nova.
+6. If new commits are available, guide the user to reinstall skills with `npx skills add afonsoft/skills`.
+7. After reinstall, confirm `orchestrator` and `create-agent-harness` point to the new revision and report the result.
+8. If no changes, log `Framework up-to-date (<commit>)` without stopping the flow.
+9. If the clone, remote, or network cannot be located, log `Unable to check framework updates` and continue only if local skills are available. Do not reinstall without confirming a new revision.
 
-Quando uma revisao nova for confirmada, oriente o usuario a reinstalar as skills com `npx skills add afonsoft/skills`.
+When a new revision is confirmed, the user must reinstall the skills. That is part of the Orchestrator contract.
 
-## Fase 0 - Pre-condicoes de governanca
+## Phase 0 — Governance Preconditions
 
-Antes de criar arquivos ou delegar trabalho:
+Before creating files or delegating work:
 
-1. Verifique se o projeto tem Git inicializado.
-2. Verifique se existe um remote GitHub valido, preferencialmente `origin`.
-3. Verifique acesso ao repositorio com `gh repo view` ou mecanismo equivalente.
+1. Verify Git is initialized.
+2. Verify a valid GitHub remote exists, preferably `origin`.
+3. Verify repository access with `gh repo view` or equivalent.
 
-Se o ambiente estiver vazio, nao tiver Git ou nao tiver repositorio remoto no GitHub, pare o fluxo e oriente o usuario a:
+If the environment is empty, has no Git, or has no GitHub remote, stop the flow and guide the user to:
 
-1. criar o repositorio no GitHub;
-2. inicializar o repositorio local;
-3. configurar o remote `origin`;
-4. fazer o primeiro commit e push;
-5. retornar ao orchestrator.
+1. Create the repository on GitHub;
+2. Initialize the local repository;
+3. Configure the `origin` remote;
+4. Make the first commit and push;
+5. Return to the Orchestrator.
 
-Nao substitua o GitHub silenciosamente por tracker local. GitHub e a fonte de rastreabilidade, Issues, revisao e historico deste framework.
+Never silently replace GitHub with a local tracker. GitHub is the source of traceability, Issues, review, and history for this framework.
 
-## Fase 1 - Provisionamento documental
+## Phase 1 — Documentation Provisioning
 
-1. Invocar `/create-agent-harness` para gerar `CLAUDE.md`, `AGENTS.md` (thin reference), `.claude/` (settings, rules, agents, memory, context), `docs/` (technologies, architecture, decisions) e `.specs/`.
-2. Invocar `/grill-me-with-spec` para consolidar linguagem de dominio e decisoes arquiteturais, produzindo a SPEC SDD em `.specs/SPEC-{YYYYMMDD}-{feature}.md` antes de qualquer implementacao.
-3. Em repositorio vazio, invocar `/scaffold-mvp` apos o alinhamento de dominio.
-4. Revisar e persistir a documentacao e a SPEC aprovada antes de iniciar implementacao.
+1. Invoke `/create-agent-harness` to generate `CLAUDE.md`, `AGENTS.md` (thin reference), `.claude/` (settings, rules, agents, memory, context), `docs/` (technologies, architecture, decisions), and `.specs/`.
+2. Invoke `/grill-me-with-spec` to consolidate domain language and architectural decisions, producing the SPEC SDD in `.specs/SPEC-{YYYYMMDD}-{feature}.md` before any implementation.
+3. In an empty repository, invoke `/scaffold-mvp` after domain alignment.
+4. Review and persist documentation and the approved SPEC before starting implementation.
 
-Documentacao nao e uma etapa opcional: o orchestrator deve deixar um estado compreensivel para outro agent continuar o trabalho.
+Documentation is not optional: the Orchestrator must leave a state another agent can continue.
 
-### Caso especial - projeto novo com apenas um PRD na pasta
+### Special Case — New Project with Only a PRD in the Folder
 
-Quando o repositorio for inicializado a partir de uma pasta que contem somente um PRD (sem codigo):
+When the repository starts from a folder containing only a PRD (no code):
 
-1. Garantir repositorio GitHub inicializado, com remote `origin` configurado (Fase 0).
-2. Criar e fazer checkout da branch `develop` a partir da branch padrao.
-3. Invocar `/grill-me-with-spec` para transformar o PRD em uma ou mais SPECs SDD em `.specs/SPEC-{YYYYMMDD}-{slug}.md`, uma por Epic ou area bem delimitada.
-4. Revisar e aprovar as SPECs; atualizar `Status` para `Approved` em cada uma.
-5. Com base nas SPECs aprovadas, abrir Issue(s) no GitHub usando `/create-issues` (uma Issue por Epic, ou Issue mestre com os Epics listados).
-6. Usar `/create-issues` para fatiar cada Epic em Issues atomicas (slices verticais, rastreaveis, com criterios de aceite), registrando o mapeamento `.specs/SPEC-*.md` -> Issue.
-7. Seguir para a Fase 4 usando o modo de fila sequencial descrito abaixo.
+1. Ensure GitHub repository is initialized with `origin` configured (Phase 0).
+2. Create and check out a `develop` branch from the default branch.
+3. Invoke `/grill-me-with-spec` to turn the PRD into one or more SPEC SDDs in `.specs/SPEC-{YYYYMMDD}-{slug}.md`, one per Epic or well-delimited area.
+4. Review and approve the SPECs; update `Status` to `Approved` on each one.
+5. Based on approved SPECs, open Issues on GitHub using `/create-issues` (one per Epic, or a master Issue with Epics listed).
+6. Use `/create-issues` to slice each Epic into atomic Issues (vertical, traceable, with acceptance criteria), recording the mapping `.specs/SPEC-*.md` → Issue.
+7. Proceed to Phase 4 using the sequential queue described below.
 
-## Fase 2 - Auditoria
+## Phase 2 — Audit
 
-Verifique a estrutura gerada pelo `create-agent-harness`:
+Audit the structure produced by `create-agent-harness`:
 
 ```text
-[ ] Git inicializado
-[ ] Remote GitHub configurado e acessivel
-[ ] CLAUDE.md (single source of truth) e AGENTS.md (thin reference)
-[ ] .claude/settings.json (permissoes, hooks, env)
-[ ] .claude/rules/global-rules.md e rules/ scoped por stack
+[ ] Git initialized
+[ ] GitHub remote configured and accessible
+[ ] CLAUDE.md (single source of truth) and AGENTS.md (thin reference)
+[ ] .claude/settings.json (permissions, hooks, env)
+[ ] .claude/rules/global-rules.md and stack-scoped rules/
 [ ] .claude/agents/ (review.md, plan.md, test.md)
-[ ] .claude/memory/ e .claude/MEMORY.md
+[ ] .claude/memory/ and .claude/MEMORY.md
 [ ] .claude/CONTEXT.md, .claude/RULES.md, .claude/TOOLS.md, .claude/WORKFLOWS.md
-[ ] .claude/README.md (infraestrutura do harness)
-[ ] .specs/ para SPEC SDD quando houver features em andamento
-[ ] docs/agents/ quando houver tracker e labels de dominio
-[ ] docs/adr/ quando houver decisoes arquiteturais relevantes
-[ ] Skills instaladas no ambiente escolhido
+[ ] .claude/README.md (harness infrastructure)
+[ ] .specs/ for SPEC SDD when features are in flight
+[ ] docs/agents/ when domain tracker and labels exist
+[ ] docs/adr/ when relevant architectural decisions exist
+[ ] Skills installed in the chosen environment
 ```
 
-Classifique gaps como P1 (seguranca/tipos), P2 (arquitetura), P3 (performance) ou P4 (higiene/documentacao). Para analisar e enderecar os gaps, invoque `/improve-codebase-architecture`.
+Classify gaps as P1 (security/types), P2 (architecture), P3 (performance), or P4 (hygiene/documentation). To analyze and address gaps, invoke `/improve-codebase-architecture`.
 
-## Fase 3 - Fragmentacao no GitHub
+## Phase 3 — GitHub Fragmentation
 
-Os gaps aprovados devem ser transformados em Issues por `/create-issues`. O GitHub e a fonte persistente de escopo, criterios de aceite, dependencias e status; `ESTADO_ORQUESTRATOR.md` e apenas a visao operacional da DAG.
+Approved gaps must be turned into Issues by `/create-issues`. GitHub is the persistent source of scope, acceptance criteria, dependencies, and status; `references/ESTADO_ORQUESTRATOR.md` is only the operational view of the DAG.
 
-1. Passe para `/create-issues` os gaps, roadmap e documentacao aprovados.
-2. Apresente a decomposicao para aprovacao quando houver decisao HITL.
-3. Publique as Issues em ordem de dependencia, usando IDs reais em `Blocked by`.
-4. Registre o mapeamento `Tarefa -> Issue GitHub -> branch/worktree`.
-5. Nunca crie uma DAG apenas em memoria ou apenas em arquivo local quando a tarefa puder ser rastreada no GitHub.
+1. Pass the gaps, roadmap, and approved documentation to `/create-issues`.
+2. Present the decomposition for approval when HITL decision is needed.
+3. Publish Issues in dependency order, using real IDs in `Blocked by`.
+4. Record the mapping `Task -> GitHub Issue -> branch/worktree`.
+5. Never create a DAG only in memory or only in a local file when the task can be tracked on GitHub.
 
-## Fase 4 - Execucao
+## Phase 4 — Execution Loop
 
-O Orchestrator executa as Issues fatiadas em um loop continuo ate que todas as implementacoes das SPECs aprovadas estejam concluidas. O foco e slices verticais pequenos, um de cada vez, com re-validacao constante.
+The Orchestrator runs sliced Issues in a continuous loop until all SPEC implementations are complete. The focus is small vertical slices, one at a time, with constant re-validation.
 
-### Regras gerais
+### General Rules
 
-- Slices independentes podem rodar em paralelo em worktrees isoladas; slices que alteram schema, autenticacao, APIs publicas ou dados exigem confirmacao humana.
-- Antes de cada slice, o agente deve ler a `.specs/SPEC-{YYYYMMDD}-{slug}.md` aprovada e a Issue correspondente.
-- Depois de cada slice, revalidar: build, testes, lint, type check.
-- Nao pular para a proxima slice enquanto a atual nao estiver verde.
+- Independent slices may run in parallel in isolated worktrees; slices that change schema, authentication, public APIs, or data require human confirmation.
+- Before each slice, the agent must read the approved `.specs/SPEC-{YYYYMMDD}-{slug}.md` and the corresponding Issue.
+- After each slice, re-validate: build, tests, lint, type check.
+- Do not move to the next slice while the current one is not green.
 
-### Ciclo de execucao por slice
+### Per-Slice Cycle
 
 ```text
-1. READ         → SPEC aprovada + Issue GitHub
-2. TDD          → /tdd-spec (red-green-refactor) usando os criterios de aceite
-3. CODE REVIEW  → /code-review-and-quality sobre o diff do slice
-4. ARCH         → se a arquitetura degradar, /improve-codebase-architecture
-5. DIAGNOSE     → se surgir bug ou falha misteriosa, /diagnose
-6. CLARIFY      → se a SPEC for ambigua, /grill-me-with-spec
-7. VERIFY       → build, testes, lint passam
-8. COMMIT       → conventional commit, reference a Issue
-9. LOOP         → proxima slice da fila
+1. READ         → Approved SPEC + GitHub Issue
+2. TDD          → /tdd-spec (red-green-refactor) using acceptance criteria
+3. CODE REVIEW  → /code-review-and-quality on the slice diff
+4. ARCH         → /improve-codebase-architecture if architecture degrades
+5. DIAGNOSE     → /diagnose if a bug or mysterious failure appears
+6. CLARIFY      → /grill-me-with-spec if the SPEC is ambiguous
+7. VERIFY       → build, tests, lint pass
+8. COMMIT       → Conventional commit, reference the Issue
+9. LOOP         → Next slice in the queue
 ```
 
-### Delegacao de skills por situacao
+### Skill Delegation by Situation
 
-| Situacao | Skill |
+| Situation | Skill |
 | --- | --- |
-| Implementar a partir da SPEC | `/tdd-spec` |
-| Revisar diff antes de seguir | `/code-review-and-quality` |
-| Bug, regresso ou falha de build misteriosa | `/diagnose` |
-| Arquitetura degradada / acoplado demais | `/improve-codebase-architecture` |
-| Ambiguidade na SPEC | `/grill-me-with-spec` |
-| Criar/atualizar Issues do Epic | `/create-issues` |
-| Necessita conhecimento de API/lib de terceiro | manual / subagente de pesquisa |
+| Implement from SPEC | `/tdd-spec` |
+| Review diff before continuing | `/code-review-and-quality` |
+| Bug, regression, or mysterious build failure | `/diagnose` |
+| Degraded architecture / too much coupling | `/improve-codebase-architecture` |
+| Ambiguity in the SPEC | `/grill-me-with-spec` |
+| Create/update Epic Issues | `/create-issues` |
+| Need knowledge of a third-party API/library | manual / research subagent |
 
-### Fila sequencial para Epics fatiados de um PRD
+### Sequential Queue for Epics Sliced from a PRD
 
-Quando as Issues vierem do caso especial "projeto novo com apenas um PRD" (Fase 1), a execucao **nao** e paralela: despachar **um unico agente por vez**, na ordem de dependencia das Issues.
+When Issues come from the special case "new project with only a PRD" (Phase 1), execution is **not** parallel: dispatch **one agent at a time**, in Issue dependency order.
 
-1. Para o Epic atual, processar suas Issues fatiadas uma a uma:
-   - desenvolver com `/tdd-spec`;
-   - QA (Fase 5);
+1. For the current Epic, process its sliced Issues one by one:
+   - develop with `/tdd-spec`;
+   - QA (Phase 5);
    - commit;
-   - proxima Issue da fila.
-   Repetir ate esgotar todas as Issues do Epic.
-2. Ao concluir o Epic, invocar `/qa-analyst` e depois `/create-readme` para refletir o que foi entregue.
-3. Epic esgotado -> abrir PR da branch de trabalho para `develop`.
-   * PR verde (CI/testes passam) -> merge em `develop`.
-   * PR falhar -> corrigir com `/diagnose`, reexecutar a verificacao e so entao mergear.
-4. Apos o merge, voltar para a branch `develop` e avancar para o proximo Epic da fila, repetindo o loop ate que todos os Epics do PRD estejam finalizados.
-5. Ao concluir todos os Epics, abrir o merge final de `develop` para `main`.
+   - next Issue in the queue.
+   Repeat until all Issues of the Epic are exhausted.
+2. When the Epic is complete, invoke `/qa-analyst` and then `/code-review-and-quality` for the accumulated diff, then `/create-readme` to reflect what was delivered.
+3. Epic exhausted → open a PR from the working branch to `develop`.
+   * Green PR (CI/tests pass) → merge into `develop`.
+   * Failed PR → fix with `/diagnose`, re-run verification, then merge.
+4. After the merge, return to the `develop` branch and advance to the next Epic in the queue, repeating the loop until all PRD Epics are finished.
+5. When all Epics are complete, open the final merge from `develop` to `main`.
 
-## Fase 5 - Verificacao e QA
+## Phase 5 — Verification and QA
 
-Depois de cada slice e ao final de cada Epic/DAG:
+After each slice and at the end of each Epic/DAG:
 
-1. Execute verificacoes proporcionais: testes, lint, type check, build.
-2. Se falhar, invoque `/diagnose` antes de continuar.
-3. Quando a DAG estiver concluida, invoque obrigatoriamente `/qa-analyst`, sem excecao de tier. O QA deve confrontar requisitos, Issues, implementacao, testes, cenarios de erro e mudancas fora de escopo. Falhas reabrem Issues ou criam novas tarefas.
-4. Apos aprovacao do QA, invoque `/code-review-and-quality` para uma revisao final do diff acumulado do Epic (ou do conjunto de slices). Falhas de qualidade reabrem Issues ou geram novas tarefas.
-5. Apos aprovacao do review, invoque `/create-readme` para atualizar o `README.md` com as funcionalidades, stack e instrucoes entregues.
-6. Somente depois disso pode ocorrer a entrega por PR. Se nao existir uma skill de fluxo Git/PR instalada, descreva os passos e solicite confirmacao humana; nunca invoque uma skill inexistente.
+1. Run proportional verifications: tests, lint, type check, build.
+2. If it fails, invoke `/diagnose` before continuing.
+3. When the DAG is complete, invoke `/qa-analyst` without exception of tier. QA must confront requirements, Issues, implementation, tests, error scenarios, and out-of-scope changes. Failures reopen Issues or create new tasks.
+4. After QA approval, invoke `/code-review-and-quality` for a final review of the accumulated Epic diff (or set of slices). Quality failures reopen Issues or create new tasks.
+5. After review approval, invoke `/create-readme` to update `README.md` with the delivered features, stack, and instructions.
+6. Only after that can delivery by PR occur. If no Git/PR flow skill is installed, describe the steps and ask for human confirmation; never invoke a nonexistent skill.
 
-Ao final do projeto ou release, certifique-se de que o `README.md` reflete o estado atual do sistema.
+At the end of the project or release, ensure `README.md` reflects the current system state.
 
 ## References
 
-- [`references/orchestrator-delegation-protocol.md`](references/orchestrator-delegation-protocol.md) — matriz de autonomia, tiers de risco e protocolos de delegacao.
-- [`references/ESTADO_ORQUESTRATOR.template.md`](references/ESTADO_ORQUESTRATOR.template.md) — template do arquivo de estado operacional da sessao.
+- [`references/orchestrator-delegation-protocol.md`](references/orchestrator-delegation-protocol.md) — autonomy matrix, risk tiers, and delegation protocols.
+- [`references/ESTADO_ORQUESTRATOR.md`](references/ESTADO_ORQUESTRATOR.md) — operational state file for the session DAG.
+- `/create-agent-harness` — for generating the project harness
+- `/grill-me-with-spec` — for authoring the SPEC SDD
+- `/scaffold-mvp` — for bootstrapping a new project
+- `/create-issues` — for turning work into GitHub Issues
+- `/improve-codebase-architecture` — for analyzing and fixing architecture gaps
+- `/tdd-spec` — for test-driven implementation from the SPEC
+- `/code-review-and-quality` — for reviewing diffs
+- `/diagnose` — for debugging regressions and bugs
+- `/qa-analyst` — for the mandatory QA gate
+- `/create-readme` — for keeping README in sync
