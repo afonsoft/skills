@@ -59,11 +59,14 @@ Voce pode esclarecer esses itens para eu continuar?
 
 ### 2. Test Planning
 
-Define and document the plan (in `docs/qa/test-plan-<feature>.md` or inline, depending on size):
+Define and document the plan (in `docs/qa/test-plan-<feature>.md` for large features, or inline for small fixes):
 
 - **Scope**: what will be tested and — explicitly — what will NOT be tested, with justification.
-- **Layer strategy**: unit (logic), integration (contracts), API (Postman / `curl` / supertest), E2E (Playwright / equivalent), manual exploratory (what automation does not cover).
-- **Tools**: prefer what already exists in the repo (check `package.json` and CI). Do not introduce a new framework without need.
+- **Layer strategy**: unit, integration, API, E2E and manual/exploratory. Be concrete about what each layer exercises and how it maps to the stack:
+  - **.NET**: unit with xUnit/NUnit/MSTest for business rules; integration with `WebApplicationFactory` and a test `DbContext`/in-memory bus for contracts and persistence; API with `HttpClient` + xUnit for status codes and payload contract; E2E with Playwright only when a real browser flow is required.
+  - **Other stacks**: prefer the repo's existing test pyramid and do not introduce new frameworks without need.
+- **Tools**: prefer what already exists in the repo. Check `*.csproj`, `Directory.Build.props`, `package.json`, `pom.xml`, `pyproject.toml` and CI. For .NET, the default chain is `dotnet test`, Coverlet/`XPlat Code Coverage`, and `reportgenerator`. Do not introduce a new framework without need.
+- **Coverage target by stack**: .NET 80% line and branch; Java 85%; Python 90%; adjust if the project guardrails say otherwise.
 - **Prioritized risks**: test first what causes the most damage if it breaks (payment > about screen).
 - **Re-validation rule**: every fix must be re-tested, and regression must be run on neighboring flows.
 - **Coverage gate**: before committing the plan, run the existing coverage report. If the stack is below target or the suite is red, invoke `/quality-test-implementation` to stabilize the baseline before adding new tests.
