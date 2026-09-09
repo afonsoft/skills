@@ -98,13 +98,13 @@ Verifique a estrutura gerada pelo `create-agent-harness`:
 [ ] Skills instaladas no ambiente escolhido
 ```
 
-Classifique gaps como P1 (seguranca/tipos), P2 (arquitetura), P3 (performance) ou P4 (higiene/documentacao). Use `/improve-codebase-architecture`, `/diagnose`, `/query-docs` ou `/zoom-out` conforme o caso.
+Classifique gaps como P1 (seguranca/tipos), P2 (arquitetura), P3 (performance) ou P4 (higiene/documentacao). Para analisar e enderecar os gaps, invoque `/improve-codebase-architecture`.
 
 ## Fase 3 - Fragmentacao no GitHub
 
-Os gaps aprovados devem ser transformados em Issues por `/to-issues`. O GitHub e a fonte persistente de escopo, criterios de aceite, dependencias e status; `ESTADO_ORQUESTRATOR.md` e apenas a visao operacional da DAG.
+Os gaps aprovados devem ser transformados em Issues por `/create-issues`. O GitHub e a fonte persistente de escopo, criterios de aceite, dependencias e status; `ESTADO_ORQUESTRATOR.md` e apenas a visao operacional da DAG.
 
-1. Passe para `/to-issues` os gaps, roadmap e documentacao aprovados.
+1. Passe para `/create-issues` os gaps, roadmap e documentacao aprovados.
 2. Apresente a decomposicao para aprovacao quando houver decisao HITL.
 3. Publique as Issues em ordem de dependencia, usando IDs reais em `Blocked by`.
 4. Registre o mapeamento `Tarefa -> Issue GitHub -> branch/worktree`.
