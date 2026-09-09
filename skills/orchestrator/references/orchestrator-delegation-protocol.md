@@ -11,7 +11,7 @@ O Orquestrador opera com base em **Tiers de Risco**. A autonomia é concedida co
 
 ### Tier 1: Rota Direta ("Fast Path" - Risco Mínimo)
 O Orquestrador reconhece tarefas T1 (limpeza, documentações simples que não alteram lógica, refatorações safe e setups de ferramentas/linters) como elegíveis para o **Fast Path**:
-- **Bypass de Processo**: Pula obrigatoriamente a atualização/auditoria de Roadmap estratégico global e as sessões burocráticas/extensivas de interrogatório via `/grill-with-docs` ou `/grill-me`.
+- **Bypass de Processo**: Pula obrigatoriamente a atualização/auditoria de Roadmap estratégico global e as sessões burocráticas/extensivas de interrogatório via `/grill-me-with-spec`.
 - **Execução Atômica**: O Orquestrador planeja e executa a tarefa imediatamente de forma direta.
 - **Guardrails de Qualidade Mandatórios**: O fluxo deve honrar rigorosamente o rito de TDD e acionar `/qa-analyst` antes de qualquer PR. Se nao houver skill de PR disponivel, orientar o fluxo Git manualmente e pedir confirmacao humana.
 - **Ação**: Executa silenciosamente → Loga no `ESTADO_ORQUESTRATOR.md` → Finaliza o PR da mudança atômica.
@@ -81,16 +81,14 @@ O Orquestrador deve consultar esta tabela antes de disparar qualquer delegação
 | --- | --- |
 | Governança & Orquestração | `/orchestrator` |
 | Versionamento & PRs | Fluxo Git disponivel no ambiente, com confirmacao humana |
-| Infraestrutura ausente | `/setup-skills` |
-| Linguagem de domínio ausente | `/grill-with-docs` |
+| Infraestrutura ausente | `/create-agent-harness` |
+| Linguagem de domínio ausente | `/grill-me-with-spec` |
 | Arquitetura degradada | `/improve-codebase-architecture` |
 | Bug difícil ou regressão | `/diagnose` |
-| Código sem testes | `/tdd` |
+| Código sem testes | `/tdd-spec` |
 | Análise de QA pós-desenvolvimento (obrigatório antes do PR) | `/qa-analyst` |
-| Falta de contexto | `/zoom-out` |
-| Gargalo não mapeado | `/write-a-skill` |
-| Alinhamento antes de mudança | `/grill-me` |
-| Handoff para outro agent | `/handoff` |
+| Falta de contexto | manual |
+| Alinhamento antes de mudança | `/grill-me-with-spec` |
 
 ---
 
@@ -116,7 +114,7 @@ O Orquestrador deve consultar esta tabela antes de disparar qualquer delegação
 
 A partir de agora, o Orquestrador opera em **Modo Eficiência**. O objetivo é zero retrabalho.
 
-1. **Atraso Deliberado (The "Wait-and-Validate" Principle)**: Em vez de disparar delegações em paralelo, o Orquestrador deve esperar a confirmação completa da skill anterior (ex: `setup-skills`) antes de cogitar a próxima (ex: `grill-with-docs`).
+1. **Atraso Deliberado (The "Wait-and-Validate" Principle)**: Em vez de disparar delegações em paralelo, o Orquestrador deve esperar a confirmação completa da skill anterior (ex: `/create-agent-harness`) antes de cogitar a próxima (ex: `/grill-me-with-spec`).
 2. **Qualidade em Tiers**:
    - **Fase de Setup**: Interatividade total. Nenhum comando é automatizado sem feedback positivo.
    - **Fase de Planejamento**: Obrigatório o uso do `roadmap` e `plan`. Nenhuma delegação de código ocorre sem o plano estar aprovado no `ORCHESTRATOR-ROADMAP.md`.
@@ -165,10 +163,9 @@ Somente após o Portão de QA ser aprovado, o Orchestrator pode iniciar o fluxo 
 
 | GAP Identificado | Skill Delegada | Tier de Risco |
 |------------------|----------------|---------------|
-| Testes ausentes ou frágeis | `/tdd` | Batch |
+| Testes ausentes ou frágeis | `/tdd-spec` | Batch |
 | Fim de desenvolvimento — análise de QA obrigatória pré-PR | `/qa-analyst` | Mandatório (todos os Tiers) |
 | Arquitetura degradada/acoplada | `/improve-codebase-architecture` | Batch |
 | Bug/regressão | `/diagnose` | Block |
-| Linguagem de domínio desalinhada | `/grill-with-docs` | Auto |
+| Linguagem de domínio desalinhada | `/grill-me-with-spec` | Auto |
 | Repositório vazio requer base técnica e frameworks para MVP ágil | `/scaffold-mvp` | Block |
-| Não há skill para o gargalo | `/write-a-skill` | Block |

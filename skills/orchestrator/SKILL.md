@@ -116,12 +116,9 @@ Use slices verticais pequenos. Tarefas independentes podem ser executadas em par
 
 O orchestrator delega para skills especializadas, por exemplo:
 
-- `/tdd` para implementacao orientada a testes;
-- `/secure-e2e` para fluxos E2E e seguranca;
+- `/tdd-spec` para implementacao orientada a testes a partir da SPEC aprovada;
 - `/diagnose` para bugs e regressao;
-- `/query-docs` para APIs de terceiros;
-- `/expo-expert` para conhecimento especializado de stack Expo/React Native (EAS, Router, config plugins, upgrade de SDK);
-- `/write-a-skill` para gargalos nao cobertos.
+- `/query-docs` para APIs de terceiros.
 
 ### Fila sequencial para Epics fatiados de um PRD
 

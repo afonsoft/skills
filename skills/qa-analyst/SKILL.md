@@ -62,7 +62,7 @@ Voce pode esclarecer esses itens para eu continuar?
 Define and document the plan (in `docs/qa/test-plan-<feature>.md` or inline, depending on size):
 
 - **Scope**: what will be tested and — explicitly — what will NOT be tested, with justification.
-- **Layer strategy**: unit (logic), integration (contracts), API (Postman / `curl` / supertest), E2E (Playwright / equivalent — use `/secure-e2e` for flows with auth/permissions), manual exploratory (what automation does not cover).
+- **Layer strategy**: unit (logic), integration (contracts), API (Postman / `curl` / supertest), E2E (Playwright / equivalent), manual exploratory (what automation does not cover).
 - **Tools**: prefer what already exists in the repo (check `package.json` and CI). Do not introduce a new framework without need.
 - **Prioritized risks**: test first what causes the most damage if it breaks (payment > about screen).
 - **Re-validation rule**: every fix must be re-tested, and regression must be run on neighboring flows.
@@ -136,5 +136,4 @@ The QA cycle is not one-pass. Use this loop every time something changes:
 ## References
 
 - [TEMPLATES.md](TEMPLATES.md) — test case and bug report templates
-- `secure-e2e` — for authentication/permission flows
 - `diagnose` — for deep root-cause analysis of hard bugs
