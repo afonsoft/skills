@@ -132,6 +132,65 @@ Approved gaps must be turned into Issues by `/create-issues`. GitHub is the pers
 
 ## Phase 4 — Execution Loop
 
+```mermaid
+flowchart TB
+    subgraph Phase1["Phase 1 - Plan"]
+        P1_H[/create-agent-harness/]
+        P1_S[/grill-me-with-spec/]
+        P1_M[/scaffold-mvp/]
+    end
+
+    subgraph Phase2["Phase 2 - Audit"]
+        P2_A["Audit gaps"]
+        P2_F[/improve-codebase-architecture/]
+    end
+
+    subgraph Phase3["Phase 3 - Issues"]
+        P3_I[/create-issues/]
+    end
+
+    subgraph Slice["Per-Slice Loop"]
+        S_R["Read SPEC + Issue"]
+        S_T[/tdd-spec/]
+        S_C[/code-review-and-quality/]
+        S_D[/diagnose/]
+        S_V["Verify build / test / lint"]
+        S_G[/grill-me-with-spec/]
+        S_CM["Commit"]
+    end
+
+    subgraph Gate["Phase 5 - QA"]
+        G_Q[/qa-analyst/]
+        G_R[/code-review-and-quality/]
+        G_M[/create-readme/]
+        G_P["PR / Merge"]
+    end
+
+    P1_H --> P1_S
+    P1_S --> P1_M
+    P1_M --> P2_A
+    P2_A -->|P2 gap| P2_F
+    P2_F --> P2_A
+    P2_A --> P3_I
+    P3_I --> S_R
+    S_R --> S_T
+    S_T --> S_C
+    S_C --> S_V
+    S_V -->|green| S_CM
+    S_T -->|bug| S_D
+    S_D --> S_T
+    S_C -->|ambiguous| S_G
+    S_G --> S_R
+    S_V -->|fail| S_D
+    S_CM -->|next slice| S_R
+    S_CM -->|Epic done| G_Q
+    G_Q -->|approved| G_R
+    G_Q -->|fail| S_T
+    G_R -->|approved| G_M
+    G_R -->|fail| S_T
+    G_M --> G_P
+```
+
 The Orchestrator runs sliced Issues in a continuous loop until all SPEC implementations are complete. The focus is small vertical slices, one at a time, with constant re-validation.
 
 ### General Rules
@@ -196,6 +255,40 @@ After each slice and at the end of each Epic/DAG:
 6. Only after that can delivery by PR occur. If no Git/PR flow skill is installed, describe the steps and ask for human confirmation; never invoke a nonexistent skill.
 
 At the end of the project or release, ensure `README.md` reflects the current system state.
+
+## Skill Call Reference
+
+| Phase / Situation | Skill | Why it is called | What it returns / does |
+| --- | --- | --- | --- |
+| Phase -1 — detect framework updates | `/orchestrator` (self) | Compare local installed catalog with remote `origin` | Reports whether a reinstall is needed |
+| Phase 0 — missing Git / remote | manual | Cannot proceed without GitHub as source of truth | Guides user to create and connect repo |
+| Phase 1 — create harness | `/create-agent-harness` | Generate `CLAUDE.md`, `AGENTS.md`, `.claude/`, `docs/`, `.specs/` | Files ready for project governance |
+| Phase 1 — write SPEC | `/grill-me-with-spec` | Consolidate domain language and architectural decisions | `.specs/SPEC-{YYYYMMDD}-{slug}.md` in `Approved` state |
+| Phase 1 — empty repo | `/scaffold-mvp` | Bootstrap stack after domain alignment | Initial project skeleton and README |
+| Phase 2 — architecture gaps | `/improve-codebase-architecture` | P2 (architecture) gaps or degraded seams | HTML report with deepening opportunities |
+| Phase 3 — turn work into Issues | `/create-issues` | Gaps, roadmap, and approved docs become GitHub Issues | Real GitHub Issue numbers + dependency links |
+| Phase 4 — implement slice | `/tdd-spec` | Approved SPEC → red-green-refactor slice | Working code + tests passing |
+| Phase 4 — bug or build failure | `/diagnose` | Reproduce, minimise, instrument, fix, regress | Root cause resolved + regression test |
+| Phase 4 — code review per slice | `/code-review-and-quality` | Review diff before next step | Required changes or approval |
+| Phase 4 — SPEC ambiguity | `/grill-me-with-spec` | Missing or conflicting requirement | Updated SPEC with new decisions |
+| Phase 5 — QA gate | `/qa-analyst` | Mandatory pre-PR verification | QA approval or new Issues |
+| Phase 5 — final review | `/code-review-and-quality` | Accumulated Epic diff review | Final approval or rework |
+| Phase 5 — documentation | `/create-readme` | Keep `README.md` in sync with delivery | Updated README |
+
+### Decision Tree
+
+1. Does the SPEC exist and is `Approved`?
+   - **No** → `/grill-me-with-spec`.
+2. Is there a P2 architecture gap?
+   - **Yes** → `/improve-codebase-architecture`.
+3. Is the work tracked on GitHub?
+   - **No** → `/create-issues`.
+4. Did a test fail or build break?
+   - **Yes** → `/diagnose`.
+5. Is the code written but not reviewed?
+   - **Yes** → `/code-review-and-quality`.
+6. Is the Epic done and tests green?
+   - **Yes** → `/qa-analyst` → `/code-review-and-quality` → `/create-readme` → PR.
 
 ## References
 
