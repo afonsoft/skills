@@ -253,7 +253,8 @@ After each slice and at the end of each Epic/DAG:
 4. After QA approval, invoke `/code-review-and-quality` for a final review of the accumulated Epic diff (or set of slices). Quality failures reopen Issues or create new tasks.
 5. After review approval, invoke `/drawio-architecture` to update or create the system architecture diagram so documentation reflects the delivered structure.
 6. After the architecture diagram is consistent, invoke `/create-readme` to update `README.md` with the delivered features, stack, and instructions.
-7. Only after that can delivery by PR occur. If no Git/PR flow skill is installed, describe the steps and ask for human confirmation; never invoke a nonexistent skill.
+7. **Archive the completed SPEC SDD(s)**. Once the Epic/DAG is delivered, create `docs/specs/` if it does not exist and move the corresponding `.specs/SPEC-{YYYYMMDD}-{slug}.md` to `docs/specs/SPEC-{YYYYMMDD}-{slug}.md`. Update the frontmatter status (e.g., from `Approved` to `Completed`) and add a `Delivered` subsection with the merge commit/PR. Commit the move as part of the Epic closure.
+8. Only after that can delivery by PR occur. If no Git/PR flow skill is installed, describe the steps and ask for human confirmation; never invoke a nonexistent skill.
 
 At the end of the project or release, ensure `README.md` reflects the current system state.
 
