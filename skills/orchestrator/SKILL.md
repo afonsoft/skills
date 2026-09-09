@@ -59,11 +59,10 @@ Nao substitua o GitHub silenciosamente por tracker local. GitHub e a fonte de ra
 
 ## Fase 1 - Provisionamento documental
 
-1. Invocar `/setup-skills` para completar `AGENTS.md` ou `CLAUDE.md`, `CONTEXT.md`, `docs/agents/` e `docs/adr/`.
-2. Invocar `/roadmap` para criar ou atualizar `ORCHESTRATOR-ROADMAP.md` e Epics.
-3. Invocar `/grill-with-docs` para consolidar linguagem de dominio e decisoes arquiteturais.
-4. Em repositorio vazio, invocar `/scaffold-mvp` apos o alinhamento de dominio.
-5. Revisar e persistir a documentacao antes de iniciar implementacao.
+1. Invocar `/create-agent-harness` para completar `AGENTS.md` ou `CLAUDE.md`, `CONTEXT.md`, `docs/agents/` e `docs/adr/`.
+2. Invocar `/grill-me-with-spec` para consolidar linguagem de dominio e decisoes arquiteturais, produzindo a SPEC SDD em `.specs/SPEC-{YYYYMMDD}-{feature}.md` antes de qualquer implementacao.
+3. Em repositorio vazio, invocar `/scaffold-mvp` apos o alinhamento de dominio.
+4. Revisar e persistir a documentacao e a SPEC aprovada antes de iniciar implementacao.
 
 Documentacao nao e uma etapa opcional: o orchestrator deve deixar um estado compreensivel para outro agent continuar o trabalho.
 
