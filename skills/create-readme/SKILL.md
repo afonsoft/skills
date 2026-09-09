@@ -166,10 +166,36 @@ npm run test:coverage # Coverage report
 - Internal references (`docs/`, `CHANGELOG.md`, contributing guide)
 - External references (homepage, demo, API docs) if they exist
 
+#### 2.12 Language routing and `docs/` structure
+
+Create a bilingual documentation layout:
+
+- `README.md` — English (en-us), always the primary landing page.
+- `README.pt-br.md` — Portuguese (pt-br) translation of `README.md`.
+- `docs/en/` — auxiliary English documents generated from repository evidence.
+- `docs/pt/` — same documents in pt-br.
+
+Rules for `docs/`:
+
+- Place every auxiliary document in both `docs/en/` and `docs/pt/`.
+- Each README links to its counterpart at the top: `[Português](README.pt-br.md)` in `README.md`; `[English](README.md)` in `README.pt-br.md`.
+- Each README links to `docs/en/` or `docs/pt/` for deeper docs.
+- Do not duplicate `README.md` content inside `docs/`. Put extended/auxiliary content there (e.g., `ARCHITECTURE.md`, `CONTRIBUTING.md`, `API.md`, `INSTALL.md`).
+- Generate a doc only when evidence exists in the repo. Never invent auxiliary docs.
+- Keep the same filename in both folders (e.g., `docs/en/CONTRIBUTING.md` and `docs/pt/CONTRIBUTING.md`).
+
+Evidence-based docs to consider:
+
+- `ARCHITECTURE.md` — if architecture patterns or diagrams were identified.
+- `CONTRIBUTING.md` — if `.github/CONTRIBUTING.md` or commit conventions exist.
+- `API.md` — if the project exposes a REST/GraphQL API (link to OpenAPI/Swagger if present).
+- `INSTALL.md` — if setup has platform-specific steps beyond the README.
+
 **Rules:**
 - Reuse existing content where applicable — don't rewrite what's already correct
 - Only include sections where concrete evidence exists
-- Default to English (en-us); only use another language if the repository's existing documentation is consistently in that language
+- `README.md` is always en-us; `README.pt-br.md` is the pt-br translation
+- Auxiliary docs live under `docs/en/` and `docs/pt/` and must not duplicate README content
 - Never hardcode secrets, API keys, or environment variable values
 
 ### Phase 3: CHANGELOG.md Authoring
@@ -252,7 +278,9 @@ Generated with [Devin](https://devin.ai)"
 Provide a summary of changes:
 ```markdown
 ## Summary
-- **README.md**: [created/updated] — added sections X, Y, Z
+- **README.md**: [created/updated] — en-us primary, added sections X, Y, Z
+- **README.pt-br.md**: [created/updated] — pt-br translation
+- **docs/en/** and **docs/pt/**: [created/updated] — auxiliary docs by language
 - **CHANGELOG.md**: [created/updated] — added [Unreleased] with N entries
 - **Evidence**: all claims traced to files/commits in Discovery Summary
 ```
@@ -269,6 +297,8 @@ Do not open the PR automatically — let the human reviewer decide.
 | **Stale badges** | CI badge points to wrong workflow | Verify badge URL matches actual workflow filename |
 | **Manual PRs** | PR opened without review | Summarize changes first; let human open the PR |
 | **Wrong language** | README in English for a pt-BR project | Match the language of existing documentation |
+|| **Only one language** | Repository misses pt-br users | Always generate `README.pt-br.md` and `docs/pt/` alongside the English versions |
+|| **Docs duplicate README** | `docs/en/README.md` or `docs/pt/README.md` copies the README | Use `docs/` only for extended/auxiliary documents, not another README |
 
 ## Verification Checklist
 
@@ -284,6 +314,10 @@ Do not open the PR automatically — let the human reviewer decide.
 - [ ] Mermaid diagrams (if any) have valid syntax
 - [ ] Branch naming follows the project's convention
 - [ ] Commit message follows Conventional Commits
+- [ ] `README.pt-br.md` is generated as a pt-br translation of `README.md`
+- [ ] `docs/en/` and `docs/pt/` exist for auxiliary docs
+- [ ] Language switcher links connect `README.md` and `README.pt-br.md`
+- [ ] No `README.md` content is duplicated inside `docs/`
 
 ## References
 

@@ -37,7 +37,7 @@ Identify which phase the user is in and lead the corresponding phase. If the use
 
 ### 1. Requirements Analysis
 
-Before any test, interrogate the requirements (PRD, issue, `.specs/SPEC-*.md`, or verbal description):
+Before any test, read the approved source of truth — an approved `.specs/SPEC-{YYYYMMDD}-{feature}.md` and the linked GitHub Issue — plus `.claude/CONTEXT.md` for the domain glossary and `.claude/RULES.md` for guardrails. Interrogate the requirements for:
 
 - **Ambiguities**: vague terms ("fast", "secure", "friendly") with no measurable criterion.
 - **Logic failures**: impossible states, dead ends, contradictory rules.
@@ -59,13 +59,17 @@ Voce pode esclarecer esses itens para eu continuar?
 
 ### 2. Test Planning
 
-Define and document the plan (in `docs/qa/test-plan-<feature>.md` or inline, depending on size):
+Define and document the plan (in `docs/qa/test-plan-<feature>.md` for large features, or inline for small fixes):
 
 - **Scope**: what will be tested and — explicitly — what will NOT be tested, with justification.
-- **Layer strategy**: unit (logic), integration (contracts), API (Postman / `curl` / supertest), E2E (Playwright / equivalent), manual exploratory (what automation does not cover).
-- **Tools**: prefer what already exists in the repo (check `package.json` and CI). Do not introduce a new framework without need.
+- **Layer strategy**: unit, integration, API, E2E and manual/exploratory. Be concrete about what each layer exercises and how it maps to the stack:
+  - **.NET**: unit with xUnit/NUnit/MSTest for business rules; integration with `WebApplicationFactory` and a test `DbContext`/in-memory bus for contracts and persistence; API with `HttpClient` + xUnit for status codes and payload contract; E2E with Playwright only when a real browser flow is required.
+  - **Other stacks**: prefer the repo's existing test pyramid and do not introduce new frameworks without need.
+- **Tools**: prefer what already exists in the repo. Check `*.csproj`, `Directory.Build.props`, `package.json`, `pom.xml`, `pyproject.toml` and CI. For .NET, the default chain is `dotnet test`, Coverlet/`XPlat Code Coverage`, and `reportgenerator`. Do not introduce a new framework without need.
+- **Coverage target by stack**: .NET 80% line and branch; Java 85%; Python 90%; adjust if the project guardrails say otherwise.
 - **Prioritized risks**: test first what causes the most damage if it breaks (payment > about screen).
 - **Re-validation rule**: every fix must be re-tested, and regression must be run on neighboring flows.
+- **Coverage gate**: before committing the plan, run the existing coverage report. If the stack is below target or the suite is red, invoke `/quality-test-implementation` to stabilize the baseline before adding new tests.
 
 ### 3. Test Case Creation
 
@@ -75,23 +79,26 @@ For every feature, create cases in three categories — never only the happy pat
 2. **Error scenarios**: invalid inputs, boundaries (empty, null, max, unicode, injection), dependency failures (API down, timeout).
 3. **Unexpected behaviors**: double click / double submit, back navigation, expired session mid-flow, two users editing the same resource.
 
-Case format: see [TEMPLATES.md](TEMPLATES.md) (ID, preconditions, steps, expected result, priority).
+Case format: see [QA templates](references/qa-templates.md) (ID, preconditions, steps, expected result, priority).
+- **Traceability**: every case must reference the SPEC requirement or acceptance criterion it verifies (e.g., `RF-003` or `AC-006`).
 
 ### 4. Test Execution
 
 - **Automated**: run the existing suite first (baseline). Then implement cases from phase 3 as automated tests where appropriate. Report results faithfully — a failing test is a finding, not an obstacle.
 - **Manual / exploratory**: run the app for real and follow the scripts. Document evidence (output, screenshot, HTTP response).
 - **API**: validate status codes, payload contract, and negative cases (401/403/422) — not just 200.
+- **Traceability**: ensure every automated or manual result can be mapped to a SPEC acceptance criterion or GitHub Issue.
 
-After every fix, re-run the failing case and the regression suite around it.
+After every fix, re-run the failing case and the regression suite around it. If the stack's coverage is below target, invoke `/quality-test-implementation` before declaring the phase done.
 
 ### 5. Bug Reporting and Tracking
 
-Every defect becomes a standardized report (template in [TEMPLATES.md](TEMPLATES.md)): objective title, minimal reproduction steps, expected vs. observed, evidence, severity × priority, environment.
+Every defect becomes a standardized report (template in [QA templates](references/qa-templates.md)): objective title, minimal reproduction steps, expected vs. observed, evidence, severity × priority, environment.
 
 - Use factual, neutral language: "when sending X, the system returns Y" — never "the dev forgot validation".
 - After a fix: **re-test the original scenario AND run regression** on neighboring flows. A fix that breaks something else is not a fix.
 - Suggest converting every fixed bug into an automated regression test.
+- **Tracking**: for S1/S2 or P0/P1 bugs, use `/create-issues` to open a GitHub Issue, linking the related test case, the evidence and the branch where it was found.
 
 Ask the user in Portuguese when a bug is found:
 
@@ -114,6 +121,7 @@ After a cycle (or when asked), perform a root-cause analysis of the bugs found:
 - **Why did the bug exist?** (ambiguous requirement? missing test? shallow code review?)
 - **Why was it not caught earlier?** (gap in which test layer?)
 - **Systemic prevention**: concrete proposal — lint rule, contract test, review checklist, CI gate. One actionable suggestion is worth more than ten generic ones.
+- **Update sources of truth**: if the root cause is a vague or new term, sharpen it in `.claude/CONTEXT.md`; if the root cause is a requirement gap, update the approved `.specs/SPEC-*.md` and the linked GitHub Issue.
 
 ## Re-Validation Loop
 
@@ -135,5 +143,7 @@ The QA cycle is not one-pass. Use this loop every time something changes:
 
 ## References
 
-- [TEMPLATES.md](TEMPLATES.md) — test case and bug report templates
-- `diagnose` — for deep root-cause analysis of hard bugs
+- [QA templates](references/qa-templates.md) — test case, bug report, test plan and RCA templates
+- `/create-issues` — for opening GitHub Issues from bug reports
+- `/diagnose` — for deep root-cause analysis of hard bugs
+- `/quality-test-implementation` — for raising coverage and clearing quality debt

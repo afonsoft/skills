@@ -236,7 +236,7 @@ When Issues come from the special case "new project with only a PRD" (Phase 1), 
    - commit;
    - next Issue in the queue.
    Repeat until all Issues of the Epic are exhausted.
-2. When the Epic is complete, invoke `/qa-analyst`, then `/code-review-and-quality` for the accumulated diff, then `/drawio-architecture` to refresh the system diagram, then `/create-readme` to reflect what was delivered.
+2. When the Epic is complete, invoke `/qa-analyst`, then `/quality-test-implementation` to raise coverage and clear quality debt on the affected stack, then `/code-review-and-quality` for the accumulated diff, then `/drawio-architecture` to refresh the system diagram, then `/create-readme` to reflect what was delivered.
 3. Epic exhausted → open a PR from the working branch to `develop`.
    * Green PR (CI/tests pass) → merge into `develop`.
    * Failed PR → fix with `/diagnose`, re-run verification, then merge.
@@ -272,6 +272,7 @@ At the end of the project or release, ensure `README.md` reflects the current sy
 | Phase 4 — bug or build failure | `/diagnose` | Reproduce, minimise, instrument, fix, regress | Root cause resolved + regression test |
 | Phase 4 — code review per slice | `/code-review-and-quality` | Review diff before next step | Required changes or approval |
 | Phase 4 — SPEC ambiguity | `/grill-me-with-spec` | Missing or conflicting requirement | Updated SPEC with new decisions |
+|| Phase 4 — whole-repo quality gate | `/quality-test-implementation` | Raise coverage and clear quality debt after Epic implementation | Measured quality report, coverage at target |
 | Phase 5 — QA gate | `/qa-analyst` | Mandatory pre-PR verification | QA approval or new Issues |
 | Phase 5 — final review | `/code-review-and-quality` | Accumulated Epic diff review | Final approval or rework |
 | Phase 5 — architecture diagram | `/drawio-architecture` | Update system diagram after delivery | SVG/PNG architecture diagram |
@@ -290,7 +291,7 @@ At the end of the project or release, ensure `README.md` reflects the current sy
 5. Is the code written but not reviewed?
    - **Yes** → `/code-review-and-quality`.
 6. Is the Epic done and tests green?
-   - **Yes** → `/qa-analyst` → `/code-review-and-quality` → `/create-readme` → PR.
+   - **Yes** → `/qa-analyst` → `/quality-test-implementation` → `/code-review-and-quality` → `/create-readme` → PR.
 
 ## References
 
@@ -305,4 +306,5 @@ At the end of the project or release, ensure `README.md` reflects the current sy
 - `/code-review-and-quality` — for reviewing diffs
 - `/diagnose` — for debugging regressions and bugs
 - `/qa-analyst` — for the mandatory QA gate
+- `/quality-test-implementation` — for raising coverage and clearing quality debt
 - `/create-readme` — for keeping README in sync

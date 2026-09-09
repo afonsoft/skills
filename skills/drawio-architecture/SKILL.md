@@ -135,29 +135,32 @@ For Mermaid: complex flowcharts (≥ ~20 nodes, ≥ 3 diamonds, feedback edges, 
 
 # PATH B — Local CLI export (fallback / deliverables)
 
-Resolve the binary name first (`drawio` is canonical on Homebrew/Linux `.deb`/`.rpm`/AUR; `draw.io` on older builds; full path on macOS `.app`/Windows `.exe`). Then:
+Resolve the binary name first (`drawio` is canonical on Homebrew/Linux `.deb`/`.rpm`/AUR; `draw.io` on older builds; full path on macOS `.app`/Windows `.exe`). Store every diagram artifact under `docs/architecture/`:
 
 ```bash
+# Ensure the architecture docs folder exists
+mkdir -p docs/architecture
+
 # Preview PNG (NO -e; required for vision self-check; width-capped under 2576px)
-drawio -x -f png --width 2000 -o diagram.png input.drawio
+drawio -x -f png --width 2000 -o docs/architecture/diagram.png docs/architecture/diagram.drawio
 
 # Final PNG (WITH -e; double extension keeps it editable; run repair_png after)
-drawio -x -f png -e -s 2 -o diagram.drawio.png input.drawio
+drawio -x -f png -e -s 2 -o docs/architecture/diagram.drawio.png docs/architecture/diagram.drawio
 
 # SVG / PDF (final, -e safe)
-drawio -x -f svg -e --embed-svg-images -o diagram.svg input.drawio
-drawio -x -f pdf -e -o diagram.pdf input.drawio
+drawio -x -f svg -e --embed-svg-images -o docs/architecture/diagram.svg docs/architecture/diagram.drawio
+drawio -x -f pdf -e -o docs/architecture/diagram.pdf docs/architecture/diagram.drawio
 ```
 
 After every `-e` PNG export, fix draw.io's truncated IEND chunk:
 ```bash
-python3 scripts/validate_drawio.py diagram.drawio.png --repair-iend
+python3 scripts/validate_drawio.py docs/architecture/diagram.drawio.png --repair-iend
 ```
 
 If the CLI is unavailable, fall back to a browser URL (no upload — XML lives in the `#` fragment):
 ```bash
-python3 scripts/setup_drawio_mcp.py --viewer-url input.drawio        # read-only
-python3 scripts/setup_drawio_mcp.py --viewer-url --edit input.drawio # editable editor URL
+python3 scripts/setup_drawio_mcp.py --viewer-url docs/architecture/diagram.drawio        # read-only
+python3 scripts/setup_drawio_mcp.py --viewer-url --edit docs/architecture/diagram.drawio # editable editor URL
 ```
 
 > See `references/mcp-config.md` for the full Linux headless (`xvfb-run`, `--no-sandbox`, `--disable-gpu`, `HOME`) guidance and the fallback chain.
@@ -290,7 +293,7 @@ For AWS/Azure/GCP/Cisco/K8s, prefer official icons. With MCP, call `search_shape
 
 - **NEVER include XML comments (`<!-- -->`)** in diagram output — they waste tokens and can cause parse errors.
 - Escape special chars in attribute values; always use unique `id`s.
-- Validate before delivery: `python3 scripts/validate_drawio.py diagram.drawio`.
+- Validate before delivery: `python3 scripts/validate_drawio.py docs/architecture/diagram.drawio`.
 
 ## Workflow (recommended)
 
@@ -298,7 +301,9 @@ For AWS/Azure/GCP/Cisco/K8s, prefer official icons. With MCP, call `search_shape
 2. **Configure MCP** if not already (path A.1 / helper) — or resolve the draw.io CLI binary (path B).
 3. **Plan** shapes, relationships, layout (LR/TB), grouping (tier/container), icon needs.
 4. **Author** the XML with the rules above (or write Mermaid for a standard typed diagram).
-5. **Deliver:** MCP → call `open_drawio_xml`/`_mermaid`/`_csv`; CLI → write `.drawio`, export, optionally vision self-check.
+5. **Deliver:**
+   - **MCP** → call `open_drawio_xml`/`_mermaid`/`_csv`.
+   - **CLI** → write the source `.drawio` to `docs/architecture/<diagram-name>.drawio`, then export PNG/SVG/PDF to the same folder, optionally vision self-check.
 6. **Iterate** with targeted XML edits (change `fillColor`, move `x/y`, add/remove node/edge) until approved.
 
 ## Common mistakes
