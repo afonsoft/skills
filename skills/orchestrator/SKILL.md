@@ -114,7 +114,7 @@ Audit the structure produced by `create-agent-harness`:
 [ ] .claude/README.md (harness infrastructure)
 [ ] .specs/ for SPEC SDD when features are in flight
 [ ] docs/agents/ when domain tracker and labels exist
-[ ] docs/adr/ when relevant architectural decisions exist
+[ ] docs/architecture/ when relevant architectural decisions exist
 [ ] Skills installed in the chosen environment
 ```
 

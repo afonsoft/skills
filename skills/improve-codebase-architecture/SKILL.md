@@ -38,7 +38,7 @@ This skill is _informed_ by the project's domain model. The domain language in `
 
 ### 1. Explore
 
-Read the project's domain glossary and any approved SPEC SDDs in `.specs/` (or ADRs in `docs/adr/` if the project still uses ADRs) that touch the area first.
+Read the project's domain glossary and any approved SPEC SDDs in `.specs/` (or architecture decisions in `docs/architecture/` if the project still uses them) that touch the area first.
 
 Then spawn a read-only exploration subagent to walk the codebase. Don't follow rigid heuristics — explore organically and note where you experience friction:
 
@@ -69,7 +69,7 @@ End the report with a **Top recommendation** section: which candidate you'd tack
 
 **Use .claude/CONTEXT.md vocabulary for the domain, and [LANGUAGE.md](references/LANGUAGE.md) vocabulary for the architecture.** If `.claude/CONTEXT.md` defines "Order," talk about "the Order intake module" — not "the FooBarHandler," and not "the Order service."
 
-**Decision conflicts**: if a candidate contradicts an existing approved SPEC SDD or ADR, only surface it when the friction is real enough to warrant revisiting the decision. Mark it clearly in the card (e.g. a warning callout: _"contradicts SPEC-20260908-order-intake — but worth reopening because…"_). Don't list every theoretical refactor a recorded decision forbids.
+**Decision conflicts**: if a candidate contradicts an existing approved SPEC SDD or architecture decision, only surface it when the friction is real enough to warrant revisiting the decision. Mark it clearly in the card (e.g. a warning callout: _"contradicts SPEC-20260908-order-intake — but worth reopening because…"_). Don't list every theoretical refactor a recorded decision forbids.
 
 See [HTML-REPORT.md](references/HTML-REPORT.md) for the full HTML scaffold, diagram patterns, and styling guidance.
 

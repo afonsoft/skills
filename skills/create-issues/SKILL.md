@@ -62,7 +62,7 @@ Required roadmap format:
 
 ## Process
 
-1. Read `ORCHESTRATOR-ROADMAP.md`, `.specs/SPEC-*.md`, ADRs, requirements, and any parent Issue comments.
+1. Read `ORCHESTRATOR-ROADMAP.md`, `.specs/SPEC-*.md`, `docs/architecture/`, requirements, and any parent Issue comments.
 2. List existing Epics and extract their IDs, states, and links.
 3. Assign the next available `E##` ID to each Epic that does not have one. Do not renumber existing Epics.
 4. For each Epic without a link, find the matching GitHub Issue by title, labels, and body. If none exists, create one with `gh`.

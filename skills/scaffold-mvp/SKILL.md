@@ -36,7 +36,7 @@ MVP speed must not produce unstable code or structural shortcuts. Syntactic and 
 
 Do not perform generic business interrogation; the predecessor skill already established the domain.
 
-1. **Read** `CONTEXT.md`, `docs/adr/`, and the approved `.specs/SPEC-*.md`.
+1. **Read** `CONTEXT.md`, `docs/architecture/`, and the approved `.specs/SPEC-*.md`.
 2. Based on the discovered domain, design a hyper-productive infrastructure. Be consultative and opinionated in favor of speed.
 3. If the context suggests a standard web app, categorically propose the proven ecosystem: **Next.js + Tailwind + shadcn/ui**. For other profiles (CLI, worker, pure backend), propose the equivalent MVP stack in the respective language.
 4. **Mandatory validation:** Present the chosen stack and ask the user in Portuguese:

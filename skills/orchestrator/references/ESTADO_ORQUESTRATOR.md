@@ -55,11 +55,11 @@
   status: blocked
 
 - id: TASK-003
-  desc: "Update auth ADR"
+  desc: "Update auth architecture decision"
   skill: /grill-me-with-spec
   gap_ref: GAP-002
   issue_ref: "#103"
-  spec_ref: ".specs/SPEC-20260908-auth-adr.md"
+  spec_ref: ".specs/SPEC-20260908-auth-architecture.md"
   depends_on: []
   status: ready
 ```
