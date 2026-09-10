@@ -14,7 +14,7 @@ compatibility: MCP mode needs Node.js + `npx @drawio/mcp` (or a self-hosted draw
   instance via DRAWIO_BASE_URL). Local export mode needs the draw.io desktop CLI on
   PATH. Works on macOS/Linux/Windows.
 metadata:
-  version: 1.0.0
+  version: 1.0.1
   visibility: public
   author: merged from Agents365-ai/drawio-skill, scarr05/claude-skills-pub, jgraph/drawio-mcp
   url: https://github.com/afonsoft/skills
@@ -32,6 +32,13 @@ Create professional, editable architecture diagrams in draw.io's native `.drawio
 
 1. **Authoring knowledge** — how to write correct `.drawio` XML for architecture, network, cloud, flowchart and ER diagrams (from `Agents365-ai/drawio-skill` and `scarr05/claude-skills-pub`).
 2. **MCP integration** — how to configure and call the official `@drawio/mcp` server so the agent opens diagrams inline/editor instead of dumping XML to a file (from `jgraph/drawio-mcp`, the vendor's own reference).
+
+## Security and Trust Boundaries
+
+- **Pin the MCP server version**: `npx` can download and execute remote code. Do not run bare `npx -y @drawio/mcp`. Use `npx -y @drawio/mcp@<VERSION>` with an explicit version verified on [npm](https://www.npmjs.com/package/@drawio/mcp) or the project's lockfile. Verify the package name and publisher (JGraph / `drawio`) before installing.
+- **Prefer local stdio or self-hosted**: The recommended integration runs `@drawio/mcp` as a local stdio process. If you use `DRAWIO_BASE_URL`, point it to a draw.io instance you control and trust.
+- **Hosted endpoint caution**: `https://mcp.draw.io/mcp` is a remote MCP Apps endpoint operated by the draw.io vendor. It receives diagram XML and renders inline. Only use it when the vendor, TLS channel, and data sensitivity are acceptable for your diagrams. Do not send confidential or regulated architecture data to the hosted endpoint.
+- **SVG/PNG exports are local**: The CLI export path (`drawio -x ...`) runs the desktop application locally and does not upload diagrams unless you explicitly open a browser URL.
 
 ## When to use
 
@@ -61,15 +68,17 @@ Both paths share the **same XML authoring rules** in this skill — only the del
 
 ## A.1 Configure the server
 
-The server is distributed as `npx @drawio/mcp` (stdio). The single universal invocation is:
+The server is distributed as `npx @drawio/mcp` (stdio). Pin an explicit version and run it locally:
 
 ```bash
-npx -y @drawio/mcp
+npx -y @drawio/mcp@<VERSION>
 ```
+
+Replace `<VERSION>` with the latest stable release verified on [npm](https://www.npmjs.com/package/@drawio/mcp). Do not run bare `npx -y @drawio/mcp` because it resolves to the latest remote version at runtime.
 
 Add it to your client's MCP config under `mcpServers.drawio`. For the concrete JSON block per platform plus self-hosting, see **`references/mcp-config.md`** (Claude Desktop, Claude Code, VS Code `.vscode/mcp.json`, Cursor `~/.cursor/mcp.json`, OpenCode, Windsurf, and the `DRAWIO_BASE_URL` env for self-hosted instances).
 
-There is also a **hosted** alternative (`https://mcp.draw.io/mcp`) that renders diagrams *inline* via the MCP Apps protocol (Claude.ai, VS Code, Cursor) — no install, but it is a *different* server type than the stdio one above.
+There is also a **hosted** alternative (`https://mcp.draw.io/mcp`) that renders diagrams *inline* via the MCP Apps protocol (Claude.ai, VS Code, Cursor) — no install, but it is a *different* server type than the stdio one above and sends your diagram XML to the draw.io vendor's servers. Only use it for non-sensitive diagrams and when you trust the vendor endpoint.
 
 ### Automated setup helper
 

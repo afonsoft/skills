@@ -1,22 +1,24 @@
 # MCP Server Configuration — `@drawio/mcp`
 
+> **Security note:** `npx` downloads and executes a remote package. Always pin an explicit version (`@drawio/mcp@<VERSION>`) verified on [npm](https://www.npmjs.com/package/@drawio/mcp) and confirm the publisher is `drawio` / JGraph. Do not run bare `npx -y @drawio/mcp` (without an explicit `@<VERSION>`) because it resolves to the latest remote version at runtime. The hosted endpoint `https://mcp.draw.io/mcp` sends diagram XML to the draw.io vendor's servers — only use it for non-sensitive diagrams and when you trust the vendor.
+
 The official draw.io MCP server is an **stdio** server distributed via npm. The universal invocation is:
 
 ```bash
-npx -y @drawio/mcp
+npx -y @drawio/mcp@<VERSION>
 ```
 
-Add it under `mcpServers.drawio` in your client's config. Below are the exact blocks per platform. For an automated, platform-detecting writer, use `scripts/setup_drawio_mcp.py`.
+Replace `<VERSION>` with the stable release you have verified. Add it under `mcpServers.drawio` in your client's config. Below are the exact blocks per platform. For an automated, platform-detecting writer, use `scripts/setup_drawio_mcp.py` and ensure it pins the version.
 
 ### All supported platforms (quick reference)
 
 | Target (`--target`) | Agent / IDE | Config file | JSON key |
 |---------------------|-------------|-------------|----------|
 | `claude-desktop` | Claude Desktop | `~/Library/Application Support/Claude/claude_desktop_config.json` (mac) / `%APPDATA%\Claude\...` (win) / `~/.config/Claude/...` (linux) | `mcpServers` |
-| `claude-code` | Claude Code | `~/.claude/settings.json` (or `claude mcp add drawio -- npx -y @drawio/mcp`) | `mcpServers` |
+| `claude-code` | Claude Code | `~/.claude/settings.json` (or `claude mcp add drawio -- npx -y @drawio/mcp@<VERSION>`) | `mcpServers` |
 | `vscode` | VS Code / GitHub Copilot | `.vscode/mcp.json` (workspace) or `~/.config/Code/User/mcp.json` (global) | `servers` |
 | `cursor` | Cursor | `~/.cursor/mcp.json` (global) or `.cursor/mcp.json` (project) | `mcpServers` |
-| `opencode` | OpenCode | `~/.config/opencode/opencode.json` (or `opencode mcp add drawio -- npx -y @drawio/mcp`) | `mcpServers` |
+| `opencode` | OpenCode | `~/.config/opencode/opencode.json` (or `opencode mcp add drawio -- npx -y @drawio/mcp@<VERSION>`) | `mcpServers` |
 | `windsurf` | Windsurf | `~/.codeium/windsurf/mcp.json` (global) or `.windsurf/mcp.json` (project) | `mcpServers` |
 | `devin` | Devin Desktop | `~/.devin/mcp.json` (linux) — also via Devin app/UI Integrations | `mcpServers` |
 | `devin-cli` | Devin CLI | `~/.config/devin/mcp.json` — also via Devin app/UI | `mcpServers` |
@@ -31,7 +33,7 @@ The universal block for **every** stdio client (Claude, Cursor, OpenCode, Windsu
   "mcpServers": {
     "drawio": {
       "command": "npx",
-      "args": ["-y", "@drawio/mcp"]
+      "args": ["-y", "@drawio/mcp@<VERSION>"]
     }
   }
 }
@@ -52,7 +54,7 @@ Config file:
   "mcpServers": {
     "drawio": {
       "command": "npx",
-      "args": ["-y", "@drawio/mcp"]
+      "args": ["-y", "@drawio/mcp@<VERSION>"]
     }
   }
 }
@@ -64,7 +66,7 @@ Config file:
 
 Command line:
 ```bash
-claude mcp add drawio -- npx -y @drawio/mcp
+claude mcp add drawio -- npx -y @drawio/mcp@<VERSION>
 ```
 
 Or manually in `.claude/settings.json` (project or user):
@@ -73,7 +75,7 @@ Or manually in `.claude/settings.json` (project or user):
   "mcpServers": {
     "drawio": {
       "command": "npx",
-      "args": ["-y", "@drawio/mcp"]
+      "args": ["-y", "@drawio/mcp@<VERSION>"]
     }
   }
 }
@@ -90,7 +92,7 @@ Add to `.vscode/mcp.json` in your workspace (or run **MCP: Open User Configurati
   "servers": {
     "drawio": {
       "command": "npx",
-      "args": ["-y", "@drawio/mcp"]
+      "args": ["-y", "@drawio/mcp@<VERSION>"]
     }
   }
 }
@@ -110,7 +112,7 @@ Manual — global `~/.cursor/mcp.json` or project `.cursor/mcp.json`:
   "mcpServers": {
     "drawio": {
       "command": "npx",
-      "args": ["-y", "@drawio/mcp"]
+      "args": ["-y", "@drawio/mcp@<VERSION>"]
     }
   }
 }
@@ -127,12 +129,12 @@ OpenCode reads MCP servers from its config (`opencode.json` / `opencode.jsonc` o
   "mcpServers": {
     "drawio": {
       "command": "npx",
-      "args": ["-y", "@drawio/mcp"]
+      "args": ["-y", "@drawio/mcp@<VERSION>"]
     }
   }
 }
 ```
-(Equivalent to running `opencode mcp add drawio -- npx -y @drawio/mcp` if your CLI supports it.)
+(Equivalent to running `opencode mcp add drawio -- npx -y @drawio/mcp@<VERSION>` if your CLI supports it.)
 
 ---
 
@@ -143,7 +145,7 @@ OpenCode reads MCP servers from its config (`opencode.json` / `opencode.jsonc` o
   "mcpServers": {
     "drawio": {
       "command": "npx",
-      "args": ["-y", "@drawio/mcp"]
+      "args": ["-y", "@drawio/mcp@<VERSION>"]
     }
   }
 }
@@ -160,7 +162,7 @@ To open diagrams in your own draw.io instance, set `DRAWIO_BASE_URL` (default `h
   "mcpServers": {
     "drawio": {
       "command": "npx",
-      "args": ["-y", "@drawio/mcp"],
+      "args": ["-y", "@drawio/mcp@<VERSION>"],
       "env": {
         "DRAWIO_BASE_URL": "https://drawio.example.com/"
       }
@@ -173,13 +175,15 @@ To open diagrams in your own draw.io instance, set `DRAWIO_BASE_URL` (default `h
 
 ## Hosted MCP App Server (inline rendering)
 
+> **Security note:** This remote endpoint is operated by the draw.io vendor. It receives your diagram XML and renders it inline. Only use it for non-sensitive diagrams and when you trust the vendor and the TLS channel.
+
 No install — renders diagrams *inline* in chat via the MCP Apps protocol. Add the remote endpoint as a remote MCP server for Claude.ai / VS Code / Cursor:
 
 ```
 https://mcp.draw.io/mcp
 ```
 
-This is a **different** server type than the stdio one above (inline vs. opens-a-browser-tab). Choose based on whether you want inline previews or the full editor.
+This is a **different** server type than the stdio one above (inline vs. opens-a-browser-tab). For sensitive or regulated architecture data, prefer the local stdio server with a pinned `@drawio/mcp@<VERSION>` package.
 
 ---
 
@@ -192,7 +196,7 @@ Conventional file path (linux); Devin also configures MCP through its **app/UI �
   "mcpServers": {
     "drawio": {
       "command": "npx",
-      "args": ["-y", "@drawio/mcp"]
+      "args": ["-y", "@drawio/mcp@<VERSION>"]
     }
   }
 }
@@ -209,14 +213,14 @@ Conventional file path (linux); Devin also configures MCP through its **app/UI �
   "mcpServers": {
     "drawio": {
       "command": "npx",
-      "args": ["-y", "@drawio/mcp"]
+      "args": ["-y", "@drawio/mcp@<VERSION>"]
     }
   }
 }
 ```
 
 - Config path: `~/.config/devin/mcp.json`
-- If your Devin build prefers the UI, add the server under Devin's MCP/Integrations settings with command `npx -y @drawio/mcp`.
+- If your Devin build prefers the UI, add the server under Devin's MCP/Integrations settings with command `npx -y @drawio/mcp@<VERSION>`.
 
 ## AGY (Antigravity CLI)
 
@@ -225,7 +229,7 @@ Conventional file path (linux); Devin also configures MCP through its **app/UI �
   "mcpServers": {
     "drawio": {
       "command": "npx",
-      "args": ["-y", "@drawio/mcp"]
+      "args": ["-y", "@drawio/mcp@<VERSION>"]
     }
   }
 }
@@ -243,7 +247,7 @@ Both reuse the Gemini CLI settings file:
   "mcpServers": {
     "drawio": {
       "command": "npx",
-      "args": ["-y", "@drawio/mcp"]
+      "args": ["-y", "@drawio/mcp@<VERSION>"]
     }
   }
 }
