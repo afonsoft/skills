@@ -12,10 +12,15 @@
       "type": "stdio",
       "command": "notebooklm-mcp"
     },
+    "deepwiki": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "mcp-deepwiki@latest"]
+    },
     "drawio": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@drawio/mcp@<VERSION>"]
+      "args": ["-y", "@drawio/mcp@latest"]
     },
     "wordpress-mcp": {
       "type": "http",
@@ -41,7 +46,7 @@
     "obsidian": {
       "type": "stdio",
       "command": "npx",
-      "args": ["mcp-obsidian-cli@<VERSION>"],
+      "args": ["mcp-obsidian-cli@latest"],
       "env": {
         "OBSIDIAN_VAULT": "<YOUR_VAULT_NAME>"
       }
