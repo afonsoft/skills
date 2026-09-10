@@ -8,6 +8,11 @@ A curated collection of high-performance Agent Skills and hooks designed to enha
 [![Security Scan](https://github.com/afonsoft/skills/actions/workflows/skills-validate.yml/badge.svg?job=security-scan)](https://github.com/afonsoft/skills/actions/workflows/skills-validate.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Agent Skills Spec](https://img.shields.io/badge/Agent%20Skills-Spec-blue)](https://agentskills.io)
+[![DeepWiki](https://img.shields.io/badge/DeepWiki-afonsoft%2Fskills-blue)](https://deepwiki.com/afonsoft/skills)
+[![Made in Brazil](https://img.shields.io/badge/Made%20in-Brazil-green)](https://github.com/afonsoft/skills)
+[![Last Commit](https://img.shields.io/github/last-commit/afonsoft/skills)](https://github.com/afonsoft/skills/commits/main)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/afonsoft/skills/pulls)
+[![Open Source](https://img.shields.io/badge/Open%20Source-%E2%9D%A4-brightgreen)](https://github.com/afonsoft/skills)
 
 ## 🚀 Overview
 
@@ -63,26 +68,26 @@ Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen 
 
 | Skill | Gen Agent Trust Hub | Socket alerts | Snyk | Details |
 |-------|---------------------|---------------|------|---------|
-| `building-mcp-servers` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/building-mcp-servers) |
-| `code-review-and-quality` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/code-review-and-quality) |
+| `building-mcp-servers` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/building-mcp-servers) |
+| `code-review-and-quality` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/code-review-and-quality) |
 | `composio-mcp` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/composio-mcp) |
 | `create-agent-harness` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/create-agent-harness) |
 | `create-issues` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/create-issues) |
 | `create-readme` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/create-readme) |
 | `diagnose` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/diagnose) |
-| `drawio-architecture` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/drawio-architecture) |
+| `drawio-architecture` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/drawio-architecture) |
 | `grill-me-with-spec` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/grill-me-with-spec) |
 | `improve-codebase-architecture` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/improve-codebase-architecture) |
-| `notebooklm-mcp` | ✅ safe | 2 | 🟢 low | [View](https://skills.sh/afonsoft/skills/notebooklm-mcp) |
+| `notebooklm-mcp` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/notebooklm-mcp) |
 | `observability-and-instrumentation` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/observability-and-instrumentation) |
-| `obsidian` | 🟡 medium | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/obsidian) |
-| `orchestrator` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/orchestrator) |
+| `obsidian` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/obsidian) |
+| `orchestrator` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/orchestrator) |
 | `qa-analyst` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/qa-analyst) |
-| `quality-test-implementation` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/quality-test-implementation) |
+| `quality-test-implementation` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/quality-test-implementation) |
 | `scaffold-mvp` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/scaffold-mvp) |
-| `sonarqube-review` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/sonarqube-review) |
+| `sonarqube-review` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/sonarqube-review) |
 | `tdd-spec` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/tdd-spec) |
-| `wordpress-mcp` | ✅ safe | 2 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/wordpress-mcp) |
+| `wordpress-mcp` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/wordpress-mcp) |
 ---
 
 ## 📦 Installation
