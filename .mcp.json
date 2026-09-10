@@ -13,9 +13,8 @@
       "command": "notebooklm-mcp"
     },
     "deepwiki": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "mcp-deepwiki@latest"]
+      "type": "http",
+      "url": "https://mcp.deepwiki.com/mcp"
     },
     "drawio": {
       "type": "stdio",
