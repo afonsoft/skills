@@ -1,0 +1,50 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "composio": {
+      "type": "http",
+      "url": "https://connect.composio.dev/mcp",
+      "headers": {
+        "x-consumer-api-key": "<YOUR_COMPOSIO_CONSUMER_KEY>"
+      }
+    },
+    "notebooklm-mcp": {
+      "type": "stdio",
+      "command": "notebooklm-mcp"
+    },
+    "drawio": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@drawio/mcp@<VERSION>"]
+    },
+    "wordpress-mcp": {
+      "type": "http",
+      "url": "https://<YOUR_DOMAIN>/wp-json/mcp/mcp-adapter-default-server",
+      "headers": {
+        "Authorization": "Basic <BASE64_USER_APP_PASSWORD>"
+      }
+    },
+    "wordpress-ai-engine": {
+      "type": "http",
+      "url": "https://<YOUR_DOMAIN>/wp-json/mcp/v1/http",
+      "headers": {
+        "Authorization": "Bearer <YOUR_AI_ENGINE_BEARER_TOKEN>"
+      }
+    },
+    "wordpress-ultimate": {
+      "type": "http",
+      "url": "https://<YOUR_DOMAIN>/wp-json/mcp-ultimate/v1",
+      "headers": {
+        "Authorization": "Basic <BASE64_USER_APP_PASSWORD>"
+      }
+    },
+    "obsidian": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["mcp-obsidian-cli@<VERSION>"],
+      "env": {
+        "OBSIDIAN_VAULT": "<YOUR_VAULT_NAME>"
+      }
+    }
+  }
+}

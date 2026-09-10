@@ -5,6 +5,7 @@
   "homepage": "https://github.com/afonsoft/skills",
   "repository": "https://github.com/afonsoft/skills",
   "license": "MIT",
+  "mcpServers": "./.mcp.json",
   "author": {
     "name": "afonsoft",
     "url": "https://github.com/afonsoft"
