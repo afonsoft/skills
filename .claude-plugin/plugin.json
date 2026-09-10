@@ -1,0 +1,12 @@
+{
+  "name": "afonsoft-skills",
+  "description": "Curated collection of Agent Skills for harness engineering, code quality, MCP integrations, and agent-driven delivery.",
+  "version": "1.0.0",
+  "author": {
+    "name": "afonsoft",
+    "url": "https://github.com/afonsoft"
+  },
+  "homepage": "https://github.com/afonsoft/skills",
+  "repository": "https://github.com/afonsoft/skills",
+  "license": "MIT"
+}
