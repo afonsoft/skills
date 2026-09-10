@@ -51,6 +51,9 @@ Generate — or migrate — the agent harness of a repository into the modern **
 - "configure permissions, hooks or subagents"
 - "the agent forgets everything between sessions" / "configure memory"
 
+- User asks or mentions this skill in English (e.g., "use /create-agent-harness", "run create-agent-harness").
+- O usuário pede ou menciona esta skill em português (ex.: "use /create-agent-harness", "execute create-agent-harness").
+
 ## Do NOT Use For
 
 | Request | Use instead |

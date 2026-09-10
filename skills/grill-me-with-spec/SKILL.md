@@ -24,9 +24,12 @@ All questions directed at the user must be in Portuguese. This skill itself and 
 - Before any implementation begins.
 - The existing SPEC is outdated and needs refinement.
 
+- User asks or mentions this skill in English (e.g., "use /grill-me-with-spec", "run grill-me-with-spec").
+- O usuário pede ou menciona esta skill em português (ex.: "use /grill-me-with-spec", "execute grill-me-with-spec").
+
 ## When NOT to Use
 
-- Do not use for implementation — that is the job of the implementation skill (`/tdd-spec`, etc.).
+- Do not use for implementation — that is the job of the implementation skill (`/execute-tdd-spec`, etc.).
 - Do not use when a SPEC already exists and is approved and the user only wants execution.
 - Do not use when the user explicitly refuses to provide requirements.
 

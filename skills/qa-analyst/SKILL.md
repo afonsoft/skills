@@ -26,6 +26,9 @@ All questions and clarifications to the user must be in **Portuguese (pt-BR)**. 
 - A bug needs disciplined reproduction and reporting.
 - After implementation, before a PR is opened.
 
+- User asks or mentions this skill in English (e.g., "use /qa-analyst", "run qa-analyst").
+- O usuário pede ou menciona esta skill em português (ex.: "use /qa-analyst", "execute qa-analyst").
+
 ## When NOT to Use
 
 - Do not use when the only task is to write production code.

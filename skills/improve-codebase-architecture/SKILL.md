@@ -13,6 +13,11 @@ metadata:
 
 Surface architectural friction and propose **deepening opportunities** — refactors that turn shallow modules into deep ones. The aim is testability and AI-navigability.
 
+## When to Use
+
+- User asks or mentions this skill in English (e.g., "use /improve-codebase-architecture", "run improve-codebase-architecture").
+- O usuário pede ou menciona esta skill em português (ex.: "use /improve-codebase-architecture", "execute improve-codebase-architecture").
+
 ## Glossary
 
 Use these terms exactly in every suggestion. Consistent language is the point — don't drift into "component," "service," "API," or "boundary." Full definitions in [LANGUAGE.md](references/LANGUAGE.md).

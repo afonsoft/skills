@@ -47,6 +47,9 @@ Create professional, editable architecture diagrams in draw.io's native `.drawio
 - You are setting up the **draw.io MCP server** for the current agent/IDE and need the exact config block per platform.
 - You want the agent to **search the official shape library** (AWS/Azure/GCP/Cisco/K8s/brand logos) without guessing `shape=` strings.
 
+- User asks or mentions this skill in English (e.g., "use /drawio-architecture", "run drawio-architecture").
+- O usuário pede ou menciona esta skill em português (ex.: "use /drawio-architecture", "execute drawio-architecture").
+
 ## When NOT to use
 
 - A casual hand-drawn / whiteboard look → **excalidraw** or **tldraw**.

@@ -34,6 +34,9 @@ This skill reads diffs, PR descriptions, comments, and source code to evaluate c
 - When refactoring existing code
 - After any bug fix (review both the fix and the regression test)
 
+- User asks or mentions this skill in English (e.g., "use /code-review-and-quality", "run code-review-and-quality").
+- O usuário pede ou menciona esta skill em português (ex.: "use /code-review-and-quality", "execute code-review-and-quality").
+
 ## The Five-Axis Review
 
 Every review evaluates code across these dimensions:

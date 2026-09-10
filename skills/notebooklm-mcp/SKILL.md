@@ -50,6 +50,9 @@ Both paths share the **same cookie cache** at `~/.notebooklm-mcp-cli/profiles/<p
 - The user asks to configure the NotebookLM MCP server for Claude Code / Cursor / Devin / Gemini.
 - You need to extract Google cookies manually or via an external CDP endpoint.
 
+- User asks or mentions this skill in English (e.g., "use /notebooklm-mcp", "run notebooklm-mcp").
+- O usuário pede ou menciona esta skill em português (ex.: "use /notebooklm-mcp", "execute notebooklm-mcp").
+
 ## When NOT to use
 
 - The user wants a generic "scrape Google docs" tool — NotebookLM is specifically for the NotebookLM product.

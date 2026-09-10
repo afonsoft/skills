@@ -17,6 +17,11 @@ When exploring the codebase, use the project's domain glossary from `.claude/CON
 
 **Re-validation loop**: after every hypothesis, fix, or change, re-run the reproduction and the regression checks before declaring the bug resolved.
 
+## When to Use
+
+- User asks or mentions this skill in English (e.g., "use /diagnose", "run diagnose").
+- O usuário pede ou menciona esta skill em português (ex.: "use /diagnose", "execute diagnose").
+
 ## Phase 1 — Build a feedback loop
 
 **This is the skill.** Everything else is mechanical. If you have a fast, deterministic, agent-runnable pass/fail signal for the bug, you will find the cause — bisection, hypothesis-testing, and instrumentation all just consume that signal. If you do not have one, no amount of staring at code will save you.

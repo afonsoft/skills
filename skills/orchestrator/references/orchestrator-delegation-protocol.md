@@ -85,7 +85,7 @@ O Orquestrador deve consultar esta tabela antes de disparar qualquer delegação
 | Linguagem de domínio ausente | `/grill-me-with-spec` |
 | Arquitetura degradada | `/improve-codebase-architecture` |
 | Bug difícil ou regressão | `/diagnose` |
-| Código sem testes | `/tdd-spec` |
+| Código sem testes | `/execute-tdd-spec` |
 | Análise de QA pós-desenvolvimento (obrigatório antes do PR) | `/qa-analyst` |
 | Falta de contexto | manual |
 | Alinhamento antes de mudança | `/grill-me-with-spec` |
@@ -163,7 +163,7 @@ Somente após o Portão de QA ser aprovado, o Orchestrator pode iniciar o fluxo 
 
 | GAP Identificado | Skill Delegada | Tier de Risco |
 |------------------|----------------|---------------|
-| Testes ausentes ou frágeis | `/tdd-spec` | Batch |
+| Testes ausentes ou frágeis | `/execute-tdd-spec` | Batch |
 | Fim de desenvolvimento — análise de QA obrigatória pré-PR | `/qa-analyst` | Mandatório (todos os Tiers) |
 | Arquitetura degradada/acoplada | `/improve-codebase-architecture` | Batch |
 | Bug/regressão | `/diagnose` | Block |

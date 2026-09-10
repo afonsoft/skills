@@ -11,6 +11,11 @@ metadata:
 
 # MCP Server Development Guide
 
+## When to Use
+
+- User asks or mentions this skill in English (e.g., "use /building-mcp-servers", "run building-mcp-servers").
+- O usuário pede ou menciona esta skill em português (ex.: "use /building-mcp-servers", "execute building-mcp-servers").
+
 ## Overview
 
 Create MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. The quality of an MCP server is measured by how well it enables LLMs to accomplish real-world tasks.

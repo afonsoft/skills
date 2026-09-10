@@ -34,7 +34,7 @@ The skills are organized into four main pillars: **Harness Engineering**, **Code
 - **[`grill-me-with-spec`](skills/grill-me-with-spec/SKILL.md)**: Interviews the user in Portuguese to consolidate domain language and produce an approved `.specs/SPEC-{YYYYMMDD}-{feature}.md` before implementation.
 - **[`scaffold-mvp`](skills/scaffold-mvp/SKILL.md)**: Bootstraps a new repository after domain/spec alignment. Proposes a stack and generates a lean README, lockfiles, and stubs.
 - **[`create-issues`](skills/create-issues/SKILL.md)**: Turns approved gaps, roadmap, and specs into GitHub Issues with vertical slices and dependency links.
-- **[`tdd-spec`](skills/tdd-spec/SKILL.md)**: Test-driven development using the approved SPEC SDD as the source of truth. Red-green-refactor one vertical slice at a time.
+- **[`execute-tdd-spec`](skills/execute-tdd-spec/SKILL.md)**: Test-driven development using the approved SPEC SDD as the source of truth. Red-green-refactor one vertical slice at a time.
 - **[`qa-analyst`](skills/qa-analyst/SKILL.md)**: Full QA cycle — requirements analysis, test planning, test cases, execution, bug reports, and process improvement.
 - **[`diagnose`](skills/diagnose/SKILL.md)**: Disciplined diagnosis and re-validation loop for hard bugs and performance regressions.
 - **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Finds architectural deepening opportunities by reading `.claude/CONTEXT.md` and `docs/adr/`, and produces an HTML report.
@@ -86,7 +86,7 @@ Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen 
 | `quality-test-implementation` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/quality-test-implementation) |
 | `scaffold-mvp` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/scaffold-mvp) |
 | `sonarqube-review` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/sonarqube-review) |
-| `tdd-spec` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/tdd-spec) |
+| `execute-tdd-spec` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/execute-tdd-spec) |
 | `wordpress-mcp` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/wordpress-mcp) |
 ---
 

@@ -22,6 +22,9 @@ If the repository is not on GitHub or `gh` is not authenticated, stop and invoke
 - Creating a new batch of Issues from a release plan or PRD.
 - Keeping roadmap, Epics, and GitHub Issues in sync.
 
+- User asks or mentions this skill in English (e.g., "use /create-issues", "run create-issues").
+- O usuário pede ou menciona esta skill em português (ex.: "use /create-issues", "execute create-issues").
+
 ## When NOT to Use
 
 - Do not use when the only task is to close or modify existing Issues — use GitHub directly.

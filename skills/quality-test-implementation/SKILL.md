@@ -31,6 +31,9 @@ Perform a comprehensive intervention in the target repository to stabilize the b
 
 **When NOT to use:** one small file, a single change review, or a quick lint pass. For reviewing a single change, use `code-review-and-quality`.
 
+- User asks or mentions this skill in English (e.g., "use /quality-test-implementation", "run quality-test-implementation").
+- O usuário pede ou menciona esta skill em português (ex.: "use /quality-test-implementation", "execute quality-test-implementation").
+
 ## Inputs
 
 - `REPO_NAME`: full name (`owner/repo`).

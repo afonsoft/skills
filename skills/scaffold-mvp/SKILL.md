@@ -11,6 +11,11 @@ metadata:
 
 # Scaffold MVP
 
+## When to Use
+
+- User asks or mentions this skill in English (e.g., "use /scaffold-mvp", "run scaffold-mvp").
+- O usuário pede ou menciona esta skill em português (ex.: "use /scaffold-mvp", "execute scaffold-mvp").
+
 ## Trigger
 
 This skill is activated **only** in brand-new repositories, right after `/grill-me-with-spec` has established the shared language, domain, and SPEC SDD.

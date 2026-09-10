@@ -28,6 +28,9 @@ Code you can't observe is code you can't operate. Observability is the ability t
 - Profiling and optimizing measured slowness — use a performance optimization skill
 - Launch-day monitoring checklists and rollback triggers — use a shipping/launch skill; this skill covers the instrumentation that feeds them
 
+- User asks or mentions this skill in English (e.g., "use /observability-and-instrumentation", "run observability-and-instrumentation").
+- O usuário pede ou menciona esta skill em português (ex.: "use /observability-and-instrumentation", "execute observability-and-instrumentation").
+
 ## Process
 
 ### 1. Define "working" before instrumenting

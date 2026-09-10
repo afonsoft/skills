@@ -1,15 +1,15 @@
 ---
-name: tdd-spec
+name: execute-tdd-spec
 license: MIT
-description: "Test-driven development using the approved SPEC SDD as the source of truth. Reads `.specs/SPEC-{YYYYMMDD}-{feature}.md`, turns requirements and acceptance criteria into red-green-refactor vertical slices. Use when implementing a feature or bugfix after the SPEC is approved. User-facing questions and recommendations must be in Portuguese (pt-BR). Part of the afonsoft/skills collection."
+description: "Test-driven development using the approved SPEC SDD as the source of truth. Reads `.specs/SPEC-{YYYYMMDD}-{feature}.md`, turns requirements and acceptance criteria into red-green-refactor vertical slices. Use when the user asks to execute, run or implement from an approved SPEC. User-facing questions and recommendations must be in Portuguese (pt-BR). Part of the afonsoft/skills collection."
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
 ---
 
-# TDD from SPEC
+# Execute TDD from SPEC
 
 Test-driven development guided by the approved SPEC SDD. The SPEC is the single source of truth. Every test is derived from a numbered requirement or acceptance criterion.
 
@@ -19,6 +19,8 @@ Internal reasoning and commands are in English. All questions and explanations t
 
 - A `.specs/SPEC-{YYYYMMDD}-{feature}.md` exists with `Status: Approved`.
 - The user asks to implement a feature, change, or bugfix.
+- The user asks to execute or run a SPEC (e.g., "execute the spec", "run the spec", "run TDD from the spec").
+- O usuário pede para executar ou rodar um SPEC (ex.: "executar o spec", "rodar o spec", "fazer TDD a partir do spec").
 - Before writing implementation code.
 
 ## When NOT to Use

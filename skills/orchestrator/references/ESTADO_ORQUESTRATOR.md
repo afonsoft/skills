@@ -38,7 +38,7 @@
 ```yaml
 - id: TASK-001
   desc: "Extract email validation into validators/email.ts"
-  skill: /tdd-spec
+  skill: /execute-tdd-spec
   gap_ref: GAP-002
   issue_ref: "#101"
   spec_ref: ".specs/SPEC-20260908-email-validation.md"
@@ -104,4 +104,4 @@
 
 | # | GAP | Tarefa | Skill | Status |
 |---|-----|--------|-------|--------|
-| 1 | GAP-002 | Create unit tests for `auth.ts` | /tdd-spec | 🟡 pending_approval |
+| 1 | GAP-002 | Create unit tests for `auth.ts` | /execute-tdd-spec | 🟡 pending_approval |

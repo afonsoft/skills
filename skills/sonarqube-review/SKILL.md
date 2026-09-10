@@ -20,6 +20,11 @@ metadata:
 
 # SonarQube Review Skill
 
+## When to Use
+
+- User asks or mentions this skill in English (e.g., "use /sonarqube-review", "run sonarqube-review").
+- O usuário pede ou menciona esta skill em português (ex.: "use /sonarqube-review", "execute sonarqube-review").
+
 ## Purpose
 
 Automatically fix issues reported by SonarQube, **regardless of language or framework**, following a structured process with:

@@ -27,6 +27,9 @@ A single skill for everything Obsidian: the **CLI**, **Bases** (`.base` files), 
 - Author **Obsidian Flavored Markdown** (wikilinks, embeds, callouts, properties).
 - Develop or debug an Obsidian **plugin or theme**.
 
+- User asks or mentions this skill in English (e.g., "use /obsidian", "run obsidian").
+- O usuário pede ou menciona esta skill em português (ex.: "use /obsidian", "execute obsidian").
+
 ## When NOT to Use
 
 - Do not use for generic Markdown files or note-taking tools that are not Obsidian.

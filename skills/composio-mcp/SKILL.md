@@ -54,6 +54,9 @@ Need to use Composio?
 - You need to find the right tool slug → `composio search "<task>"`.
 - You need the consumer key (`ck_*`) for the MCP fallback path.
 
+- User asks or mentions this skill in English (e.g., "use /composio-mcp", "run composio-mcp").
+- O usuário pede ou menciona esta skill em português (ex.: "use /composio-mcp", "execute composio-mcp").
+
 ## When NOT to use
 
 - The user only wants the generic `composio-cli` cheat-sheet (slugs, execute, search, link) — that is the upstream `composio-cli` skill. This skill focuses on **setup, auth, and MCP wiring**.

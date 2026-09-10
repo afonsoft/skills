@@ -69,6 +69,9 @@ The LobeHub skill `openclaw-skills-wordpress-mcp` targets path B (AI Engine).
 - The user needs **OAuth 2.1** for Claude Web/Mobile connectors (Path C).
 - The user is on **WordPress 6.7-6.8** and can't use mcp-adapter (needs 6.9+) (Path C).
 
+- User asks or mentions this skill in English (e.g., "use /wordpress-mcp", "run wordpress-mcp").
+- O usuário pede ou menciona esta skill em português (ex.: "use /wordpress-mcp", "execute wordpress-mcp").
+
 ## When NOT to use
 
 - The user only wants the WordPress REST API directly (no MCP) → use WP REST API docs.

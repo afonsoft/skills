@@ -23,6 +23,9 @@ Transforms a raw repository into a well-documented project by generating profess
 - When restructuring a project and the existing documentation no longer reflects the architecture.
 - When onboarding new contributors and the README doesn't answer "what is this, how do I run it, how do I test it?"
 
+- User asks or mentions this skill in English (e.g., "use /create-readme", "run create-readme").
+- O usuário pede ou menciona esta skill em português (ex.: "use /create-readme", "execute create-readme").
+
 ## When NOT to Use
 
 - **API reference docs** — use OpenAPI/Swagger, TypeDoc, Sphinx, or docfx instead.
