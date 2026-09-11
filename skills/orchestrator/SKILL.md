@@ -124,12 +124,13 @@ When the repository already exists and has open Issues on GitHub, the Orchestrat
    - Check tests, file names, and recent `git log` for evidence of implementation.
    - Look for an existing `.specs/SPEC-*.md` that references the issue number.
 3. If the issue is already implemented:
-   - Report the finding to the user in **Portuguese (pt-BR)**, asking for confirmation:
+   - Close the issue automatically with a comment in **Portuguese (pt-BR)** linking to the implementation commit or file, e.g.:
      ```text
-     A Issue #<number> '<title>' já parece estar implementada no repositório.
-     Deseja fechá-la e referenciar o commit/código? (sim/não)
+     A Issue #<number> '<title>' já está implementada no repositório.
+     Commit: <sha> | Arquivo(s): <path>
+     Fechando a issue.
      ```
-   - If the user confirms, close it with a comment linking to the implementation commit or file.
+   - Report the closure to the user.
 4. If the issue is not implemented and no SPEC exists:
    - Open the issue with `gh issue view <number>`.
    - Invoke `/grill-me-with-spec` using the issue title and body as the starting point.
