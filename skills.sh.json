@@ -3,6 +3,27 @@
   "notGrouped": "bottom",
   "groupings": [
     {
+      "title": "Orchestration & Delivery",
+      "description": "Skills for planning, executing, verifying, and delivering agent-driven projects.",
+      "skills": [
+        "orchestrator",
+        "grill-me-with-spec",
+        "scaffold-mvp",
+        "execute-tdd-spec",
+        "create-issues",
+        "qa-analyst",
+        "diagnose"
+      ]
+    },
+    {
+      "title": "Architecture & Design",
+      "description": "Skills for analyzing, visualizing, and refining system architecture.",
+      "skills": [
+        "improve-codebase-architecture",
+        "drawio-architecture"
+      ]
+    },
+    {
       "title": "Code Quality & Testing",
       "description": "Skills for reviewing code, fixing static analysis, raising test coverage, and observing production behavior.",
       "skills": [
@@ -10,13 +31,6 @@
         "sonarqube-autofix",
         "quality-test-implementation",
         "observability-and-instrumentation"
-      ]
-    },
-    {
-      "title": "Draw.io Architecture",
-      "description": "Agent skill for generating architecture diagrams with draw.io MCP integration",
-      "skills": [
-        "drawio-architecture"
       ]
     },
     {
