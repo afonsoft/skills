@@ -30,10 +30,10 @@ The skills are organized into four main pillars: **Harness Engineering**, **Code
 
 ### 🧭 Orchestration & Delivery
 *Planning, execution, verification, and documentation for agent-driven projects.*
-- **[`orchestrator`](docs/en/orchestrator.md)**: Central control skill. Audits preconditions, creates documentation, turns gaps into GitHub Issues, and coordinates execution, tests, QA, and PR in a continuous loop. Uses `references/ESTADO_ORQUESTRATOR.md` to persist state.
+- **[`orchestrator`](docs/en/orchestrator.md)**: Central control skill. Audits preconditions, creates documentation, reconciles open GitHub Issues, turns gaps into Issues, and coordinates execution, tests, QA, and PR in a continuous loop. Persists state in `.claude/memory/ESTADO_ORQUESTRATOR.md` and auto-continues to the next slice.
 - **[`grill-me-with-spec`](skills/grill-me-with-spec/SKILL.md)**: Interviews the user in Portuguese to consolidate domain language and produce an approved `.specs/SPEC-{YYYYMMDD}-{feature}.md` before implementation.
 - **[`scaffold-mvp`](skills/scaffold-mvp/SKILL.md)**: Bootstraps a new .NET/Blazor/Angular repository after domain/spec alignment. Installs the agent harness, proposes a productive stack, and generates the initial project skeleton, AD-0001, and stubs.
-- **[`create-issues`](skills/create-issues/SKILL.md)**: Turns approved gaps, roadmap, and specs into GitHub Issues with vertical slices and dependency links.
+- **[`create-issues`](skills/create-issues/SKILL.md)**: Turns approved gaps, roadmap, and specs into GitHub Issues with vertical slices and dependency links. Uses the `references/spec-sdd-template.md` structure when creating Issues from SPEC SDDs.
 - **[`execute-tdd-spec`](docs/en/execute-tdd-spec.md)**: Test-driven development using the approved SPEC SDD as the source of truth. Red-green-refactor one vertical slice at a time.
 - **[`qa-analyst`](skills/qa-analyst/SKILL.md)**: Full QA cycle — requirements analysis, test planning, test cases, execution, bug reports, and process improvement.
 - **[`diagnose`](skills/diagnose/SKILL.md)**: Disciplined diagnosis and re-validation loop for hard bugs and performance regressions.
@@ -64,7 +64,7 @@ The skills are organized into four main pillars: **Harness Engineering**, **Code
 Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen Agent Trust Hub**, **Socket**, **Snyk**). Click **View** to see the full report for a skill.
 
 
-> **Updated:** 2026-09-09
+> **Updated:** 2026-09-10
 
 | Skill | Gen Agent Trust Hub | Socket alerts | Snyk | Details |
 |-------|---------------------|---------------|------|---------|

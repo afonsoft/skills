@@ -1,10 +1,10 @@
 # Orchestrator
 
-Central control skill for agent-driven projects. It audits preconditions, creates documentation, turns gaps into GitHub Issues, and coordinates execution, tests, QA, and PR in a continuous loop.
+Central control skill for agent-driven projects. It audits preconditions, creates documentation, reconciles open GitHub Issues, turns gaps into Issues, and coordinates execution, tests, QA, and PR in a continuous loop.
 
 ## 🎯 Purpose
 
-Govern the full lifecycle of agent-driven software delivery by delegating complex work to specialized skills and persisting state in `references/ESTADO_ORQUESTRATOR.md`.
+Govern the full lifecycle of agent-driven software delivery by delegating complex work to specialized skills. Persists state in `.claude/memory/ESTADO_ORQUESTRATOR.md`, reconciles open GitHub Issues, and auto-continues to the next Epic/Slice in the queue.
 
 ## 🛠️ How it Works
 
@@ -13,8 +13,10 @@ Govern the full lifecycle of agent-driven software delivery by delegating comple
 3. **Phase 1 — Discovery**: Align domain, produce SPEC SDDs, and scaffold when needed.
 4. **Phase 2 — Audit**: Identify gaps and architecture issues.
 5. **Phase 3 — GitHub Fragmentation**: Turn approved gaps into GitHub Issues.
-6. **Phase 4 — Implementation Loop**: Run sliced Issues one by one using `execute-tdd-spec`, without asking for confirmation between slices.
+6. **Phase 4 — Implementation Loop**: Run sliced Issues one by one using `execute-tdd-spec`, reporting `Próximo: E1/S1` and continuing automatically without asking between slices.
 7. **Phase 5 — Verification and QA**: Run QA, review, architecture diagrams, and README updates.
+8. **Phase 6 — Unapproved SPEC Review**: Scan for leftover SPECs and ask the user to approve or discard them.
+9. **Phase 7 — Final Verification & Gap Check**: Confirm all SPECs, Issues, and gaps are closed; if a next item exists, continue automatically.
 
 ## 🚀 Usage
 

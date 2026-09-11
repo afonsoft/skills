@@ -1,10 +1,10 @@
 # Orchestrator
 
-Skill de controle central para projetos conduzidos por agentes. Audita pré-condições, cria documentação, transforma gaps em GitHub Issues e coordena execução, testes, QA e PR em um loop contínuo.
+Skill de controle central para projetos conduzidos por agentes. Audita pré-condições, cria documentação, reconcilia GitHub Issues abertas, transforma gaps em Issues e coordena execução, testes, QA e PR em um loop contínuo.
 
 ## 🎯 Objetivo
 
-Governar o ciclo de vida completo de entregas de software conduzidas por agentes, delegando trabalho complexo para skills especializadas e persistindo o estado em `references/ESTADO_ORQUESTRATOR.md`.
+Governar o ciclo de vida completo de entregas de software conduzidas por agentes, delegando trabalho complexo para skills especializadas. Persiste o estado em `.claude/memory/ESTADO_ORQUESTRATOR.md`, reconcilia GitHub Issues abertas e continua automaticamente para o próximo Epic/Slice na fila.
 
 ## 🛠️ Como Funciona
 
@@ -13,8 +13,10 @@ Governar o ciclo de vida completo de entregas de software conduzidas por agentes
 3. **Fase 1 — Descoberta**: Alinhar domínio, produzir SPEC SDDs e fazer scaffold quando necessário.
 4. **Fase 2 — Auditoria**: Identificar gaps e problemas de arquitetura.
 5. **Fase 3 — Fragmentação no GitHub**: Transformar gaps aprovados em GitHub Issues.
-6. **Fase 4 — Loop de Implementação**: Executar Issues fatiadas uma a uma com `execute-tdd-spec`, sem pedir confirmação entre fatias.
+6. **Fase 4 — Loop de Implementação**: Executar Issues fatiadas uma a uma com `execute-tdd-spec`, reportando `Próximo: E1/S1` e continuando automaticamente sem pedir confirmação entre fatias.
 7. **Fase 5 — Verificação e QA**: Executar QA, revisão, diagramas de arquitetura e atualizações do README.
+8. **Fase 6 — Revisão de SPECs Não Aprovados**: Escanear SPECs pendentes e perguntar ao usuário se aprova ou descarta cada um.
+9. **Fase 7 — Verificação Final e Checagem de Gaps**: Confirmar que todos os SPECs, Issues e gaps foram encerrados; se houver próximo item, continuar automaticamente.
 
 ## 🚀 Uso
 
