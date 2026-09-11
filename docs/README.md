@@ -23,7 +23,7 @@ Per-skill documentation for the [afonsoft/skills](../README.md) collection. Each
 | `obsidian` | [doc](en/obsidian.md) | [doc](pt-br/obsidian.md) |
 | `orchestrator` | [doc](en/orchestrator.md) | [doc](pt-br/orchestrator.md) |
 | `quality-test-implementation` | [doc](en/quality-test-implementation.md) | [doc](pt-br/quality-test-implementation.md) |
-| `sonarqube-review` | [doc](en/sonarqube-review.md) | [doc](pt-br/sonarqube-review.md) |
+| `sonarqube-autofix` | [doc](en/sonarqube-autofix.md) | [doc](pt-br/sonarqube-autofix.md) |
 | `wordpress-mcp` | [doc](en/wordpress-mcp.md) | [doc](pt-br/wordpress-mcp.md) |
 
 > Convention: `docs/<lang>/<skill-name>.md` must match the skill folder name under [`skills/`](../skills/).

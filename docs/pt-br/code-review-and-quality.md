@@ -17,4 +17,4 @@ Use esta skill ao final de qualquer fase de implementação ou ao revisar um Pul
 
 ## 🔗 Correlação
 - **Pré-requisito**: Use `create-agent-harness` para configurar o sub-agente de `review`.
-- **Complemento**: Complementa a skill `sonarqube-review` para auditoria automatizada de qualidade.
+- **Complemento**: Complementa a skill `sonarqube-autofix` para auditoria automatizada de qualidade.

@@ -7,7 +7,7 @@
       "description": "Skills for reviewing code, fixing static analysis, raising test coverage, and observing production behavior.",
       "skills": [
         "code-review-and-quality",
-        "sonarqube-review",
+        "sonarqube-autofix",
         "quality-test-implementation",
         "observability-and-instrumentation"
       ]

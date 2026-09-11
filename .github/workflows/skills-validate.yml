@@ -86,7 +86,7 @@ jobs:
           - observability-and-instrumentation
           - obsidian
           - quality-test-implementation
-          - sonarqube-review
+          - sonarqube-autofix
           - wordpress-mcp
     steps:
       - uses: actions/checkout@v5

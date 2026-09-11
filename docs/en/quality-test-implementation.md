@@ -11,7 +11,7 @@ Stabilize the build, fix static-analysis warnings (Roslyn/Sonar, SpotBugs/Checks
 
 Per-language coverage details (framework options, thresholds, HTML reports) live in `skills/quality-test-implementation/references/coverage-{dotnet,java,python}.md`, plus an auto-detecting `run-coverage.sh` dispatcher.
 ## 🚀 Usage
-Use when a repository has accumulated warnings, low coverage, or CVEs and needs a whole-repo quality push. For a single change, use `code-review-and-quality`; for automated SonarQube remediation, use `sonarqube-review`.
+Use when a repository has accumulated warnings, low coverage, or CVEs and needs a whole-repo quality push. For a single change, use `code-review-and-quality`; for automated SonarQube remediation, use `sonarqube-autofix`.
 ## 🔗 Correlation
 - **Review**: Complements `code-review-and-quality` (manual, per-change) with an automated, repo-wide pass.
-- **Security**: Shares CVE-closure steps with `sonarqube-review`.
+- **Security**: Shares CVE-closure steps with `sonarqube-autofix`.

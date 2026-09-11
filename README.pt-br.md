@@ -27,7 +27,7 @@ As skills estão organizadas em quatro pilares principais: **Engenharia de Harne
 *Garantindo que a saída atenda a padrões profissionais.*
 - **[`code-review-and-quality`](docs/pt-br/code-review-and-quality.md)**: O guardião principal. Realiza revisões multi-eixo (corretude, segurança, performance) antes de qualquer código ser merged.
 - **[`quality-test-implementation`](docs/pt-br/quality-test-implementation.md)**: A intervenção de qualidade em todo o repo. Corrige warnings de análise estática (Roslyn/Sonar, SpotBugs/Checkstyle, Bandit/Ruff), resolve CVEs de segurança e aplica SOLID/DDD/Clean Architecture em repositórios .NET, Java ou Python.
-- **[`sonarqube-review`](docs/pt-br/sonarqube-review.md)**: O auditor automático. Integra com SonarQube para identificar e corrigir débito técnico e code smells sistematicamente.
+- **[`sonarqube-autofix`](docs/pt-br/sonarqube-autofix.md)**: O auditor automático. Integra com SonarQube para identificar e corrigir débito técnico e code smells sistematicamente.
 
 ### 🔌 Extensibilidade e Integração
 *Expandindo o que o agente pode realmente fazer.*
@@ -61,7 +61,7 @@ Resultados mais recentes da auditoria de terceiros do [skills.sh](https://skills
 | `observability-and-instrumentation` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/observability-and-instrumentation) |
 | `obsidian` | 🟠 high | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/obsidian) |
 | `quality-test-implementation` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/quality-test-implementation) |
-| `sonarqube-review` | ✅ safe | 1 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/sonarqube-review) |
+| `sonarqube-autofix` | ✅ safe | 1 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/sonarqube-autofix) |
 | `wordpress-mcp` | ⚪ unknown | - | ⚪ unknown | [Ver](https://skills.sh/afonsoft/skills/wordpress-mcp) |
 
 ---

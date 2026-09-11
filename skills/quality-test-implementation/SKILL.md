@@ -225,7 +225,7 @@ Use **Conventional Commits**:
 ## See Also
 
 - For reviewing a single change before merge, see `code-review-and-quality`.
-- For automated SonarQube issue remediation across stacks, see `sonarqube-review`.
+- For automated SonarQube issue remediation across stacks, see `sonarqube-autofix`.
 
 ## Origin
 

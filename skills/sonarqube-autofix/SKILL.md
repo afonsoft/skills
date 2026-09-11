@@ -1,14 +1,9 @@
 ---
-name: sonarqube-review
+name: sonarqube-autofix
 license: MIT
-description: Use when fixing SonarQube code quality issues automatically across any
-  language or framework — issue analysis, fix generation, unit tests, and coverage.
-  Supports Community, Enterprise, and custom SonarQube deployments via environment
-  variables. Do NOT use for general code review without SonarQube (use code-review-and-quality),
-  for whole-repo quality interventions without SonarQube (use quality-test-implementation),
-  or for non-SonarQube static analysis tools. Part of the afonsoft/skills collection.
+description: Use when analyzing SonarQube issues and creating SPEC SDDs with the proposed fixes. Classifies issues by type (bug, code smell, security) and generates `.specs/SPEC-{YYYYMMDD}-{issue-key}-{type}.md` for `execute-tdd-spec` to implement. Supports Community, Enterprise, and custom SonarQube deployments via environment variables. Do NOT use for general code review without SonarQube (use code-review-and-quality), for whole-repo quality interventions without SonarQube (use quality-test-implementation), or for non-SonarQube static analysis tools. Part of the afonsoft/skills collection.
 metadata:
-  version: 1.0.0
+  version: 2.0.0
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -18,21 +13,22 @@ metadata:
   openclaw: '{"requires":{"bins":["sonar-scanner"]},"envVars":[{"name":"SONARQUBE_CUSTOM_URL","required":false},{"name":"SONARQUBE_CUSTOM_TOKEN","required":false},{"name":"SONARQUBE_ENTERPRISE_TOKEN","required":false},{"name":"SONARQUBE_ENTERPRISE_URL","required":false},{"name":"SONARQUBE_OPEN_TOKEN","required":false},{"name":"SONAR_TK","required":false},{"name":"SONARQUBE_OPEN_URL","required":false}]}'
 ---
 
-# SonarQube Review Skill
+# SonarQube Auto-Fix
 
 ## When to Use
 
-- User asks or mentions this skill in English (e.g., "use /sonarqube-review", "run sonarqube-review").
-- O usuário pede ou menciona esta skill em português (ex.: "use /sonarqube-review", "execute sonarqube-review").
+- User asks or mentions this skill in English (e.g., "use /sonarqube-autofix", "run sonarqube-autofix").
+- O usuário pede ou menciona esta skill em português (ex.: "use /sonarqube-autofix", "execute sonarqube-autofix").
 
 ## Purpose
 
-Automatically fix issues reported by SonarQube, **regardless of language or framework**, following a structured process with:
-- Issue analysis
-- Fix checklist
-- Unit tests and coverage (stack-agnostic)
-- Review documentation
-- .gitignore update
+Analyze issues reported by SonarQube, **regardless of language or framework**, classify them by type, and create approved SPEC SDDs that describe the fixes. The actual implementation of each SPEC is delegated to `/execute-tdd-spec`.
+
+The process is:
+1. **Issue analysis** — download and inspect unresolved SonarQube issues.
+2. **Classification** — group issues by type: `bug`, `code smell`, or `security`.
+3. **SPEC generation** — write one SPEC SDD per issue (or per small, related group) using `references/spec-sdd-template.md`.
+4. **Hand-off** — mark each SPEC as `Approved` and invoke `/execute-tdd-spec` to implement the fixes.
 
 ## ⚙️ Environment Variable Configuration
 
@@ -239,20 +235,44 @@ sonar.javascript.lcov.reportPaths=coverage/lcov.info
    - Group by file if possible
    - Sort by severity (Blocker → Critical → Major → Minor → Info)
 
-### Phase 2: Issue Fixing
+### Phase 2: Classify Issues
 
-For each issue, execute in order:
+For each downloaded issue, classify it into one of the following types and record the classification in the ToDo Board:
 
-1. **Modify the code** - Resolve the specific issue
-2. **Generate tests automatically** (if applicable) - Load the appropriate test template for the detected stack
-3. **Update tests** - Ensure 100% coverage of the modified lines
-4. **Run tests** - Execute the unit test suite
-5. **Check coverage** - Confirm 100% coverage of the modified lines
-6. **Run stack-specific linters** - Execute stack linters to validate the fix
-7. **Format the code** - Execute stack formatters to keep consistency
-8. **Update the ToDo Board** - Mark the issue as `[x]` when fixed
+| Type | SonarQube categories |
+| --- | --- |
+| `bug` | Bugs (`BUG`) and reliability issues |
+| `code smell` | Code Smells (`CODE_SMELL`) and maintainability issues |
+| `security` | Vulnerabilities (`VULNERABILITY`) and Security Hotspots (`SECURITY_HOTSPOT`) |
 
-### Phase 3: Documentation and Finalization
+Add the type to each line of `SONAR_FIX_TODO_BOARD.md`:
+
+```markdown
+- [ ] Issue <ID> — Type: <bug | code smell | security> — Rule: <RuleKey> — File: `<path/to/file>` — Line: <line>
+      Summary: <short issue message>
+```
+
+Sort the board by: `security` → `bug` → `code smell`, then by severity.
+
+### Phase 3: Generate SPEC SDDs
+
+For each issue (or small, related group of the same type), create an approved SPEC SDD in `.specs/SPEC-{YYYYMMDD}-{issue-key}-{type}.md` using `references/spec-sdd-template.md`:
+
+1. **Metadata** — set `Type` to the issue type (`Bugfix` for `bug`, `Refactor` for `code smell`, `Security` for `security`), `Status: Approved`, and map the SonarQube rule and file.
+2. **User Story** — describe the problem exposed by SonarQube and the value of the fix.
+3. **Scope** — one issue per SPEC, unless several identical issues are safely grouped (e.g., the same rule in the same file).
+4. **Technical Context** — list files to read (source file, existing tests) and the affected lines.
+5. **Requirements** — one or more numbered requirements translating the SonarQube rule to the expected code state.
+6. **Acceptance Criteria** — `Given...when...then` plus "SonarQube no longer reports issue <ID>".
+7. **Task Plan** — the fix steps, validation commands, and a link to `SONAR_FIX_TODO_BOARD.md`.
+
+Mark each generated SPEC as `Status: Approved`. Do **not** implement the code in this skill.
+
+### Phase 3.5: Hand off to `/execute-tdd-spec`
+
+After all SPECs are approved, invoke `/execute-tdd-spec` for each one, in the order of the sorted ToDo Board. The implementation skill will follow the red-green-refactor cycle using the generated SPECs as source of truth.
+
+### Phase 4: Documentation and Finalization
 
 1. **Update .gitignore**
    - Open `.gitignore` at the project root

@@ -167,6 +167,8 @@ Before looking at code, understand the intent:
 - What is the expected behavior change?
 ```
 
+**SonarQube check:** If the repository uses SonarQube (e.g., `sonar-project.properties`, `.sonarrc`, SonarQube step in CI/CD, or any `sonar.*` configuration), stop the review and invoke `/sonarqube-autofix`. That skill will download unresolved issues, classify them by type (`bug`, `code smell`, `security`), and create approved SPEC SDDs. Resume this review only after `/execute-tdd-spec` has implemented the generated SPECs.
+
 ### Step 2: Review the Tests First
 
 Tests reveal intent and coverage:

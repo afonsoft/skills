@@ -17,4 +17,4 @@ Use this skill at the end of any implementation phase or when reviewing a Pull R
 
 ## 🔗 Correlation
 - **Prerequisite**: Use `create-agent-harness` to set up the `review` sub-agent.
-- **Companion**: Complements `sonarqube-review` for automated quality auditing.
+- **Companion**: Complements `sonarqube-autofix` for automated quality auditing.

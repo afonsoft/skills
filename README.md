@@ -43,7 +43,7 @@ The skills are organized into four main pillars: **Harness Engineering**, **Code
 *Ensuring the output meets professional standards.*
 - **[`code-review-and-quality`](docs/en/code-review-and-quality.md)**: The primary gatekeeper. Performs multi-axis reviews (correctness, security, performance) before any code is merged.
 - **[`quality-test-implementation`](docs/en/quality-test-implementation.md)**: The whole-repo quality intervention. Fixes static-analysis warnings (Roslyn/Sonar, SpotBugs/Checkstyle, Bandit/Ruff), resolves security CVEs, and applies SOLID/DDD/Clean Architecture across .NET, Java, or Python repositories.
-- **[`sonarqube-review`](docs/en/sonarqube-review.md)**: The automated auditor. Integrates with SonarQube to identify and fix technical debt and smells systematically.
+- **[`sonarqube-autofix`](docs/en/sonarqube-autofix.md)**: The automated auditor. Integrates with SonarQube to identify and fix technical debt and smells systematically.
 
 ### 🔌 Extensibility & Integration
 *Expanding what the agent can actually do.*
@@ -85,7 +85,7 @@ Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen 
 | `qa-analyst` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/qa-analyst) |
 | `quality-test-implementation` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/quality-test-implementation) |
 | `scaffold-mvp` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/scaffold-mvp) |
-| `sonarqube-review` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/sonarqube-review) |
+| `sonarqube-autofix` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/sonarqube-autofix) |
 | `execute-tdd-spec` | ⚪ unknown | - | ⚪ unknown | [View](https://skills.sh/afonsoft/skills/execute-tdd-spec) |
 | `wordpress-mcp` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/wordpress-mcp) |
 ---
