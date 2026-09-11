@@ -30,11 +30,11 @@ The skills are organized into four main pillars: **Harness Engineering**, **Code
 
 ### 🧭 Orchestration & Delivery
 *Planning, execution, verification, and documentation for agent-driven projects.*
-- **[`orchestrator`](skills/orchestrator/SKILL.md)**: Central control skill. Audits preconditions, creates documentation, turns gaps into GitHub Issues, and coordinates execution, tests, QA, and PR in a continuous loop. Uses `references/ESTADO_ORQUESTRATOR.md` to persist state.
+- **[`orchestrator`](docs/en/orchestrator.md)**: Central control skill. Audits preconditions, creates documentation, turns gaps into GitHub Issues, and coordinates execution, tests, QA, and PR in a continuous loop. Uses `references/ESTADO_ORQUESTRATOR.md` to persist state.
 - **[`grill-me-with-spec`](skills/grill-me-with-spec/SKILL.md)**: Interviews the user in Portuguese to consolidate domain language and produce an approved `.specs/SPEC-{YYYYMMDD}-{feature}.md` before implementation.
 - **[`scaffold-mvp`](skills/scaffold-mvp/SKILL.md)**: Bootstraps a new repository after domain/spec alignment. Proposes a stack and generates a lean README, lockfiles, and stubs.
 - **[`create-issues`](skills/create-issues/SKILL.md)**: Turns approved gaps, roadmap, and specs into GitHub Issues with vertical slices and dependency links.
-- **[`execute-tdd-spec`](skills/execute-tdd-spec/SKILL.md)**: Test-driven development using the approved SPEC SDD as the source of truth. Red-green-refactor one vertical slice at a time.
+- **[`execute-tdd-spec`](docs/en/execute-tdd-spec.md)**: Test-driven development using the approved SPEC SDD as the source of truth. Red-green-refactor one vertical slice at a time.
 - **[`qa-analyst`](skills/qa-analyst/SKILL.md)**: Full QA cycle — requirements analysis, test planning, test cases, execution, bug reports, and process improvement.
 - **[`diagnose`](skills/diagnose/SKILL.md)**: Disciplined diagnosis and re-validation loop for hard bugs and performance regressions.
 - **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Finds architectural deepening opportunities by reading `.claude/CONTEXT.md` and `docs/adr/`, and produces an HTML report.
