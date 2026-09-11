@@ -139,7 +139,7 @@ patch_json() {
     "$REMOVE" "$DO_ADAPTER" "$DO_AI_ENGINE" \
     "$MCP_ADAPTER_NAME" "$AI_ENGINE_NAME" \
     "$ADAPTER_URL" "$AI_ENGINE_URL" "$BASIC_AUTH" "$AE_TOKEN" <<'PY'
-import json, sys
+import json, os, sys
 path, root, url_field, fmt, remove, do_adapter, do_ae, \
   adapter_name, ae_name, adapter_url, ae_url, basic_auth, ae_token = sys.argv[1:15]
 remove = int(remove); do_adapter = int(do_adapter); do_ae = int(do_ae)
@@ -173,6 +173,8 @@ else:
 
 with open(path, 'w') as f:
     json.dump(d, f, indent=2)
+# Restrict access to the file because it contains credentials
+os.chmod(path, 0o600)
 print("  done")
 PY
 }
@@ -213,7 +215,7 @@ PY
     python3 - "$path" "$REMOVE" "$DO_ADAPTER" "$DO_AI_ENGINE" \
       "$MCP_ADAPTER_NAME" "$AI_ENGINE_NAME" \
       "$ADAPTER_URL" "$AI_ENGINE_URL" "$BASIC_AUTH" "$AE_TOKEN" <<'PY'
-import sys
+import os, sys
 path, remove, do_adapter, do_ae, \
   adapter_name, ae_name, adapter_url, ae_url, basic_auth, ae_token = sys.argv[1:11]
 do_adapter = int(do_adapter); do_ae = int(do_ae)
@@ -242,6 +244,8 @@ Authorization = "Bearer {ae_token}"
 with open(path, 'a') as f:
     for b in blocks:
         f.write(b)
+# Restrict access to the file because it contains credentials
+os.chmod(path, 0o600)
 print("  done")
 PY
   fi
