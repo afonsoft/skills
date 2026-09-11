@@ -3,10 +3,9 @@ name: notebooklm-mcp
 description: Use when the user wants to use Google NotebookLM (Gemini Notebook) with
   an AI agent via the `nlm` CLI or the `notebooklm-mcp` MCP server, when `devin mcp
   list` / `claude mcp list` shows `notebooklm-mcp` failing to list tools, when `nlm
-  login --check` fails with `ClientAuthenticationError`, when authenticating NotebookLM
-  on a headless server without a browser, when extracting Google cookies manually
-  or via an external CDP provider (OpenClaw), or when the user asks to configure/authenticate/use
-  NotebookLM MCP. Covers cookie-based auth (manual file mode + OpenClaw CDP), MCP
+  login --check` fails with `ClientAuthenticationError`, or when the user asks to configure/authenticate/use
+  NotebookLM MCP. Covers browser-based authentication (`nlm login`) with secure headless
+  fallbacks (OpenClaw CDP or user-provided manual cookie file only after explicit approval), MCP
   server setup across platforms, and the full `nlm` CLI command surface. Do NOT use
   for building a new MCP server (use building-mcp-servers). Part of the afonsoft/skills
   collection.
@@ -62,12 +61,16 @@ Both paths share the **same cookie cache** at `~/.notebooklm-mcp-cli/profiles/<p
 
 - **Pin the CLI version**: install `notebooklm-mcp-cli` with an explicit `==<VERSION>`; do not run bare `uv tool install` or `pipx install` without a version.
 - **Verify upstream before install**: confirm the package name and version on [PyPI](https://pypi.org/project/notebooklm-mcp-cli/) and the upstream source. Treat it as an unofficial client.
-- **Human confirmation required**: the agent must ask the user before extracting or importing cookies. Do not automate cookie collection from a browser the user does not control.
-- **Cookies are credentials**: a `cookies.txt` file or the cached `auth.json` is equivalent to a Google session. Never commit, share, log, or screenshot them. Delete `cookies.txt` immediately after `nlm login --manual --file` succeeds.
-- **No credential brokering**: run `nlm login` as a black-box command. Do not read, parse, or transmit the contents of `cookies.txt` or `auth.json`.
+- **Human confirmation required for all auth methods**: the agent must obtain explicit user consent before any cookie extraction, file import or use of a managed browser CDP endpoint.
+- **No automated cookie collection**: never run cookie extraction in the background or against a browser the user does not explicitly authorize.
+- **Cookies are credentials**: a `cookies.txt` file or the cached `auth.json` is equivalent to a Google session. Never commit, share, log, screenshot, copy to clipboard, or transmit them.
+- **Delete cookie files immediately**: remove `cookies.txt` as soon as `nlm login --manual --file` succeeds. Do not leave it in `/tmp`, the project directory, or any shared location.
+- **No credential brokering**: run `nlm login` as a black-box command. Do not read, parse, or forward the contents of `cookies.txt` or `auth.json`.
 - **Prefer official auth**: use desktop `nlm login` auto mode when a browser is available. Use manual cookie mode only on headless servers the user controls.
 - **No browser data harvesting**: extract cookies only from the user's own browser session; do not use extracted cookies for any purpose other than authenticating `nlm`.
 - **Verify before trusting**: run `nlm login --check` and `nlm doctor` before any notebook operation.
+- **No privileged operations**: do not run `nlm` with `sudo`, `doas`, or as root unless the user explicitly requests it and confirms the reason.
+- **Isolate auth cache**: prefer per-project or per-profile auth over a shared default profile when multiple users may access the environment.
 
 ---
 
@@ -104,19 +107,35 @@ nlm doctor -v          # verbose
 
 # Authentication
 
-NotebookLM auth = Google browser cookies. There is no API key. Three methods work on headless servers:
+NotebookLM has no API key. The supported authentication method is `nlm login` on a machine with a browser. The agent must not extract, read, or forward Google session cookies unless the user explicitly requests a headless fallback and confirms the method.
 
 | Method | Command | Requires | Best for |
 |--------|---------|----------|----------|
-| **OpenClaw CDP** (preferred) | `nlm login --provider openclaw --cdp-url http://127.0.0.1:18800` | An OpenClaw-managed browser exposing CDP on port 18800 | Servers running OpenClaw — no second browser needed |
-| **Manual file** | `nlm login --manual --file cookies.txt` | A `cookies.txt` file with raw Google cookies | One-time setup, no browser on the server, troubleshooting |
-| **Desktop auto + copy** | `nlm login` on desktop → copy `auth.json` | A desktop with Chrome | When neither OpenClaw nor manual cookies are available |
+| **Desktop auto login** (preferred) | `nlm login` | A desktop/server browser (Chrome/Chromium/Brave/Edge/Arc/Firefox) | Default — preferred whenever a browser is available |
+| **OpenClaw CDP** | `nlm login --provider openclaw --cdp-url http://127.0.0.1:18800` | OpenClaw-managed browser already logged in to Google | When the user runs OpenClaw and confirms the CDP endpoint |
+| **Manual cookie file** | `nlm login --manual --file cookies.txt` | A `cookies.txt` file provided by the user | Emergency fallback on a headless server the user controls |
+| **Desktop auto + copy `auth.json`** | `nlm login` on desktop, then copy `~/.notebooklm-mcp-cli/profiles/<profile>/auth.json` | A desktop with a browser | The user explicitly copies the cached auth file themselves |
 
-> **Fallback order on headless boxes:** try OpenClaw CDP first (if a managed browser is running on port 18800) → fall back to manual cookie file → fall back to running `nlm login` on a desktop with a browser and copying the resulting `auth.json`.
+> **Fallback order on headless boxes:** (1) desktop auto login and copy `auth.json` by the user, (2) OpenClaw CDP with a managed browser the user controls, (3) manual cookie file as an **emergency fallback only**.
 
-### OpenClaw CDP (preferred for OpenClaw users)
+### Desktop auto login
 
-OpenClaw runs a managed browser with Chrome DevTools Protocol (CDP) on port **18800** by default. `nlm` can read cookies from this browser session without launching a second browser:
+On a desktop or server with a supported browser:
+
+```bash
+nlm login              # launches a dedicated browser profile; the user logs in
+nlm login --check
+```
+
+Prefer a specific browser:
+
+```bash
+nlm config set auth.browser chromium   # or brave, arc, edge, chrome, firefox, vivaldi, opera
+```
+
+This is the only auth method the agent should run autonomously.
+
+### OpenClaw CDP (requires user approval)
 
 ```bash
 nlm login --provider openclaw --cdp-url http://127.0.0.1:18800
@@ -134,9 +153,11 @@ nlm login --provider openclaw --cdp-url http://127.0.0.1:<port>
 
 The OpenClaw browser must already be logged in to Google / NotebookLM. Uses `suppress_origin=True` for websocket CDP commands to support managed endpoints that reject the default Origin header.
 
-## Method 1 — Manual cookie file
+## Method 1 — Manual cookie file (emergency fallback only)
 
-### Step 1: Extract cookies on a machine with Chrome
+> **The agent must not perform these steps automatically.** Manual cookie extraction is an emergency fallback for a headless server the user controls. The user must create `cookies.txt` themselves and delete it immediately after import.
+
+### Step 1: The user extracts cookies on a machine with Chrome
 
 1. Open Chrome and go to **https://notebooklm.google.com**
 2. Make sure you are logged in to your Google account.
@@ -160,16 +181,15 @@ SID=abc123...; HSID=xyz789...; SSID=...; APISID=...; SAPISID=...; __Secure-1PSID
 
 - Lines starting with `#` are treated as comments and ignored.
 - The file can contain the cookie string on one or multiple lines.
-- A template `cookies.txt` is included in the repository.
 
 ### Step 2: Import on the server
 
 ```bash
-# Copy cookies.txt to the server, then:
+# The user copies cookies.txt to the server, then:
 nlm login --manual --file cookies.txt
 
-# Or interactive mode (prompts for the file path):
-nlm login --manual
+# Delete the cookie file immediately after successful import
+shred -u cookies.txt 2>/dev/null || rm -f cookies.txt
 ```
 
 ### Step 3: Verify
@@ -250,6 +270,17 @@ nlm login --check        # reports stale/unverified
 nlm login                # re-extract (auto mode)
 nlm login --manual --file cookies.txt   # re-extract (manual mode)
 ```
+
+## Auth Security Checklist
+
+Before any auth operation, confirm all items below. Stop and ask the user if any item is unclear.
+
+- [ ] The user explicitly requested this auth method and understands it involves Google session cookies.
+- [ ] The target machine is controlled by the user (personal workstation or server they administer).
+- [ ] No cookie file will be committed, logged, copied to clipboard, or left on disk after import.
+- [ ] If using `--provider openclaw`, the CDP endpoint is the user's own OpenClaw-managed browser.
+- [ ] If using `--manual --file cookies.txt`, the user provided the file and will delete it after import.
+- [ ] `nlm login --check` and `nlm doctor` pass before any notebook operation.
 
 ---
 

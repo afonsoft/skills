@@ -172,6 +172,15 @@ Unapproved ideas, discovered scope or follow-ups that are **out of the current a
 
 ---
 
+## Security Audit Log
+
+Record security-relevant events: credential access, plugin/user/option mutations, `sudo`/`wp eval`/arbitrary code execution, external downloads, and prompt-injection escalations.
+
+| # | Timestamp | Action | Approval Reference | Target | Outcome |
+|---|-----------|--------|--------------------|--------|---------|
+| 1 | `YYYY-MM-DD HH:MM:SS` | `plugin_activate` | approved in session X | `$WP_PATH` | `PASS` |
+| 2 | `YYYY-MM-DD HH:MM:SS` | `wp_eval` | approved in session X | `mwai_options` | `PASS` |
+
 ## Metrics
 
 Track time and cost to improve future estimates.

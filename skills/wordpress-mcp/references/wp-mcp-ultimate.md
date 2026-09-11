@@ -37,29 +37,29 @@ A self-contained MCP server plugin with **58 WordPress abilities** — manage po
 
 ---
 
-## Installation
+## Installation (requires explicit approval)
 
-### Option 1: Upload via WordPress admin
+`wp-mcp-ultimate` is published from a personal GitHub repository. Do not install it automatically. Use a pinned release, verify the source, and get user approval before proceeding.
 
-1. Download the latest release ZIP from [GitHub](https://github.com/AgriciDaniel/wp-mcp-ultimate/releases)
-2. WordPress Admin → Plugins → Add New → Upload Plugin
-3. Choose the ZIP file → Install Now → Activate
+### Option 1: Upload via WordPress admin (recommended)
 
-### Option 2: WP-CLI
+1. Pick a pinned release from [GitHub](https://github.com/AgriciDaniel/wp-mcp-ultimate/releases) (replace `<VERSION>` with the release tag).
+2. Verify the checksum when the release provides one.
+3. WordPress Admin → Plugins → Add New → Upload Plugin.
+4. Choose the ZIP file → Install Now → Activate.
 
-```bash
-wp plugin install https://github.com/AgriciDaniel/wp-mcp-ultimate/releases/latest/download/wp-mcp-ultimate.zip --activate --path=$WP_PATH
-wp rewrite flush --path=$WP_PATH
-```
-
-### Option 3: Git clone
+### Option 2: WP-CLI (pinned release only)
 
 ```bash
-cd $WP_PATH/wp-content/plugins/
-git clone https://github.com/AgriciDaniel/wp-mcp-ultimate.git
-wp plugin activate wp-mcp-ultimate --path=$WP_PATH
-wp rewrite flush --path=$WP_PATH
+WP_MCP_ULTIMATE_VERSION="<VERSION>"  # e.g. "v1.0.0"
+DOWNLOAD_URL="https://github.com/AgriciDaniel/wp-mcp-ultimate/releases/download/${WP_MCP_ULTIMATE_VERSION}/wp-mcp-ultimate.zip"
+
+# Download locally, verify checksum when available, then install
+wp plugin install "$DOWNLOAD_URL" --activate --path="$WP_PATH"
+wp rewrite flush --path="$WP_PATH"
 ```
+
+**Do not use `https://github.com/AgriciDaniel/wp-mcp-ultimate/releases/latest/download/...` or `git clone` for production.** Always use a pinned release artifact and verify the checksum.
 
 ---
 

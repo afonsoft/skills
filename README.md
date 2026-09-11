@@ -54,8 +54,8 @@ The skills are organized into four main pillars: **Harness Engineering**, **Code
 ### 🔗 MCP Integrations
 *Configuring, authenticating, and using external MCP servers across all supported agent platforms.*
 - **[`composio-mcp`](docs/en/composio-mcp.md)**: Connects AI agents to 1000+ external apps (Gmail, GitHub, Slack, Notion, Linear, Jira) via Composio. CLI-first path (`ak_*` project key) with MCP fallback (`ck_*` consumer key via `x-consumer-api-key` header). Includes multi-platform setup script (handles `serverUrl` vs `url`, `mcp` vs `mcpServers`, `environment` vs `env` across Claude Code/Desktop, Cursor, Devin CLI/Desktop, OpenCode, Antigravity IDE/CLI, OpenClaw), verify script, per-platform config reference, and cross-platform quirks matrix.
-- **[`notebooklm-mcp`](docs/en/notebooklm-mcp.md)**: Google NotebookLM (Gemini Notebook) integration via the `nlm` CLI and `notebooklm-mcp` server. Cookie-based auth for headless servers with three methods (OpenClaw CDP provider preferred, manual `cookies.txt` file, desktop auto + copy) and multi-platform setup script covering all 8 supported agent platforms. Includes verify, cookie-extraction helper, per-platform config reference, and cross-platform quirks matrix.
-- **[`wordpress-mcp`](docs/en/wordpress-mcp.md)**: Expose WordPress to AI agents over MCP. Three paths: (A) `wordpress/mcp-adapter` official plugin (Abilities API, 3 meta-tools, HTTP+STDIO), (B) AI Engine plugin (43–109+ admin tools: posts, users, media, plugins, SEO, social), and (C) wp-mcp-ultimate (58 abilities, OAuth 2.1, WP 6.7+). Includes WP-CLI install scripts, Application Password / Bearer Token / OAuth setup, per-platform MCP config (Claude Code, Devin, OpenCode, Gemini, Codex, AGY, OpenClaw), endpoint verification, and troubleshooting.
+- **[`notebooklm-mcp`](docs/en/notebooklm-mcp.md)**: Google NotebookLM (Gemini Notebook) integration via the `nlm` CLI and `notebooklm-mcp` server. Desktop `nlm login` is the default auth path; headless fallbacks (OpenClaw CDP or user-provided manual `cookies.txt`) require explicit user approval. Credentials/cookies are never logged, copied, or forwarded. Multi-platform setup script covering all 8 supported agent platforms, plus verify, auth guide, per-platform config reference, and cross-platform quirks matrix.
+- **[`wordpress-mcp`](docs/en/wordpress-mcp.md)**: Expose WordPress to AI agents over MCP using pinned, verified plugins. Three paths: (A) `wordpress/mcp-adapter` official plugin from GitHub releases, (B) AI Engine plugin from wordpress.org, and (C) wp-mcp-ultimate (community, opt-in, requires explicit source review and user approval). High-privilege actions require explicit approval; WordPress posts/comments/user submissions are treated as untrusted data. Includes hardened WP-CLI install scripts with checksum support, Application Password / Bearer Token / OAuth setup, per-platform MCP config, endpoint verification, and troubleshooting.
 
 > 📚 **Documentation:** each skill has a dedicated doc page in [`docs/en/`](docs/en/) (English) and [`docs/pt-br/`](docs/pt-br/) (Português).
 
@@ -63,7 +63,9 @@ The skills are organized into four main pillars: **Harness Engineering**, **Code
 
 Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen Agent Trust Hub**, **Socket**, **Snyk**). Click **View** to see the full report for a skill.
 
-> **Updated:** 2026-09-10
+> **Updated:** 2026-09-11
+>
+> **Mitigations applied** (PR #11): `notebooklm-mcp`, `orchestrator`, and `wordpress-mcp` were hardened with explicit-approval gates, pinned installs, credential isolation, untrusted-content handling, and audit logging. The table reflects the last external scan; a fresh scan by `skills.sh` is required to update the risk ratings after these changes.
 
 | Skill | Gen Agent Trust Hub | Socket alerts | Snyk | Details |
 |-------|---------------------|---------------|------|---------|
