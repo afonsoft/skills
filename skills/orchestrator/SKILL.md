@@ -213,6 +213,7 @@ The Orchestrator runs sliced Issues in a continuous loop until all SPEC implemen
 - After each slice, re-validate: build, tests, lint, type check.
 - Do not move to the next slice while the current one is not green.
 - Do not ask for human confirmation between slices. The SPEC is already approved; proceed automatically to the next slice in the queue after re-validation passes. Only pause for escalation gates (security, schema, public APIs, data), validation failures, or explicit user interruption.
+- Do not ask for human confirmation to advance to the next phase. Report phase completion and proceed automatically to the next Orchestrator phase. Only pause for escalation gates, validation failures, or explicit user request to stop.
 
 ### Per-Slice Cycle
 
