@@ -47,22 +47,30 @@ As skills estão organizadas em quatro pilares principais: **Engenharia de Harne
 
 Resultados mais recentes da auditoria de terceiros do [skills.sh](https://skills.sh) (**Gen Agent Trust Hub**, **Socket**, **Snyk**). Clique em **Ver** para ver o relatório completo de cada skill.
 
-> **Atualizado em:** 2026-09-08
+> **Atualizado em:** 2026-09-10
 
 | Skill | Gen Agent Trust Hub | Socket alerts | Snyk | Detalhes |
 |-------|---------------------|---------------|------|----------|
 | `building-mcp-servers` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/building-mcp-servers) |
 | `code-review-and-quality` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/code-review-and-quality) |
-| `composio-mcp` | ✅ safe | 1 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/composio-mcp) |
+| `composio-mcp` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/composio-mcp) |
 | `create-agent-harness` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/create-agent-harness) |
+| `create-issues` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/create-issues) |
 | `create-readme` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/create-readme) |
+| `diagnose` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/diagnose) |
 | `drawio-architecture` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/drawio-architecture) |
-| `notebooklm-mcp` | ✅ safe | 2 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/notebooklm-mcp) |
+| `execute-tdd-spec` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/execute-tdd-spec) |
+| `grill-me-with-spec` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/grill-me-with-spec) |
+| `improve-codebase-architecture` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/improve-codebase-architecture) |
+| `notebooklm-mcp` | ✅ safe | 1 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/notebooklm-mcp) |
 | `observability-and-instrumentation` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/observability-and-instrumentation) |
-| `obsidian` | 🟠 high | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/obsidian) |
+| `obsidian` | 🟡 medium | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/obsidian) |
+| `orchestrator` | ✅ safe | 1 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/orchestrator) |
+| `qa-analyst` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/qa-analyst) |
 | `quality-test-implementation` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/quality-test-implementation) |
-| `sonarqube-autofix` | ✅ safe | 1 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/sonarqube-autofix) |
-| `wordpress-mcp` | ⚪ unknown | - | ⚪ unknown | [Ver](https://skills.sh/afonsoft/skills/wordpress-mcp) |
+| `scaffold-mvp` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/scaffold-mvp) |
+| `sonarqube-autofix` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/sonarqube-autofix) |
+| `wordpress-mcp` | 🟡 medium | 1 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/wordpress-mcp) |
 
 ---
 
