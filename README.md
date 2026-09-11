@@ -30,7 +30,7 @@ The skills are organized into four main pillars: **Harness Engineering**, **Code
 
 ### 🧭 Orchestration & Delivery
 *Planning, execution, verification, and documentation for agent-driven projects.*
-- **[`orchestrator`](docs/en/orchestrator.md)**: Central control skill. Audits preconditions, creates documentation, reconciles open GitHub Issues, turns gaps into Issues, and coordinates execution, tests, QA, and PR in a continuous loop. Persists state in `.claude/memory/ESTADO_ORQUESTRATOR.md` and auto-continues to the next slice.
+- **[`orchestrator`](docs/en/orchestrator.md)**: Central control skill. Audits preconditions, creates documentation, reconciles open GitHub Issues, turns gaps into Issues, and coordinates execution, tests, QA, and PR in a continuous loop. Persists state in `.claude/memory/orchestrator_stats.md` and auto-continues to the next slice.
 - **[`grill-me-with-spec`](skills/grill-me-with-spec/SKILL.md)**: Interviews the user in Portuguese to consolidate domain language and produce an approved `.specs/SPEC-{YYYYMMDD}-{feature}.md` before implementation.
 - **[`scaffold-mvp`](skills/scaffold-mvp/SKILL.md)**: Bootstraps a new .NET/Blazor/Angular repository after domain/spec alignment. Installs the agent harness, proposes a productive stack, and generates the initial project skeleton, AD-0001, and stubs.
 - **[`create-issues`](skills/create-issues/SKILL.md)**: Turns approved gaps, roadmap, and specs into GitHub Issues with vertical slices and dependency links. Uses the `references/spec-sdd-template.md` structure when creating Issues from SPEC SDDs.
@@ -91,7 +91,7 @@ Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen 
 
 ## 🧭 Orchestrator Flow
 
-The [`orchestrator`](docs/en/orchestrator.md) is the central control skill for agent-driven projects. It runs in a continuous loop, delegating complex work to specialized skills and persisting state in `references/ESTADO_ORQUESTRATOR.md`.
+The [`orchestrator`](docs/en/orchestrator.md) is the central control skill for agent-driven projects. It runs in a continuous loop, delegating complex work to specialized skills and persisting state in `references/orchestrator_stats.md`.
 
 ```mermaid
 flowchart TD

@@ -44,18 +44,21 @@ This skill coordinates work through other specialized skills. It does **not** ex
 
 ## State File
 
-The Orchestrator state file is `.claude/memory/ESTADO_ORQUESTRATOR.md` in the project. It persists the DAG, task status, and decisions across sessions.
+The Orchestrator state file is `.claude/memory/orchestrator_stats.md` in the project. It persists the DAG, task status, and decisions across sessions.
+
+> **Backward compatibility**: legacy projects may still use `.claude/memory/ESTADO_ORQUESTRATOR.md`. When reading state, prefer `orchestrator_stats.md`; if it does not exist but `ESTADO_ORQUESTRATOR.md` does, read the legacy file and, from that point on, write updates to `orchestrator_stats.md`.
 
 At the start of every session:
 
-1. Check if `.claude/memory/ESTADO_ORQUESTRATOR.md` exists in the project.
-2. If it does not exist:
+1. Check if `.claude/memory/orchestrator_stats.md` exists in the project.
+2. If it does not exist, check for the legacy `.claude/memory/ESTADO_ORQUESTRATOR.md`.
+3. If neither exists:
    - Create the directory if needed: `mkdir -p .claude/memory`.
-   - Copy the `orchestrator` skill reference template: `cp <skill-path>/orchestrator/references/ESTADO_ORQUESTRATOR.md .claude/memory/ESTADO_ORQUESTRATOR.md`.
-3. If it exists, read it as the current state and use it as the base.
-4. After every phase, write the updated state back to `.claude/memory/ESTADO_ORQUESTRATOR.md`.
+   - Copy the `orchestrator` skill reference template: `cp <skill-path>/orchestrator/references/orchestrator_stats.md .claude/memory/orchestrator_stats.md`.
+4. Read the existing state (new or legacy) as the current base.
+5. After every phase, write the updated state back to `.claude/memory/orchestrator_stats.md`.
 
-See [references/ESTADO_ORQUESTRATOR.md](references/ESTADO_ORQUESTRATOR.md) for the reference template.
+See [references/orchestrator_stats.md](references/orchestrator_stats.md) for the reference template and [references/ESTADO_ORQUESTRATOR.md](references/ESTADO_ORQUESTRATOR.md) for the legacy fallback.
 
 ## Phase -1 — Framework Update
 
@@ -173,7 +176,7 @@ Classify gaps as P1 (security/types), P2 (architecture), P3 (performance), or P4
 
 ## Phase 3 — GitHub Fragmentation
 
-Approved gaps must be turned into Issues by `/create-issues`. GitHub is the persistent source of scope, acceptance criteria, dependencies, and status; `.claude/memory/ESTADO_ORQUESTRATOR.md` is only the operational view of the DAG.
+Approved gaps must be turned into Issues by `/create-issues`. GitHub is the persistent source of scope, acceptance criteria, dependencies, and status; `.claude/memory/orchestrator_stats.md` is only the operational view of the DAG.
 
 1. Pass the gaps, roadmap, and approved documentation to `/create-issues`.
 2. Present the decomposition for approval when HITL decision is needed.
@@ -357,7 +360,7 @@ In **Portuguese (pt-BR)**, report the result to the user:
    - Run the validation strategy from the last relevant SPEC.
 
 4. **Gap check**
-   - Review `.claude/memory/ESTADO_ORQUESTRATOR.md` for any task still marked as pending.
+   - Review `.claude/memory/orchestrator_stats.md` for any task still marked as pending.
    - Check for TODO / FIXME / `ponytail:` comments introduced during implementation.
    - Confirm no dead code, no unused files, and no orphaned branches.
 
@@ -428,7 +431,8 @@ At the end of the project or release, ensure `README.md` reflects the current sy
 ## References
 
 - [`references/orchestrator-delegation-protocol.md`](references/orchestrator-delegation-protocol.md) — autonomy matrix, risk tiers, and delegation protocols.
-- [`references/ESTADO_ORQUESTRATOR.md`](references/ESTADO_ORQUESTRATOR.md) — operational state file for the session DAG.
+- [`references/orchestrator_stats.md`](references/orchestrator_stats.md) — operational state file for the session DAG.
+- [`references/ESTADO_ORQUESTRATOR.md`](references/ESTADO_ORQUESTRATOR.md) — legacy fallback state file (kept for existing projects).
 - `/create-agent-harness` — for generating the project harness
 - `/grill-me-with-spec` — for authoring the SPEC SDD
 - `/scaffold-mvp` — for bootstrapping a new project
