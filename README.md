@@ -32,7 +32,7 @@ The skills are organized into four main pillars: **Harness Engineering**, **Code
 *Planning, execution, verification, and documentation for agent-driven projects.*
 - **[`orchestrator`](docs/en/orchestrator.md)**: Central control skill. Audits preconditions, creates documentation, turns gaps into GitHub Issues, and coordinates execution, tests, QA, and PR in a continuous loop. Uses `references/ESTADO_ORQUESTRATOR.md` to persist state.
 - **[`grill-me-with-spec`](skills/grill-me-with-spec/SKILL.md)**: Interviews the user in Portuguese to consolidate domain language and produce an approved `.specs/SPEC-{YYYYMMDD}-{feature}.md` before implementation.
-- **[`scaffold-mvp`](skills/scaffold-mvp/SKILL.md)**: Bootstraps a new repository after domain/spec alignment. Proposes a stack and generates a lean README, lockfiles, and stubs.
+- **[`scaffold-mvp`](skills/scaffold-mvp/SKILL.md)**: Bootstraps a new .NET/Blazor/Angular repository after domain/spec alignment. Installs the agent harness, proposes a productive stack, and generates the initial project skeleton, AD-0001, and stubs.
 - **[`create-issues`](skills/create-issues/SKILL.md)**: Turns approved gaps, roadmap, and specs into GitHub Issues with vertical slices and dependency links.
 - **[`execute-tdd-spec`](docs/en/execute-tdd-spec.md)**: Test-driven development using the approved SPEC SDD as the source of truth. Red-green-refactor one vertical slice at a time.
 - **[`qa-analyst`](skills/qa-analyst/SKILL.md)**: Full QA cycle — requirements analysis, test planning, test cases, execution, bug reports, and process improvement.
