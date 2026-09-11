@@ -31,7 +31,7 @@ As skills estão organizadas em quatro pilares principais: **Engenharia de Harne
 
 ### 🎨 Frontend e Design
 *Moldar interfaces com design responsivo e mobile-first.*
-- **[`design`](docs/pt-br/design.md)**: Design de UI frontend para Angular, React e Blazor. Cobre layouts responsivos mobile-first, tipografia, cor, componentes, acessibilidade, motion e design tokens.
+- **[`design`](docs/pt-br/design.md)**: Design de UI frontend para Angular, React e Blazor. Cobre layouts responsivos mobile-first, tipografia, cor, componentes, acessibilidade, motion, design tokens, exemplos Bootstrap/Tailwind CSS e endurecimento para produção.
 
 ### 🔌 Extensibilidade e Integração
 *Expandindo o que o agente pode realmente fazer.*

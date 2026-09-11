@@ -47,7 +47,7 @@ The skills are organized into four main pillars: **Harness Engineering**, **Code
 
 ### 🎨 Frontend & Design
 *Shaping user-facing interfaces with mobile-first, responsive craft.*
-- **[`design`](docs/en/design.md)**: Frontend UI design for Angular, React, and Blazor. Covers mobile-first responsive layouts, typography, color, components, accessibility, motion, and design tokens.
+- **[`design`](docs/en/design.md)**: Frontend UI design for Angular, React, and Blazor. Covers mobile-first responsive layouts, typography, color, components, accessibility, motion, design tokens, Bootstrap/Tailwind CSS examples, and production hardening.
 
 ### 🔌 Extensibility & Integration
 *Expanding what the agent can actually do.*
