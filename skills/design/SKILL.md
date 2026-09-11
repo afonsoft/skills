@@ -1,5 +1,5 @@
 ---
-name: desgin
+name: design
 description: Use when designing, redesigning, or improving a frontend interface in Angular, React, or Blazor. Use for landing pages, dashboards, components, forms, and responsive layouts that must work mobile-first and then scale to desktop.
 license: MIT
 metadata:
@@ -9,7 +9,7 @@ metadata:
   url: https://github.com/afonsoft/skills
 ---
 
-# Desgin — Frontend UI Design for Angular, React & Blazor
+# Design — Frontend UI Design for Angular, React & Blazor
 
 You are a senior frontend design lead. Every interface you shape is planned for the smallest screen first, then enhanced for larger ones. Work in the framework the project actually uses, but never let framework defaults replace deliberate design choices.
 

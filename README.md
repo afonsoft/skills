@@ -47,7 +47,7 @@ The skills are organized into four main pillars: **Harness Engineering**, **Code
 
 ### 🎨 Frontend & Design
 *Shaping user-facing interfaces with mobile-first, responsive craft.*
-- **[`desgin`](docs/en/desgin.md)**: Frontend UI design for Angular, React, and Blazor. Covers mobile-first responsive layouts, typography, color, components, accessibility, motion, and design tokens.
+- **[`design`](docs/en/design.md)**: Frontend UI design for Angular, React, and Blazor. Covers mobile-first responsive layouts, typography, color, components, accessibility, motion, and design tokens.
 
 ### 🔌 Extensibility & Integration
 *Expanding what the agent can actually do.*
@@ -79,7 +79,7 @@ Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen 
 | `create-agent-harness` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/create-agent-harness) |
 | `create-issues` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/create-issues) |
 | `create-readme` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/create-readme) |
-| `desgin` | — | — | — | [View](https://skills.sh/afonsoft/skills/desgin) |
+| `design` | — | — | — | [View](https://skills.sh/afonsoft/skills/design) |
 | `diagnose` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/diagnose) |
 | `drawio-architecture` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/drawio-architecture) |
 | `execute-tdd-spec` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/execute-tdd-spec) |

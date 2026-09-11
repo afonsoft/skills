@@ -10,7 +10,7 @@ Frontend UI design skill for Angular, React, and Blazor. Mobile-first, responsiv
 
 ## What It Does
 
-`desgin` turns a brief into a deliberate, framework-aware UI concept. It starts at 375px, defines a clear visual hierarchy, and scales up through breakpoints. It covers typography, color, spacing, layout, components, motion, accessibility, and UX writing.
+`design` turns a brief into a deliberate, framework-aware UI concept. It starts at 375px, defines a clear visual hierarchy, and scales up through breakpoints. It covers typography, color, spacing, layout, components, motion, accessibility, and UX writing.
 
 ## Design Modes
 
@@ -43,4 +43,4 @@ Frontend UI design skill for Angular, React, and Blazor. Mobile-first, responsiv
 
 ## References
 
-See [`skills/desgin/references/`](https://github.com/afonsoft/skills/tree/main/skills/desgin/references).
+See [`skills/design/references/`](https://github.com/afonsoft/skills/tree/main/skills/design/references).
