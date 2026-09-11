@@ -4,7 +4,7 @@ Skill de controle central para projetos conduzidos por agentes. Audita pré-cond
 
 ## 🎯 Objetivo
 
-Governar o ciclo de vida completo de entregas de software conduzidas por agentes, delegando trabalho complexo para skills especializadas. Persiste o estado em `.claude/memory/ESTADO_ORQUESTRATOR.md`, reconcilia GitHub Issues abertas e continua automaticamente para o próximo Epic/Slice na fila.
+Governar o ciclo de vida completo de entregas de software conduzidas por agentes, delegando trabalho complexo para skills especializadas. Persiste o estado em `.claude/memory/orchestrator_stats.md`, reconcilia GitHub Issues abertas e continua automaticamente para o próximo Epic/Slice na fila.
 
 ## 🛠️ Como Funciona
 

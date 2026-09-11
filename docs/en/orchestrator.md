@@ -4,7 +4,7 @@ Central control skill for agent-driven projects. It audits preconditions, create
 
 ## 🎯 Purpose
 
-Govern the full lifecycle of agent-driven software delivery by delegating complex work to specialized skills. Persists state in `.claude/memory/ESTADO_ORQUESTRATOR.md`, reconciles open GitHub Issues, and auto-continues to the next Epic/Slice in the queue.
+Govern the full lifecycle of agent-driven software delivery by delegating complex work to specialized skills. Persists state in `.claude/memory/orchestrator_stats.md`, reconciles open GitHub Issues, and auto-continues to the next Epic/Slice in the queue.
 
 ## 🛠️ How it Works
 
