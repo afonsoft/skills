@@ -90,6 +90,22 @@ Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen 
 | `wordpress-mcp` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/wordpress-mcp) |
 ---
 
+## 🧭 Orchestrator Flow
+
+The [`orchestrator`](docs/en/orchestrator.md) is the central control skill for agent-driven projects. It runs in a continuous loop, delegating complex work to specialized skills and persisting state in `references/ESTADO_ORQUESTRATOR.md`.
+
+```text
+Phase -1  Framework Update      → Check for updates to the afonsoft/skills collection.
+Phase 0   Governance            → Verify Git, remote, harness, and approved SPEC SDDs.
+Phase 1   Discovery             → Align domain, produce SPECs with grill-me-with-spec, scaffold when needed.
+Phase 2   Audit                 → Identify gaps; invoke improve-codebase-architecture for P2 issues.
+Phase 3   GitHub Fragmentation  → Turn approved gaps into GitHub Issues with create-issues.
+Phase 4   Implementation Loop   → Run sliced Issues one by one with execute-tdd-spec, without asking for approval between slices or phases.
+Phase 5   Verification & QA     → Run QA, final review, architecture diagrams, and README updates.
+```
+
+The orchestrator advances automatically between phases once validation passes. It only pauses for escalation gates (security, schema, public APIs, data changes), validation failures, or an explicit user request to stop.
+
 ## 📦 Installation
 
 ### ⚡ via skills.sh (Recommended)
