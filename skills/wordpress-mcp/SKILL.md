@@ -17,7 +17,7 @@ compatibility: WordPress 6.9+ (mcp-adapter) or 6.0+ (AI Engine). PHP 7.4+ (mcp-a
   HTTP/streamable-HTTP support. Works on any hosting (aaPanel, cPanel, Docker, bare
   LEMP).
 metadata:
-  version: 1.2.1
+  version: 1.2.2
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -28,6 +28,8 @@ metadata:
     path to the WordPress installation on the server."}]}'
 ---
 
+> **v1.2.2 changelog:** Pinned all plugin installs, added checksum verification support, removed automatic `wp eval` and dynamic PHP file mutation, required explicit approval for `wp-mcp-ultimate`, `sudo`, `wp eval`, user creation, plugin activation, and option updates; added untrusted content handling and audit logging.
+>
 > **v1.2.1 changelog:** Hardened install script guidance and called out high-trust risks for Path C (`wp-mcp-ultimate`) and the `@automattic/mcp-wordpress-remote` npm proxy.
 >
 > **v1.2.0 changelog:** Added Path C (wp-mcp-ultimate, 58 abilities, OAuth 2.1). Updated Path A: mcp-adapter v0.6.1+ ships pre-built ZIP (no composer needed), STDIO transport via `wp mcp-adapter serve`, HTTP proxy via `@automattic/mcp-wordpress-remote`, Abilities API guide, migration from deprecated Automattic/wordpress-mcp. Added `references/mcp-adapter-guide.md` and `references/wp-mcp-ultimate.md`.
