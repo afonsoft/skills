@@ -37,6 +37,7 @@ Before designing, confirm three things with the user:
 - What is the product/subject matter?
 - What is the primary user trying to do on this screen?
 - Which framework is the target (Angular, React, Blazor, or unknown)?
+- Which CSS approach or framework is preferred (Bootstrap, Tailwind CSS, plain CSS, or unknown)?
 
 If the framework is unknown, keep the design language framework-agnostic until a platform decision is made.
 
@@ -82,7 +83,10 @@ Load the relevant reference when the framework is known:
 - React: [references/react-design.md](references/react-design.md)
 - Blazor: [references/blazor-design.md](references/blazor-design.md)
 
-These cover component boundaries, styling patterns, and common framework traps. Do not let a component library make the aesthetic choices for you.
+If the user has not chosen a CSS framework, ask or propose one. See [references/css-frameworks.md](references/css-frameworks.md) for a Bootstrap vs Tailwind comparison, mobile-first examples, and a token mapping guide. Frameworks are delivery targets, not creative directors: set the design tokens first, then map them to the chosen tool.
+
+- Bootstrap: override variables and utilities, keep the 8px spacing grid, and test the default theme against the brand.
+- Tailwind: configure the token scale before writing components, avoid class-name soup, and use responsive prefixes to scale the mobile layout up.
 
 ### 6. Critique before shipping
 
@@ -147,3 +151,4 @@ Use these as sub-requests when the user names a specific task:
 - [references/testing-responsive.md](references/testing-responsive.md) — how to verify the design across sizes
 - [references/anti-patterns.md](references/anti-patterns.md) — generated-design tells and how to avoid them
 - [references/framework-comparison.md](references/framework-comparison.md) — when to choose Angular, React, or Blazor
+- [references/css-frameworks.md](references/css-frameworks.md) — Bootstrap, Tailwind, and mobile-first examples
