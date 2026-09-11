@@ -3,7 +3,7 @@ name: orchestrator
 license: MIT
 description: "Govern agent-driven projects, audit preconditions, create documentation, turn gaps into GitHub Issues, and coordinate execution, tests, and QA in a continuous loop. Use when starting or running a software project with the afonsoft agent harness. User-facing questions and confirmations must be in Portuguese (pt-BR). Part of the afonsoft/skills collection."
 metadata:
-  version: "2.0.2"
+  version: "2.1.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -110,6 +110,32 @@ When the repository starts from a folder containing only a PRD (no code):
 5. Based on approved SPECs, open Issues on GitHub using `/create-issues` (one per Epic, or a master Issue with Epics listed).
 6. Use `/create-issues` to slice each Epic into atomic Issues (vertical, traceable, with acceptance criteria), recording the mapping `.specs/SPEC-*.md` → Issue.
 7. Proceed to Phase 4 using the sequential queue described below.
+
+### Special Case — Existing Repository with Open GitHub Issues
+
+When the repository already exists and has open Issues on GitHub, the Orchestrator must reconcile them before creating new SPECs:
+
+1. List open Issues with:
+   ```bash
+   gh issue list --state open --json number,title,body,labels,url
+   ```
+2. For each open Issue, verify whether it is already reflected in the repository:
+   - Search the codebase for keywords from the issue title and body.
+   - Check tests, file names, and recent `git log` for evidence of implementation.
+   - Look for an existing `.specs/SPEC-*.md` that references the issue number.
+3. If the issue is already implemented:
+   - Report the finding to the user in **Portuguese (pt-BR)**, asking for confirmation:
+     ```text
+     A Issue #<number> '<title>' já parece estar implementada no repositório.
+     Deseja fechá-la e referenciar o commit/código? (sim/não)
+     ```
+   - If the user confirms, close it with a comment linking to the implementation commit or file.
+4. If the issue is not implemented and no SPEC exists:
+   - Open the issue with `gh issue view <number>`.
+   - Invoke `/grill-me-with-spec` using the issue title and body as the starting point.
+   - Ensure the resulting `.specs/SPEC-{YYYYMMDD}-{slug}.md` references the GitHub Issue number and URL in the `Ticket` field and in section 3.
+   - Do not proceed with implementation until the SPEC `Status` is `Approved`.
+5. After all open Issues are reconciled, proceed to Phase 4.
 
 ## Phase 2 — Audit
 
