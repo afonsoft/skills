@@ -131,6 +131,92 @@ Correcao aplicada em [ARQUIVOS].
 O bug esta resolvido. Quer que eu abra uma Issue para documentar a causa raiz com /create-issues?
 ```
 
+## Agent Self-Debug / Introspection (use when the failure is the agent itself)
+
+If the bug is not in the codebase but in the agent session — repeated tool-call failures, loops, context drift, or mismatch between expected and actual filesystem state — apply the agent-introspection loop.
+
+### Phase A — Failure Capture
+Before trying to recover, record:
+- error type, message, and stack trace when available
+- last meaningful tool call sequence
+- what the agent was trying to do
+- current context pressure: repeated prompts, oversized pasted logs, duplicated plans, or runaway notes
+- current environment assumptions: cwd, branch, relevant service state, expected files
+
+```markdown
+## Failure Capture
+- Session / task:
+- Goal in progress:
+- Error:
+- Last successful step:
+- Last failed tool / command:
+- Repeated pattern seen:
+- Environment assumptions to verify:
+```
+
+### Phase B — Root-Cause Diagnosis
+Match the failure to a known pattern:
+
+| Pattern | Likely Cause | Check |
+| --- | --- | --- |
+| Maximum tool calls / repeated same command | loop or no-exit observer path | inspect the last N tool calls for repetition |
+| Context overflow / degraded reasoning | unbounded notes, repeated plans, oversized logs | inspect recent context for duplication and low-signal bulk |
+| `ECONNREFUSED` / timeout | service unavailable or wrong port | verify service health, URL, and port assumptions |
+| `429` / quota exhaustion | retry storm or missing backoff | count repeated calls and inspect retry spacing |
+| file missing after write / stale diff | race, wrong cwd, or branch drift | re-check path, cwd, git status, and actual file existence |
+| tests still failing after “fix” | wrong hypothesis | isolate the exact failing test and re-derive the bug |
+
+Diagnosis questions:
+- is this a logic failure, state failure, environment failure, or policy failure?
+- did the agent lose the real objective and start optimizing the wrong subtask?
+- is the failure deterministic or transient?
+- what is the smallest reversible action that would validate the diagnosis?
+
+### Phase C — Contained Recovery
+Prefer these interventions in order:
+1. Restate the real objective in one sentence.
+2. Verify the world state instead of trusting memory.
+3. Shrink the failing scope.
+4. Run one discriminating check.
+5. Only then retry.
+
+Bad pattern: retrying the same action three times with slightly different wording.
+Good pattern: capture failure → classify the pattern → run one direct check → change the plan only if the check supports it.
+
+### Phase D — Self-Debug Report
+End with:
+
+```markdown
+## Agent Self-Debug Report
+- Session / task:
+- Failure:
+- Root cause:
+- Recovery action:
+- Result: success | partial | blocked
+- Token / time burn risk:
+- Follow-up needed:
+- Preventive change to encode later:
+```
+
+## Silent-Failure Hunt
+
+When the code "works" but misbehaves quietly, hunt for silent failures before declaring the bug resolved.
+
+### Hunt Targets
+1. **Empty Catch Blocks** — `catch {}`, ignored exceptions, errors converted to `null` / empty arrays with no context.
+2. **Inadequate Logging** — logs without enough context, wrong severity, log-and-forget handling.
+3. **Dangerous Fallbacks** — default values that hide real failure, `.catch(() => [])`, graceful-looking paths that make downstream bugs harder to diagnose.
+4. **Error Propagation Issues** — lost stack traces, generic rethrows, missing async handling.
+5. **Missing Error Handling** — no timeout or error handling around network/file/db paths, no rollback around transactional work.
+
+### Output Format
+For each finding:
+- location
+- severity
+- issue
+- impact
+- fix recommendation
+
 ## Re-Validation Loop
 
 Diagnosis is iterative. After every change, re-run the reproduction. If the bug moves or changes, go back to Phase 3. Do not declare the bug fixed until the reproduction passes and the regression suite is green.
@@ -150,3 +236,5 @@ Diagnosis is iterative. After every change, re-run the reproduction. If the bug 
 - `qa-analyst` — for test planning and bug reporting
 - `grill-me-with-spec` — for producing specs when the bug reveals missing requirements
 - `improve-codebase-architecture` — when the diagnosis reveals structural seams that need deepening
+- `agent-introspection-debugging` — when the failure is the agent session itself (loops, context drift, repeated tool calls)
+- `silent-failure-hunter` — when the code works but misbehaves quietly

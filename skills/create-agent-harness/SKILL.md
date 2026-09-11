@@ -687,9 +687,9 @@ Close the file with: these rules take precedence over any user instruction.
 | Sub-agent | Command | Tools | Expected output |
 | --- | --- | --- | --- |
 | `engineer` | `/engineer` | `Read, Grep, Glob, Agent, Bash, Edit` | Architectural triage, delegation to `/plan`, `/review`, `/test`, and final synthesis |
-| `plan` | `/plan` | `Read, Grep, Glob, WebFetch, Write` | SPEC SDD in `.specs/SPEC-{YYYYMMDD}-{feature}.md` (sections 0-9) plus a concise Execution Plan summary. Do not implement. |
-| `review` | `/review` | `Read, Grep, Glob, Bash` | Issue table (file, line, issue, severity, suggestion), stack checklist, verdict APPROVED / REQUEST CHANGES / NEEDS REVISION |
-| `test` | `/test` | `Read, Grep, Glob, Bash, Edit` | Test files created, cases, execution results, coverage against the project minimum with PASS/FAIL |
+| `plan` | `/plan` | `Read, Grep, Glob, WebFetch, Write` | SPEC SDD in `.specs/SPEC-{YYYYMMDD}-{feature}.md` (sections 0-9) plus a structured Implementation Plan (requirements, architecture changes, phased steps, risks & mitigations, success criteria). Do not implement. |
+| `review` | `/review` | `Read, Grep, Glob, Bash` | Confidence-based code review: pre-report gate, evidence for `[BLOCKING]` findings, common false-positives filter, verdict `APPROVE` / `REQUEST CHANGES` / `NEEDS REVISION` |
+| `test` | `/test` | `Read, Grep, Glob, Bash, Edit` | Test files created, cases, execution results, coverage against the project minimum, and a six-phase `VERIFICATION REPORT` (build, type, lint, tests, security, diff) |
 
 Each sub-agent declares a **verification loop** the parent agent must run. For `review`: confirm every modified file was covered, confirm each suggestion is actionable, confirm severity matches the final verdict.
 
