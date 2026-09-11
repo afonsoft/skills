@@ -16,7 +16,7 @@ compatibility: Needs Python 3.10+ and `notebooklm-mcp-cli` (`uv tool install not
   or Firefox installed. Headless servers use manual cookie file mode or an external
   CDP provider (OpenClaw). Works on macOS/Linux/Windows.
 metadata:
-  version: 1.0.1
+  version: 1.0.3
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

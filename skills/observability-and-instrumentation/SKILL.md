@@ -3,7 +3,7 @@ name: observability-and-instrumentation
 license: MIT
 description: Use when adding logging, metrics, tracing, or alerting to code that runs in production, or when a production incident couldn't be diagnosed from available data. Makes system behavior visible and diagnosable. Do NOT use for live debugging of an ongoing failure (use a debugging skill), profiling/optimization (use a performance skill), or launch-day monitoring checklists (use a shipping skill). Part of the afonsoft/skills collection.
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

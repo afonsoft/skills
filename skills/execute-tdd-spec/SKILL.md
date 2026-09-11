@@ -3,7 +3,7 @@ name: execute-tdd-spec
 license: MIT
 description: "Test-driven development using the approved SPEC SDD as the source of truth. Reads `.specs/SPEC-{YYYYMMDD}-{feature}.md`, turns requirements and acceptance criteria into red-green-refactor vertical slices. Use when the user asks to execute, run or implement from an approved SPEC. User-facing questions and recommendations must be in Portuguese (pt-BR). Part of the afonsoft/skills collection."
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

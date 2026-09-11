@@ -3,7 +3,7 @@ name: sonarqube-autofix
 license: MIT
 description: Use when analyzing SonarQube issues and creating SPEC SDDs with the proposed fixes. Classifies issues by type (bug, code smell, security) and generates `.specs/SPEC-{YYYYMMDD}-{issue-key}-{type}.md` for `execute-tdd-spec` to implement. Supports Community, Enterprise, and custom SonarQube deployments via environment variables. Do NOT use for general code review without SonarQube (use code-review-and-quality), for whole-repo quality interventions without SonarQube (use quality-test-implementation), or for non-SonarQube static analysis tools. Part of the afonsoft/skills collection.
 metadata:
-  version: 2.0.0
+  version: 2.0.1
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

@@ -3,7 +3,7 @@ name: create-agent-harness
 license: MIT
 description: Bootstrap or migrate a complete production-ready agent harness in a repository — CLAUDE.md, AGENTS.md (symlink/reference), .claude/ (settings.json, rules, agents review/plan/test, skills, commands, hooks, memory, knowledge, CONTEXT.md, RULES.md, MEMORY.md, TOOLS.md, WORKFLOWS.md, README.md), .devin/config.json, .opencode/, .cursor/, .gemini/, context engineering and memory protocol. Use when initializing AI agent support in a new repo, migrating legacy harness (AGENTS.md, .agents/, .devin/, .cursorrules, .windsurf) to .claude/, configuring permissions and hooks, or when the agent loses context every session. Supports Claude Code, Devin CLI/Desktop, OpenCode, Cursor, Gemini CLI, Antigravity IDE/CLI, and OpenClaw. Do NOT use for building MCP servers (use building-mcp-servers).
 metadata:
-  version: "2.0.1"
+  version: "2.0.2"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

@@ -13,7 +13,7 @@ compatibility: CLI mode needs Node.js + `composio` on PATH (npm i -g composio-co
   @composio/cli or via `composio setup`). MCP fallback mode needs an HTTP-capable
   MCP client and a `ck_*` consumer key from the Composio dashboard. Works on macOS/Linux/Windows.
 metadata:
-  version: 1.1.0
+  version: 1.1.1
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

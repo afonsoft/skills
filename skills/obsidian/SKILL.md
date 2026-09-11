@@ -7,7 +7,7 @@ description: Use when working with Obsidian vaults — running the Obsidian CLI 
   plugins and themes. Do NOT use for generic Markdown editors or non-Obsidian note
   tools; this skill is Obsidian-specific. Part of the afonsoft/skills collection.
 metadata:
-  version: 1.0.0
+  version: 1.0.1
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
