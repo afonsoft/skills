@@ -3,7 +3,7 @@ name: create-issues
 license: MIT
 description: Use when turning plans, specs, PRDs, and Epics into trackable GitHub Issues. Creates stable Epic IDs, direct links, vertical slices, dependencies, and verifiable acceptance criteria using the GitHub CLI (gh). Part of the afonsoft/skills collection.
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -211,6 +211,19 @@ Concise description of the complete behavior of this slice.
 Commands, tests, or expected evidence.
 ```
 
+## Spec SDD Issue Template
+
+When a GitHub Issue is being created from an approved `.specs/SPEC-*.md`, compose the issue body using the structure in `references/spec-sdd-template.md`. Read the reference template and the SPEC file, then fill a temporary `.md` file with the relevant sections before creating the issue:
+
+```bash
+gh issue create \
+  --title "E10 - [feature-name]" \
+  --label "epic" \
+  --body-file /path/to/filled-spec-issue.md
+```
+
+For Epic issues, keep the full SDD structure. For child slice issues, include only the parent Epic, scope, acceptance criteria, and verification sections, and set the `slice` label.
+
 ## Common Mistakes
 
 | Mistake | Fix |
@@ -225,3 +238,4 @@ Commands, tests, or expected evidence.
 - `gh` CLI docs: https://cli.github.com/manual/
 - `orchestrator` skill for the full agentic workflow
 - `grill-me-with-spec` for producing the `.specs/SPEC-*.md` files
+- `references/spec-sdd-template.md` — SDD template for issue bodies derived from `.specs/SPEC-*.md` files
