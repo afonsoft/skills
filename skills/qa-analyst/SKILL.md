@@ -136,6 +136,41 @@ The QA cycle is not one-pass. Use this loop every time something changes:
 4. Update the test plan and the `Definition of Done` if gaps were found.
 5. Only declare the phase `done` when all checks pass.
 
+## Final Gate — Verification Loop
+
+Before reporting a feature ready for PR, run the full `verification-loop` gate. Stop at the first failure and fix before continuing.
+
+| Phase | Command / Action | Pass Criteria |
+| --- | --- | --- |
+| 1. Build | `{{BUILD_CMD}}` or the repo's build command | Clean build, no compile errors |
+| 2. Type Check | Stack-appropriate type checker (`tsc --noEmit`, `mypy`, `pyright`, `dotnet build`) | Zero type errors |
+| 3. Lint | `{{LINT_CMD}}` or the repo's lint command | Zero lint errors; warnings documented |
+| 4. Test Suite | `{{TEST_CMD}}` or the repo's test command | All tests pass; coverage ≥ project minimum |
+| 5. Security Scan | `grep -rn "sk-\|api_key\|password\|token" --include="*.{cs,py,ts,js,json}" .` and configured scanner | No leaked secrets or credentials |
+| 6. Diff Review | `git diff --stat` and `git diff HEAD~1 --name-only` | Only intended files changed; no accidental edits |
+
+Report the result using the `VERIFICATION REPORT` format from `verification-loop`:
+
+```text
+VERIFICATION REPORT
+==================
+
+Build:     [PASS/FAIL]
+Types:     [PASS/FAIL] (X errors)
+Lint:      [PASS/FAIL] (X warnings)
+Tests:     [PASS/FAIL] (X/Y passed, Z% coverage)
+Security:  [PASS/FAIL] (X issues)
+Diff:      [X files changed]
+
+Overall:   [READY/NOT READY] for PR
+
+Issues to Fix:
+1. ...
+2. ...
+```
+
+Do not approve the feature for PR if the report says `NOT READY`.
+
 ## Anti-Patterns
 
 - ❌ Testing only the happy path.
@@ -147,6 +182,7 @@ The QA cycle is not one-pass. Use this loop every time something changes:
 ## References
 
 - [QA templates](references/qa-templates.md) — test case, bug report, test plan and RCA templates
+- `verification-loop` — final verification gate before PR readiness
 - `/create-issues` — for opening GitHub Issues from bug reports
 - `/diagnose` — for deep root-cause analysis of hard bugs
 - `/quality-test-implementation` — for raising coverage and clearing quality debt
