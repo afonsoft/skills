@@ -299,6 +299,43 @@ For each unapproved SPEC, in **Portuguese (pt-BR)**:
 
 This phase is the safety net that prevents approved work from being merged while draft or pending SPECs are left behind.
 
+## Phase 7 — Final Verification & Gap Check
+
+If no unapproved SPECs remain (or after all approved SPECs in Phase 6 are implemented), run a final verification to confirm everything was implemented correctly and that no gap was left behind.
+
+In **Portuguese (pt-BR)**, report the result to the user:
+
+1. **SPEC inventory**
+   - List all `.specs/` files and their `Status`.
+   - Confirm that every `Approved` or `Completed` SPEC has a corresponding implementation, tests, and commit.
+
+2. **Issue / PR inventory**
+   - List all open GitHub Issues linked to the current Epic/DAG.
+   - Confirm that each is either `closed` or has a justified reason to remain open.
+
+3. **Verification commands**
+   - Run the full test suite.
+   - Run lint / type check / build.
+   - Run the validation strategy from the last relevant SPEC.
+
+4. **Gap check**
+   - Review `references/ESTADO_ORQUESTRATOR.md` for any task still marked as pending.
+   - Check for TODO / FIXME / `ponytail:` comments introduced during implementation.
+   - Confirm no dead code, no unused files, and no orphaned branches.
+
+5. **Final report to the user**
+   ```text
+   Verificação final concluida.
+   - SPECs aprovados: [N]
+   - SPECs concluidos: [N]
+   - Issues fechadas: [N]
+   - Verificacao: [PASS/FAIL]
+
+   Nenhum gap pendente. Posso encerrar o fluxo?
+   ```
+
+If any gap is found, create a new GitHub Issue (or a SPEC, if the gap is large) and treat it as the next item in the queue. Do not close the project while an unresolved gap remains.
+
 At the end of the project or release, ensure `README.md` reflects the current system state.
 
 ## Skill Call Reference
@@ -322,7 +359,7 @@ At the end of the project or release, ensure `README.md` reflects the current sy
 | Phase 5 — architecture diagram | `/drawio-architecture` | Update system diagram after delivery | SVG/PNG architecture diagram |
 | Phase 5 — documentation | `/create-readme` | Keep `README.md` in sync with delivery | Updated README |
 | Phase 6 — unapproved SPEC | `/execute-tdd-spec` | Implement a SPEC the user just approved | Working code + tests passing |
-
+| Phase 7 — final verification | `orchestrator` (self) | Confirm all SPECs, Issues, and gaps are closed | Final verification report |
 ### Decision Tree
 
 1. Does the SPEC exist and is `Approved`?
