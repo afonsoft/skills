@@ -66,6 +66,31 @@ Resultados mais recentes da auditoria de terceiros do [skills.sh](https://skills
 
 ---
 
+## 🧭 Fluxo do Orchestrator
+
+O [`orchestrator`](docs/pt-br/orchestrator.md) é a skill de controle central para projetos conduzidos por agentes. Ele executa em um loop contínuo, delegando trabalho complexo para skills especializadas e persistindo o estado em `references/ESTADO_ORQUESTRADOR.md`.
+
+```mermaid
+flowchart TD
+    A[Fase -1: Atualização do Framework] --> B[Fase 0: Governança]
+    B --> C[Fase 1: Descoberta]
+    C --> D[Fase 2: Auditoria]
+    D --> E[Fase 3: Fragmentação no GitHub]
+    E --> F[Fase 4: Loop de Implementação]
+    F --> G[Fase 5: Verificação e QA]
+    G --> H[PR / Merge]
+
+    C -->|apenas PRD| I[/scaffold-mvp\]
+    C -->|precisa de spec| J[/grill-me-with-spec\]
+    D -->|gap P2| K[/improve-codebase-architecture\]
+    E --> L[/create-issues\]
+    F -->|por fatia| M[/execute-tdd-spec\]
+    F -->|bug| N[/diagnose\]
+    G --> O[/qa-analyst\]
+```
+
+O orchestrator avança automaticamente entre as fases assim que a validação passa. Ele só para em escalation gates (segurança, schema, APIs públicas, dados), falhas de validação ou pedido explícito do usuário.
+
 ## 📦 Instalação
 
 ### ⚡ via skills.sh (Recomendado)

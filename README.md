@@ -94,14 +94,23 @@ Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen 
 
 The [`orchestrator`](docs/en/orchestrator.md) is the central control skill for agent-driven projects. It runs in a continuous loop, delegating complex work to specialized skills and persisting state in `references/ESTADO_ORQUESTRATOR.md`.
 
-```text
-Phase -1  Framework Update      → Check for updates to the afonsoft/skills collection.
-Phase 0   Governance            → Verify Git, remote, harness, and approved SPEC SDDs.
-Phase 1   Discovery             → Align domain, produce SPECs with grill-me-with-spec, scaffold when needed.
-Phase 2   Audit                 → Identify gaps; invoke improve-codebase-architecture for P2 issues.
-Phase 3   GitHub Fragmentation  → Turn approved gaps into GitHub Issues with create-issues.
-Phase 4   Implementation Loop   → Run sliced Issues one by one with execute-tdd-spec, without asking for approval between slices or phases.
-Phase 5   Verification & QA     → Run QA, final review, architecture diagrams, and README updates.
+```mermaid
+flowchart TD
+    A[Phase -1: Framework Update] --> B[Phase 0: Governance]
+    B --> C[Phase 1: Discovery]
+    C --> D[Phase 2: Audit]
+    D --> E[Phase 3: GitHub Fragmentation]
+    E --> F[Phase 4: Implementation Loop]
+    F --> G[Phase 5: Verification & QA]
+    G --> H[PR / Merge]
+
+    C -->|PRD only| I[/scaffold-mvp\]
+    C -->|needs spec| J[/grill-me-with-spec\]
+    D -->|P2 gap| K[/improve-codebase-architecture\]
+    E --> L[/create-issues\]
+    F -->|per slice| M[/execute-tdd-spec\]
+    F -->|bug| N[/diagnose\]
+    G --> O[/qa-analyst\]
 ```
 
 The orchestrator advances automatically between phases once validation passes. It only pauses for escalation gates (security, schema, public APIs, data changes), validation failures, or an explicit user request to stop.
