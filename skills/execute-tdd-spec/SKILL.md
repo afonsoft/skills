@@ -85,7 +85,7 @@ After every slice:
 2. Run lint / type check.
 3. Confirm the SPEC requirement is satisfied.
 
-Report progress to the user in Portuguese:
+Report progress to the user in Portuguese and continue automatically to the next slice. Do not ask for approval between slices; the approved SPEC is the source of truth.
 
 ```text
 Slice concluido: [RF-XXX / AC-YYY]
@@ -93,9 +93,7 @@ Slice concluido: [RF-XXX / AC-YYY]
 - Build: [PASS/FAIL]
 - Lint: [PASS/FAIL]
 
-Proximo slice: [PROXIMO].
-
-Posso continuar?
+Avançando para o proximo slice: [PROXIMO].
 ```
 
 ### 7. Closure
