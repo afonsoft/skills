@@ -1,7 +1,7 @@
 ---
 name: create-issues
 license: MIT
-description: Use when turning plans, specs, PRDs, and Epics into trackable GitHub Issues. Creates stable Epic IDs, direct links, vertical slices, dependencies, and verifiable acceptance criteria using the GitHub CLI (gh). Part of the afonsoft/skills collection.
+description: Use when turning approved plans, specs, PRDs, or Epics into trackable GitHub Issues.
 metadata:
   version: "1.2.1"
   visibility: public

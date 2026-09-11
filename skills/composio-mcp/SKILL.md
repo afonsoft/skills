@@ -1,13 +1,6 @@
 ---
 name: composio-mcp
-description: Use when the user wants to connect AI agents to external apps (Gmail,
-  GitHub, Slack, Notion, Linear, Jira, 1000+ toolkits) via Composio, when `composio`
-  CLI commands fail or need auth, when configuring the Composio MCP server (https://connect.composio.dev/mcp),
-  when `devin mcp list` shows composio failing to list tools, or when the user asks
-  to install/authenticate/use Composio. Covers CLI login, consumer key (ck_*) vs project
-  API key (ak_*), MCP header config, tool search/execute/link, and headless auth flows.
-  Do NOT use for building a new MCP server (use building-mcp-servers). Part of the
-  afonsoft/skills collection.
+description: Use when the user asks to connect an AI agent to external apps via Composio, or when Composio CLI or MCP setup fails.
 license: MIT
 compatibility: CLI mode needs Node.js + `composio` on PATH (npm i -g composio-core
   @composio/cli or via `composio setup`). MCP fallback mode needs an HTTP-capable

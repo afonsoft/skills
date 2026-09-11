@@ -1,14 +1,6 @@
 ---
 name: notebooklm-mcp
-description: Use when the user wants to use Google NotebookLM (Gemini Notebook) with
-  an AI agent via the `nlm` CLI or the `notebooklm-mcp` MCP server, when `devin mcp
-  list` / `claude mcp list` shows `notebooklm-mcp` failing to list tools, when `nlm
-  login --check` fails with `ClientAuthenticationError`, or when the user asks to configure/authenticate/use
-  NotebookLM MCP. Covers browser-based authentication (`nlm login`) with secure headless
-  fallbacks (OpenClaw CDP or user-provided manual cookie file only after explicit approval), MCP
-  server setup across platforms, and the full `nlm` CLI command surface. Do NOT use
-  for building a new MCP server (use building-mcp-servers). Part of the afonsoft/skills
-  collection.
+description: Use when the user wants to configure, authenticate, or use Google NotebookLM via the nlm CLI or MCP.
 license: MIT
 compatibility: Needs Python 3.10+ and `notebooklm-mcp-cli` (`uv tool install notebooklm-mcp-cli`
   or `pipx install notebooklm-mcp-cli`), providing the `nlm` and `notebooklm-mcp`

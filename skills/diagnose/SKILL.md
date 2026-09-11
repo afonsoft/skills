@@ -1,7 +1,7 @@
 ---
 name: diagnose
 license: MIT
-description: Disciplined diagnosis and re-validation loop for hard bugs and performance regressions. Reproduce, minimise, hypothesise, instrument, fix, and regression-test. Use when the user says diagnose this / debug this, reports a bug, says something is broken/throwing/failing, or describes a performance regression. User-facing questions and findings must be in Portuguese (pt-BR). Part of the afonsoft/skills collection.
+description: Use when the user reports a hard bug, unexpected failure, or performance regression that needs root-cause analysis.
 metadata:
   version: "1.0.1"
   visibility: public

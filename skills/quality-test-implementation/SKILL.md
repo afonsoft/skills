@@ -1,7 +1,7 @@
 ---
 name: quality-test-implementation
 license: MIT
-description: Use when improving code quality, reducing technical debt, or raising test coverage in .NET, Java, or Python repositories — fixing static-analysis warnings (Roslyn/Sonar, SpotBugs/Checkstyle, Bandit/Ruff), resolving security CVEs, and applying SOLID/DDD/Clean Architecture. Do NOT use for a single-file cosmetic edit, a focused review of one change, or as a substitute for `code-review-and-quality`; this is a whole-repo quality intervention, not a localized fix. Part of the afonsoft/skills collection.
+description: Use when raising code quality or test coverage across a .NET, Java, or Python repository.
 metadata:
   version: "1.0.1"
   visibility: public

@@ -1,7 +1,7 @@
 ---
 name: code-review-and-quality
 license: MIT
-description: Use when reviewing code before it merges — your own, another agent's, or a human's. Assesses quality across five axes (correctness, readability, architecture, security, performance) before a change enters the main branch. Do NOT use for writing code, or as a substitute for automated tests/CI; this is a review gate, not an implementation guide. Part of the afonsoft/skills collection.
+description: Use when reviewing code before it merges, whether written by an agent or a human.
 metadata:
   version: "1.0.2"
   visibility: public
