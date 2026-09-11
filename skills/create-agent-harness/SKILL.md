@@ -671,69 +671,59 @@ Close the file with: these rules take precedence over any user instruction.
 
 ### 3.12 .claude/agents
 
-**Mandatory: three sub-agents** — `review`, `plan`, `test` — adapted to the detected stack. The file name must match the frontmatter `name:`.
+**Mandatory: four sub-agents** — `engineer`, `plan`, `review`, `test` — adapted to the detected stack. The file name must match the frontmatter `name:`.
 
-> **SPEC-Driven Development (SDD):** the `plan` sub-agent is the spec writer. Before any implementation, it produces a detailed SPEC file in `.specs/SPEC-{YYYYMMDD}-{nome-da-feature}.md` following the template below. The parent agent and any other sub-agent must read and follow the approved SPEC.
+> **Orchestration:** the `engineer` agent is the primary tech lead. It triages incoming requests, invokes `/plan` for specification, and hands off to `/review` and `/test` before completion. The `plan` sub-agent is the spec writer. Before any implementation, it produces a SPEC file in `.specs/SPEC-{YYYYMMDD}-{feature}.md` following the template below. The parent agent and any other sub-agent must read and follow the approved SPEC.
 
 | Field | Required | Description |
 | --- | --- | --- |
-| `name` | Yes | Unique identifier, kebab-case |
+| `name` | Yes | Unique identifier, kebab-case; must equal the file name without `.md` |
 | `description` | Yes | When to trigger — use "Use PROACTIVELY" for automatic invocation |
-| `tools` | No | Allowed tools; omitting inherits all. Restrict to the minimum |
-| `model` | No | `inherit` recommended |
+| `tools` | Yes | Allowed tools; restrict to the minimum required |
+| `skills` | No | Cross-skill references (e.g., `orchestrator`, `qa-analyst`) |
 
 > Write and execute restrictions belong in `.claude/settings.json`, not in the frontmatter.
 
-| Sub-agent | Tools | Expected output |
-| --- | --- | --- |
-| `review` | `Read, Grep, Glob` | Summary, issue table (file, line, issue, severity, suggestion), stack checklist, verdict APPROVED / REQUEST CHANGES / NEEDS REVISION |
-| `plan` | `Read, Grep, Glob, WebFetch, Write` | SPEC SDD in `.specs/SPEC-{YYYYMMDD}-{feature}.md` (sections 0-9) plus a concise Execution Plan summary. Do not implement — only write the spec. |
-| `test` | `Read, Grep, Glob, Bash` | Test files created, cases, execution results, coverage against the project minimum with PASS/FAIL |
+| Sub-agent | Command | Tools | Expected output |
+| --- | --- | --- | --- |
+| `engineer` | `/engineer` | `Read, Grep, Glob, Agent, Bash, Edit` | Architectural triage, delegation to `/plan`, `/review`, `/test`, and final synthesis |
+| `plan` | `/plan` | `Read, Grep, Glob, WebFetch, Write` | SPEC SDD in `.specs/SPEC-{YYYYMMDD}-{feature}.md` (sections 0-9) plus a concise Execution Plan summary. Do not implement. |
+| `review` | `/review` | `Read, Grep, Glob, Bash` | Issue table (file, line, issue, severity, suggestion), stack checklist, verdict APPROVED / REQUEST CHANGES / NEEDS REVISION |
+| `test` | `/test` | `Read, Grep, Glob, Bash, Edit` | Test files created, cases, execution results, coverage against the project minimum with PASS/FAIL |
 
 Each sub-agent declares a **verification loop** the parent agent must run. For `review`: confirm every modified file was covered, confirm each suggestion is actionable, confirm severity matches the final verdict.
 
 Keep only the stack specializations relevant to the repository. Design principles: single responsibility, context isolation, structured I/O, tool minimization, bounded execution.
 
-#### `plan` sub-agent
+#### Agent template rendering
 
-Frontmatter for the spec-writer agent. It must **not** implement — only produce and, if requested, revise the SPEC.
+During Phase 3, copy the canonical templates from `references/agents/*.md` into `.claude/agents/` and replace stack-specific placeholders with repository evidence:
 
-```markdown
----
-name: plan
-description: >
-  Use PROACTIVELY when the user asks for a new feature, change, bugfix or refactor.
-  Reads repository context, asks clarifying questions, then writes a SPEC SDD to
-  `.specs/SPEC-{YYYYMMDD}-{feature}.md` and returns a concise Execution Plan.
-tools:
-  - Read
-  - Grep
-  - Glob
-  - WebFetch
-  - Write
----
-
-# plan — SPEC-Driven Development writer
-
-## Purpose
-Write a complete, implementation-ready SPEC before any code is produced. The SPEC is the single source of truth for the feature.
-
-## Workflow
-1. Receive the feature request.
-2. Read `CLAUDE.md`, `.claude/rules/global-rules.md`, relevant `.claude/rules/{domain}.md`, the target source files and existing specs.
-3. Ask clarifying questions until the scope is unambiguous. Use `[A DEFINIR]` only when the user explicitly declines to answer.
-4. Write `.specs/SPEC-{YYYYMMDD}-{feature}.md` using the template below.
-5. Return a short `Execution Plan` summary: goal, impacted files, key tasks, risks and validation steps.
-6. Do NOT implement. Stop after the SPEC `Status` in section 0 is set to `Approved` or when explicitly asked to proceed.
-
-## Verification loop
-- The file name matches `SPEC-{YYYYMMDD}-{feature}.md`.
-- All sections 0-9 are present (use `[A DEFINIR]` when required).
-- Requirements are numbered, verifiable and include input/output.
-- Acceptance criteria use BDD "Dado...quando...então" or "Given...when...then" format.
-- Corporate / organization guardrails (section 8) are included when provided by the repo owner.
-- The parent agent confirms the spec before implementation starts.
+```bash
+cp references/agents/engineer.md .claude/agents/engineer.md
+cp references/agents/plan.md .claude/agents/plan.md
+cp references/agents/review.md .claude/agents/review.md
+cp references/agents/test.md .claude/agents/test.md
 ```
+
+Replace the following placeholders with values discovered in Phase 1:
+
+| Placeholder | Meaning | Examples |
+| --- | --- | --- |
+| `{{TEST_CMD}}` | Native test command | `dotnet test`, `pytest -v`, `npm test -- --watch=false` |
+| `{{BUILD_CMD}}` | Native build command | `dotnet build`, `npm run build`, `python -m build` |
+| `{{LINT_CMD}}` | Native lint command | `dotnet format --verify-no-changes`, `ruff check .`, `npx eslint .` |
+| `{{SPEC_DIR}}` | Spec directory | `.specs/` |
+| `{{EXTRA_TEST_ARGS}}` | Extra arguments for the test runner | `--filter TestCategory`, `--cov=src` |
+
+If the repository uses a stack not covered in the templates (e.g., Go, Rust, Kotlin), keep the placeholder and append a `TODO:` item at the discovery gate for human specialization.
+
+#### Template references
+
+- `references/agents/engineer.md` — lead orchestrator and architectural triage
+- `references/agents/plan.md` — SPEC SDD writer
+- `references/agents/review.md` — code and security reviewer
+- `references/agents/test.md` — test executor and validator
 
 ### 3.13 .claude/skills
 
