@@ -271,6 +271,34 @@ After each slice and at the end of each Epic/DAG:
 7. **Archive the completed SPEC SDD(s)**. Once the Epic/DAG is delivered, create `docs/specs/` if it does not exist and move the corresponding `.specs/SPEC-{YYYYMMDD}-{slug}.md` to `docs/specs/SPEC-{YYYYMMDD}-{slug}.md`. Update the frontmatter status (e.g., from `Approved` to `Completed`) and add a `Delivered` subsection with the merge commit/PR. Commit the move as part of the Epic closure.
 8. Only after that can delivery by PR occur. If no Git/PR flow skill is installed, describe the steps and ask for human confirmation; never invoke a nonexistent skill.
 
+## Phase 6 — Unapproved SPEC Review
+
+At the end of the release (after all Epics are delivered or when the user explicitly asks), scan `.specs/` for any `SPEC-{YYYYMMDD}-{slug}.md` whose `Status` is not `Approved` (e.g., `Draft`, `In implementation`, `Done`, `Completed`).
+
+For each unapproved SPEC, in **Portuguese (pt-BR)**:
+
+1. **Read the SPEC** and extract:
+   - Feature name
+   - Current `Status`
+   - One-line description of what it proposes
+2. **Present it to the user:**
+   ```text
+   SPEC não aprovado encontrado: [feature-name]
+   Status: [status]
+   Descrição: [one-line description]
+
+   Deseja aprovar e executar este SPEC? (sim/não)
+   ```
+3. **If the user answers `sim`**:
+   - Update the SPEC frontmatter to `Status: Approved`.
+   - Invoke `/execute-tdd-spec` to implement it.
+4. **If the user answers `não`**:
+   - Leave the SPEC unchanged.
+   - Continue to the next unapproved SPEC.
+5. Repeat until all unapproved SPECs are reviewed.
+
+This phase is the safety net that prevents approved work from being merged while draft or pending SPECs are left behind.
+
 At the end of the project or release, ensure `README.md` reflects the current system state.
 
 ## Skill Call Reference
@@ -293,6 +321,7 @@ At the end of the project or release, ensure `README.md` reflects the current sy
 | Phase 5 — final review | `/code-review-and-quality` | Accumulated Epic diff review | Final approval or rework |
 | Phase 5 — architecture diagram | `/drawio-architecture` | Update system diagram after delivery | SVG/PNG architecture diagram |
 | Phase 5 — documentation | `/create-readme` | Keep `README.md` in sync with delivery | Updated README |
+| Phase 6 — unapproved SPEC | `/execute-tdd-spec` | Implement a SPEC the user just approved | Working code + tests passing |
 
 ### Decision Tree
 
