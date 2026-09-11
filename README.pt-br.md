@@ -29,6 +29,10 @@ As skills estão organizadas em quatro pilares principais: **Engenharia de Harne
 - **[`quality-test-implementation`](docs/pt-br/quality-test-implementation.md)**: A intervenção de qualidade em todo o repo. Corrige warnings de análise estática (Roslyn/Sonar, SpotBugs/Checkstyle, Bandit/Ruff), resolve CVEs de segurança e aplica SOLID/DDD/Clean Architecture em repositórios .NET, Java ou Python.
 - **[`sonarqube-autofix`](docs/pt-br/sonarqube-autofix.md)**: O auditor automático. Integra com SonarQube para identificar e corrigir débito técnico e code smells sistematicamente.
 
+### 🎨 Frontend e Design
+*Moldar interfaces com design responsivo e mobile-first.*
+- **[`desgin`](docs/pt-br/desgin.md)**: Design de UI frontend para Angular, React e Blazor. Cobre layouts responsivos mobile-first, tipografia, cor, componentes, acessibilidade, motion e design tokens.
+
 ### 🔌 Extensibilidade e Integração
 *Expandindo o que o agente pode realmente fazer.*
 - **[`building-mcp-servers`](docs/pt-br/building-mcp-servers.md)**: A ferramenta de power-user. Ensina agentes a construir seus próprios servidores Model Context Protocol (MCP) para conectar a qualquer API ou banco de dados.
@@ -57,6 +61,7 @@ Resultados mais recentes da auditoria de terceiros do [skills.sh](https://skills
 | `create-agent-harness` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/create-agent-harness) |
 | `create-issues` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/create-issues) |
 | `create-readme` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/create-readme) |
+| `desgin` | — | — | — | [Ver](https://skills.sh/afonsoft/skills/desgin) |
 | `diagnose` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/diagnose) |
 | `drawio-architecture` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/drawio-architecture) |
 | `execute-tdd-spec` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/execute-tdd-spec) |
