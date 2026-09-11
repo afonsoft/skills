@@ -3,7 +3,7 @@ name: diagnose
 license: MIT
 description: Disciplined diagnosis and re-validation loop for hard bugs and performance regressions. Reproduce, minimise, hypothesise, instrument, fix, and regression-test. Use when the user says diagnose this / debug this, reports a bug, says something is broken/throwing/failing, or describes a performance regression. User-facing questions and findings must be in Portuguese (pt-BR). Part of the afonsoft/skills collection.
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

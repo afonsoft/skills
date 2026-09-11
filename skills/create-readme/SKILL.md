@@ -3,7 +3,7 @@ name: create-readme
 license: MIT
 description: Use when generating or updating professional README.md and CHANGELOG.md files for a project. Covers repository analysis, stack detection, badge generation, structure diagrams, and alignment with Keep a Changelog and SemVer standards. Do NOT use for API-reference docs (use dedicated doc tooling), licenses/governance documents, or internal code documentation (use docstrings/JSDoc). Part of the afonsoft/skills collection.
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

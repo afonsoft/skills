@@ -3,7 +3,7 @@ name: orchestrator
 license: MIT
 description: "Govern agent-driven projects, audit preconditions, create documentation, turn gaps into GitHub Issues, and coordinate execution, tests, and QA in a continuous loop. Use when starting or running a software project with the afonsoft agent harness. User-facing questions and confirmations must be in Portuguese (pt-BR). Part of the afonsoft/skills collection."
 metadata:
-  version: "2.1.3"
+  version: "2.1.4"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

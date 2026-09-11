@@ -14,7 +14,7 @@ compatibility: MCP mode needs Node.js + `npx @drawio/mcp` (or a self-hosted draw
   instance via DRAWIO_BASE_URL). Local export mode needs the draw.io desktop CLI on
   PATH. Works on macOS/Linux/Windows.
 metadata:
-  version: 1.0.1
+  version: 1.0.2
   visibility: public
   author: merged from Agents365-ai/drawio-skill, scarr05/claude-skills-pub, jgraph/drawio-mcp
   url: https://github.com/afonsoft/skills

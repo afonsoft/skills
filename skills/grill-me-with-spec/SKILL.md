@@ -3,7 +3,7 @@ name: grill-me-with-spec
 license: MIT
 description: Use when the user needs to create or refine a feature SPEC SDD before implementation. Interviews the user in Portuguese, builds a design tree, and writes `.specs/SPEC-{YYYYMMDD}-{feature}.md` following the SDD template. Do NOT use for writing implementation code or after the SPEC is approved. Part of the afonsoft/skills collection.
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

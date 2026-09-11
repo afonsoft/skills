@@ -17,7 +17,7 @@ compatibility: WordPress 6.9+ (mcp-adapter) or 6.0+ (AI Engine). PHP 7.4+ (mcp-a
   HTTP/streamable-HTTP support. Works on any hosting (aaPanel, cPanel, Docker, bare
   LEMP).
 metadata:
-  version: 1.2.2
+  version: 1.2.3
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

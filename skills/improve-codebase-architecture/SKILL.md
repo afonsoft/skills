@@ -3,7 +3,7 @@ name: improve-codebase-architecture
 license: MIT
 description: Find deepening opportunities in a codebase, informed by the domain language in .claude/CONTEXT.md and the decisions in .specs/SPEC-*.md. Use when the user wants to improve architecture, find refactoring opportunities, consolidate tightly-coupled modules, or make a codebase more testable and AI-navigable. User-facing questions and recommendations must be in Portuguese (pt-BR). Part of the afonsoft/skills collection.
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

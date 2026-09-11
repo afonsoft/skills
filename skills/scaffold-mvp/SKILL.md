@@ -3,7 +3,7 @@ name: scaffold-mvp
 license: MIT
 description: Use when starting a new project in an empty repository. Initializes an agile, high-productivity .NET/Blazor/Angular MVP stack with clean engineering boundaries, atomic configurations, and system stability without architectural shortcuts. User-facing questions and recommendations must be in Portuguese (pt-BR). Part of the afonsoft/skills collection.
 metadata:
-  version: "2.0.0"
+  version: "2.0.1"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
