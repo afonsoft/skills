@@ -237,28 +237,34 @@ sonar.javascript.lcov.reportPaths=coverage/lcov.info
 
 ### Phase 2: Classify Issues
 
-For each downloaded issue, classify it into one of the following types and record the classification in the ToDo Board:
+For each downloaded issue, classify it into one of the four SonarQube types and record the classification in the ToDo Board:
 
-| Type | SonarQube categories |
-| --- | --- |
-| `bug` | Bugs (`BUG`) and reliability issues |
-| `code smell` | Code Smells (`CODE_SMELL`) and maintainability issues |
-| `security` | Vulnerabilities (`VULNERABILITY`) and Security Hotspots (`SECURITY_HOTSPOT`) |
+| SonarQube type | SPEC type slug | SPEC metadata `Type` | Description |
+| --- | --- | --- | --- |
+| `BUG` | `bug` | `Bugfix` | Reliability issues that are demonstrably wrong or more likely wrong than not |
+| `CODE_SMELL` | `code-smell` | `Refactor` | Maintainability issues and noisy code that should be cleaned up |
+| `VULNERABILITY` | `vulnerability` | `Security` | Security issues that could be exploited by an attacker |
+| `SECURITY_HOTSPOT` | `security-hotspot` | `Security` | Security-sensitive code that needs manual review before marking as safe |
 
 Add the type to each line of `SONAR_FIX_TODO_BOARD.md`:
 
 ```markdown
-- [ ] Issue <ID> — Type: <bug | code smell | security> — Rule: <RuleKey> — File: `<path/to/file>` — Line: <line>
+- [ ] Issue <ID> — Sonar type: <BUG | CODE_SMELL | VULNERABILITY | SECURITY_HOTSPOT> — Rule: <RuleKey> — File: `<path/to/file>` — Line: <line>
       Summary: <short issue message>
 ```
 
-Sort the board by: `security` → `bug` → `code smell`, then by severity.
+Sort the board by: `VULNERABILITY` → `SECURITY_HOTSPOT` → `BUG` → `CODE_SMELL`, then by severity.
 
 ### Phase 3: Generate SPEC SDDs
 
-For each issue (or small, related group of the same type), create an approved SPEC SDD in `.specs/SPEC-{YYYYMMDD}-{issue-key}-{type}.md` using `references/spec-sdd-template.md`:
+For each issue (or small, related group of the same SonarQube type), create an approved SPEC SDD in `.specs/SPEC-{YYYYMMDD}-{issue-key}-{slug}.md` using `references/spec-sdd-template.md`:
 
-1. **Metadata** — set `Type` to the issue type (`Bugfix` for `bug`, `Refactor` for `code smell`, `Security` for `security`), `Status: Approved`, and map the SonarQube rule and file.
+1. **Metadata** — set `Status: Approved` and `Type` based on the SonarQube type:
+   - `BUG` → `Bugfix`
+   - `CODE_SMELL` → `Refactor`
+   - `VULNERABILITY` → `Security`
+   - `SECURITY_HOTSPOT` → `Security`
+   Map the SonarQube rule, file, and the type slug (`bug`, `code-smell`, `vulnerability`, `security-hotspot`).
 2. **User Story** — describe the problem exposed by SonarQube and the value of the fix.
 3. **Scope** — one issue per SPEC, unless several identical issues are safely grouped (e.g., the same rule in the same file).
 4. **Technical Context** — list files to read (source file, existing tests) and the affected lines.

@@ -10,8 +10,8 @@ Fazer a ponte entre a análise estática automatizada e as especificações exec
 
 1. **Detecção de Stack**: Identifica a linguagem e as ferramentas de build do projeto.
 2. **Extração de Issues**: Baixa as issues não resolvidas do SonarQube via API.
-3. **Classificação**: Agrupa as issues por tipo: `bug`, `code smell` ou `security`.
-4. **Geração de SPECs**: Escreve um `.specs/SPEC-{YYYYMMDD}-{issue-key}-{type}.md` aprovado por issue, usando `references/spec-sdd-template.md`.
+3. **Classificação**: Agrupa as issues pelos quatro tipos do SonarQube: `BUG`, `CODE_SMELL`, `VULNERABILITY`, `SECURITY_HOTSPOT`.
+4. **Geração de SPECs**: Escreve um `.specs/SPEC-{YYYYMMDD}-{issue-key}-{slug}.md` aprovado por issue, usando `references/spec-sdd-template.md`.
 5. **Hand-off**: Invoca `execute-tdd-spec` para implementar cada SPEC com testes e cobertura.
 
 ## 🚀 Uso
