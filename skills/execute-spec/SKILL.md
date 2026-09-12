@@ -66,7 +66,7 @@ REFACTOR → Clean duplication, improve names, respect SOLID while green.
 
 ### 4. Test at the public seam
 
-Test behavior through public interfaces (API, function, component), not internal implementation. Tests must survive internal refactors. See [tests.md](tests.md) for examples and [mocking.md](mocking.md) for mock rules.
+Test behavior through public interfaces (API, function, component), not internal implementation. Tests must survive internal refactors. See [references/tests.md](references/tests.md) for examples and [references/mocking.md](references/mocking.md) for mock rules.
 
 ### 5. Mapping to the SPEC
 
@@ -110,7 +110,7 @@ When all slices are green:
 
 - ❌ Writing all tests before any implementation.
 - ❌ Testing private methods or internal state.
-- ❌ Mismatched expectations in mocks (see [mocking.md](mocking.md)).
+- ❌ Mismatched expectations in mocks (see [references/mocking.md](references/mocking.md)).
 - ❌ Refactoring while a test is red.
 - ❌ Skipping the validation strategy from the SPEC.
 
@@ -128,8 +128,8 @@ When all slices are green:
 - `write-specs` — for producing the SPEC SDD
 - `qa-analyst` — for the mandatory pre-PR review
 - `diagnose` — when a test fails unexpectedly and the cause is unclear
-- `tests.md` — test examples and patterns
-- `mocking.md` — mocking rules
-- `refactoring.md` — refactoring guidance
-- `deep-modules.md` — deep module design
-- `interface-design.md` — interface design patterns
+- `references/tests.md` — test examples and patterns
+- `references/mocking.md` — mocking rules
+- `references/refactoring.md` — refactoring guidance
+- `references/deep-modules.md` — deep module design
+- `references/interface-design.md` — interface design patterns
