@@ -9,13 +9,13 @@ Govern the full lifecycle of agent-driven software delivery by delegating comple
 ## 🛠️ How it Works
 
 1. **Phase -1 — Framework Update**: Check for updates to the skills collection.
-2. **Phase 0 — Governance Preconditions**: Verify Git, remote, harness, and approved SPEC.
-3. **Phase 1 — Discovery**: Align domain, produce SPEC SDDs, and scaffold when needed.
-4. **Phase 2 — Audit**: Identify gaps and architecture issues.
+2. **Phase 0 — Governance Preconditions**: Verify clean working tree (`git status`), `gh auth`, remote, and runtimes.
+3. **Phase 1 — Discovery**: Align domain with prior ADRs, produce SPEC SDDs, and scaffold when needed.
+4. **Phase 2 — Audit**: Identify architectural gaps and security vulnerabilities (`sonarqube-autofix`).
 5. **Phase 3 — GitHub Fragmentation**: Turn approved gaps into GitHub Issues.
-6. **Phase 4 — Implementation Loop**: Run sliced Issues one by one using `execute-tdd-spec`, reporting `Próximo: E1/S1` and continuing automatically without asking between slices.
-7. **Phase 5 — Verification and QA**: Run QA, review, architecture diagrams, and README updates.
-8. **Phase 6 — Unapproved SPEC Review**: Scan for leftover SPECs and ask the user to approve or discard them.
+6. **Phase 4 — Implementation Loop**: Run sliced Issues one by one with `design` (UI), DB migrations, and `execute-tdd-spec`, handling review rejections with corrective refactoring.
+7. **Phase 5 — Verification and QA**: Run QA, code review, resilient architecture diagrams (`drawio` / `mermaid`), README & CHANGELOG updates, and SPEC archiving.
+8. **Phase 6 — Unapproved SPEC Review**: Scan leftover SPECs; approved SPECs enter the full queue through Phase 4 and 5.
 9. **Phase 7 — Final Verification & Gap Check**: Confirm all SPECs, Issues, and gaps are closed; if a next item exists, continue automatically.
 
 ## 🚀 Usage

@@ -107,9 +107,10 @@ When a new revision is confirmed, the user must reinstall the skills. That is pa
 
 Before creating files or delegating work:
 
-1. Verify Git is initialized.
-2. Verify a valid GitHub remote exists, preferably `origin`.
-3. Verify repository access with `gh repo view` or equivalent.
+1. Verify Git is initialized and the working tree is clean (`git status --porcelain`). If uncommitted changes exist, pause and ask the user to commit or stash them.
+2. Verify GitHub CLI authentication (`gh auth status`). If not authenticated, guide the user to log in (`gh auth login`).
+3. Verify a valid GitHub remote exists, preferably `origin`, and verify repository access with `gh repo view`.
+4. Verify required runtimes/runtimes for the detected stack (e.g. `node`, `dotnet`, `python`, `go`).
 
 If the environment is empty, has no Git, or has no GitHub remote, stop the flow and guide the user to:
 
@@ -124,9 +125,10 @@ Never silently replace GitHub with a local tracker. GitHub is the source of trac
 ## Phase 1 — Documentation Provisioning
 
 1. Invoke `/create-agent-harness` to generate `CLAUDE.md`, `AGENTS.md` (thin reference), `.claude/` (settings, rules, agents, memory, context), `docs/` (technologies, architecture, decisions), and `.specs/`.
-2. Invoke `/write-specs` to consolidate domain language and architectural decisions, producing the SPEC SDD in `.specs/SPEC-{YYYYMMDD}-{feature}.md` before any implementation.
-3. In an empty repository, invoke `/scaffold-mvp` after domain alignment.
-4. Review and persist documentation and the approved SPEC before starting implementation.
+2. Review existing architectural decision records (`docs/architecture/` or existing `.specs/`) to align new work with prior decisions.
+3. Invoke `/write-specs` to consolidate domain language and architectural decisions, producing the SPEC SDD in `.specs/SPEC-{YYYYMMDD}-{feature}.md` before any implementation.
+4. In an empty repository, invoke `/scaffold-mvp` after domain alignment.
+5. Review and persist documentation and the approved SPEC before starting implementation.
 
 Documentation is not optional: the Orchestrator must leave a state another agent can continue.
 
@@ -189,7 +191,9 @@ Audit the structure produced by `create-agent-harness`:
 [ ] Skills installed in the chosen environment
 ```
 
-Classify gaps as P1 (security/types), P2 (architecture), P3 (performance), or P4 (hygiene/documentation). To analyze and address gaps, invoke `/improve-codebase-architecture`.
+Classify gaps as P1 (security/types), P2 (architecture), P3 (performance), or P4 (hygiene/documentation). To analyze and address gaps, invoke:
+- `/improve-codebase-architecture` for P2 architecture/coupling gaps.
+- `/sonarqube-autofix` for P1/P2 static analysis, security vulnerabilities, code smells, or technical debt.
 
 ## Phase 3 — GitHub Fragmentation
 
@@ -281,24 +285,29 @@ The Orchestrator runs sliced Issues in a continuous loop until all SPEC implemen
 
 ```text
 1. READ         → Approved SPEC + GitHub Issue
-2. TDD          → /execute-tdd-spec (red-green-refactor) using acceptance criteria
-3. CODE REVIEW  → /code-review-and-quality on the slice diff
-4. ARCH         → /improve-codebase-architecture if architecture degrades
-5. DIAGNOSE     → /diagnose if a bug or mysterious failure appears
-6. CLARIFY      → /write-specs if the SPEC is ambiguous
-7. VERIFY       → build, tests, lint pass
-8. COMMIT       → Conventional commit, reference the Issue
-9. LOOP         → Next slice in the queue
+2. DESIGN       → /design if the slice involves frontend UI/components
+3. MIGRATION    → Check and execute database/schema migrations if required
+4. TDD          → /execute-tdd-spec (red-green-refactor) using acceptance criteria
+5. CODE REVIEW  → /code-review-and-quality on the slice diff
+   - If rejected / fixes requested → return to step 4 (/execute-tdd-spec) for corrective refactoring
+6. ARCH         → /improve-codebase-architecture if architecture degrades
+7. DIAGNOSE     → /diagnose if a bug or mysterious failure appears
+8. CLARIFY      → /write-specs if the SPEC is ambiguous
+9. VERIFY       → build, tests, lint pass
+10. COMMIT      → Conventional commit, reference the Issue
+11. LOOP        → Next slice in the queue
 ```
 
 ### Skill Delegation by Situation
 
 | Situation | Skill |
 | --- | --- |
+| Implement frontend UI / mobile-first components | `/design` |
 | Implement from SPEC | `/execute-tdd-spec` |
-| Review diff before continuing | `/code-review-and-quality` |
+| Review diff before continuing / handle review rejection | `/code-review-and-quality` → `/execute-tdd-spec` |
 | Bug, regression, or mysterious build failure | `/diagnose` |
 | Degraded architecture / too much coupling | `/improve-codebase-architecture` |
+| Static analysis, security vulnerabilities, code smells | `/sonarqube-autofix` |
 | Ambiguity in the SPEC | `/write-specs` |
 | Create/update Epic Issues | `/create-issues` |
 | Need knowledge of a third-party API/library | manual / research subagent |
@@ -313,7 +322,7 @@ When Issues come from the special case "new project with only a PRD" (Phase 1), 
    - commit;
    - next Issue in the queue.
    Repeat until all Issues of the Epic are exhausted.
-2. When the Epic is complete, invoke `/qa-analyst`, then `/quality-test-implementation` to raise coverage and clear quality debt on the affected stack, then `/code-review-and-quality` for the accumulated diff, then `/drawio-architecture` to refresh the system diagram, then `/mermaid-architecture` to update native Mermaid architecture diagrams in `docs/architecture/`, then `/create-readme` to reflect what was delivered.
+2. When the Epic is complete, invoke `/qa-analyst`, then `/quality-test-implementation` to raise coverage and clear quality debt on the affected stack, then `/code-review-and-quality` for the accumulated diff, then `/drawio-architecture` (resiliently falling back to `/mermaid-architecture` if graphical rendering fails in headless environments), then `/mermaid-architecture` to update native Mermaid architecture diagrams in `docs/architecture/`, then `/create-readme` to reflect what was delivered and update `CHANGELOG.md` following SemVer.
 3. Epic exhausted → open a PR from the working branch to `develop`.
    * Green PR (CI/tests pass) → merge into `develop`.
    * Failed PR → fix with `/diagnose`, re-run verification, then merge.
@@ -354,7 +363,8 @@ For each unapproved SPEC, in **Portuguese (pt-BR)**:
    ```
 3. **If the user answers `sim`**:
    - Update the SPEC frontmatter to `Status: Approved`.
-   - Invoke `/execute-tdd-spec` to implement it.
+   - **Crucial Governance Rule**: Never bypass Phase 5. Treat the approved SPEC as a new Epic/Slice queue item that enters **Phase 4 (Execution Loop)** and **Phase 5 (Verification, QA Gate, Code Review, Architecture Diagrams, and Changelog)** before reaching final delivery.
+   - Proceed to execute the new approved SPEC through the complete orchestrator workflow.
 4. **If the user answers `não`**:
    - Leave the SPEC unchanged.
    - Continue to the next unapproved SPEC.
