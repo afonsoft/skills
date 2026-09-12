@@ -1,6 +1,6 @@
 {
   "name": "afonsoft",
-  "description": "Curated collection of Agent Skills for harness engineering, orchestration, code quality, SonarQube autofix, architecture reviews, draw.io and Mermaid diagrams, TDD from approved SPECs, and MCP integrations. Includes orchestrator, execute-tdd-spec, sonarqube-autofix, scaffold-mvp, write-specs, and quality gates for agent-driven delivery.",
+  "description": "Curated collection of Agent Skills for harness engineering, orchestration, code quality, SonarQube autofix, architecture reviews, draw.io and Mermaid diagrams, TDD from approved SPECs, and MCP integrations. Includes orchestrator, execute-spec, sonarqube-autofix, scaffold-mvp, write-specs, and quality gates for agent-driven delivery.",
   "version": "1.0.0",
   "author": {
   "name": "architecture",

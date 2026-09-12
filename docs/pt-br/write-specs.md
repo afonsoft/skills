@@ -23,7 +23,7 @@ Use esta skill quando:
 
 ## 🔗 Correlação
 
-- **Posterior**: `execute-tdd-spec` implementa cada fatia vertical a partir do SPEC aprovado.
+- **Posterior**: `execute-spec` implementa cada fatia vertical a partir do SPEC aprovado.
 - **Paralela**: `create-issues` converte SPECs aprovados em GitHub Issues rastreáveis.
 - **Relacionada**: `scaffold-mvp` inicializa um novo projeto após o domínio e o SPEC inicial estarem estabelecidos.
 - **Orquestração**: `orchestrator` invoca `write-specs` na Fase 1 (Descoberta) e sempre que houver ambiguidade no SPEC.

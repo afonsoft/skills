@@ -4,7 +4,7 @@ An automated system for analyzing SonarQube issues and producing approved SPEC S
 
 ## 🎯 Purpose
 
-Bridge the gap between automated static analysis and executable specifications. It transforms a list of bugs, code smells, and vulnerabilities into approved SPEC SDDs that `execute-tdd-spec` implements.
+Bridge the gap between automated static analysis and executable specifications. It transforms a list of bugs, code smells, and vulnerabilities into approved SPEC SDDs that `execute-spec` implements.
 
 ## 🛠️ How it Works
 
@@ -12,7 +12,7 @@ Bridge the gap between automated static analysis and executable specifications. 
 2. **Issue Extraction**: Downloads unresolved issues from SonarQube via API.
 3. **Classification**: Groups issues by the four SonarQube types: `BUG`, `CODE_SMELL`, `VULNERABILITY`, `SECURITY_HOTSPOT`.
 4. **SPEC Generation**: Writes one approved `.specs/SPEC-{YYYYMMDD}-{issue-key}-{slug}.md` per issue using `references/spec-sdd-template.md`.
-5. **Hand-off**: Invokes `execute-tdd-spec` to implement each SPEC with tests and coverage.
+5. **Hand-off**: Invokes `execute-spec` to implement each SPEC with tests and coverage.
 
 ## 🚀 Usage
 
@@ -21,5 +21,5 @@ Use this skill when a SonarQube report exists and you need the fixes formalized 
 ## 🔗 Correlation
 
 - **Trigger**: `code-review-and-quality` calls this skill when it detects a SonarQube configuration.
-- **Implementation**: Delegates the actual fix to `execute-tdd-spec`.
+- **Implementation**: Delegates the actual fix to `execute-spec`.
 - **Sibling**: `quality-test-implementation` handles whole-repo quality without SonarQube.

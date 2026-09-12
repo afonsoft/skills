@@ -23,7 +23,7 @@ Use this skill when:
 
 ## 🔗 Correlation
 
-- **Downstream**: `execute-tdd-spec` implements each vertical slice from the approved SPEC.
+- **Downstream**: `execute-spec` implements each vertical slice from the approved SPEC.
 - **Parallel**: `create-issues` turns approved SPECs into traceable GitHub Issues.
 - **Sibling**: `scaffold-mvp` bootstraps a new project once the domain and initial SPEC are established.
 - **Orchestration**: `orchestrator` invokes `write-specs` in Phase 1 (Discovery) and whenever ambiguity arises in the SPEC.

@@ -9,7 +9,7 @@
         "orchestrator",
         "write-specs",
         "scaffold-mvp",
-        "execute-tdd-spec",
+        "execute-spec",
         "create-issues",
         "qa-analyst",
         "diagnose"

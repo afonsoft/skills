@@ -3,7 +3,7 @@ name: improve-codebase-architecture
 license: MIT
 description: Use when the user wants to improve architecture, consolidate tightly-coupled modules, or make a codebase more testable.
 metadata:
-  version: "1.0.2"
+  version: "1.1.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

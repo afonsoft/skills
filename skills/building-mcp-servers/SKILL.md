@@ -3,7 +3,7 @@ name: building-mcp-servers
 license: MIT
 description: Use when building a new MCP server in TypeScript, Python, or C# that exposes tools to LLMs.
 metadata:
-  version: "1.2.2"
+  version: "1.3.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

@@ -18,7 +18,7 @@ Per-skill documentation for the [afonsoft/skills](../README.md) collection. Each
 | `create-readme` | [doc](en/create-readme.md) | [doc](pt-br/create-readme.md) |
 | `design` | [doc](en/design.md) | [doc](pt-br/design.md) |
 | `drawio-architecture` | [doc](en/drawio-architecture.md) | [doc](pt-br/drawio-architecture.md) |
-| `execute-tdd-spec` | [doc](en/execute-tdd-spec.md) | [doc](pt-br/execute-tdd-spec.md) |
+| `execute-spec` | [doc](en/execute-spec.md) | [doc](pt-br/execute-spec.md) |
 | `mermaid-architecture` | [doc](en/mermaid-architecture.md) | [doc](pt-br/mermaid-architecture.md) |
 | `notebooklm-mcp` | [doc](en/notebooklm-mcp.md) | [doc](pt-br/notebooklm-mcp.md) |
 | `observability-and-instrumentation` | [doc](en/observability-and-instrumentation.md) | [doc](pt-br/observability-and-instrumentation.md) |

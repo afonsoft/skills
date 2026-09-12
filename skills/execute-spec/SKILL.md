@@ -1,9 +1,9 @@
 ---
-name: execute-tdd-spec
+name: execute-spec
 license: MIT
 description: "Use when the user asks to implement an approved SPEC SDD using test-driven development."
 metadata:
-  version: "1.1.1"
+  version: "1.3.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

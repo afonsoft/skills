@@ -73,7 +73,7 @@ Fill once at the beginning. Do not re-ask if already present.
 - id: TASK-001
   desc: "Extract email validation into validators/email.ts"
   tier: T2
-  skill: /execute-tdd-spec
+  skill: /execute-spec
   gap_ref: GAP-002
   issue_ref: "#101"
   spec_ref: ".specs/SPEC-20260908-email-validation.md"
@@ -168,7 +168,7 @@ Unapproved ideas, discovered scope or follow-ups that are **out of the current a
 
 | # | Gap | Task | Skill | Status |
 |---|-----|------|-------|--------|
-| 1 | GAP-002 | Create unit tests for `auth.ts` | /execute-tdd-spec | 🟡 pending_approval |
+| 1 | GAP-002 | Create unit tests for `auth.ts` | /execute-spec | 🟡 pending_approval |
 
 ---
 

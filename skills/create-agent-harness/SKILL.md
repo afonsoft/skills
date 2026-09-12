@@ -3,7 +3,7 @@ name: create-agent-harness
 license: MIT
 description: Use when initializing or migrating an AI agent harness in a repository.
 metadata:
-  version: "2.0.2"
+  version: "2.1.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

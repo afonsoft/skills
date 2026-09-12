@@ -14,7 +14,7 @@ The Orchestrator assigns autonomy based on **Risk Tier**. Each task is classifie
 | Tier | Risk Level | Examples | Human Approval Required | Typical Skills |
 |------|------------|----------|------------------------|--------------|
 | T1 — Fast Path | Minimal | Docs, formatting, lint fixes, safe refactors, tool setup | No | `code-review-and-quality`, `create-readme`, `diagnose` |
-| T2 — Batch | Medium | Env setup, test coverage improvement, localized performance fixes, structural decisions without breaking changes | No (report at batch end) | `execute-tdd-spec`, `improve-codebase-architecture`, `qa-analyst` |
+| T2 — Batch | Medium | Env setup, test coverage improvement, localized performance fixes, structural decisions without breaking changes | No (report at batch end) | `execute-spec`, `improve-codebase-architecture`, `qa-analyst` |
 | T3 — Strategic | High | Domain model changes, new features, macro architecture, roadmap changes | Yes — initial plan approval | `write-specs`, `scaffold-mvp` |
 
 ---
@@ -59,7 +59,7 @@ T2 tasks are medium risk. They can be grouped and run in a batch, but require ro
 - [ ] Scope is bounded and defined in the approved roadmap or SPEC.
 - [ ] No new public API or data model is introduced.
 - [ ] Breaking changes are not expected.
-- [ ] Existing tests cover the affected paths or new tests are added by `/execute-tdd-spec`.
+- [ ] Existing tests cover the affected paths or new tests are added by `/execute-spec`.
 - [ ] Rollback can be done by reverting the batch commit.
 
 If any item is false, escalate to **T3**.
@@ -127,7 +127,7 @@ tasks:
   - id: TASK-002
     desc: "Implement domain validator"
     tier: T2
-    skill: /execute-tdd-spec
+    skill: /execute-spec
     depends_on: [TASK-001]
     status: blocked
 
@@ -164,7 +164,7 @@ The Orchestrator never keeps state only in short-term context.
 | Missing domain language | `/write-specs` | T3 |
 | Degraded architecture | `/improve-codebase-architecture` | T2 |
 | Difficult bug or regression | `/diagnose` | T2 |
-| Untested code | `/execute-tdd-spec` | T2 |
+| Untested code | `/execute-spec` | T2 |
 | QA analysis before PR | `/qa-analyst` | T2 (mandatory gate) |
 | Missing context | gather context autonomously, escalate only when blocked | T3 |
 | Alignment before change | `/write-specs` | T3 |
@@ -256,7 +256,7 @@ After QA gate passes:
 
 | Identified Gap | Delegated Skill | Tier |
 |----------------|-----------------|------|
-| Missing or fragile tests | `/execute-tdd-spec` | T2 |
+| Missing or fragile tests | `/execute-spec` | T2 |
 | QA analysis required pre-PR | `/qa-analyst` | T2 (mandatory) |
 | Degraded/coupled architecture | `/improve-codebase-architecture` | T2 |
 | Bug or regression | `/diagnose` | T2 |

@@ -22,13 +22,13 @@ metadata:
 
 ## Purpose
 
-Analyze issues reported by SonarQube, **regardless of language or framework**, classify them by type, and create approved SPEC SDDs that describe the fixes. The actual implementation of each SPEC is delegated to `/execute-tdd-spec`.
+Analyze issues reported by SonarQube, **regardless of language or framework**, classify them by type, and create approved SPEC SDDs that describe the fixes. The actual implementation of each SPEC is delegated to `/execute-spec`.
 
 The process is:
 1. **Issue analysis** — download and inspect unresolved SonarQube issues.
 2. **Classification** — group issues by type: `bug`, `code smell`, or `security`.
 3. **SPEC generation** — write one SPEC SDD per issue (or per small, related group) using `references/spec-sdd-template.md`.
-4. **Hand-off** — mark each SPEC as `Approved` and invoke `/execute-tdd-spec` to implement the fixes.
+4. **Hand-off** — mark each SPEC as `Approved` and invoke `/execute-spec` to implement the fixes.
 
 ## ⚙️ Environment Variable Configuration
 
@@ -274,9 +274,9 @@ For each issue (or small, related group of the same SonarQube type), create an a
 
 Mark each generated SPEC as `Status: Approved`. Do **not** implement the code in this skill.
 
-### Phase 3.5: Hand off to `/execute-tdd-spec`
+### Phase 3.5: Hand off to `/execute-spec`
 
-After all SPECs are approved, invoke `/execute-tdd-spec` for each one, in the order of the sorted ToDo Board. The implementation skill will follow the red-green-refactor cycle using the generated SPECs as source of truth.
+After all SPECs are approved, invoke `/execute-spec` for each one, in the order of the sorted ToDo Board. The implementation skill will follow the red-green-refactor cycle using the generated SPECs as source of truth.
 
 ### Phase 4: Documentation and Finalization
 

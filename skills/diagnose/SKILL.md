@@ -3,7 +3,7 @@ name: diagnose
 license: MIT
 description: Use when the user reports a hard bug, unexpected failure, or performance regression that needs root-cause analysis.
 metadata:
-  version: "1.0.1"
+  version: "1.1.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

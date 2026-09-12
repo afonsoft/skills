@@ -3,7 +3,7 @@ name: observability-and-instrumentation
 license: MIT
 description: Use when adding logging, metrics, tracing, or alerting to production code, or when a past incident lacks diagnostic data.
 metadata:
-  version: "1.0.1"
+  version: "1.1.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
