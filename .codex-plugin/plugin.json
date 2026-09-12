@@ -7,7 +7,7 @@
   "license": "MIT",
   "mcpServers": "./.mcp.json",
   "author": {
-    "name": "afonsoft",
+  "name": "architecture",
     "url": "https://github.com/afonsoft"
   },
   "keywords": [

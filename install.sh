@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Installer for afonsoft/skills with support for automatic /afonsoft:<skill> slash command shims
+# Installer for afonsoft/skills with support for automatic /architecture:<skill> slash command shims
 #
 # Usage:
 #   ./install.sh --all            Install for all IDEs/CLIs + slash commands
@@ -78,57 +78,57 @@ install_skills() {
   done
 }
 
-# 2. Generate slash command shims for /afonsoft:<skill>
+# 2. Generate slash command shims for /architecture:<skill>
 generate_slash_commands() {
-  echo "-> Generating /afonsoft:<skill> slash command shims..."
+  echo "-> Generating /architecture:<skill> slash command shims..."
   
   for skill_path in "$SKILLS_DIR"/*/; do
     [ -d "$skill_path" ] || continue
     local skill_name
     skill_name=$(basename "$skill_path")
 
-    # Claude Code commands (.claude/commands/afonsoft:<skill>.md)
+    # Claude Code commands (.claude/commands/architecture:<skill>.md)
     if [ "$INSTALL_CLAUDE" = true ]; then
       local claude_cmd_dir="$HOME/.claude/commands"
       if [ "$DRY_RUN" = true ]; then
-        echo "[DRY-RUN] mkdir -p $claude_cmd_dir && echo '...' > $claude_cmd_dir/afonsoft:$skill_name.md"
+        echo "[DRY-RUN] mkdir -p $claude_cmd_dir && echo '...' > $claude_cmd_dir/architecture:$skill_name.md"
       else
         mkdir -p "$claude_cmd_dir"
-        cat <<EOF > "$claude_cmd_dir/afonsoft:$skill_name.md"
+        cat <<EOF > "$claude_cmd_dir/architecture:$skill_name.md"
 ---
-description: "Execute afonsoft skill: $skill_name"
+description: "Execute architecture skill: $skill_name"
 ---
 Load and execute the skill '$skill_name' to handle the request: \$ARGUMENTS
 EOF
       fi
     fi
 
-    # OpenCode commands (.config/opencode/commands/afonsoft:<skill>.md)
+    # OpenCode commands (.config/opencode/commands/architecture:<skill>.md)
     if [ "$INSTALL_OPENCODE" = true ]; then
       local opencode_cmd_dir="$HOME/.config/opencode/commands"
       if [ "$DRY_RUN" = true ]; then
-        echo "[DRY-RUN] mkdir -p $opencode_cmd_dir && echo '...' > $opencode_cmd_dir/afonsoft:$skill_name.md"
+        echo "[DRY-RUN] mkdir -p $opencode_cmd_dir && echo '...' > $opencode_cmd_dir/architecture:$skill_name.md"
       else
         mkdir -p "$opencode_cmd_dir"
-        cat <<EOF > "$opencode_cmd_dir/afonsoft:$skill_name.md"
+        cat <<EOF > "$opencode_cmd_dir/architecture:$skill_name.md"
 ---
-description: "Execute afonsoft skill: $skill_name"
+description: "Execute architecture skill: $skill_name"
 ---
 Load and execute the skill '$skill_name' to handle the request: \$ARGUMENTS
 EOF
       fi
     fi
 
-    # Devin commands (.devin/commands/afonsoft:<skill>.md)
+    # Devin commands (.devin/commands/architecture:<skill>.md)
     if [ "$INSTALL_DEVIN" = true ]; then
       local devin_cmd_dir="$HOME/.devin/commands"
       if [ "$DRY_RUN" = true ]; then
-        echo "[DRY-RUN] mkdir -p $devin_cmd_dir && echo '...' > $devin_cmd_dir/afonsoft:$skill_name.md"
+        echo "[DRY-RUN] mkdir -p $devin_cmd_dir && echo '...' > $devin_cmd_dir/architecture:$skill_name.md"
       else
         mkdir -p "$devin_cmd_dir"
-        cat <<EOF > "$devin_cmd_dir/afonsoft:$skill_name.md"
+        cat <<EOF > "$devin_cmd_dir/architecture:$skill_name.md"
 ---
-description: "Execute afonsoft skill: $skill_name"
+description: "Execute architecture skill: $skill_name"
 ---
 Load and execute the skill '$skill_name' to handle the request: \$ARGUMENTS
 EOF
