@@ -3,7 +3,7 @@ name: create-readme
 license: MIT
 description: Use when generating or updating a project README.md or CHANGELOG.md.
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

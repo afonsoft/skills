@@ -3,7 +3,7 @@ name: quality-test-implementation
 license: MIT
 description: Use when raising code quality or test coverage across a .NET, Java, or Python repository.
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

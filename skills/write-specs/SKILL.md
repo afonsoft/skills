@@ -3,7 +3,7 @@ name: write-specs
 license: MIT
 description: Use when the user needs to create or refine a feature SPEC SDD before implementation.
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

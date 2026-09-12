@@ -3,7 +3,7 @@ name: qa-analyst
 license: MIT
 description: "Use when the user asks for QA analysis, test planning, test cases, or root-cause analysis of a defect."
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

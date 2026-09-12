@@ -3,7 +3,7 @@ name: create-issues
 license: MIT
 description: Use when turning approved plans, specs, PRDs, or Epics into trackable GitHub Issues.
 metadata:
-  version: "1.3.0"
+  version: "1.3.1"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

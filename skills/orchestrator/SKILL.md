@@ -3,7 +3,7 @@ name: orchestrator
 license: MIT
 description: "Use when starting or running an agent-driven software project with the afonsoft harness."
 metadata:
-  version: "2.2.0"
+  version: "2.2.1"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

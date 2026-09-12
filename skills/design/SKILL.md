@@ -3,7 +3,7 @@ name: design
 description: Use when designing, redesigning, or improving a frontend interface in Angular, React, or Blazor. Use for landing pages, dashboards, components, forms, and responsive layouts that must work mobile-first and then scale to desktop.
 license: MIT
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

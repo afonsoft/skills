@@ -3,7 +3,7 @@ name: execute-spec
 license: MIT
 description: "Use when the user asks to implement an approved SPEC SDD using test-driven development."
 metadata:
-  version: "1.3.0"
+  version: "1.3.1"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

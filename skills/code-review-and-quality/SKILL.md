@@ -3,7 +3,7 @@ name: code-review-and-quality
 license: MIT
 description: Use when reviewing code before it merges, whether written by an agent or a human.
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
