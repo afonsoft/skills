@@ -24,7 +24,7 @@ Use esta skill ao iniciar ou retomar um projeto, planejar um Epic, ou coordenar 
 
 ## 🔗 Correlação
 
-- **Anterior**: `grill-me-with-spec` produz SPECs aprovados.
+- **Anterior**: `write-specs` produz SPECs aprovados.
 - **Paralela**: `create-issues` transforma SPECs em Issues.
 - **Execução**: `execute-tdd-spec` implementa cada fatia; `diagnose` trata regressões; `code-review-and-quality` revisa diffs.
-- **Posterior**: `qa-analyst` realiza a revisão obrigatória pré-PR.
+- **Posterior**: `qa-analyst` realiza a revisão obrigatória pré-PR; `drawio-architecture` e `mermaid-architecture` atualizam os diagramas de arquitetura em `docs/architecture/`.

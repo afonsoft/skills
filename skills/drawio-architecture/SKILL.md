@@ -45,7 +45,7 @@ Create professional, editable architecture diagrams in draw.io's native `.drawio
 ## When NOT to use
 
 - A casual hand-drawn / whiteboard look → **excalidraw** or **tldraw**.
-- Diagrams-as-code that live in git and render in Markdown → **mermaid** (general) or **plantuml** (UML).
+- Diagrams-as-code that live in git and render in Markdown → use **mermaid-architecture** (general) or **plantuml** (UML).
 - Freeform infinite-canvas sketching → **tldraw**.
 
 ## Two delivery paths (pick one, or combine)

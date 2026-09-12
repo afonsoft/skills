@@ -48,7 +48,7 @@ Load `.specs/SPEC-{YYYYMMDD}-{feature}.md` and identify:
 - Section 7 — task plan and validation strategy.
 - Section 3 — files to create or modify.
 
-If the SPEC is not approved, stop and invoke `/grill-me-with-spec`.
+If the SPEC is not approved, stop and invoke `/write-specs`.
 
 ### 2. Slice the work
 
@@ -125,7 +125,7 @@ When all slices are green:
 
 ## References
 
-- `grill-me-with-spec` — for producing the SPEC SDD
+- `write-specs` — for producing the SPEC SDD
 - `qa-analyst` — for the mandatory pre-PR review
 - `diagnose` — when a test fails unexpectedly and the cause is unclear
 - `tests.md` — test examples and patterns

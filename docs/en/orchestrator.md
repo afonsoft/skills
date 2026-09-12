@@ -24,7 +24,7 @@ Use this skill when starting or resuming a project, planning an Epic, or coordin
 
 ## 🔗 Correlation
 
-- **Upstream**: `grill-me-with-spec` produces approved SPECs.
+- **Upstream**: `write-specs` produces approved SPECs.
 - **Parallel**: `create-issues` turns SPECs into Issues.
 - **Execution**: `execute-tdd-spec` implements each slice; `diagnose` handles regressions; `code-review-and-quality` reviews diffs.
-- **Downstream**: `qa-analyst` performs the mandatory pre-PR review.
+- **Downstream**: `qa-analyst` performs the mandatory pre-PR review; `drawio-architecture` and `mermaid-architecture` update architecture diagrams in `docs/architecture/`.

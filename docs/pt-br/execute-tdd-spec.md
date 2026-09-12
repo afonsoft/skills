@@ -20,6 +20,6 @@ Use esta skill quando o usuário pedir para executar, rodar ou implementar a par
 
 ## 🔗 Correlação
 
-- **Anterior**: `grill-me-with-spec` produz o SPEC SDD aprovado.
+- **Anterior**: `write-specs` produz o SPEC SDD aprovado.
 - **Posterior**: `qa-analyst` realiza a revisão obrigatória pré-PR após todas as fatias estarem verdes.
 - **Relacionada**: `diagnose` ajuda quando um teste falha inesperadamente.

@@ -31,7 +31,7 @@ The skills are organized into four main pillars: **Harness Engineering**, **Code
 ### 🧭 Orchestration & Delivery
 *Planning, execution, verification, and documentation for agent-driven projects.*
 - **[`orchestrator`](docs/en/orchestrator.md)**: Central control skill. Audits preconditions, creates documentation, reconciles open GitHub Issues, turns gaps into Issues, and coordinates execution, tests, QA, and PR in a continuous loop. Persists state in `.claude/memory/orchestrator_stats.md` and auto-continues to the next slice.
-- **[`grill-me-with-spec`](skills/grill-me-with-spec/SKILL.md)**: Interviews the user in Portuguese to consolidate domain language and produce an approved `.specs/SPEC-{YYYYMMDD}-{feature}.md` before implementation.
+- **[`write-specs`](docs/en/write-specs.md)**: Interviews the user in Portuguese to consolidate domain language and produce an approved `.specs/SPEC-{YYYYMMDD}-{feature}.md` before implementation.
 - **[`scaffold-mvp`](skills/scaffold-mvp/SKILL.md)**: Bootstraps a new .NET/Blazor/Angular repository after domain/spec alignment. Installs the agent harness, proposes a productive stack, and generates the initial project skeleton, AD-0001, and stubs.
 - **[`create-issues`](skills/create-issues/SKILL.md)**: Turns approved gaps, roadmap, and specs into GitHub Issues with vertical slices and dependency links. Uses the `references/spec-sdd-template.md` structure when creating Issues from SPEC SDDs.
 - **[`execute-tdd-spec`](docs/en/execute-tdd-spec.md)**: Test-driven development using the approved SPEC SDD as the source of truth. Red-green-refactor one vertical slice at a time.
@@ -53,6 +53,7 @@ The skills are organized into four main pillars: **Harness Engineering**, **Code
 *Expanding what the agent can actually do.*
 - **[`building-mcp-servers`](docs/en/building-mcp-servers.md)**: The power-user tool. Teaches agents how to build their own Model Context Protocol (MCP) servers to connect to any API or database.
 - **[`drawio-architecture`](docs/en/drawio-architecture.md)**: Visual intelligence. Merges architecture diagram authoring with the official draw.io MCP server for automated system design.
+- **[`mermaid-architecture`](docs/en/mermaid-architecture.md)**: Diagrams as code. Generates high-contrast, production-ready Mermaid architecture diagrams, workflows, and C4 models saved directly in `docs/architecture/`.
 - **[`obsidian`](docs/en/obsidian.md)**: Obsidian vault operations. Runs the Obsidian CLI (read/create/search/manage notes, tasks, properties), builds Bases (.base views/filters/formulas), writes Obsidian Flavored Markdown (wikilinks, embeds, callouts), and develops/debugs plugins and themes.
 
 ### 🔗 MCP Integrations
@@ -83,8 +84,8 @@ Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen 
 | `diagnose` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/diagnose) |
 | `drawio-architecture` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/drawio-architecture) |
 | `execute-tdd-spec` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/execute-tdd-spec) |
-| `grill-me-with-spec` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/grill-me-with-spec) |
 | `improve-codebase-architecture` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/improve-codebase-architecture) |
+| `mermaid-architecture` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/mermaid-architecture) |
 | `notebooklm-mcp` | ✅ safe | 1 | 🟢 low | [View](https://skills.sh/afonsoft/skills/notebooklm-mcp) |
 | `observability-and-instrumentation` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/observability-and-instrumentation) |
 | `obsidian` | 🟡 medium | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/obsidian) |
@@ -94,6 +95,7 @@ Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen 
 | `scaffold-mvp` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/scaffold-mvp) |
 | `sonarqube-autofix` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/sonarqube-autofix) |
 | `wordpress-mcp` | 🟡 medium | 1 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/wordpress-mcp) |
+| `write-specs` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/write-specs) |
 ---
 
 ## 🧭 Orchestrator Flow
@@ -111,12 +113,14 @@ flowchart TD
     G --> H[PR / Merge]
 
     C -->|PRD only| I[/scaffold-mvp\]
-    C -->|needs spec| J[/grill-me-with-spec\]
+    C -->|needs spec| J[/write-specs\]
     D -->|P2 gap| K[/improve-codebase-architecture\]
     E --> L[/create-issues\]
     F -->|per slice| M[/execute-tdd-spec\]
     F -->|bug| N[/diagnose\]
     G --> O[/qa-analyst\]
+    G --> P[/drawio-architecture\]
+    G --> Q[/mermaid-architecture\]
 ```
 
 The orchestrator advances automatically between phases once validation passes. It only pauses for escalation gates (security, schema, public APIs, data changes), validation failures, or an explicit user request to stop.

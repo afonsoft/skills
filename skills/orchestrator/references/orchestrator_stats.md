@@ -95,7 +95,7 @@ Fill once at the beginning. Do not re-ask if already present.
 - id: TASK-003
   desc: "Update auth architecture decision"
   tier: T3
-  skill: /grill-me-with-spec
+  skill: /write-specs
   gap_ref: GAP-002
   issue_ref: "#103"
   spec_ref: ".specs/SPEC-20260908-auth-architecture.md"

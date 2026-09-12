@@ -234,7 +234,7 @@ Diagnosis is iterative. After every change, re-run the reproduction. If the bug 
 ## References
 
 - `qa-analyst` — for test planning and bug reporting
-- `grill-me-with-spec` — for producing specs when the bug reveals missing requirements
+- `write-specs` — for producing specs when the bug reveals missing requirements
 - `improve-codebase-architecture` — when the diagnosis reveals structural seams that need deepening
 - `agent-introspection-debugging` — when the failure is the agent session itself (loops, context drift, repeated tool calls)
 - `silent-failure-hunter` — when the code works but misbehaves quietly

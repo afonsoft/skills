@@ -1,5 +1,5 @@
 ---
-name: grill-me-with-spec
+name: write-specs
 license: MIT
 description: Use when the user needs to create or refine a feature SPEC SDD before implementation.
 metadata:
@@ -9,7 +9,7 @@ metadata:
   url: https://github.com/afonsoft/skills
 ---
 
-# Grill me with SPEC
+# Write SPECs
 
 ## Overview
 
@@ -24,8 +24,8 @@ All questions directed at the user must be in Portuguese. This skill itself and 
 - Before any implementation begins.
 - The existing SPEC is outdated and needs refinement.
 
-- User asks or mentions this skill in English (e.g., "use /grill-me-with-spec", "run grill-me-with-spec").
-- O usuário pede ou menciona esta skill em português (ex.: "use /grill-me-with-spec", "execute grill-me-with-spec").
+- User asks or mentions this skill in English (e.g., "use /write-specs", "run write-specs").
+- O usuário pede ou menciona esta skill em português (ex.: "use /write-specs", "execute write-specs").
 
 ## When NOT to Use
 

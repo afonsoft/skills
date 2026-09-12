@@ -31,7 +31,7 @@ Transforms a raw repository into a well-documented project by generating profess
 - **API reference docs** — use OpenAPI/Swagger, TypeDoc, Sphinx, or docfx instead.
 - **License files** — copy the appropriate license text directly (MIT, Apache-2.0, etc.).
 - **Internal code documentation** — use docstrings, JSDoc, TSDoc, or XML doc comments.
-- **Architecture diagrams** — use the `drawio-architecture` skill for visual system design.
+- **Architecture diagrams** — use the `drawio-architecture` or `mermaid-architecture` skill for visual and Markdown system design.
 - **Agent harness setup** — use `create-agent-harness` for CLAUDE.md/AGENTS.md and skill scaffolding.
 
 ## Process

@@ -23,6 +23,17 @@ As skills estão organizadas em quatro pilares principais: **Engenharia de Harne
 - **[`create-readme`](docs/pt-br/create-readme.md)**: Profissionaliza a página inicial do repositório. Gera READMEs baseados em evidência e CHANGELOGs compatíveis com SemVer.
 - **[`observability-and-instrumentation`](docs/pt-br/observability-and-instrumentation.md)**: Depois que o harness está configurado, use para garantir que as ações do agente e o comportamento da aplicação sejam visíveis e diagnosticáveis em produção.
 
+### 🧭 Orquestração e Entrega
+*Planejamento, execução, verificação e documentação para projetos conduzidos por agentes.*
+- **[`orchestrator`](docs/pt-br/orchestrator.md)**: Skill de controle central. Audita pré-condições, cria documentação, reconcilia GitHub Issues abertas, transforma gaps em Issues e coordena execução, testes, QA e PR em um loop contínuo. Persiste o estado em `.claude/memory/orchestrator_stats.md` e continua automaticamente para a próxima fatia.
+- **[`write-specs`](docs/pt-br/write-specs.md)**: Entrevista o usuário em português para consolidar a linguagem de domínio e produzir um `.specs/SPEC-{YYYYMMDD}-{feature}.md` aprovado antes da implementação.
+- **[`scaffold-mvp`](skills/scaffold-mvp/SKILL.md)**: Inicializa um novo repositório .NET/Blazor/Angular após o alinhamento de domínio/spec. Instala o harness de agente, propõe uma stack produtiva e gera o esqueleto inicial do projeto, AD-0001 e stubs.
+- **[`create-issues`](skills/create-issues/SKILL.md)**: Converte gaps aprovados, roadmap e specs em GitHub Issues com fatias verticais e links de dependência. Utiliza a estrutura do template de SPEC SDD ao criar Issues a partir de especificações.
+- **[`execute-tdd-spec`](docs/pt-br/execute-tdd-spec.md)**: Test-driven development utilizando o SPEC SDD aprovado como única fonte de verdade. Red-green-refactor uma fatia vertical por vez.
+- **[`qa-analyst`](skills/qa-analyst/SKILL.md)**: Ciclo completo de QA — análise de requisitos, plano de testes, casos de teste, execução, relatórios de bugs e melhoria contínua de processos.
+- **[`diagnose`](skills/diagnose/SKILL.md)**: Diagnóstico disciplinado e loop de re-validação para bugs difíceis e regressões de performance.
+- **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Identifica oportunidades de aprofundamento arquitetural lendo `.claude/CONTEXT.md`, `.claude/MEMORY.md` e `docs/architecture/`, e gera um relatório em HTML.
+
 ### 💎 Qualidade e Revisão de Código
 *Garantindo que a saída atenda a padrões profissionais.*
 - **[`code-review-and-quality`](docs/pt-br/code-review-and-quality.md)**: O guardião principal. Realiza revisões multi-eixo (corretude, segurança, performance) antes de qualquer código ser merged.
@@ -37,6 +48,7 @@ As skills estão organizadas em quatro pilares principais: **Engenharia de Harne
 *Expandindo o que o agente pode realmente fazer.*
 - **[`building-mcp-servers`](docs/pt-br/building-mcp-servers.md)**: A ferramenta de power-user. Ensina agentes a construir seus próprios servidores Model Context Protocol (MCP) para conectar a qualquer API ou banco de dados.
 - **[`drawio-architecture`](docs/pt-br/drawio-architecture.md)**: Inteligência visual. Combina autoria de diagramas de arquitetura com o servidor MCP oficial do draw.io para design automatizado de sistemas.
+- **[`mermaid-architecture`](docs/pt-br/mermaid-architecture.md)**: Diagramas como código. Gera diagramas de arquitetura, fluxogramas, sequências e modelos C4 em Mermaid nativo, salvos diretamente em `docs/architecture/`.
 - **[`obsidian`](docs/pt-br/obsidian.md)**: Operações em vaults do Obsidian. Executa o Obsidian CLI (ler/criar/buscar/gerenciar notas, tarefas, properties), constrói Bases (views/filters/formulas em .base), escreve Obsidian Flavored Markdown (wikilinks, embeds, callouts) e desenvolve/depura plugins e temas.
 
 ### 🔗 Integrações MCP
@@ -65,8 +77,8 @@ Resultados mais recentes da auditoria de terceiros do [skills.sh](https://skills
 | `diagnose` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/diagnose) |
 | `drawio-architecture` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/drawio-architecture) |
 | `execute-tdd-spec` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/execute-tdd-spec) |
-| `grill-me-with-spec` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/grill-me-with-spec) |
 | `improve-codebase-architecture` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/improve-codebase-architecture) |
+| `mermaid-architecture` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/mermaid-architecture) |
 | `notebooklm-mcp` | ✅ safe | 1 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/notebooklm-mcp) |
 | `observability-and-instrumentation` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/observability-and-instrumentation) |
 | `obsidian` | 🟡 medium | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/obsidian) |
@@ -76,6 +88,7 @@ Resultados mais recentes da auditoria de terceiros do [skills.sh](https://skills
 | `scaffold-mvp` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/scaffold-mvp) |
 | `sonarqube-autofix` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/sonarqube-autofix) |
 | `wordpress-mcp` | 🟡 medium | 1 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/wordpress-mcp) |
+| `write-specs` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/write-specs) |
 
 ---
 
@@ -94,12 +107,14 @@ flowchart TD
     G --> H[PR / Merge]
 
     C -->|apenas PRD| I[/scaffold-mvp\]
-    C -->|precisa de spec| J[/grill-me-with-spec\]
+    C -->|precisa de spec| J[/write-specs\]
     D -->|gap P2| K[/improve-codebase-architecture\]
     E --> L[/create-issues\]
     F -->|por fatia| M[/execute-tdd-spec\]
     F -->|bug| N[/diagnose\]
     G --> O[/qa-analyst\]
+    G --> P[/drawio-architecture\]
+    G --> Q[/mermaid-architecture\]
 ```
 
 O orchestrator avança automaticamente entre as fases assim que a validação passa. Ele só para em escalation gates (segurança, schema, APIs públicas, dados), falhas de validação ou pedido explícito do usuário.

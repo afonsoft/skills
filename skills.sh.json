@@ -7,7 +7,7 @@
       "description": "Skills for planning, executing, verifying, and delivering agent-driven projects.",
       "skills": [
         "orchestrator",
-        "grill-me-with-spec",
+        "write-specs",
         "scaffold-mvp",
         "execute-tdd-spec",
         "create-issues",
@@ -20,7 +20,8 @@
       "description": "Skills for analyzing, visualizing, and refining system architecture.",
       "skills": [
         "improve-codebase-architecture",
-        "drawio-architecture"
+        "drawio-architecture",
+        "mermaid-architecture"
       ]
     },
     {

@@ -10,7 +10,7 @@ tools:
 skills:
   - orchestrator
   - scaffold-mvp
-  - grill-me-with-spec
+  - write-specs
 ---
 
 # Role & Purpose

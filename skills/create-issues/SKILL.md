@@ -237,5 +237,5 @@ For Epic issues, keep the full SDD structure. For child slice issues, include on
 
 - `gh` CLI docs: https://cli.github.com/manual/
 - `orchestrator` skill for the full agentic workflow
-- `grill-me-with-spec` for producing the `.specs/SPEC-*.md` files
+- `write-specs` for producing the `.specs/SPEC-*.md` files
 - `references/spec-sdd-template.md` — SDD template for issue bodies derived from `.specs/SPEC-*.md` files

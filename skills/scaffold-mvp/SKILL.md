@@ -18,7 +18,7 @@ metadata:
 
 ## Trigger
 
-This skill is activated **only** in brand-new repositories, right after `/grill-me-with-spec` has established the shared language, domain, and an approved SPEC SDD, or when the user explicitly asks for a quick MVP bootstrap.
+This skill is activated **only** in brand-new repositories, right after `/write-specs` has established the shared language, domain, and an approved SPEC SDD, or when the user explicitly asks for a quick MVP bootstrap.
 
 ## Golden Rule (Non-Negotiable)
 
@@ -194,5 +194,5 @@ Then return control to the orchestrator reporting that the ground is ready for f
 ## References
 
 - `create-agent-harness` — for installing the agent harness in the new repo
-- `grill-me-with-spec` — for producing the SPEC SDD that precedes this skill
+- `write-specs` — for producing the SPEC SDD that precedes this skill
 - `create-issues` — for turning Epics into GitHub Issues

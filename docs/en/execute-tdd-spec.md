@@ -20,6 +20,6 @@ Use this skill when the user asks to execute, run, or implement from an approved
 
 ## 🔗 Correlation
 
-- **Upstream**: `grill-me-with-spec` produces the approved SPEC SDD.
+- **Upstream**: `write-specs` produces the approved SPEC SDD.
 - **Downstream**: `qa-analyst` performs the mandatory pre-PR review after all slices are green.
 - **Sibling**: `diagnose` helps when a test fails unexpectedly.

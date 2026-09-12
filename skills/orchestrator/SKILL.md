@@ -124,7 +124,7 @@ Never silently replace GitHub with a local tracker. GitHub is the source of trac
 ## Phase 1 — Documentation Provisioning
 
 1. Invoke `/create-agent-harness` to generate `CLAUDE.md`, `AGENTS.md` (thin reference), `.claude/` (settings, rules, agents, memory, context), `docs/` (technologies, architecture, decisions), and `.specs/`.
-2. Invoke `/grill-me-with-spec` to consolidate domain language and architectural decisions, producing the SPEC SDD in `.specs/SPEC-{YYYYMMDD}-{feature}.md` before any implementation.
+2. Invoke `/write-specs` to consolidate domain language and architectural decisions, producing the SPEC SDD in `.specs/SPEC-{YYYYMMDD}-{feature}.md` before any implementation.
 3. In an empty repository, invoke `/scaffold-mvp` after domain alignment.
 4. Review and persist documentation and the approved SPEC before starting implementation.
 
@@ -136,7 +136,7 @@ When the repository starts from a folder containing only a PRD (no code):
 
 1. Ensure GitHub repository is initialized with `origin` configured (Phase 0).
 2. Create and check out a `develop` branch from the default branch.
-3. Invoke `/grill-me-with-spec` to turn the PRD into one or more SPEC SDDs in `.specs/SPEC-{YYYYMMDD}-{slug}.md`, one per Epic or well-delimited area.
+3. Invoke `/write-specs` to turn the PRD into one or more SPEC SDDs in `.specs/SPEC-{YYYYMMDD}-{slug}.md`, one per Epic or well-delimited area.
 4. Review and approve the SPECs; update `Status` to `Approved` on each one.
 5. Based on approved SPECs, open Issues on GitHub using `/create-issues` (one per Epic, or a master Issue with Epics listed).
 6. Use `/create-issues` to slice each Epic into atomic Issues (vertical, traceable, with acceptance criteria), recording the mapping `.specs/SPEC-*.md` → Issue.
@@ -164,7 +164,7 @@ When the repository already exists and has open Issues on GitHub, the Orchestrat
    - Report the closure to the user.
 4. If the issue is not implemented and no SPEC exists:
    - Open the issue with `gh issue view <number>`.
-   - Invoke `/grill-me-with-spec` using the issue title and body as the starting point.
+    - Invoke `/write-specs` using the issue title and body as the starting point.
    - Ensure the resulting `.specs/SPEC-{YYYYMMDD}-{slug}.md` references the GitHub Issue number and URL in the `Ticket` field and in section 3.
    - Do not proceed with implementation until the SPEC `Status` is `Approved`.
 5. After all open Issues are reconciled, proceed to Phase 4.
@@ -207,7 +207,7 @@ Approved gaps must be turned into Issues by `/create-issues`. GitHub is the pers
 flowchart TB
     subgraph Phase1["Phase 1 - Plan"]
         P1_H[/create-agent-harness/]
-        P1_S[/grill-me-with-spec/]
+        P1_S[/write-specs/]
         P1_M[/scaffold-mvp/]
     end
 
@@ -226,13 +226,15 @@ flowchart TB
         S_C[/code-review-and-quality/]
         S_D[/diagnose/]
         S_V["Verify build / test / lint"]
-        S_G[/grill-me-with-spec/]
+        S_G[/write-specs/]
         S_CM["Commit"]
     end
 
     subgraph Gate["Phase 5 - QA"]
         G_Q[/qa-analyst/]
         G_R[/code-review-and-quality/]
+        G_D[/drawio-architecture/]
+        G_MA[/mermaid-architecture/]
         G_M[/create-readme/]
         G_P["PR / Merge"]
     end
@@ -257,7 +259,9 @@ flowchart TB
     S_CM -->|Epic done| G_Q
     G_Q -->|approved| G_R
     G_Q -->|fail| S_T
-    G_R -->|approved| G_M
+    G_R -->|approved| G_D
+    G_D --> G_MA
+    G_MA --> G_M
     G_R -->|fail| S_T
     G_M --> G_P
 ```
@@ -281,7 +285,7 @@ The Orchestrator runs sliced Issues in a continuous loop until all SPEC implemen
 3. CODE REVIEW  → /code-review-and-quality on the slice diff
 4. ARCH         → /improve-codebase-architecture if architecture degrades
 5. DIAGNOSE     → /diagnose if a bug or mysterious failure appears
-6. CLARIFY      → /grill-me-with-spec if the SPEC is ambiguous
+6. CLARIFY      → /write-specs if the SPEC is ambiguous
 7. VERIFY       → build, tests, lint pass
 8. COMMIT       → Conventional commit, reference the Issue
 9. LOOP         → Next slice in the queue
@@ -295,7 +299,7 @@ The Orchestrator runs sliced Issues in a continuous loop until all SPEC implemen
 | Review diff before continuing | `/code-review-and-quality` |
 | Bug, regression, or mysterious build failure | `/diagnose` |
 | Degraded architecture / too much coupling | `/improve-codebase-architecture` |
-| Ambiguity in the SPEC | `/grill-me-with-spec` |
+| Ambiguity in the SPEC | `/write-specs` |
 | Create/update Epic Issues | `/create-issues` |
 | Need knowledge of a third-party API/library | manual / research subagent |
 
@@ -309,7 +313,7 @@ When Issues come from the special case "new project with only a PRD" (Phase 1), 
    - commit;
    - next Issue in the queue.
    Repeat until all Issues of the Epic are exhausted.
-2. When the Epic is complete, invoke `/qa-analyst`, then `/quality-test-implementation` to raise coverage and clear quality debt on the affected stack, then `/code-review-and-quality` for the accumulated diff, then `/drawio-architecture` to refresh the system diagram, then `/create-readme` to reflect what was delivered.
+2. When the Epic is complete, invoke `/qa-analyst`, then `/quality-test-implementation` to raise coverage and clear quality debt on the affected stack, then `/code-review-and-quality` for the accumulated diff, then `/drawio-architecture` to refresh the system diagram, then `/mermaid-architecture` to update native Mermaid architecture diagrams in `docs/architecture/`, then `/create-readme` to reflect what was delivered.
 3. Epic exhausted → open a PR from the working branch to `develop`.
    * Green PR (CI/tests pass) → merge into `develop`.
    * Failed PR → fix with `/diagnose`, re-run verification, then merge.
@@ -325,9 +329,10 @@ After each slice and at the end of each Epic/DAG:
 3. When the DAG is complete, invoke `/qa-analyst` without exception of tier. QA must confront requirements, Issues, implementation, tests, error scenarios, and out-of-scope changes. Failures reopen Issues or create new tasks.
 4. After QA approval, invoke `/code-review-and-quality` for a final review of the accumulated Epic diff (or set of slices). Quality failures reopen Issues or create new tasks.
 5. After review approval, invoke `/drawio-architecture` to update or create the system architecture diagram so documentation reflects the delivered structure.
-6. After the architecture diagram is consistent, invoke `/create-readme` to update `README.md` with the delivered features, stack, and instructions.
-7. **Archive the completed SPEC SDD(s)**. Once the Epic/DAG is delivered, create `docs/specs/` if it does not exist and move the corresponding `.specs/SPEC-{YYYYMMDD}-{slug}.md` to `docs/specs/SPEC-{YYYYMMDD}-{slug}.md`. Update the frontmatter status (e.g., from `Approved` to `Completed`) and add a `Delivered` subsection with the merge commit/PR. Commit the move as part of the Epic closure.
-8. Only after that can delivery by PR occur. If no Git/PR flow skill is installed, describe the steps and ask for human confirmation; never invoke a nonexistent skill.
+6. Right after `/drawio-architecture`, invoke `/mermaid-architecture` to generate or update native Mermaid architecture diagrams, flows, and design docs in `docs/architecture/`.
+7. After the architecture diagrams are consistent, invoke `/create-readme` to update `README.md` with the delivered features, stack, and instructions.
+8. **Archive the completed SPEC SDD(s)**. Once the Epic/DAG is delivered, create `docs/specs/` if it does not exist and move the corresponding `.specs/SPEC-{YYYYMMDD}-{slug}.md` to `docs/specs/SPEC-{YYYYMMDD}-{slug}.md`. Update the frontmatter status (e.g., from `Approved` to `Completed`) and add a `Delivered` subsection with the merge commit/PR. Commit the move as part of the Epic closure.
+9. Only after that can delivery by PR occur. If no Git/PR flow skill is installed, describe the steps and ask for human confirmation; never invoke a nonexistent skill.
 
 ## Phase 6 — Unapproved SPEC Review
 
@@ -415,25 +420,26 @@ At the end of the project or release, ensure `README.md` reflects the current sy
 | Phase -1 — detect framework updates | `/orchestrator` (self) | Compare local installed catalog with remote `origin` | Reports whether a reinstall is needed |
 | Phase 0 — missing Git / remote | manual | Cannot proceed without GitHub as source of truth | Guides user to create and connect repo |
 | Phase 1 — create harness | `/create-agent-harness` | Generate `CLAUDE.md`, `AGENTS.md`, `.claude/`, `docs/`, `.specs/` | Files ready for project governance |
-| Phase 1 — write SPEC | `/grill-me-with-spec` | Consolidate domain language and architectural decisions | `.specs/SPEC-{YYYYMMDD}-{slug}.md` in `Approved` state |
+| Phase 1 — write SPEC | `/write-specs` | Consolidate domain language and architectural decisions | `.specs/SPEC-{YYYYMMDD}-{slug}.md` in `Approved` state |
 | Phase 1 — empty repo | `/scaffold-mvp` | Bootstrap stack after domain alignment | Initial project skeleton and README |
 | Phase 2 — architecture gaps | `/improve-codebase-architecture` | P2 (architecture) gaps or degraded seams | HTML report with deepening opportunities |
 | Phase 3 — turn work into Issues | `/create-issues` | Gaps, roadmap, and approved docs become GitHub Issues | Real GitHub Issue numbers + dependency links |
 | Phase 4 — implement slice | `/execute-tdd-spec` | Approved SPEC → red-green-refactor slice | Working code + tests passing |
 | Phase 4 — bug or build failure | `/diagnose` | Reproduce, minimise, instrument, fix, regress | Root cause resolved + regression test |
 | Phase 4 — code review per slice | `/code-review-and-quality` | Review diff before next step | Required changes or approval |
-| Phase 4 — SPEC ambiguity | `/grill-me-with-spec` | Missing or conflicting requirement | Updated SPEC with new decisions |
+| Phase 4 — SPEC ambiguity | `/write-specs` | Missing or conflicting requirement | Updated SPEC with new decisions |
 || Phase 4 — whole-repo quality gate | `/quality-test-implementation` | Raise coverage and clear quality debt after Epic implementation | Measured quality report, coverage at target |
 | Phase 5 — QA gate | `/qa-analyst` | Mandatory pre-PR verification | QA approval or new Issues |
 | Phase 5 — final review | `/code-review-and-quality` | Accumulated Epic diff review | Final approval or rework |
-| Phase 5 — architecture diagram | `/drawio-architecture` | Update system diagram after delivery | SVG/PNG architecture diagram |
+| Phase 5 — architecture diagram (draw.io) | `/drawio-architecture` | Update system diagram after delivery | SVG/PNG/draw.io architecture diagram |
+| Phase 5 — architecture diagram (Mermaid) | `/mermaid-architecture` | Generate native Mermaid diagrams in `docs/architecture/` | Markdown/Mermaid architecture diagrams |
 | Phase 5 — documentation | `/create-readme` | Keep `README.md` in sync with delivery | Updated README |
 | Phase 6 — unapproved SPEC | `/execute-tdd-spec` | Implement a SPEC the user just approved | Working code + tests passing |
 | Phase 7 — final verification | `orchestrator` (self) | Confirm all SPECs, Issues, and gaps are closed | Final verification report |
 ### Decision Tree
 
 1. Does the SPEC exist and is `Approved`?
-   - **No** → `/grill-me-with-spec`.
+   - **No** → `/write-specs`.
 2. Is there a P2 architecture gap?
    - **Yes** → `/improve-codebase-architecture`.
 3. Is the work tracked on GitHub?
@@ -443,7 +449,7 @@ At the end of the project or release, ensure `README.md` reflects the current sy
 5. Is the code written but not reviewed?
    - **Yes** → `/code-review-and-quality`.
 6. Is the Epic done and tests green?
-   - **Yes** → `/qa-analyst` → `/quality-test-implementation` → `/code-review-and-quality` → `/create-readme` → PR.
+   - **Yes** → `/qa-analyst` → `/quality-test-implementation` → `/code-review-and-quality` → `/drawio-architecture` → `/mermaid-architecture` → `/create-readme` → PR.
 
 ## References
 
@@ -451,7 +457,7 @@ At the end of the project or release, ensure `README.md` reflects the current sy
 - [`references/orchestrator_stats.md`](references/orchestrator_stats.md) — operational state file for the session DAG.
 - [`references/ESTADO_ORQUESTRATOR.md`](references/ESTADO_ORQUESTRATOR.md) — legacy fallback state file (kept for existing projects).
 - `/create-agent-harness` — for generating the project harness
-- `/grill-me-with-spec` — for authoring the SPEC SDD
+- `/write-specs` — for authoring the SPEC SDD
 - `/scaffold-mvp` — for bootstrapping a new project
 - `/create-issues` — for turning work into GitHub Issues
 - `/improve-codebase-architecture` — for analyzing and fixing architecture gaps
@@ -460,4 +466,6 @@ At the end of the project or release, ensure `README.md` reflects the current sy
 - `/diagnose` — for debugging regressions and bugs
 - `/qa-analyst` — for the mandatory QA gate
 - `/quality-test-implementation` — for raising coverage and clearing quality debt
+- `/drawio-architecture` — for updating visual draw.io architecture diagrams
+- `/mermaid-architecture` — for generating native Mermaid architecture diagrams in docs/architecture/
 - `/create-readme` — for keeping README in sync
