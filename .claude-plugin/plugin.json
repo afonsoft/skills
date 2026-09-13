@@ -8,5 +8,6 @@
   },
   "homepage": "https://github.com/afonsoft/skills",
   "repository": "https://github.com/afonsoft/skills",
-  "license": "MIT"
+  "license": "MIT",
+  "commands": "./commands/"
 }

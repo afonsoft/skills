@@ -135,6 +135,14 @@ The fastest way to install and auto-detect your environment.
 npx skills add afonsoft/skills
 ```
 
+### 🧩 via Claude Code plugin
+Installs skills **and** slash commands natively (no `install.sh` needed):
+```text
+/plugin marketplace add afonsoft/skills
+/plugin install afonsoft@afonsoft
+```
+Commands are namespaced by the plugin name: `/afonsoft:spec-driven` (orchestrator) and `/afonsoft:<skill>` for each skill.
+
 ### 🖥️ via install.sh (local clone)
 Copies the skills into each IDE's skills directory and generates slash commands:
 ```bash
