@@ -76,11 +76,11 @@ Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen 
 |-------|---------------------|---------------|------|---------|
 | `building-mcp-servers` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/building-mcp-servers) |
 | `code-review-and-quality` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/code-review-and-quality) |
-| `composio-mcp` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/composio-mcp) |
+| `composio-mcp` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/composio-mcp) |
 | `create-agent-harness` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/create-agent-harness) |
 | `create-issues` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/create-issues) |
 | `create-readme` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/create-readme) |
-| `design` | — | — | — | [View](https://skills.sh/afonsoft/skills/design) |
+| `design` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/design) |
 | `diagnose` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/diagnose) |
 | `drawio-architecture` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/drawio-architecture) |
 | `execute-spec` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/execute-spec) |
@@ -88,13 +88,13 @@ Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen 
 | `mermaid-architecture` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/mermaid-architecture) |
 | `notebooklm-mcp` | ✅ safe | 1 | 🟢 low | [View](https://skills.sh/afonsoft/skills/notebooklm-mcp) |
 | `observability-and-instrumentation` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/observability-and-instrumentation) |
-| `obsidian` | 🟡 medium | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/obsidian) |
+| `obsidian` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/obsidian) |
 | `orchestrator` | ✅ safe | 1 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/orchestrator) |
 | `qa-analyst` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/qa-analyst) |
 | `quality-test-implementation` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/quality-test-implementation) |
 | `scaffold-mvp` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/scaffold-mvp) |
 | `sonarqube-autofix` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/sonarqube-autofix) |
-| `wordpress-mcp` | 🟡 medium | 1 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/wordpress-mcp) |
+| `wordpress-mcp` | 🟡 medium | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/wordpress-mcp) |
 | `write-specs` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/write-specs) |
 ---
 
