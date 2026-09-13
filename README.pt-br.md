@@ -247,11 +247,11 @@ Navegue todas as skills disponíveis em [skills.sh](https://www.skills.sh/?q=afo
 
 ## Star History
 
-<a href="https://www.star-history.com/?repos=afonsoft%2Feaf%2Cafonsoft%2Fskills&type=date&legend=top-left">
+<a href="https://www.star-history.com/?repos=afonsoft%2Fskills&type=date&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=afonsoft/eaf%2Cafonsoft/skills&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=afonsoft/eaf%2Cafonsoft/skills&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=afonsoft/eaf%2Cafonsoft/skills&type=date&legend=top-left" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=afonsoft/skills&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=afonsoft/skills&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=afonsoft/skills&type=date&legend=top-left" />
  </picture>
 </a>
 
