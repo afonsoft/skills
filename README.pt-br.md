@@ -129,6 +129,27 @@ A forma mais rápida de instalar e auto-detectar seu ambiente.
 npx skills add afonsoft/skills
 ```
 
+### 🖥️ via install.sh (clone local)
+Copia as skills para o diretório de skills de cada IDE e gera os slash commands:
+```bash
+./install.sh --all        # todos os IDEs/CLIs suportados + slash commands
+./install.sh --claude     # apenas Claude Code
+./install.sh --opencode   # apenas OpenCode
+./install.sh --devin      # apenas Devin
+./install.sh --cursor     # apenas Cursor
+./install.sh --dry-run    # preview sem alterar nada
+```
+
+Slash commands gerados (Claude Code, OpenCode, Devin):
+
+| Comando | Destino |
+|---------|---------|
+| `/spec-driven` | skill `orchestrator` — inicia o pipeline completo spec → issues → fatias → QA → PR |
+| `/spec-driven:orchestrator` | o mesmo que `/spec-driven` |
+| `/spec-driven:<skill>` | a skill indicada (ex.: `/spec-driven:write-specs`, `/spec-driven:execute-spec`) |
+
+Na reinstalação, os shims legados `/architecture:<skill>` são removidos automaticamente.
+
 ## 📣 Publicar em Diretórios de Skills
 
 ### SkillsLLM
