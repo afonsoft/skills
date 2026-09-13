@@ -138,6 +138,52 @@ EOF
       fi
     fi
   done
+
+  # Root /spec-driven command -> orchestrator skill (same target as /spec-driven:orchestrator)
+  if [ "$INSTALL_CLAUDE" = true ]; then
+    local claude_cmd_dir="$HOME/.claude/commands"
+    if [ "$DRY_RUN" = true ]; then
+      echo "[DRY-RUN] mkdir -p $claude_cmd_dir && echo '...' > $claude_cmd_dir/spec-driven.md"
+    else
+      mkdir -p "$claude_cmd_dir"
+      cat <<EOF > "$claude_cmd_dir/spec-driven.md"
+---
+description: "Run the spec-driven pipeline via the orchestrator skill"
+---
+Load and execute the skill 'orchestrator' to handle the request: \$ARGUMENTS
+EOF
+    fi
+  fi
+
+  if [ "$INSTALL_OPENCODE" = true ]; then
+    local opencode_cmd_dir="$HOME/.config/opencode/commands"
+    if [ "$DRY_RUN" = true ]; then
+      echo "[DRY-RUN] mkdir -p $opencode_cmd_dir && echo '...' > $opencode_cmd_dir/spec-driven.md"
+    else
+      mkdir -p "$opencode_cmd_dir"
+      cat <<EOF > "$opencode_cmd_dir/spec-driven.md"
+---
+description: "Run the spec-driven pipeline via the orchestrator skill"
+---
+Load and execute the skill 'orchestrator' to handle the request: \$ARGUMENTS
+EOF
+    fi
+  fi
+
+  if [ "$INSTALL_DEVIN" = true ]; then
+    local devin_cmd_dir="$HOME/.devin/commands"
+    if [ "$DRY_RUN" = true ]; then
+      echo "[DRY-RUN] mkdir -p $devin_cmd_dir && echo '...' > $devin_cmd_dir/spec-driven.md"
+    else
+      mkdir -p "$devin_cmd_dir"
+      cat <<EOF > "$devin_cmd_dir/spec-driven.md"
+---
+description: "Run the spec-driven pipeline via the orchestrator skill"
+---
+Load and execute the skill 'orchestrator' to handle the request: \$ARGUMENTS
+EOF
+    fi
+  fi
 }
 
 if [ "$INSTALL_CLAUDE" = true ]; then

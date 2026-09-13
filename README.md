@@ -22,7 +22,7 @@ Every other skill in the catalog is a delegation target in that loop. Instead of
 
 ## 🧭 The Orchestrator
 
-The [`orchestrator`](docs/en/orchestrator.md) is the entry point and central control skill for agent-driven projects. Invoke it with `/spec-driven:orchestrator` (or *"use the orchestrator skill"*) and it runs a continuous loop, delegating complex work to specialized skills and persisting state in `.claude/memory/orchestrator_stats.md`.
+The [`orchestrator`](docs/en/orchestrator.md) is the entry point and central control skill for agent-driven projects. Invoke it with `/spec-driven` (alias for `/spec-driven:orchestrator`, or *"use the orchestrator skill"*) and it runs a continuous loop, delegating complex work to specialized skills and persisting state in `.claude/memory/orchestrator_stats.md`.
 
 ```mermaid
 flowchart TD
@@ -243,7 +243,7 @@ gh secret set CLAWHUB_TOKEN
 ## 📖 How to use
 
 1. **Install** the collection using one of the methods above. Running `./install.sh` additionally generates `/spec-driven:<skill>` slash commands for Claude Code, OpenCode, and Devin.
-2. **Start with the orchestrator** — `/spec-driven:orchestrator` or *"use the orchestrator skill"* — and let it drive the spec → issues → slices → QA → PR pipeline.
+2. **Start with the orchestrator** — `/spec-driven` (same as `/spec-driven:orchestrator`) or *"use the orchestrator skill"* — and let it drive the spec → issues → slices → QA → PR pipeline.
 3. **Invoke** an individual skill directly when you know exactly what you need (e.g., `/spec-driven:write-specs`, or *"Use the create-agent-harness skill to setup this repo"*). The agent loads the `SKILL.md` and follows the structured workflow.
 
 ## ⚖️ License

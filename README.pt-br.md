@@ -17,7 +17,7 @@ Todas as outras skills do catálogo são alvos de delegação nesse loop. Em vez
 
 ## 🧭 O Orchestrator
 
-O [`orchestrator`](docs/pt-br/orchestrator.md) é o ponto de entrada e a skill de controle central para projetos conduzidos por agentes. Invoque-o com `/spec-driven:orchestrator` (ou *"use a skill orchestrator"*) e ele executa um loop contínuo, delegando trabalho complexo para skills especializadas e persistindo o estado em `.claude/memory/orchestrator_stats.md`.
+O [`orchestrator`](docs/pt-br/orchestrator.md) é o ponto de entrada e a skill de controle central para projetos conduzidos por agentes. Invoque-o com `/spec-driven` (atalho para `/spec-driven:orchestrator`, ou *"use a skill orchestrator"*) e ele executa um loop contínuo, delegando trabalho complexo para skills especializadas e persistindo o estado em `.claude/memory/orchestrator_stats.md`.
 
 ```mermaid
 flowchart TD
@@ -200,7 +200,7 @@ Após publicar, as skills aparecem em `market.lobehub.com/s/skills/afonsoft-skil
 ## 📖 Como usar
 
 1. **Instale** a coleção usando um dos métodos acima. Rodar `./install.sh` também gera os slash commands `/spec-driven:<skill>` para Claude Code, OpenCode e Devin.
-2. **Comece pelo orchestrator** — `/spec-driven:orchestrator` ou *"use a skill orchestrator"* — e deixe ele conduzir o pipeline spec → issues → fatias → QA → PR.
+2. **Comece pelo orchestrator** — `/spec-driven` (o mesmo que `/spec-driven:orchestrator`) ou *"use a skill orchestrator"* — e deixe ele conduzir o pipeline spec → issues → fatias → QA → PR.
 3. **Invoque** uma skill individual diretamente quando souber exatamente o que precisa (ex.: `/spec-driven:write-specs`, ou *"Use a skill create-agent-harness para configurar este repo"*). O agente carrega o `SKILL.md` e segue o workflow estruturado.
 
 ## ⚖️ Licença
