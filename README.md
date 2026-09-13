@@ -285,3 +285,15 @@ MIT - See `LICENSE`.
 
 ## 📊 Skills Catalog
 Browse all available skills at [skills.sh](https://www.skills.sh/?q=afonsoft).
+
+---
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/chart?repos=afonsoft/skills&type=date&legend=top-left)](https://www.star-history.com/?repos=afonsoft%2Fskills&type=date&legend=top-left)
+
+## StarMapper
+
+[![StarMapper](https://img.shields.io/badge/StarMapper-afonsoft%2Fskills-blue)](https://starmapper.bruniaux.com/afonsoft/skills)
+
+> StarMapper also requires a GitHub token to fetch star geolocation data. The live map image is not available until the repository is scanned.
