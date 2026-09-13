@@ -1,6 +1,6 @@
 # Skills Documentation
 
-Per-skill documentation for the [afonsoft/skills](../README.md) collection. Each file summarizes a skill's purpose, how it works, when to use it, and how it correlates with the other skills.
+Per-skill documentation for [Spec Driven](../README.md) (`afonsoft/skills`). Each file summarizes a skill's purpose, how it works, when to use it, and how it plugs into the orchestrator's spec-driven pipeline.
 
 ## Languages
 

@@ -1,6 +1,6 @@
-# Agent Skills Collection
+# Spec Driven
 
-A curated collection of high-performance Agent Skills and hooks designed to enhance AI capabilities across various runtimes (Claude Code, OpenCode, Devin, Cursor, etc.).
+An orchestrator-first collection of Agent Skills for **spec-driven development**: the [`orchestrator`](docs/en/orchestrator.md) skill turns a PRD or idea into approved SPECs, tracked GitHub Issues, TDD-implemented slices, QA gates, and reviewed PRs — across Claude Code, OpenCode, Devin, Cursor, and other runtimes.
 
 [![skills.sh](https://skills.sh/b/afonsoft/skills)](https://skills.sh/afonsoft/skills)
 [![Spec Validation](https://github.com/afonsoft/skills/actions/workflows/skills-validate.yml/badge.svg?job=validate-spec)](https://github.com/afonsoft/skills/actions/workflows/skills-validate.yml)
@@ -16,11 +16,40 @@ A curated collection of high-performance Agent Skills and hooks designed to enha
 
 ## 🚀 Overview
 
-This repository provides specialized guidance and tools following the **Agent Skills Specification** (agentskills.io). Instead of generic prompts, these skills provide structured patterns, constraints, and reference materials that allow agents to perform complex software engineering tasks with production-grade quality.
+This repository implements **Spec-Driven Development (SDD)** for AI agents, following the **Agent Skills Specification** (agentskills.io). At the center is the [`orchestrator`](docs/en/orchestrator.md) skill: a control loop that audits preconditions, provisions the agent harness, consolidates domain language into approved SPEC SDDs (`.specs/SPEC-*.md`), fragments work into GitHub Issues, and delegates implementation, review, QA, and documentation to specialized skills — never doing complex work itself.
+
+Every other skill in the catalog is a delegation target in that loop. Instead of generic prompts, each skill provides structured patterns, constraints, and reference materials that allow agents to perform complex software engineering tasks with production-grade quality.
+
+## 🧭 The Orchestrator
+
+The [`orchestrator`](docs/en/orchestrator.md) is the entry point and central control skill for agent-driven projects. Invoke it with `/spec-driven:orchestrator` (or *"use the orchestrator skill"*) and it runs a continuous loop, delegating complex work to specialized skills and persisting state in `.claude/memory/orchestrator_stats.md`.
+
+```mermaid
+flowchart TD
+    A[Phase -1: Framework Update] --> B[Phase 0: Governance]
+    B --> C[Phase 1: Discovery]
+    C --> D[Phase 2: Audit]
+    D --> E[Phase 3: GitHub Fragmentation]
+    E --> F[Phase 4: Implementation Loop]
+    F --> G[Phase 5: Verification & QA]
+    G --> H[PR / Merge]
+
+    C -->|PRD only| I[/scaffold-mvp\]
+    C -->|needs spec| J[/write-specs\]
+    D -->|P2 gap| K[/improve-codebase-architecture\]
+    E --> L[/create-issues\]
+    F -->|per slice| M[/execute-spec\]
+    F -->|bug| N[/diagnose\]
+    G --> O[/qa-analyst\]
+    G --> P[/drawio-architecture\]
+    G --> Q[/mermaid-architecture\]
+```
+
+The orchestrator advances automatically between phases once validation passes. It only pauses for escalation gates (security, schema, public APIs, data changes), validation failures, or an explicit user request to stop.
 
 ## 🛠️ Skill Catalog & Correlation
 
-The skills are organized into four main pillars: **Harness Engineering**, **Code Quality**, **Extensibility**, and **MCP Integrations**.
+The skills are organized around the orchestrator's pipeline: **Harness Engineering**, **Orchestration & Delivery**, **Code Quality & Review**, **Frontend & Design**, **Extensibility & Integration**, and **MCP Integrations**.
 
 ### 🏗️ Harness Engineering
 *Foundation for creating and managing AI agents.*
@@ -97,33 +126,6 @@ Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen 
 | `wordpress-mcp` | 🟡 medium | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/wordpress-mcp) |
 | `write-specs` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/write-specs) |
 ---
-
-## 🧭 Orchestrator Flow
-
-The [`orchestrator`](docs/en/orchestrator.md) is the central control skill for agent-driven projects. It runs in a continuous loop, delegating complex work to specialized skills and persisting state in `references/orchestrator_stats.md`.
-
-```mermaid
-flowchart TD
-    A[Phase -1: Framework Update] --> B[Phase 0: Governance]
-    B --> C[Phase 1: Discovery]
-    C --> D[Phase 2: Audit]
-    D --> E[Phase 3: GitHub Fragmentation]
-    E --> F[Phase 4: Implementation Loop]
-    F --> G[Phase 5: Verification & QA]
-    G --> H[PR / Merge]
-
-    C -->|PRD only| I[/scaffold-mvp\]
-    C -->|needs spec| J[/write-specs\]
-    D -->|P2 gap| K[/improve-codebase-architecture\]
-    E --> L[/create-issues\]
-    F -->|per slice| M[/execute-spec\]
-    F -->|bug| N[/diagnose\]
-    G --> O[/qa-analyst\]
-    G --> P[/drawio-architecture\]
-    G --> Q[/mermaid-architecture\]
-```
-
-The orchestrator advances automatically between phases once validation passes. It only pauses for escalation gates (security, schema, public APIs, data changes), validation failures, or an explicit user request to stop.
 
 ## 📦 Installation
 
@@ -240,9 +242,9 @@ gh secret set CLAWHUB_TOKEN
 
 ## 📖 How to use
 
-1. **Install** the collection using one of the methods above.
-2. **Invoke** a skill in your chat by mentioning its name (e.g., *"Use the create-agent-harness skill to setup this repo"*).
-3. **Follow** the structured workflow provided by the skill (the agent will automatically load the `SKILL.md` and follow the lapped process).
+1. **Install** the collection using one of the methods above. Running `./install.sh` additionally generates `/spec-driven:<skill>` slash commands for Claude Code, OpenCode, and Devin.
+2. **Start with the orchestrator** — `/spec-driven:orchestrator` or *"use the orchestrator skill"* — and let it drive the spec → issues → slices → QA → PR pipeline.
+3. **Invoke** an individual skill directly when you know exactly what you need (e.g., `/spec-driven:write-specs`, or *"Use the create-agent-harness skill to setup this repo"*). The agent loads the `SKILL.md` and follows the structured workflow.
 
 ## ⚖️ License
 MIT - See `LICENSE`.

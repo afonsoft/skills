@@ -1,9 +1,9 @@
 {
   "name": "afonsoft",
-  "description": "Curated collection of Agent Skills for harness engineering, orchestration, code quality, SonarQube autofix, architecture reviews, draw.io and Mermaid diagrams, TDD from approved SPECs, and MCP integrations. Includes orchestrator, execute-spec, sonarqube-autofix, scaffold-mvp, write-specs, and quality gates for agent-driven delivery.",
+  "description": "Spec Driven — orchestrator-first Agent Skills for spec-driven development. The orchestrator skill turns a PRD or idea into approved SPECs, tracked GitHub Issues, TDD-implemented slices, QA gates, and reviewed PRs. Includes write-specs, execute-spec, scaffold-mvp, create-issues, qa-analyst, code-review-and-quality, sonarqube-autofix, draw.io/Mermaid architecture diagrams, and MCP integrations.",
   "version": "1.0.0",
   "author": {
-  "name": "architecture",
+    "name": "afonsoft",
     "url": "https://github.com/afonsoft"
   },
   "homepage": "https://github.com/afonsoft/skills",
