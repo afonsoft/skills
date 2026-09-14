@@ -133,9 +133,9 @@ npx skills add afonsoft/skills
 Instala skills **e** slash commands nativamente (sem precisar do `install.sh`):
 ```text
 /plugin marketplace add afonsoft/skills
-/plugin install afonsoft@afonsoft
+/plugin install spec-driven@afonsoft
 ```
-Os comandos recebem o namespace do plugin: `/afonsoft:spec-driven` (orchestrator) e `/afonsoft:<skill>` para cada skill.
+Os comandos recebem o namespace do plugin: `/spec-driven:orchestrator` e `/spec-driven:<skill>` para cada skill.
 
 ### 🖥️ via install.sh (clone local)
 Copia as skills para o diretório de skills de cada IDE e gera os slash commands:
