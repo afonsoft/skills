@@ -3,32 +3,40 @@
 #
 # The market-cli login flow is OAuth2 PKCE with a localhost callback, which
 # cannot complete on headless machines (CI runners, SSH boxes, containers).
-# This script bridges the gap:
-#   1. Starts `lhm login` locally (callback server listens on localhost)
-#   2. Prints the authorization URL — you open it in any browser
-#   3. After authorizing, the browser redirects to a dead
-#      http://localhost:<port>/callback?code=...&state=... URL
-#   4. You paste that URL back here; the script replays it against the
-#      local callback server, completing the token exchange
-#   5. The fresh ~/.lobehub-market/user-credentials.json is pushed into
-#      the LOBEHUB_USER_CREDENTIALS GitHub secret
+# This script performs the same PKCE flow without the CLI's callback server:
+#   1. Generates a code_verifier/code_challenge pair and prints the
+#      authorization URL — you open it in any browser
+#   2. After authorizing, the browser redirects to a dead
+#      http://localhost:51234/callback?code=...&state=... URL
+#   3. You paste that URL back here; the script extracts the code and
+#      exchanges it directly at the OIDC token endpoint (no local server,
+#      no CLI callback timeout)
+#   4. The fresh ~/.lobehub-market/user-credentials.json is written in the
+#      exact format lhm expects and pushed into the LOBEHUB_USER_CREDENTIALS
+#      GitHub secret
 #
 # Prerequisites:
-#   - Node.js >= 22 (npx)
+#   - curl, python3
+#   - npx (optional, for the final `lhm auth status` sanity check)
 #   - gh CLI authenticated with secret write access to the repo
-#   - curl
 #
 # Usage:
-#   ./refresh-lobehub-auth.sh              # refresh token + update secret
-#   ./refresh-lobehub-auth.sh --dry-run    # stop before updating the secret
+#   ./refresh-lobehub-auth.sh               # refresh token + update secret
+#   ./refresh-lobehub-auth.sh --dry-run     # stop before updating the secret
 #   ./refresh-lobehub-auth.sh --run-publish # also trigger lobehub-publish.yml
+#
+# Env overrides:
+#   GH_REPO=owner/name    target repo (default: detected via `gh repo view`)
+#   MARKET_BASE_URL=...   market API base (default: https://market.lobehub.com)
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CREDS_DIR="$HOME/.lobehub-market"
 USER_CREDS="$CREDS_DIR/user-credentials.json"
 SECRET_NAME="LOBEHUB_USER_CREDENTIALS"
-LHM=(npx -y @lobehub/market-cli)
+BASE_URL="${MARKET_BASE_URL:-https://market.lobehub.com}"
+CLIENT_ID="lobehub-cli"
+REDIRECT_URI="http://localhost:51234/callback"
 DRY_RUN=false
 RUN_PUBLISH=false
 
@@ -37,14 +45,14 @@ for arg in "$@"; do
     --dry-run) DRY_RUN=true ;;
     --run-publish) RUN_PUBLISH=true ;;
     -h|--help)
-      sed -n '2,25p' "${BASH_SOURCE[0]}"
+      sed -n '2,29p' "${BASH_SOURCE[0]}"
       exit 0
       ;;
     *) echo "ERROR: unknown argument: $arg" >&2; exit 2 ;;
   esac
 done
 
-for cmd in npx gh curl python3 setsid; do
+for cmd in curl python3 gh; do
   if ! command -v "$cmd" >/dev/null 2>&1; then
     echo "ERROR: required command not found: $cmd" >&2
     exit 1
@@ -69,54 +77,32 @@ echo "Target repo: $REPO"
 echo "Secret:      $SECRET_NAME"
 echo
 
-LOG="$(mktemp -t lhm-login.XXXXXX.log)"
-LOGIN_PID=""
+# --- Generate PKCE pair + state -------------------------------------------
+read -r VERIFIER CHALLENGE STATE < <(python3 - <<'EOF'
+import base64, hashlib, secrets
+verifier = base64.urlsafe_b64encode(secrets.token_bytes(64)).rstrip(b"=").decode()
+challenge = base64.urlsafe_b64encode(
+    hashlib.sha256(verifier.encode()).digest()
+).rstrip(b"=").decode()
+state = secrets.token_hex(32)
+print(verifier, challenge, state)
+EOF
+)
 
-cleanup() {
-  if [[ -n "$LOGIN_PID" ]]; then
-    kill -- -"$LOGIN_PID" 2>/dev/null || true
-  fi
-  rm -f "$LOG"
-}
-trap cleanup EXIT
-
-echo "=== Starting lhm login (callback server on localhost) ==="
-setsid "${LHM[@]}" login >"$LOG" 2>&1 &
-LOGIN_PID=$!
-
-AUTH_URL=""
-for _ in $(seq 1 60); do
-  AUTH_URL="$(grep -oE 'https://[^ ]+/lobehub-oidc/auth\?[^ ]+' "$LOG" 2>/dev/null | head -1 || true)"
-  [[ -n "$AUTH_URL" ]] && break
-  if ! kill -0 "$LOGIN_PID" 2>/dev/null; then
-    echo "ERROR: lhm login exited before printing the auth URL:" >&2
-    cat "$LOG" >&2
-    exit 1
-  fi
-  sleep 1
-done
-
-if [[ -z "$AUTH_URL" ]]; then
-  echo "ERROR: timed out waiting for the auth URL from lhm login" >&2
-  cat "$LOG" >&2
-  exit 1
-fi
-
-PORT="$(printf '%s' "$AUTH_URL" | grep -oE 'localhost(%3A|:)[0-9]+' | grep -oE '[0-9]+$' | head -1)"
+AUTH_URL="$BASE_URL/lobehub-oidc/auth?client_id=$CLIENT_ID&response_type=code&scope=openid+profile+email+offline_access&prompt=consent&code_challenge=$CHALLENGE&code_challenge_method=S256&redirect_uri=$(python3 -c "import urllib.parse;print(urllib.parse.quote('$REDIRECT_URI',safe=''))")&state=$STATE"
 
 cat <<EOF
-
 >>> ACTION REQUIRED <<<
 
 1. Open this URL in your browser and authorize with your LobeHub account:
 
    $AUTH_URL
 
-2. The browser will redirect to a localhost URL that WILL NOT LOAD
-   (the callback server is running here, not on your machine). Expected.
+2. The browser will redirect to a localhost URL that WILL NOT LOAD —
+   expected, nothing listens there. What matters is the URL itself.
 
 3. Copy the FULL URL from the address bar — it looks like:
-   http://localhost:${PORT:-PORT}/callback?code=...&state=...
+   $REDIRECT_URI?code=...&state=...&iss=...
 
 4. Paste it below and press Enter. (Ctrl+C to abort.)
 
@@ -124,43 +110,103 @@ EOF
 
 read -r -p "Paste callback URL: " CALLBACK_URL
 
-if [[ ! "$CALLBACK_URL" =~ ^https?://(localhost|127\.0\.0\.1):[0-9]+/callback\? ]] \
-  || [[ "$CALLBACK_URL" != *code=* ]] \
-  || [[ "$CALLBACK_URL" != *state=* ]]; then
-  echo "ERROR: that doesn't look like the redirect URL. Expected http://localhost:<port>/callback?code=...&state=..." >&2
+# --- Extract and validate code/state ---------------------------------------
+read -r CODE GOT_STATE < <(CALLBACK_URL="$CALLBACK_URL" python3 - <<'EOF'
+import os, sys, urllib.parse
+u = urllib.parse.urlparse(os.environ["CALLBACK_URL"])
+q = urllib.parse.parse_qs(u.query)
+code = q.get("code", [""])[0]
+state = q.get("state", [""])[0]
+print(code, state)
+EOF
+)
+
+if [[ -z "$CODE" ]]; then
+  echo "ERROR: no 'code' parameter in that URL. Expected $REDIRECT_URI?code=...&state=..." >&2
+  exit 1
+fi
+if [[ "$GOT_STATE" != "$STATE" ]]; then
+  echo "ERROR: state mismatch — that URL belongs to a different login attempt. Re-run and use the fresh URL." >&2
   exit 1
 fi
 
+# --- Exchange code for tokens ----------------------------------------------
 echo
-echo "=== Replaying callback against local server ==="
-curl -sf -o /dev/null "$CALLBACK_URL" || {
-  echo "ERROR: callback request failed — the login session may have timed out. Re-run this script." >&2
-  exit 1
+echo "=== Exchanging code for tokens ==="
+TOKEN_JSON="$(curl -sf -X POST "$BASE_URL/token" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  --data-urlencode "grant_type=authorization_code" \
+  --data-urlencode "client_id=$CLIENT_ID" \
+  --data-urlencode "code=$CODE" \
+  --data-urlencode "code_verifier=$VERIFIER" \
+  --data-urlencode "redirect_uri=$REDIRECT_URI")" || {
+    echo "ERROR: token exchange failed (code may have expired — they are single-use and short-lived). Re-run." >&2
+    exit 1
+  }
+
+ACCESS_TOKEN="$(printf '%s' "$TOKEN_JSON" | python3 -c "import sys,json;print(json.load(sys.stdin)['access_token'])")"
+REFRESH_TOKEN="$(printf '%s' "$TOKEN_JSON" | python3 -c "import sys,json;print(json.load(sys.stdin).get('refresh_token') or '')")"
+EXPIRES_IN="$(printf '%s' "$TOKEN_JSON" | python3 -c "import sys,json;print(json.load(sys.stdin).get('expires_in', 90000))")"
+
+# --- Resolve user identity (same fallback as lhm) ---------------------------
+ME_JSON="$(curl -sf -H "Authorization: Bearer $ACCESS_TOKEN" "$BASE_URL/api/v1/user/me" || echo '{}')"
+read -r DISPLAY_NAME EMAIL USER_ID < <(ME_JSON="$ME_JSON" TOKEN_JSON="$TOKEN_JSON" python3 - <<'EOF'
+import base64, json, os
+name = email = uid = ""
+try:
+    tok = json.loads(os.environ["TOKEN_JSON"]).get("id_token", "")
+    if tok:
+        payload = tok.split(".")[1]
+        payload += "=" * (-len(payload) % 4)
+        claims = json.loads(base64.urlsafe_b64decode(payload))
+        name, email, uid = claims.get("name",""), claims.get("email",""), claims.get("sub","")
+except Exception:
+    pass
+try:
+    me = json.loads(os.environ["ME_JSON"])
+    name = name or me.get("displayName", "")
+    email = email or me.get("email", "")
+    uid = uid or me.get("userId", "")
+except Exception:
+    pass
+print(name, email, uid)
+EOF
+)
+
+EXPIRES_AT="$(python3 -c "
+from datetime import datetime, timezone, timedelta
+print((datetime.now(timezone.utc) + timedelta(seconds=$EXPIRES_IN)).isoformat(timespec='milliseconds').replace('+00:00','Z'))
+")"
+
+# --- Write credentials file in lhm format -----------------------------------
+mkdir -p "$CREDS_DIR"
+ACCESS_TOKEN="$ACCESS_TOKEN" REFRESH_TOKEN="$REFRESH_TOKEN" BASE_URL="$BASE_URL" \
+DISPLAY_NAME="$DISPLAY_NAME" EMAIL="$EMAIL" USER_ID="$USER_ID" EXPIRES_AT="$EXPIRES_AT" \
+python3 - <<'EOF'
+import json, os
+creds = {
+    "accessToken": os.environ["ACCESS_TOKEN"],
+    "baseUrl": os.environ["BASE_URL"],
+    "displayName": os.environ["DISPLAY_NAME"],
+    "email": os.environ["EMAIL"],
+    "expiresAt": os.environ["EXPIRES_AT"],
+    "refreshToken": os.environ["REFRESH_TOKEN"],
+    "userId": os.environ["USER_ID"],
 }
+path = os.path.expanduser("~/.lobehub-market/user-credentials.json")
+with open(path, "w") as f:
+    json.dump(creds, f, indent=2)
+os.chmod(path, 0o600)
+EOF
 
-# Wait for the CLI to finish the token exchange and write credentials.
-for _ in $(seq 1 15); do
-  if ! kill -0 "$LOGIN_PID" 2>/dev/null; then break; fi
-  sleep 1
-done
-kill -- -"$LOGIN_PID" 2>/dev/null || true
-LOGIN_PID=""
+echo "Authenticated as: $DISPLAY_NAME <$EMAIL> (expires $EXPIRES_AT)"
 
-if [[ ! -f "$USER_CREDS" ]]; then
-  echo "ERROR: $USER_CREDS was not written — login did not complete" >&2
-  cat "$LOG" >&2
-  exit 1
+# Optional sanity check via lhm if npx is available
+if command -v npx >/dev/null 2>&1; then
+  STATUS="$(npx -y @lobehub/market-cli auth status --output json 2>/dev/null \
+    | python3 -c "import sys,json;print(json.load(sys.stdin)['user']['status'])" 2>/dev/null || echo "unknown")"
+  echo "lhm auth status: $STATUS"
 fi
-
-echo "=== Verifying authentication ==="
-USER_STATUS="$("${LHM[@]}" auth status --output json 2>/dev/null \
-  | python3 -c "import sys,json; print(json.load(sys.stdin)['user']['status'])" || echo "unknown")"
-
-if [[ "$USER_STATUS" != "authenticated" ]]; then
-  echo "ERROR: user token still not valid (status: $USER_STATUS)" >&2
-  exit 1
-fi
-echo "Authenticated."
 echo
 
 if $DRY_RUN; then
