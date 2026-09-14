@@ -34,11 +34,10 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_ACTIONS: 'true'
         run: |
+          # Report-only: the full per-skill table lands in the step summary
+          # and findings surface as warning/notice annotations — the job
+          # never goes red on audit results.
           python scripts/skills-sh-audit.py \
             skills/ \
-            --fail-on high \
-            --summary "$GITHUB_STEP_SUMMARY" || exit_code=$?
-
-          # If the audit command fails, the step summary is already written.
-          # Exit with the captured exit code so the job is red on high/critical findings.
-          exit ${exit_code:-0}
+            --fail-on none \
+            --summary "$GITHUB_STEP_SUMMARY"

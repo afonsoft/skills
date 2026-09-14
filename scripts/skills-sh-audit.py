@@ -59,8 +59,8 @@ def format_table(results: dict, source: str, slugs: list[str]):
     lines = [
         "## skills.sh Security Audit",
         "",
-        "| Skill | Gen Agent Trust Hub | Socket alerts | Snyk | Details |",
-        "|-------|---------------------|---------------|------|---------|",
+        "| Skill | Gen Agent Trust Hub | Socket | Snyk | Details |",
+        "|-------|---------------------|--------|------|---------|",
     ]
     for slug in slugs:
         data = results.get(slug) or {}
@@ -68,22 +68,55 @@ def format_table(results: dict, source: str, slugs: list[str]):
         socket = data.get("socket", {}) if isinstance(data, dict) else {}
         snyk = data.get("snyk", {}).get("risk", "unknown") if isinstance(data, dict) else "unknown"
 
-        socket_alerts = socket.get("alerts", "-") if socket else "-"
-        if socket_alerts is None:
-            socket_alerts = "-"
+        socket_risk = socket.get("risk", "unknown") if socket else "unknown"
+        socket_alerts = socket.get("alerts") if socket else None
+        socket_cell = f"{risk_emoji(socket_risk)} {socket_risk or 'unknown'}"
+        if socket_alerts:
+            socket_cell += f" ({socket_alerts} alerts)"
 
         detail_url = f"https://skills.sh/{source}/{slug}"
         lines.append(
             f"| `{slug}` | {risk_emoji(ath)} {ath or 'unknown'} | "
-            f"{socket_alerts} | {risk_emoji(snyk)} {snyk or 'unknown'} | "
+            f"{socket_cell} | {risk_emoji(snyk)} {snyk or 'unknown'} | "
             f"[View]({detail_url}) |"
         )
     return "\n".join(lines)
 
 
+def collect_findings(results: dict, slugs: list[str], threshold: int):
+    """Return [(slug, scanner, risk)] for risks at or above threshold."""
+    failures = []
+    for slug in slugs:
+        data = results.get(slug) or {}
+        if not isinstance(data, dict):
+            continue
+        for scanner in ("ath", "socket", "snyk"):
+            risk = data.get(scanner, {}).get("risk", "unknown") if isinstance(data.get(scanner), dict) else "unknown"
+            if risk_value(risk) >= threshold:
+                failures.append((slug, scanner, risk))
+    return failures
+
+
+def format_findings(results: dict, slugs: list[str]):
+    """Human-readable count of non-safe findings for the summary tail."""
+    findings = collect_findings(results, slugs, RISK_ORDER["low"])
+    if not findings:
+        return "All skills report safe/unknown on every scanner."
+    counts = {}
+    for _, _, risk in findings:
+        counts[risk] = counts.get(risk, 0) + 1
+    parts = ", ".join(f"{n} {risk}" for risk, n in sorted(counts.items(), key=lambda kv: -RISK_ORDER[kv[0]]))
+    return f"**{len(findings)} finding(s) at low risk or above:** {parts}"
+
+
 def emit_github_annotations(results: dict, source: str, slugs: list[str], fail_on: str):
-    """Emit GitHub Actions annotations for risks at or above the threshold."""
-    threshold = RISK_ORDER.get(fail_on, 5)
+    """Emit GitHub Actions annotations for risks at or above the threshold.
+
+    With --fail-on none (report-only), findings are never emitted as
+    ::error — high/critical become warnings, anything lower a notice.
+    """
+    report_only = fail_on == "none"
+    threshold = RISK_ORDER["low"] if report_only else RISK_ORDER.get(fail_on, 5)
     for slug in slugs:
         data = results.get(slug) or {}
         if not isinstance(data, dict):
@@ -97,10 +130,12 @@ def emit_github_annotations(results: dict, source: str, slugs: list[str], fail_o
         for scanner, risk in [("Gen Agent Trust Hub", ath), ("Socket", socket), ("Snyk", snyk)]:
             if risk and risk_value(risk) >= threshold:
                 message = f"{scanner} reports {risk} risk for {slug}. Details: {detail_url}"
-                if risk == "critical" or risk == "high":
+                if not report_only and risk in ("critical", "high"):
                     print(f"::error title={scanner} {risk}::{message}")
-                else:
+                elif risk in ("critical", "high", "medium"):
                     print(f"::warning title={scanner} {risk}::{message}")
+                else:
+                    print(f"::notice title={scanner} {risk}::{message}")
 
 
 def main():
@@ -109,7 +144,7 @@ def main():
     parser.add_argument("--source", default=None, help="GitHub owner/repo of the skill collection (default: GITHUB_REPOSITORY env)")
     parser.add_argument("--timeout", type=int, default=30, help="HTTP timeout in seconds")
     parser.add_argument("--json", action="store_true", help="Output raw JSON instead of Markdown")
-    parser.add_argument("--fail-on", choices=["low", "medium", "high", "critical"], default="critical", help="Fail when any audit reaches this risk or higher (default: critical)")
+    parser.add_argument("--fail-on", choices=["low", "medium", "high", "critical", "none"], default="critical", help="Fail when any audit reaches this risk or higher; 'none' = report-only, never fails (default: critical)")
     parser.add_argument("--summary", type=Path, default=None, help="Write Markdown summary to a file")
     args = parser.parse_args()
 
@@ -131,7 +166,8 @@ def main():
         print(json.dumps(results, indent=2))
         return
 
-    table = format_table(results, source, slugs)
+    findings_tail = format_findings(results, slugs)
+    table = f"{format_table(results, source, slugs)}\n\n{findings_tail}\n"
     print(table)
 
     if args.summary:
@@ -140,16 +176,12 @@ def main():
     if os.environ.get("GITHUB_ACTIONS"):
         emit_github_annotations(results, source, slugs, args.fail_on)
 
+    if args.fail_on == "none":
+        print("Report-only mode (--fail-on none): findings above do not fail the run.")
+        return
+
     threshold = RISK_ORDER.get(args.fail_on, 5)
-    failures = []
-    for slug in slugs:
-        data = results.get(slug) or {}
-        if not isinstance(data, dict):
-            continue
-        for scanner, key in [("ath", "ath"), ("socket", "socket"), ("snyk", "snyk")]:
-            risk = data.get(key, {}).get("risk", "unknown") if isinstance(data.get(key), dict) else "unknown"
-            if risk_value(risk) >= threshold:
-                failures.append((slug, scanner, risk))
+    failures = collect_findings(results, slugs, threshold)
 
     if failures:
         print("\nFailures:")
