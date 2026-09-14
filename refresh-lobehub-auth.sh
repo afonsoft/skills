@@ -133,16 +133,23 @@ fi
 # --- Exchange code for tokens ----------------------------------------------
 echo
 echo "=== Exchanging code for tokens ==="
-TOKEN_JSON="$(curl -sf -X POST "$BASE_URL/token" \
+TOKEN_JSON="$(curl -sf -X POST "$BASE_URL/lobehub-oidc/token" \
   -H "Content-Type: application/x-www-form-urlencoded" \
   --data-urlencode "grant_type=authorization_code" \
   --data-urlencode "client_id=$CLIENT_ID" \
   --data-urlencode "code=$CODE" \
   --data-urlencode "code_verifier=$VERIFIER" \
   --data-urlencode "redirect_uri=$REDIRECT_URI")" || {
-    echo "ERROR: token exchange failed (code may have expired — they are single-use and short-lived). Re-run." >&2
+    echo "ERROR: token endpoint request failed" >&2
     exit 1
   }
+
+if ! printf '%s' "$TOKEN_JSON" | python3 -c "import sys,json; json.load(sys.stdin)['access_token']" 2>/dev/null; then
+  echo "ERROR: token exchange failed. Server response:" >&2
+  printf '%s\n' "$TOKEN_JSON" >&2
+  echo "(codes are single-use and short-lived — re-run for a fresh URL)" >&2
+  exit 1
+fi
 
 ACCESS_TOKEN="$(printf '%s' "$TOKEN_JSON" | python3 -c "import sys,json;print(json.load(sys.stdin)['access_token'])")"
 REFRESH_TOKEN="$(printf '%s' "$TOKEN_JSON" | python3 -c "import sys,json;print(json.load(sys.stdin).get('refresh_token') or '')")"
