@@ -82,6 +82,7 @@ jobs:
           - create-agent-harness
           - create-readme
           - drawio-architecture
+          - gap-analysis
           - notebooklm-mcp
           - observability-and-instrumentation
           - obsidian
