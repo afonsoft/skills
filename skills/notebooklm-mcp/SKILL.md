@@ -8,7 +8,7 @@ compatibility: Needs Python 3.10+ and `notebooklm-mcp-cli` (`uv tool install not
   or Firefox installed. Headless servers use manual cookie file mode or an external
   CDP provider (OpenClaw). Works on macOS/Linux/Windows.
 metadata:
-  version: 1.0.3
+  version: 1.0.4
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -63,6 +63,10 @@ Both paths share the **same cookie cache** at `~/.notebooklm-mcp-cli/profiles/<p
 - **Verify before trusting**: run `nlm login --check` and `nlm doctor` before any notebook operation.
 - **No privileged operations**: do not run `nlm` with `sudo`, `doas`, or as root unless the user explicitly requests it and confirms the reason.
 - **Isolate auth cache**: prefer per-project or per-profile auth over a shared default profile when multiple users may access the environment.
+- **Account risk disclosure**: `nlm` is an unofficial client and may violate Google's Terms of Service; accounts using it can be rate-limited or suspended. Surface this risk and recommend a secondary/dedicated Google account — never push the user's primary account into it without that warning.
+- **Session scope**: imported cookies grant a full Google web session, far broader than NotebookLM. Treat `auth.json`/`cookies.txt` as account-level credentials, not NotebookLM-scoped tokens.
+- **Data sensitivity**: everything added to a notebook (sources, files, chat prompts) is sent to Google. Never add secrets, credentials, or PII as sources or prompts; confirm with the user before uploading files whose contents were not reviewed.
+- **MCP transport scoping**: prefer `stdio` (local agent only). Use `--transport http`/`sse` only when the user explicitly asks; bind to localhost and require a TLS + auth reverse proxy before any remote exposure.
 
 ---
 
