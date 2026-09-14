@@ -102,7 +102,7 @@ if [[ -z "$AUTH_URL" ]]; then
   exit 1
 fi
 
-PORT="$(printf '%s' "$AUTH_URL" | grep -oE 'localhost(%3A|:)[0-9]+' | grep -oE '[0-9]+' | head -1)"
+PORT="$(printf '%s' "$AUTH_URL" | grep -oE 'localhost(%3A|:)[0-9]+' | grep -oE '[0-9]+$' | head -1)"
 
 cat <<EOF
 
