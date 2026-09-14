@@ -155,9 +155,22 @@ ACCESS_TOKEN="$(printf '%s' "$TOKEN_JSON" | python3 -c "import sys,json;print(js
 REFRESH_TOKEN="$(printf '%s' "$TOKEN_JSON" | python3 -c "import sys,json;print(json.load(sys.stdin).get('refresh_token') or '')")"
 EXPIRES_IN="$(printf '%s' "$TOKEN_JSON" | python3 -c "import sys,json;print(json.load(sys.stdin).get('expires_in', 90000))")"
 
-# --- Resolve user identity (same fallback as lhm) ---------------------------
-ME_JSON="$(curl -sf -H "Authorization: Bearer $ACCESS_TOKEN" "$BASE_URL/api/v1/user/me" || echo '{}')"
-read -r DISPLAY_NAME EMAIL USER_ID < <(ME_JSON="$ME_JSON" TOKEN_JSON="$TOKEN_JSON" python3 - <<'EOF'
+# --- Resolve user identity (id_token claims, falling back to /user/me) ------
+# A User-Agent header is required: the API sits behind Cloudflare, which
+# blocks requests with no UA (error 1010).
+ME_JSON="$(curl -s -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "User-Agent: @lobehub/market-cli" "$BASE_URL/api/v1/user/me" || echo '{}')"
+
+EXPIRES_AT="$(python3 -c "
+from datetime import datetime, timezone, timedelta
+print((datetime.now(timezone.utc) + timedelta(seconds=$EXPIRES_IN)).isoformat(timespec='milliseconds').replace('+00:00','Z'))
+")"
+
+# --- Write credentials file in lhm format -----------------------------------
+mkdir -p "$CREDS_DIR"
+ACCESS_TOKEN="$ACCESS_TOKEN" REFRESH_TOKEN="$REFRESH_TOKEN" BASE_URL="$BASE_URL" \
+TOKEN_JSON="$TOKEN_JSON" ME_JSON="$ME_JSON" EXPIRES_AT="$EXPIRES_AT" \
+python3 - <<'EOF'
 import base64, json, os
 name = email = uid = ""
 try:
@@ -176,37 +189,21 @@ try:
     uid = uid or me.get("userId", "")
 except Exception:
     pass
-print(name, email, uid)
-EOF
-)
-
-EXPIRES_AT="$(python3 -c "
-from datetime import datetime, timezone, timedelta
-print((datetime.now(timezone.utc) + timedelta(seconds=$EXPIRES_IN)).isoformat(timespec='milliseconds').replace('+00:00','Z'))
-")"
-
-# --- Write credentials file in lhm format -----------------------------------
-mkdir -p "$CREDS_DIR"
-ACCESS_TOKEN="$ACCESS_TOKEN" REFRESH_TOKEN="$REFRESH_TOKEN" BASE_URL="$BASE_URL" \
-DISPLAY_NAME="$DISPLAY_NAME" EMAIL="$EMAIL" USER_ID="$USER_ID" EXPIRES_AT="$EXPIRES_AT" \
-python3 - <<'EOF'
-import json, os
 creds = {
     "accessToken": os.environ["ACCESS_TOKEN"],
     "baseUrl": os.environ["BASE_URL"],
-    "displayName": os.environ["DISPLAY_NAME"],
-    "email": os.environ["EMAIL"],
+    "displayName": name,
+    "email": email,
     "expiresAt": os.environ["EXPIRES_AT"],
     "refreshToken": os.environ["REFRESH_TOKEN"],
-    "userId": os.environ["USER_ID"],
+    "userId": uid,
 }
 path = os.path.expanduser("~/.lobehub-market/user-credentials.json")
 with open(path, "w") as f:
     json.dump(creds, f, indent=2)
 os.chmod(path, 0o600)
+print(f"Authenticated as: {name} <{email}> (expires {os.environ['EXPIRES_AT']})")
 EOF
-
-echo "Authenticated as: $DISPLAY_NAME <$EMAIL> (expires $EXPIRES_AT)"
 
 # Optional sanity check via lhm if npx is available
 if command -v npx >/dev/null 2>&1; then
