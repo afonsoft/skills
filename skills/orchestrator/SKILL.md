@@ -1,7 +1,7 @@
 ---
 name: orchestrator
 license: MIT
-description: "Use when starting or running an agent-driven software project with the afonsoft harness."
+description: "Central entry point of the afonsoft agent harness. Use when starting a new project, resuming an existing one, planning features/Epics/releases, or running any multi-step agent-driven work. Validates and reconciles SPECs (SDD), audits the codebase and harness for gaps (security, architecture, performance, hygiene), proposes improvements, fragments work into GitHub Issues, delegates implementation/QA/review to specialized skills, and re-validates everything until delivery. Also use to review unapproved SPECs, reconcile open GitHub Issues with code, or run a final gap check before closing a release."
 metadata:
   version: "2.2.1"
   visibility: public
