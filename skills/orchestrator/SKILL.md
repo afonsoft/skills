@@ -3,7 +3,7 @@ name: orchestrator
 license: MIT
 description: "Central entry point of the afonsoft agent harness. Use when starting a new project, resuming an existing one, planning features/Epics/releases, or running any multi-step agent-driven work. Validates and reconciles SPECs (SDD), audits the codebase and harness for gaps (security, architecture, performance, hygiene), proposes improvements, fragments work into GitHub Issues, delegates implementation/QA/review to specialized skills, and re-validates everything until delivery. Also use to review unapproved SPECs, reconcile open GitHub Issues with code, or run a final gap check before closing a release."
 metadata:
-  version: "2.2.1"
+  version: "2.3.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -239,6 +239,7 @@ flowchart TB
         G_R[/code-review-and-quality/]
         G_D[/drawio-architecture/]
         G_MA[/mermaid-architecture/]
+        G_GA[/gap-analysis/]
         G_M[/create-readme/]
         G_P["PR / Merge"]
     end
@@ -265,7 +266,9 @@ flowchart TB
     G_Q -->|fail| S_T
     G_R -->|approved| G_D
     G_D --> G_MA
-    G_MA --> G_M
+    G_MA --> G_GA
+    G_GA -->|"no gaps / register only"| G_M
+    G_GA -->|"gaps approved to run now"| P3_I
     G_R -->|fail| S_T
     G_M --> G_P
 ```
@@ -322,7 +325,7 @@ When Issues come from the special case "new project with only a PRD" (Phase 1), 
    - commit;
    - next Issue in the queue.
    Repeat until all Issues of the Epic are exhausted.
-2. When the Epic is complete, invoke `/qa-analyst`, then `/quality-test-implementation` to raise coverage and clear quality debt on the affected stack, then `/code-review-and-quality` for the accumulated diff, then `/drawio-architecture` (resiliently falling back to `/mermaid-architecture` if graphical rendering fails in headless environments), then `/mermaid-architecture` to update native Mermaid architecture diagrams in `docs/architecture/`, then `/create-readme` to reflect what was delivered and update `CHANGELOG.md` following SemVer.
+2. When the Epic is complete, invoke `/qa-analyst`, then `/quality-test-implementation` to raise coverage and clear quality debt on the affected stack, then `/code-review-and-quality` for the accumulated diff, then `/drawio-architecture` (resiliently falling back to `/mermaid-architecture` if graphical rendering fails in headless environments), then `/mermaid-architecture` to update native Mermaid architecture diagrams in `docs/architecture/`, then `/gap-analysis` for the final evidence-backed audit (executing or registering confirmed gaps per the user's decision), then `/create-readme` to reflect what was delivered and update `CHANGELOG.md` following SemVer.
 3. Epic exhausted → open a PR from the working branch to `develop`.
    * Green PR (CI/tests pass) → merge into `develop`.
    * Failed PR → fix with `/diagnose`, re-run verification, then merge.
@@ -339,9 +342,19 @@ After each slice and at the end of each Epic/DAG:
 4. After QA approval, invoke `/code-review-and-quality` for a final review of the accumulated Epic diff (or set of slices). Quality failures reopen Issues or create new tasks.
 5. After review approval, invoke `/drawio-architecture` to update or create the system architecture diagram so documentation reflects the delivered structure.
 6. Right after `/drawio-architecture`, invoke `/mermaid-architecture` to generate or update native Mermaid architecture diagrams, flows, and design docs in `docs/architecture/`.
-7. After the architecture diagrams are consistent, invoke `/create-readme` to update `README.md` with the delivered features, stack, and instructions.
-8. **Archive the completed SPEC SDD(s)**. Once the Epic/DAG is delivered, create `docs/specs/` if it does not exist and move the corresponding `.specs/SPEC-{YYYYMMDD}-{slug}.md` to `docs/specs/SPEC-{YYYYMMDD}-{slug}.md`. Update the frontmatter status (e.g., from `Approved` to `Completed`) and add a `Delivered` subsection with the merge commit/PR. Commit the move as part of the Epic closure.
-9. Only after that can delivery by PR occur. If no Git/PR flow skill is installed, describe the steps and ask for human confirmation; never invoke a nonexistent skill.
+7. After the architecture diagrams are consistent, invoke `/gap-analysis` for a final evidence-backed audit of the delivered state before documentation sync.
+   - If it returns no confirmed gaps → continue.
+   - If confirmed gaps exist, ask the user in **Portuguese (pt-BR)** whether to execute them now or only register the generated SPECs:
+     ```text
+     A auditoria final encontrou [N] gap(s) confirmado(s): [lista de gaps]
+
+     Deseja executar agora (entram na fila via Issues) ou apenas registrar os SPECs para revisão posterior? (executar/registrar)
+     ```
+   - `executar` → approve the generated SPECs, send them through Phase 3 (`/create-issues`), and feed the new slices back into the Phase 4 queue. When they finish, repeat Phase 5.
+   - `registrar` → keep the generated SPECs in `Draft` and continue; Phase 6 will surface them for review later.
+8. After the gap audit is resolved, invoke `/create-readme` to update `README.md` with the delivered features, stack, and instructions.
+9. **Archive the completed SPEC SDD(s)**. Once the Epic/DAG is delivered, create `docs/specs/` if it does not exist and move the corresponding `.specs/SPEC-{YYYYMMDD}-{slug}.md` to `docs/specs/SPEC-{YYYYMMDD}-{slug}.md`. Update the frontmatter status (e.g., from `Approved` to `Completed`) and add a `Delivered` subsection with the merge commit/PR. Commit the move as part of the Epic closure.
+10. Only after that can delivery by PR occur. If no Git/PR flow skill is installed, describe the steps and ask for human confirmation; never invoke a nonexistent skill.
 
 ## Phase 6 — Unapproved SPEC Review
 
@@ -443,6 +456,7 @@ At the end of the project or release, ensure `README.md` reflects the current sy
 | Phase 5 — final review | `/code-review-and-quality` | Accumulated Epic diff review | Final approval or rework |
 | Phase 5 — architecture diagram (draw.io) | `/drawio-architecture` | Update system diagram after delivery | SVG/PNG/draw.io architecture diagram |
 | Phase 5 — architecture diagram (Mermaid) | `/mermaid-architecture` | Generate native Mermaid diagrams in `docs/architecture/` | Markdown/Mermaid architecture diagrams |
+| Phase 5 — final gap audit | `/gap-analysis` | Evidence-backed gap check before documentation sync | Confirmed gaps routed to Issues/queue or registered as Draft SPECs |
 | Phase 5 — documentation | `/create-readme` | Keep `README.md` in sync with delivery | Updated README |
 | Phase 6 — unapproved SPEC | `/execute-spec` | Implement a SPEC the user just approved | Working code + tests passing |
 | Phase 7 — final verification | `orchestrator` (self) | Confirm all SPECs, Issues, and gaps are closed | Final verification report |
@@ -459,7 +473,7 @@ At the end of the project or release, ensure `README.md` reflects the current sy
 5. Is the code written but not reviewed?
    - **Yes** → `/code-review-and-quality`.
 6. Is the Epic done and tests green?
-   - **Yes** → `/qa-analyst` → `/quality-test-implementation` → `/code-review-and-quality` → `/drawio-architecture` → `/mermaid-architecture` → `/create-readme` → PR.
+   - **Yes** → `/qa-analyst` → `/quality-test-implementation` → `/code-review-and-quality` → `/drawio-architecture` → `/mermaid-architecture` → `/gap-analysis` → `/create-readme` → PR.
 
 ## References
 
@@ -478,4 +492,5 @@ At the end of the project or release, ensure `README.md` reflects the current sy
 - `/quality-test-implementation` — for raising coverage and clearing quality debt
 - `/drawio-architecture` — for updating visual draw.io architecture diagrams
 - `/mermaid-architecture` — for generating native Mermaid architecture diagrams in docs/architecture/
+- `/gap-analysis` — for the final evidence-backed gap audit before documentation sync
 - `/create-readme` — for keeping README in sync

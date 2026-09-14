@@ -14,7 +14,7 @@ Governar o ciclo de vida completo de entregas de software conduzidas por agentes
 4. **Fase 2 — Auditoria**: Identificar gaps de arquitetura e vulnerabilidades de segurança (`sonarqube-autofix`).
 5. **Fase 3 — Fragmentação no GitHub**: Transformar gaps aprovados em GitHub Issues.
 6. **Fase 4 — Loop de Implementação**: Executar Issues com `design` (UI), migrações de banco e `execute-spec`, tratando rejeições de review com refatoração corretiva.
-7. **Fase 5 — Verificação e QA**: Executar QA, code review, diagramas resilientes (`drawio` / `mermaid`), atualização de README e CHANGELOG (SemVer), e arquivamento de SPECs.
+7. **Fase 5 — Verificação e QA**: Executar QA, code review, diagramas resilientes (`drawio` / `mermaid`), auditoria final baseada em evidências com `gap-analysis` (executar gaps confirmados agora ou apenas registrar SPECs), atualização de README e CHANGELOG (SemVer), e arquivamento de SPECs.
 8. **Fase 6 — Revisão de SPECs Não Aprovados**: Escanear SPECs pendentes; SPECs aprovados entram na fila completa pelas Fases 4 e 5.
 9. **Fase 7 — Verificação Final e Checagem de Gaps**: Confirmar que todos os SPECs, Issues e gaps foram encerrados; se houver próximo item, continuar automaticamente.
 
@@ -27,4 +27,4 @@ Use esta skill ao iniciar ou retomar um projeto, planejar um Epic, ou coordenar 
 - **Anterior**: `write-specs` produz SPECs aprovados.
 - **Paralela**: `create-issues` transforma SPECs em Issues.
 - **Execução**: `execute-spec` implementa cada fatia; `diagnose` trata regressões; `code-review-and-quality` revisa diffs.
-- **Posterior**: `qa-analyst` realiza a revisão obrigatória pré-PR; `drawio-architecture` e `mermaid-architecture` atualizam os diagramas de arquitetura em `docs/architecture/`.
+- **Posterior**: `qa-analyst` realiza a revisão obrigatória pré-PR; `drawio-architecture` e `mermaid-architecture` atualizam os diagramas de arquitetura em `docs/architecture/`; `gap-analysis` executa a auditoria final baseada em evidências antes do `create-readme`.
