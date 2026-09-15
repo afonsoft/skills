@@ -3,7 +3,7 @@ name: create-agent-harness
 license: MIT
 description: Use when initializing or migrating an AI agent harness in a repository.
 metadata:
-  version: "2.1.1"
+  version: "2.2.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -390,10 +390,11 @@ over 500 lines, and the compaction ladder.
 
 ## Memory Protocol
 - **State** (short-term): `.claude/memory/memory.md` — overwritten every session, max 100 lines.
-- **History** (long-term): `.claude/memory/{YYYYMMDD}-memory.md` — append-only, single source of truth for decisions, technical debt and lessons learned.
+- **History** (long-term): `.claude/memory/{YYYYMMDD}-memory.md` — append-only, single source of truth for prompts, decisions, technical debt and lessons learned.
+- **Knowledge** (durable): `.claude/knowledge/{slug}.md` — reusable facts and patterns promoted out of memory.
 - **Protocol docs** (on-demand): `.claude/MEMORY.md` — reference only, no state or history.
 
-Read `memory.md` and the 3 most recent long-term files at session start. Write on every verified checkpoint, decision, mistake or promotion.
+Save everything, always. Read `memory.md` and the 3 most recent long-term files at session start. Log a one-line summary of every user prompt or instruction under `## Prompts`, each verified checkpoint, decision, mistake or discovery under its section, and a `## Session summary` — outcome and where work stopped — before compaction, context reset or any possible end of session. Promote reusable knowledge to `.claude/knowledge/`. Nothing survives only in context.
 
 ## Code Standards
 DO / DON'T / principles discovered in the repository.
@@ -455,6 +456,8 @@ Format, language, verbosity.
 - [.claude/WORKFLOWS.md](.claude/WORKFLOWS.md) — automation
 - [.specs/](.specs/) — SPEC SDD files
 ```
+
+> **Existing `CLAUDE.md` (migration or completion):** never overwrite — merge. Add any missing mandatory section verbatim from the template above, always including `## Memory Protocol` (with the always-save rule for prompts, history and knowledge), the Agent Loop read ritual and the always-on connection, preserving repository-specific content already present.
 
 > Never create `AGENTS.md`, `DEVIN.md`, `GEMINI.md`, `.cursorrules` or `copilot-instructions.md` as a source of truth. Only `CLAUDE.md` plus a thin `AGENTS.md` reference.
 
@@ -542,7 +545,7 @@ Reference documentation for the `.claude/memory/` protocol.
 ## Long-term memory
 - File: `.claude/memory/{YYYYMMDD}-memory.md`
 - Lifetime: permanent, **append-only**, one file per day
-- Content: decisions, lessons, technical debt, discoveries, checkpoints
+- Content: prompts, decisions, lessons, technical debt, discoveries, checkpoints
 - **Single source of truth for durable records**
 
 ## Read protocol
@@ -551,9 +554,12 @@ At session start: read `memory.md`, then the 3 most recent dated files descendin
 ## Write triggers
 | Trigger | Write to | What |
 |---|---|---|
+| User prompt or instruction received | Long-term | Append a one-line summary to `## Prompts` — never the raw prompt |
+| Session boundary (task done, before compaction or context reset) | Long-term | Append `## Session summary` — outcome and where work stopped |
 | Verified checkpoint or commit | Both | Update `memory.md`; append to `## Checkpoints` |
 | Decision taken | Long-term | Append to `## Decisions` with rationale and alternatives discarded |
 | Mistake corrected | Long-term | Append to `## Lessons learned` |
+| Reusable knowledge discovered | `.claude/knowledge/` | Promote to `{slug}.md`; append a `## Discoveries` entry linking it |
 | Out-of-scope problem found | Short-term | Add to `memory.md` blockers; do not fix now |
 | Promotion (`memory.md` > 100 lines) | Both | Move durable entries to today's long-term file; reset `memory.md` |
 
@@ -871,7 +877,9 @@ Mandatory in every harness. Two memory tiers inside `.claude/memory/` plus `.cla
 | Tier | File | Lifetime | Content |
 | --- | --- | --- | --- |
 | **Short-term** | `.claude/memory/memory.md` | Current session, **overwritten**, max 100 lines | Working state: last verified commit, test baseline, active branch, task, blockers, next action |
-| **Long-term** | `.claude/memory/{YYYYMMDD}-memory.md` | Permanent, **append-only** | Decisions, lessons, technical debt, discoveries, checkpoints |
+| **Long-term** | `.claude/memory/{YYYYMMDD}-memory.md` | Permanent, **append-only** | Prompts, decisions, lessons, technical debt, discoveries, checkpoints |
+
+**Always save everything:** a one-line summary of every user prompt or instruction is appended to today's long-term file under `## Prompts`, a `## Session summary` is written before compaction, context reset or any possible end of session, and durable knowledge discovered during work is promoted to `.claude/knowledge/{slug}.md`. The `## Memory Protocol` section of the `CLAUDE.md` template is mandatory — generate it verbatim and add it to an existing `CLAUDE.md` during migration without overwriting current content.
 
 The complete protocol — templates, read/write triggers, promotion, retention, security and migration — is in [`references/memory-protocol.md`](references/memory-protocol.md).
 

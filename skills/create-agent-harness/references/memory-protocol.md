@@ -9,7 +9,9 @@ Mandatory in every harness. There is no minimal mode without memory. Two memory 
 | Tier | File | Lifetime | Content |
 | --- | --- | --- | --- |
 | **Short-term** | `.claude/memory/memory.md` | Current session, **overwritten**, max 100 lines | Working state: last verified commit, test baseline, active branch and task, work in progress, blockers, next action |
-| **Long-term** | `.claude/memory/{YYYYMMDD}-memory.md` | Permanent, **append-only**, one file per day | Durable records: decisions with rationale, lessons learned, technical debt, discoveries, checkpoints |
+| **Long-term** | `.claude/memory/{YYYYMMDD}-memory.md` | Permanent, **append-only**, one file per day | Durable records: prompt summaries, session summaries, decisions with rationale, lessons learned, technical debt, discoveries, checkpoints |
+
+**Always save everything** — prompts, history and knowledge. Every user prompt or instruction is logged as a one-line summary in today's long-term file, every session ends with a `## Session summary` entry, and reusable knowledge discovered during work is promoted to `.claude/knowledge/{slug}.md`. Nothing may survive only in context.
 
 `memory.md` is **state**, not a log — it answers "where am I right now". The dated files are a **log**, not state — they answer "why is the code like this". Both live under `.claude/memory/` because a `memory/` directory at the repository root is forbidden by the target structure. Both are committed: shared memory is the point.
 
@@ -48,6 +50,12 @@ One file per calendar day, appended at the end. Each entry is at most 5 lines �
 ```markdown
 # {YYYY-MM-DD} — long-term memory
 
+## Prompts
+- {one-line summary of the user prompt or instruction — never the raw prompt}
+
+## Session summary
+- {what the session did, the outcome, and where work stopped — written before compaction, context reset or any possible end of session}
+
 ## Decisions
 - **{decision}** — rationale: {why}. Alternatives discarded: {what and why not}.
 
@@ -75,13 +83,15 @@ Writing is mandatory at each trigger, not "when useful".
 | Trigger | Write to | What |
 | --- | --- | --- |
 | Session start | — | Read only |
+| User prompt or instruction received | Long-term | Append a one-line summary to `## Prompts` — **every prompt, always; never the raw prompt** |
+| Session boundary — task done, before compaction or context reset | Both | Append a `## Session summary` entry; promote durable entries; reset `memory.md` |
 | Verified checkpoint or commit | Both | Update `memory.md`; append a `## Checkpoints` entry to today's file |
 | Decision taken | Long-term | Append to `## Decisions` with the rationale |
 | Mistake corrected | Long-term | Append to `## Lessons learned` |
+| Reusable knowledge discovered | `.claude/knowledge/` | Promote to `{slug}.md`; append a `## Discoveries` entry linking it |
 | Out-of-scope problem found | Short-term | Add to blockers; **do not fix it now** |
-| Before compaction or context reset | Both | Promote durable entries, then reset `memory.md` |
 
-There is no reliable "end of session" event. Treat **every checkpoint commit as a possible end of session** and write as if the context is about to be lost.
+There is no reliable "end of session" event. Treat **every checkpoint commit or completed task as a possible end of session** — write the `## Session summary` and update memory as if the context is about to be lost.
 
 ## Promotion and rotation
 
@@ -107,7 +117,7 @@ The protocol only works when the rest of the harness points at it.
 
 | Artifact | Required wiring |
 | --- | --- |
-| `CLAUDE.md` | A `## Memory Protocol` section with the read protocol and write triggers |
+| `CLAUDE.md` | A `## Memory Protocol` section with the read protocol, the write triggers and the always-save rule — mandatory on generation; added verbatim (merge, never overwrite) when completing an existing `CLAUDE.md` during migration |
 | `.claude/rules/global-rules.md` | Reading `.claude/memory/` is part of the mandatory pre-execution ritual |
 | `.claude/MEMORY.md` | On-demand reference: documents the protocol, stores no state or history |
 | Agent loop step 4 | Read `memory.md` and the 3 most recent dated files |

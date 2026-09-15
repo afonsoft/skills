@@ -7,6 +7,7 @@ Reference for `create-agent-harness` Phase 2 — canonical mappings from legacy 
 | Origin (legacy) | Destination (Claude Code) | Action | Conversion |
 | --- | --- | --- | --- |
 | `AGENTS.md` / `DEVIN.md` (root) | `CLAUDE.md` (root) | Merge, then remove origin | Rewrite in the `CLAUDE.md` format |
+| `CLAUDE.md` (root, already present) | `CLAUDE.md` (root) | Complete — merge missing mandatory sections, never overwrite | Add `## Memory Protocol` (always-save rule for prompts, history and knowledge), the Agent Loop read ritual and the always-on connection when absent |
 | `.agents/subagents/*.md` | `.claude/agents/{slug}.md` | Convert, then remove `.agents/` | `allowed-tools` becomes `tools` |
 | `.agents/skills/*` or root `skills/*` | `.claude/skills/{slug}/SKILL.md` | Move, then remove origin | Ensure `name` and `description` frontmatter |
 | `.agents/rules/*` or root `rules/*` | `.claude/rules/{slug}.md` | Convert, then remove origin | `applyTo` becomes `paths:` |
