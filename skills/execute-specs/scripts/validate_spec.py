@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Validation script for execute-spec skill.
+Validation script for execute-specs skill.
 Verifies that a SPEC SDD file exists, is in 'Approved' status,
 and contains numbered requirements before starting TDD execution.
 """
@@ -25,7 +25,7 @@ def validate_spec(spec_path: str) -> bool:
 
     status = status_match.group(1).strip() if status_match else "Unknown"
     if status.lower() != "approved":
-        print(f"❌ Error: SPEC status is '{status}'. Must be 'Approved' before running execute-spec.", file=sys.stderr)
+        print(f"❌ Error: SPEC status is '{status}'. Must be 'Approved' before running execute-specs.", file=sys.stderr)
         return False
 
     # Check for requirements

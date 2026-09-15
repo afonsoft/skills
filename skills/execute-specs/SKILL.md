@@ -1,5 +1,5 @@
 ---
-name: execute-spec
+name: execute-specs
 license: MIT
 description: "Use when the user asks to implement an approved SPEC SDD using test-driven development."
 metadata:

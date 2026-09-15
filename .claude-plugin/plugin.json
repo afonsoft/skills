@@ -1,6 +1,6 @@
 {
   "name": "spec-driven",
-  "description": "Spec Driven — orchestrator-first Agent Skills for spec-driven development. The orchestrator skill turns a PRD or idea into approved SPECs, tracked GitHub Issues, TDD-implemented slices, QA gates, and reviewed PRs. Includes gap-analysis, write-specs, execute-spec, scaffold-mvp, create-issues, qa-analyst, code-review-and-quality, sonarqube-autofix, draw.io/Mermaid architecture diagrams, and MCP integrations.",
+  "description": "Spec Driven — orchestrator-first Agent Skills for spec-driven development. The orchestrator skill turns a PRD or idea into approved SPECs, tracked GitHub Issues, TDD-implemented slices, QA gates, and reviewed PRs. Includes gap-analysis, write-specs, execute-specs, scaffold-mvp, create-issues, qa-analyst, code-review-and-quality, sonarqube-autofix, draw.io/Mermaid architecture diagrams, and MCP integrations.",
   "version": "1.0.0",
   "author": {
     "name": "afonsoft",

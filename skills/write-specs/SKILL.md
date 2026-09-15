@@ -29,7 +29,7 @@ All questions directed at the user must be in Portuguese. This skill itself and 
 
 ## When NOT to Use
 
-- Do not use for implementation — that is the job of the implementation skill (`/execute-spec`, etc.).
+- Do not use for implementation — that is the job of the implementation skill (`/execute-specs`, etc.).
 - Do not use when a SPEC already exists and is approved and the user only wants execution.
 - Do not use when the user explicitly refuses to provide requirements.
 

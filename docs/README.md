@@ -18,7 +18,7 @@ Per-skill documentation for [Spec Driven](../README.md) (`afonsoft/skills`). Eac
 | `create-readme` | [doc](en/create-readme.md) | [doc](pt-br/create-readme.md) |
 | `design` | [doc](en/design.md) | [doc](pt-br/design.md) |
 | `drawio-architecture` | [doc](en/drawio-architecture.md) | [doc](pt-br/drawio-architecture.md) |
-| `execute-spec` | [doc](en/execute-spec.md) | [doc](pt-br/execute-spec.md) |
+| `execute-specs` | [doc](en/execute-specs.md) | [doc](pt-br/execute-specs.md) |
 | `gap-analysis` | [doc](en/gap-analysis.md) | [doc](pt-br/gap-analysis.md) |
 | `mermaid-architecture` | [doc](en/mermaid-architecture.md) | [doc](pt-br/mermaid-architecture.md) |
 | `notebooklm-mcp` | [doc](en/notebooklm-mcp.md) | [doc](pt-br/notebooklm-mcp.md) |

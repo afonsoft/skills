@@ -38,7 +38,7 @@ flowchart TD
     C -->|needs spec| J[/write-specs\]
     D -->|P2 gap| K[/improve-codebase-architecture\]
     E --> L[/create-issues\]
-    F -->|per slice| M[/execute-spec\]
+    F -->|per slice| M[/execute-specs\]
     F -->|bug| N[/diagnose\]
     G --> O[/qa-analyst\]
     G --> P[/drawio-architecture\]
@@ -64,7 +64,7 @@ The skills are organized around the orchestrator's pipeline: **Harness Engineeri
 - **[`write-specs`](docs/en/write-specs.md)**: Interviews the user in Portuguese to consolidate domain language and produce an approved `.specs/SPEC-{YYYYMMDD}-{feature}.md` before implementation.
 - **[`scaffold-mvp`](skills/scaffold-mvp/SKILL.md)**: Bootstraps a new .NET/Blazor/Angular repository after domain/spec alignment. Installs the agent harness, proposes a productive stack, and generates the initial project skeleton, AD-0001, and stubs.
 - **[`create-issues`](skills/create-issues/SKILL.md)**: Turns approved gaps, roadmap, and specs into GitHub Issues with vertical slices and dependency links. Uses the `references/spec-sdd-template.md` structure when creating Issues from SPEC SDDs.
-- **[`execute-spec`](docs/en/execute-spec.md)**: Test-driven development using the approved SPEC SDD as the source of truth. Red-green-refactor one vertical slice at a time.
+- **[`execute-specs`](docs/en/execute-specs.md)**: Test-driven development using the approved SPEC SDD as the source of truth. Red-green-refactor one vertical slice at a time.
 - **[`qa-analyst`](skills/qa-analyst/SKILL.md)**: Full QA cycle — requirements analysis, test planning, test cases, execution, bug reports, and process improvement.
 - **[`diagnose`](skills/diagnose/SKILL.md)**: Disciplined diagnosis and re-validation loop for hard bugs and performance regressions.
 - **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Finds architectural deepening opportunities by reading `.claude/CONTEXT.md`, `.claude/MEMORY.md`, and `docs/architecture/`, and produces an HTML report.
@@ -114,7 +114,7 @@ Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen 
 | `design` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/design) |
 | `diagnose` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/diagnose) |
 | `drawio-architecture` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/drawio-architecture) |
-| `execute-spec` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/execute-spec) |
+| `execute-specs` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/execute-specs) |
 | `gap-analysis` | ⚪ pending | — | ⚪ pending | [View](https://skills.sh/afonsoft/skills/gap-analysis) |
 | `improve-codebase-architecture` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/improve-codebase-architecture) |
 | `mermaid-architecture` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/mermaid-architecture) |
@@ -163,7 +163,7 @@ Generated slash commands (Claude Code, OpenCode, Devin):
 |---------|--------|
 | `/spec-driven` | `orchestrator` skill — starts the full spec → issues → slices → QA → PR pipeline |
 | `/spec-driven:orchestrator` | same as `/spec-driven` |
-| `/spec-driven:<skill>` | the named skill (e.g. `/spec-driven:write-specs`, `/spec-driven:execute-spec`) |
+| `/spec-driven:<skill>` | the named skill (e.g. `/spec-driven:write-specs`, `/spec-driven:execute-specs`) |
 
 Reinstalling removes legacy `/architecture:<skill>` shims automatically.
 
