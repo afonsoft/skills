@@ -3,7 +3,7 @@ name: orchestrator
 license: MIT
 description: "Central entry point of the afonsoft agent harness. Use when starting a new project, resuming an existing one, planning features/Epics/releases, or running any multi-step agent-driven work. Validates and reconciles SPECs (SDD), audits the codebase and harness for gaps (security, architecture, performance, hygiene), proposes improvements, fragments work into GitHub Issues, delegates implementation/QA/review to specialized skills, and re-validates everything until delivery. Also use to review unapproved SPECs, reconcile open GitHub Issues with code, or run a final gap check before closing a release."
 metadata:
-  version: "2.3.1"
+  version: "2.4.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -79,7 +79,8 @@ At the start of every session:
    - Create the directory if needed: `mkdir -p .claude/memory`.
    - Copy the `orchestrator` skill reference template: `cp <skill-path>/orchestrator/references/orchestrator_stats.md .claude/memory/orchestrator_stats.md`.
 4. Read the existing state (new or legacy) as the current base.
-5. After every phase, write the updated state back to `.claude/memory/orchestrator_stats.md`.
+5. Read `.claude/memory/orchestrator_sessions.md` (if it exists) to recover context from previous sessions — decisions, pending work, and lessons.
+6. After every phase, write the updated state back to `.claude/memory/orchestrator_stats.md`.
 
 See [references/orchestrator_stats.md](references/orchestrator_stats.md) for the reference template and [references/ESTADO_ORQUESTRATOR.md](references/ESTADO_ORQUESTRATOR.md) for the legacy fallback.
 
@@ -277,6 +278,18 @@ flowchart TB
     G_GA -->|"gaps approved to run now"| P3_I
     G_R -->|fail| S_T
     G_M --> G_P
+
+    subgraph Remember["Phase 8 - Remember"]
+        R_S["Build session summary"]
+        R_W["Write orchestrator_sessions.md"]
+        R_N["Request native memory save"]
+        R_U["Update orchestrator_stats.md"]
+    end
+
+    G_P --> R_S
+    R_S --> R_W
+    R_W --> R_N
+    R_N --> R_U
 ```
 
 The Orchestrator runs sliced Issues in a continuous loop until all SPEC implementations are complete. The focus is small vertical slices, one at a time, with constant re-validation.
@@ -442,6 +455,69 @@ If any gap is found, create a new GitHub Issue (or a SPEC, if the gap is large) 
 
 At the end of the project or release, ensure `README.md` reflects the current system state.
 
+## Phase 8 — Remember
+
+At the **end of every Orchestrator session** — whether the flow completed, was interrupted, or the user is ending the conversation — persist a summary of what was done so the next session (or agent) can resume without loss.
+
+1. **Build the session summary** containing:
+   - Date and session scope (which Epic/SPEC/Issue was worked on).
+   - Decisions made (architectural, technical, scope changes, trade-offs).
+   - What was delivered (commits, PRs, Issues opened/closed).
+   - What remains (next slice, pending gaps, blockers).
+   - Lessons learned or patterns discovered during the session.
+
+2. **Write to the project memory file** `.claude/memory/orchestrator_sessions.md`:
+   - If the file does not exist, create it with `mkdir -p .claude/memory`.
+   - Append the summary as a new dated entry (most recent first), using the format:
+
+   ```markdown
+   ## Session — YYYY-MM-DD HH:MM
+
+   **Scope**: [Epic/SPEC/Issue worked on]
+   **Decisions**: [key decisions, trade-offs, architectural choices]
+   **Delivered**: [commits, PRs, Issues closed, slices completed]
+   **Remaining**: [next slice, pending gaps, blockers]
+   **Lessons**: [patterns, gotchas, reusable insights]
+   ```
+
+3. **Request the CLI/LLM to save to its native memory**:
+   - For **Claude Code**: ask the agent to persist the summary in `.claude/memory/` using the built-in memory mechanism (`/memory` or writing directly to `.claude/MEMORY.md`).
+   - For **Devin**: write to `.devin/memory/` or use the knowledge management API.
+   - For **OpenCode**: write to `.opencode/memory/` or `~/.config/opencode/memory/`.
+   - For **Cursor**: write to `.cursor/memory/`.
+   - For **Gemini CLI / Antigravity**: write to `.gemini/memory/`.
+   - For any other CLI/IDE: write to `.agents/memory/`.
+
+   Present the summary to the user in **Portuguese (pt-BR)**:
+
+   ```text
+   Resumo da sessão salvo em .claude/memory/orchestrator_sessions.md.
+
+   Decisões registradas:
+   - [decision 1]
+   - [decision 2]
+
+   Próximos passos:
+   - [next step 1]
+   - [next step 2]
+
+   Deseja que eu salve também na memória nativa do agente? (sim/não)
+   ```
+
+4. **If the user answers `sim`**: persist the summary in the CLI/IDE's native memory location (as listed above). Confirm:
+   ```text
+   Memória salva. A próxima sessão terá contexto completo para continuar.
+   ```
+
+5. **If the user answers `não`**: the project memory file is sufficient. Confirm:
+   ```text
+   Resumo salvo apenas em .claude/memory/orchestrator_sessions.md.
+   ```
+
+6. **Update `orchestrator_stats.md`**: mark the session end timestamp and last completed phase in the state file.
+
+This phase ensures no knowledge is lost between sessions. The next Orchestrator invocation reads `orchestrator_sessions.md` during Phase 0 to recover context.
+
 ## Skill Call Reference
 
 | Phase / Situation | Skill | Why it is called | What it returns / does |
@@ -466,6 +542,7 @@ At the end of the project or release, ensure `README.md` reflects the current sy
 | Phase 5 — documentation | `/create-readme` | Keep `README.md` in sync with delivery | Updated README |
 | Phase 6 — unapproved SPEC | `/execute-specs` | Implement a SPEC the user just approved | Working code + tests passing |
 | Phase 7 — final verification | `orchestrator` (self) | Confirm all SPECs, Issues, and gaps are closed | Final verification report |
+| Phase 8 — session memory | `orchestrator` (self) | Persist session decisions, deliveries, and next steps | Summary in `orchestrator_sessions.md` + native memory |
 ### Decision Tree
 
 1. Does the SPEC exist and is `Approved`?
@@ -480,6 +557,8 @@ At the end of the project or release, ensure `README.md` reflects the current sy
    - **Yes** → `/code-review-and-quality`.
 6. Is the Epic done and tests green?
    - **Yes** → `/qa-analyst` → `/quality-test-implementation` → `/code-review-and-quality` → `/drawio-architecture` → `/mermaid-architecture` → `/gap-analysis` → `/create-readme` → PR.
+7. Is the session ending (completed, interrupted, or user leaving)?
+   - **Yes** → Phase 8 (Remember) → persist summary + request native memory save.
 
 ## References
 
