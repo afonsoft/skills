@@ -2,7 +2,7 @@ name: Publish to ClawHub
 
 on:
   push:
-    branches: [main]
+    tags: ['v*']
   workflow_dispatch:
     inputs:
       dry_run:

@@ -214,7 +214,7 @@ npx -y @lobehub/market-cli skill publish --dir skills/<nome-da-skill> --identifi
 
 **Publicação automática via GitHub Actions:**
 
-Um workflow (`.github/workflows/lobehub-publish.yml`) publica todas as skills a cada push em `main`. Para habilitar, adicione dois secrets no repositório:
+Um workflow (`.github/workflows/lobehub-publish.yml`) publica todas as skills quando uma tag `v*` é criada ou quando executado manualmente (`workflow_dispatch`). Para habilitar, adicione dois secrets no repositório:
 
 1. **`LOBEHUB_M2M_CREDENTIALS`** — conteúdo de `~/.lobehub-market/credentials.json` (registro do dispositivo)
 2. **`LOBEHUB_USER_CREDENTIALS`** — conteúdo de `~/.lobehub-market/user-credentials.json` (tokens OAuth)
