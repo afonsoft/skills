@@ -99,9 +99,9 @@ The skills are organized around the orchestrator's pipeline: **Harness Engineeri
 
 Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen Agent Trust Hub**, **Socket**, **Snyk**). Click **View** to see the full report for a skill.
 
-> **Updated:** 2026-09-11
+> **Updated:** 2026-09-17
 >
-> **Mitigations applied** (PR #11): `notebooklm-mcp`, `orchestrator`, and `wordpress-mcp` were hardened with explicit-approval gates, pinned installs, credential isolation, untrusted-content handling, and audit logging. The table reflects the last external scan; a fresh scan by `skills.sh` is required to update the risk ratings after these changes.
+> **Mitigations applied** (PR #11): `notebooklm-mcp`, `orchestrator`, and `wordpress-mcp` were hardened with explicit-approval gates, pinned installs, credential isolation, untrusted-content handling, and audit logging. The table below reflects the rescan after those changes.
 
 | Skill | Gen Agent Trust Hub | Socket alerts | Snyk | Details |
 |-------|---------------------|---------------|------|---------|
@@ -113,15 +113,15 @@ Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen 
 | `create-readme` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/create-readme) |
 | `design` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/design) |
 | `diagnose` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/diagnose) |
-| `drawio-architecture` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/drawio-architecture) |
+| `drawio-architecture` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/drawio-architecture) |
 | `execute-specs` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/execute-specs) |
-| `gap-analysis` | ⚪ pending | — | ⚪ pending | [View](https://skills.sh/afonsoft/skills/gap-analysis) |
+| `gap-analysis` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/gap-analysis) |
 | `improve-codebase-architecture` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/improve-codebase-architecture) |
 | `mermaid-architecture` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/mermaid-architecture) |
-| `notebooklm-mcp` | ✅ safe | 1 | 🟢 low | [View](https://skills.sh/afonsoft/skills/notebooklm-mcp) |
+| `notebooklm-mcp` | ✅ safe | 1 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/notebooklm-mcp) |
 | `observability-and-instrumentation` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/observability-and-instrumentation) |
 | `obsidian` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/obsidian) |
-| `orchestrator` | ✅ safe | 1 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/orchestrator) |
+| `orchestrator` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/orchestrator) |
 | `qa-analyst` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/qa-analyst) |
 | `quality-test-implementation` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/quality-test-implementation) |
 | `scaffold-mvp` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/scaffold-mvp) |

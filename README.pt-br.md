@@ -94,7 +94,7 @@ As skills estão organizadas em torno do pipeline do orchestrator: **Engenharia 
 
 Resultados mais recentes da auditoria de terceiros do [skills.sh](https://skills.sh) (**Gen Agent Trust Hub**, **Socket**, **Snyk**). Clique em **Ver** para ver o relatório completo de cada skill.
 
-> **Atualizado em:** 2026-09-10
+> **Atualizado em:** 2026-09-17
 
 | Skill | Gen Agent Trust Hub | Socket alerts | Snyk | Detalhes |
 |-------|---------------------|---------------|------|----------|
@@ -106,15 +106,15 @@ Resultados mais recentes da auditoria de terceiros do [skills.sh](https://skills
 | `create-readme` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/create-readme) |
 | `design` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/design) |
 | `diagnose` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/diagnose) |
-| `drawio-architecture` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/drawio-architecture) |
+| `drawio-architecture` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/drawio-architecture) |
 | `execute-specs` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/execute-specs) |
-| `gap-analysis` | ⚪ pending | — | ⚪ pending | [Ver](https://skills.sh/afonsoft/skills/gap-analysis) |
+| `gap-analysis` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/gap-analysis) |
 | `improve-codebase-architecture` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/improve-codebase-architecture) |
 | `mermaid-architecture` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/mermaid-architecture) |
-| `notebooklm-mcp` | ✅ safe | 1 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/notebooklm-mcp) |
+| `notebooklm-mcp` | ✅ safe | 1 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/notebooklm-mcp) |
 | `observability-and-instrumentation` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/observability-and-instrumentation) |
 | `obsidian` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/obsidian) |
-| `orchestrator` | ✅ safe | 1 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/orchestrator) |
+| `orchestrator` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/orchestrator) |
 | `qa-analyst` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/qa-analyst) |
 | `quality-test-implementation` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/quality-test-implementation) |
 | `scaffold-mvp` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/scaffold-mvp) |
