@@ -220,7 +220,7 @@ npx -y @lobehub/market-cli skill publish --dir skills/<skill-name> --identifier 
 
 **Automatic publishing via GitHub Actions:**
 
-A workflow (`.github/workflows/lobehub-publish.yml`) publishes all skills when a `v*` tag is pushed or when triggered manually (`workflow_dispatch`). To enable it, add two repository secrets:
+A workflow (`.github/workflows/lobehub-publish.yml`) publishes all skills when a `v*` tag is pushed, a release is published, or when triggered manually (`workflow_dispatch`). To enable it, add two repository secrets:
 
 1. **`LOBEHUB_M2M_CREDENTIALS`** — contents of `~/.lobehub-market/credentials.json` (device registration)
 2. **`LOBEHUB_USER_CREDENTIALS`** — contents of `~/.lobehub-market/user-credentials.json` (OAuth tokens)
@@ -264,7 +264,7 @@ The `clawhub` CLI uses `clawhub sync` to compare local fingerprints against the 
 
 **Automatic publishing via GitHub Actions:**
 
-A workflow (`.github/workflows/clawhub-publish.yml`) publishes all skills when a `v*` tag is pushed or when triggered manually (`workflow_dispatch`). To enable it, add the repository secret:
+A workflow (`.github/workflows/clawhub-publish.yml`) publishes all skills when a `v*` tag is pushed, a release is published, or when triggered manually (`workflow_dispatch`). To enable it, add the repository secret:
 
 1. **`CLAWHUB_TOKEN`** — your ClawHub publisher token (`clawhub token create` or from https://clawhub.ai/settings/tokens)
 

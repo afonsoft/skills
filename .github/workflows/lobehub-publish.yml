@@ -3,6 +3,8 @@ name: Publish to LobeHub
 on:
   push:
     tags: ['v*']
+  release:
+    types: [published]
   workflow_dispatch:
 
 concurrency:
