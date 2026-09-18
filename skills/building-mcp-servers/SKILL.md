@@ -3,7 +3,7 @@ name: building-mcp-servers
 license: MIT
 description: Use when building a new MCP server in TypeScript, Python, or C# that exposes tools to LLMs.
 metadata:
-  version: "1.3.1"
+  version: "1.4.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -87,7 +87,9 @@ Key pages to review:
 
 **For C# (.NET):**
 - **C# SDK**: Use WebFetch to load `https://raw.githubusercontent.com/modelcontextprotocol/csharp-sdk/main/README.md`
+- **C# SDK v2 docs**: Conceptual docs at `https://csharp.sdk.modelcontextprotocol.io/v2/concepts/index.html`
 - [🔷 .NET Guide](./references/dotnet_mcp_server.md) - .NET patterns and examples
+- [🆕 .NET SDK 2.0](./references/dotnet_mcp_v2.md) - v2 features: stateless default, MRTR, `[McpHeader]`, Tasks/Apps
 
 #### 1.4 Plan Your Implementation
 
@@ -269,6 +271,14 @@ Load these resources as needed during development:
   - Complete working examples
   - Quality checklist
 
+- [🆕 .NET SDK 2.0 Guide](./references/dotnet_mcp_v2.md) - MCP C# SDK 2.0 / spec `2026-07-28` guide with:
+  - Stateless-by-default HTTP and `SessionMode` (Stateless / Stateful / hybrid)
+  - Multi Round-Trip Requests (MRTR) via `InputRequiredException`
+  - Standardized HTTP headers and `[McpHeader]` for LB/gateway routing
+  - Tasks and MCP Apps extension packages
+  - Identity propagation (`ClaimsPrincipal`), `[Authorize]` filters, HTTP security hardening
+  - Deprecation diagnostics (MCP9004/9005/9006) and v1→v2 migration table
+
 - [🚀 Quick Start](./references/quick-start.md) - Inline TypeScript, Python, and C# basic server implementations for fast reference
 
 ### Transport & Authentication (Load During Phase 2)
@@ -303,9 +313,9 @@ Load these resources as needed during development:
 | ---------- | --------- | --------- | ----------- |
 | TypeScript | `@modelcontextprotocol/sdk` | 1.25.1 | `StreamableHTTPServerTransport` |
 | Python | `mcp` | 1.25.0 | `transport="streamable-http"` |
-| C# | `ModelContextProtocol` / `ModelContextProtocol.AspNetCore` | 1.3.0 (stable) | `.WithStdioServerTransport()` / `.WithHttpTransport()` |
+| C# | `ModelContextProtocol` / `ModelContextProtocol.AspNetCore` | 2.0.0 (stable) | `.WithStdioServerTransport()` / `.WithHttpTransport()` |
 
-> **C# package selection:** use **`ModelContextProtocol`** for stdio/local servers (hosting + DI, lighter deps), **`ModelContextProtocol.AspNetCore`** for HTTP/remote servers, and **`ModelContextProtocol.Core`** when you only need a client. As of 2026 the SDK is **GA (1.x stable)** — no `--prerelease` flag is required.
+> **C# package selection:** use **`ModelContextProtocol`** for stdio/local servers (hosting + DI, lighter deps), **`ModelContextProtocol.AspNetCore`** for HTTP/remote servers, and **`ModelContextProtocol.Core`** when you only need a client. SDK **2.0** implements spec `2026-07-28`: HTTP is **stateless by default** (`SessionMode`), interactive tools use **MRTR** (`InputRequiredException`), and Tasks/MCP Apps ship as opt-in `ModelContextProtocol.Extensions.*` packages — see [🆕 .NET SDK 2.0](./references/dotnet_mcp_v2.md).
 
 ### Transport Status
 
@@ -321,11 +331,11 @@ Load these resources as needed during development:
 
 - **TypeScript**: <https://github.com/modelcontextprotocol/typescript-sdk>
 - **Python**: <https://github.com/modelcontextprotocol/python-sdk>
-- **C#**: <https://github.com/modelcontextprotocol/csharp-sdk>
+- **C#**: <https://github.com/modelcontextprotocol/csharp-sdk> (docs: <https://csharp.sdk.modelcontextprotocol.io/>)
 
 ### Documentation
 
-- **Specification**: <https://modelcontextprotocol.io/specification/2025-11-25>
+- **Specification**: <https://modelcontextprotocol.io/specification/2025-11-25> (latest revision: `2026-07-28` — see changelog)
 - **Transports**: <https://modelcontextprotocol.io/specification/2025-11-25/basic/transports>
 - **Authorization**: <https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization>
 

@@ -242,11 +242,12 @@ await builder.Build().RunAsync();
 
 ### Stateless HTTP (Serverless)
 
-For serverless/horizontally-scaled deployments that don't need server-to-client requests (sampling, elicitation), enable stateless mode:
+In SDK v2, HTTP servers run **stateless by default** — set `SessionMode` explicitly to pin behavior. Only opt into sessions for unsolicited notifications, resource subscriptions, per-client isolation, or server-to-client requests to pre-MRTR clients:
 
 ```csharp
 builder.Services
     .AddMcpServer()
-    .WithHttpTransport(options => options.Stateless = true)
+    .WithHttpTransport(options =>
+        options.SessionMode = HttpServerSessionMode.Stateless) // v2 default
     .WithToolsFromAssembly();
 ```

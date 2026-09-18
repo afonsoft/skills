@@ -4,6 +4,8 @@
 
 This document provides .NET/C#-specific best practices and examples for implementing MCP servers using the ModelContextProtocol.AspNetCore SDK. It covers project structure, server setup, tool registration patterns, input validation, error handling, and complete working examples.
 
+> **SDK 2.0:** The MCP C# SDK is at **v2.0** (implements spec revision `2026-07-28`). HTTP servers are **stateless by default**, interactive tools use **MRTR** (`InputRequiredException`), and Tasks/MCP Apps ship as opt-in extension packages. See [🆕 MCP C# SDK 2.0 — What's New](./dotnet_mcp_v2.md) for the full v2 guide; the patterns below remain valid on 2.0.
+
 ---
 
 ## Quick Reference
@@ -57,13 +59,17 @@ public static class MyTools
 
 ## MCP .NET SDK
 
-The official MCP C# SDK is **GA (stable, 1.x)** as of 2026 and ships as **three NuGet packages**. Pick the smallest one that covers your scenario:
+The official MCP C# SDK is **stable** and at **v2.0** (implements spec revision `2026-07-28`). It ships as **three base NuGet packages** plus opt-in extension packages. Pick the smallest one that covers your scenario:
 
 | Package | Use it for | References |
 | --- | --- | --- |
 | **`ModelContextProtocol.Core`** | Client-only apps or low-level server APIs with minimum dependencies | — |
 | **`ModelContextProtocol`** | stdio / local servers — adds hosting + DI extensions | `ModelContextProtocol.Core` |
 | **`ModelContextProtocol.AspNetCore`** | HTTP / remote servers (Streamable HTTP) | `ModelContextProtocol` |
+| **`ModelContextProtocol.Extensions.Tasks`** | Long-running tools with client polling (opt-in) | `ModelContextProtocol.Core` |
+| **`ModelContextProtocol.Extensions.Apps`** | Interactive server-delivered UI (experimental, `MCPEXP003`) | `ModelContextProtocol.Core` |
+
+Packages target **net8.0, net9.0, net10.0, and netstandard2.0** (the last for .NET Framework).
 
 ### Choosing a package + transport
 
@@ -87,9 +93,12 @@ All server packages provide:
 **IMPORTANT - Use Modern APIs Only:**
 
 - **DO use**: `[McpServerTool]` attribute, `WithToolsFromAssembly()`, `WithHttpTransport()`
-- **DO use** the stable `1.x` packages — the `--prerelease` flag is no longer required
-- **DO NOT use**: Manual handler registration, deprecated SSE-only transports, or `0.x` preview packages
+- **DO use** the stable `2.x` packages — the `--prerelease` flag is no longer required
+- **DO use** `SessionMode` (usually `HttpServerSessionMode.Stateless`, the v2 default) instead of relying on sessions
+- **DO use** `InputRequiredException` (MRTR) for elicitation/sampling/roots on new servers — `ElicitAsync`/`SampleAsync`/`RequestRootsAsync` throw in stateless mode
+- **DO NOT use**: Manual handler registration, deprecated SSE-only transports (`EnableLegacySse`, `MCP9004`), stateful-only options (`MCP9006`), or `0.x` preview packages
 - The attribute-based approach provides automatic schema generation and DI integration
+- See [🆕 MCP C# SDK 2.0](./dotnet_mcp_v2.md) for `SessionMode`, MRTR, `[McpHeader]`, Tasks/Apps, and the v1→v2 migration table
 
 ### Fastest start: project template
 
@@ -721,7 +730,7 @@ For an **HTTP / remote** server, use the `Microsoft.NET.Sdk.Web` SDK and the `Mo
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="1.3.0" />
+    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
   </ItemGroup>
 
@@ -742,7 +751,7 @@ For a **stdio / local** server, use the plain `Microsoft.NET.Sdk` and the lighte
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ModelContextProtocol" Version="1.3.0" />
+    <PackageReference Include="ModelContextProtocol" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
   </ItemGroup>
 
@@ -944,12 +953,18 @@ app.MapMcp();  // Maps the Streamable HTTP MCP endpoint at the root path
 app.Run();
 ```
 
-For serverless / horizontally-scaled deployments that don't need server-to-client requests (sampling, elicitation), enable **stateless** mode:
+In SDK v2, HTTP servers run **stateless by default** (`SessionMode = HttpServerSessionMode.Stateless`), matching the `2026-07-28` wire format — ideal for serverless and horizontally-scaled deployments. Set it explicitly and only opt into sessions when you need unsolicited notifications, resource subscriptions, per-client isolation, or server-to-client requests to pre-MRTR clients:
 
 ```csharp
 builder.Services
     .AddMcpServer()
-    .WithHttpTransport(options => options.Stateless = true)
+    .WithHttpTransport(options =>
+    {
+        // Stateless is the v2 default; set explicitly to pin behavior.
+        options.SessionMode = HttpServerSessionMode.Stateless;
+        // Or: HttpServerSessionMode.Stateful (sessions) /
+        //     HttpServerSessionMode.StatefulForInitializeClients (hybrid migration)
+    })
     .WithToolsFromAssembly();
 ```
 
@@ -1123,6 +1138,16 @@ Before finalizing your .NET/C# MCP server implementation, ensure:
 - [ ] Prompts registered for common LLM tasks
 - [ ] Appropriate transport configured (stdio or streamable HTTP)
 - [ ] Type-safe with SDK interfaces
+
+### SDK v2 (see dotnet_mcp_v2.md)
+
+- [ ] `SessionMode` set explicitly (usually `HttpServerSessionMode.Stateless`)
+- [ ] Interactive tools use `InputRequiredException` (MRTR) instead of `ElicitAsync`/`SampleAsync`/`RequestRootsAsync`
+- [ ] `[McpHeader]` on parameters that load balancers/gateways must route on
+- [ ] Long-running tools evaluated for `ModelContextProtocol.Extensions.Tasks` (`WithTasks` + durable `IMcpTaskStore` in prod)
+- [ ] `ClaimsPrincipal` parameter injection / `AddAuthorizationFilters()` for authenticated servers
+- [ ] `AllowedHosts` locked down (no `"*"` on local servers); CORS minimal or absent
+- [ ] Build clean of `MCP9004`/`MCP9005`/`MCP9006` warnings
 
 ### Project Setup
 
