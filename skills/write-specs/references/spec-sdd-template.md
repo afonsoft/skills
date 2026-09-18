@@ -16,7 +16,7 @@ Reference for `create-agent-harness` Phase 3 / `plan` sub-agent.
 | Stack | `[Angular | .NET | Java | Terraform | Python | OpenAPI | Docs]` |
 | Repository | `[repo path]` |
 | Branch | `feature/{AgentLLM}-{YYYYMMDD}-{short-description}` |
-| Ticket | `[TICKET-123]` |
+| Ticket | `[TICKET-123 or #123 — GitHub Issue number/link once created via create-issues]` |
 | Status | `[Draft | Approved | In implementation | Done]` |
 
 ## 1. User Story
