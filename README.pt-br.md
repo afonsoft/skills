@@ -148,16 +148,30 @@ Copia as skills para o diretório de skills de cada IDE e gera os slash commands
 ./install.sh --opencode   # apenas OpenCode
 ./install.sh --devin      # apenas Devin
 ./install.sh --cursor     # apenas Cursor
+./install.sh --codex      # apenas OpenAI Codex CLI
+./install.sh --agy        # apenas Google Antigravity CLI
+./install.sh --aider      # apenas Aider
+./install.sh --cline      # apenas Cline
+./install.sh --continue   # apenas Continue
+./install.sh --grok       # apenas Grok CLI
+./install.sh --kimi       # apenas Kimi Code CLI
+./install.sh --kiro       # apenas Kiro CLI
+./install.sh --qwen       # apenas Qwen Code
 ./install.sh --dry-run    # preview sem alterar nada
 ```
 
-Slash commands gerados (Claude Code, OpenCode, Devin):
+Os slash commands seguem a convenção de cada CLI — alguns clientes não aceitam `:` no nome do comando:
 
-| Comando | Destino |
-|---------|---------|
-| `/spec-driven` | skill `orchestrator` — inicia o pipeline completo spec → issues → fatias → QA → PR |
-| `/spec-driven:orchestrator` | o mesmo que `/spec-driven` |
-| `/spec-driven:<skill>` | a skill indicada (ex.: `/spec-driven:write-specs`, `/spec-driven:execute-specs`) |
+| CLI | Invocação | Mecanismo |
+|-----|-----------|-----------|
+| Claude Code, OpenCode, Devin | `/spec-driven` e `/spec-driven:<skill>` | shims `commands/spec-driven:<skill>.md` |
+| Qwen Code | `/spec-driven` e `/spec-driven:<skill>` | `commands/spec-driven/<skill>.md` (namespace via subdiretório) |
+| Codex CLI | `/prompts:spec-driven-<skill>` | `prompts/spec-driven-<skill>.md` (custom prompts estão deprecados — prefira `$<skill>`/`/skills`) |
+| Cline | `/spec-driven-<skill>` | workflows em `~/.cline/data/workflows/` |
+| Continue | `/spec-driven-<skill>` | `~/.continue/prompts/` com `invokable: true` |
+| Grok CLI | `/spec-driven-<skill>` | `~/.agents/commands/` (skills também aparecem como `/<skill>`) |
+| agy, Kimi, Kiro | `/<skill>` (Kimi: `/skill:<skill>`) | skills são slash commands nativos — sem shims |
+| Aider | `/read ~/.aider/skills/<skill>/SKILL.md` | sem comandos por arquivo; um índice é gerado em `~/.aider/spec-driven-skills.md` |
 
 Na reinstalação, os shims legados `/architecture:<skill>` são removidos automaticamente.
 
@@ -231,7 +245,7 @@ Após publicar, as skills aparecem em `market.lobehub.com/s/skills/afonsoft-skil
 
 ## 📖 Como usar
 
-1. **Instale** a coleção usando um dos métodos acima. Rodar `./install.sh` também gera os slash commands `/spec-driven:<skill>` para Claude Code, OpenCode e Devin.
+1. **Instale** a coleção usando um dos métodos acima. Rodar `./install.sh` também gera os slash commands `/spec-driven:<skill>` (ou `/spec-driven-<skill>` onde `:` não é suportado) para os CLIs suportados — veja a tabela acima.
 2. **Comece pelo orchestrator** — `/spec-driven` (o mesmo que `/spec-driven:orchestrator`) ou *"use a skill orchestrator"* — e deixe ele conduzir o pipeline spec → issues → fatias → QA → PR.
 3. **Invoque** uma skill individual diretamente quando souber exatamente o que precisa (ex.: `/spec-driven:write-specs`, ou *"Use a skill create-agent-harness para configurar este repo"*). O agente carrega o `SKILL.md` e segue o workflow estruturado.
 
