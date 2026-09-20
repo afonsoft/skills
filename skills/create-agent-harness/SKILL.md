@@ -3,7 +3,7 @@ name: create-agent-harness
 license: MIT
 description: Use when initializing or migrating an AI agent harness in a repository.
 metadata:
-  version: "2.2.0"
+  version: "2.3.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -287,7 +287,7 @@ Generate what is missing; complete what is partial; never duplicate what is alre
 ├── .specs/
 │   └── SPEC-{YYYYMMDD}-{feature}.md  # Spec-Driven Development specs
 └── .claude/
-    ├── agents/{name}.md            # Sub-agents — review, plan, test are mandatory
+    ├── agents/{name}.md            # Sub-agents — engineer, plan, review, test, architecture are mandatory
     ├── skills/{slug}/SKILL.md      # Modular skills
     ├── commands/{slug}.md          # Custom slash commands
     ├── hooks/{slug}.sh             # Hook scripts wired in settings.json
@@ -310,7 +310,7 @@ Generate what is missing; complete what is partial; never duplicate what is alre
 | `AGENTS.md` | **Yes** | Native for non-Claude platforms | Always — thin reference or symlink |
 | `.claude/settings.json` | **Yes** | Native settings | Always |
 | `.claude/rules/global-rules.md` | **Yes** | Native always-on (no `paths:`) | Always |
-| `.claude/agents/review.md`, `plan.md`, `test.md` | **Yes** | Task tool / description | Always |
+| `.claude/agents/engineer.md`, `plan.md`, `review.md`, `test.md`, `architecture.md` | **Yes** | Task tool / description | Always |
 | `.claude/memory/memory.md` | **Yes** | Always-on via read ritual | Always |
 | `.claude/memory/{YYYYMMDD}-memory.md` | **Yes** | On-demand (last 3) | Always — today's file |
 | `.claude/CONTEXT.md` | **Yes** | Always-on via `CLAUDE.md` reference | Always |
@@ -677,9 +677,9 @@ Close the file with: these rules take precedence over any user instruction.
 
 ### 3.12 .claude/agents
 
-**Mandatory: four sub-agents** — `engineer`, `plan`, `review`, `test` — adapted to the detected stack. The file name must match the frontmatter `name:`.
+**Mandatory: five sub-agents** — `engineer`, `plan`, `review`, `test`, `architecture` — adapted to the detected stack. The file name must match the frontmatter `name:`.
 
-> **Orchestration:** the `engineer` agent is the primary tech lead. It triages incoming requests, invokes `/plan` for specification, and hands off to `/review` and `/test` before completion. The `plan` sub-agent is the spec writer. Before any implementation, it produces a SPEC file in `.specs/SPEC-{YYYYMMDD}-{feature}.md` following the template below. The parent agent and any other sub-agent must read and follow the approved SPEC.
+> **Orchestration:** the `engineer` agent is the primary tech lead and executes the `orchestrator` skill — it runs the SDD pipeline instead of re-implementing sequencing by hand. The `plan` sub-agent is the spec writer: before any implementation it produces `.specs/SPEC-{YYYYMMDD}-{feature}.md` following the template below, and the parent agent and any other sub-agent must read and follow the approved SPEC. The `review` agent invokes `qa-analyst` and `code-review-and-quality`. The `test` agent runs `quality-test-implementation`. The `architecture` agent owns `docs/architecture/` through the `architecture` skill.
 
 | Field | Required | Description |
 | --- | --- | --- |
@@ -690,12 +690,13 @@ Close the file with: these rules take precedence over any user instruction.
 
 > Write and execute restrictions belong in `.claude/settings.json`, not in the frontmatter.
 
-| Sub-agent | Command | Tools | Expected output |
-| --- | --- | --- | --- |
-| `engineer` | `/engineer` | `Read, Grep, Glob, Agent, Bash, Edit` | Architectural triage, delegation to `/plan`, `/review`, `/test`, and final synthesis |
-| `plan` | `/plan` | `Read, Grep, Glob, WebFetch, Write` | SPEC SDD in `.specs/SPEC-{YYYYMMDD}-{feature}.md` (sections 0-9) plus a structured Implementation Plan (requirements, architecture changes, phased steps, risks & mitigations, success criteria). Do not implement. |
-| `review` | `/review` | `Read, Grep, Glob, Bash` | Confidence-based code review: pre-report gate, evidence for `[BLOCKING]` findings, common false-positives filter, verdict `APPROVE` / `REQUEST CHANGES` / `NEEDS REVISION` |
-| `test` | `/test` | `Read, Grep, Glob, Bash, Edit` | Test files created, cases, execution results, coverage against the project minimum, and a six-phase `VERIFICATION REPORT` (build, type, lint, tests, security, diff) |
+| Sub-agent | Command | Skill(s) | Tools | Expected output |
+| --- | --- | --- | --- | --- |
+| `engineer` | `/engineer` | `orchestrator` | `Read, Grep, Glob, Agent, Bash, Edit` | Runs the `orchestrator` pipeline end-to-end, delegates to `/review`, `/test`, `/architecture`, relays approval gates, and delivers the final synthesis |
+| `plan` | `/plan` | `write-specs`, `scaffold-mvp` | `Read, Grep, Glob, WebFetch, Write` | SPEC SDD in `.specs/SPEC-{YYYYMMDD}-{feature}.md` (sections 0-9) plus a structured Implementation Plan (requirements, architecture changes, phased steps, risks & mitigations, success criteria). Do not implement. |
+| `review` | `/review` | `qa-analyst`, `code-review-and-quality` | `Read, Grep, Glob, Bash` | Confidence-based code review driven by both skills: pre-report gate, evidence for `[BLOCKING]` findings, common false-positives filter, verdict `APPROVE` / `REQUEST CHANGES` / `NEEDS REVISION` |
+| `test` | `/test` | `quality-test-implementation` | `Read, Grep, Glob, Bash, Edit` | Test files created via the skill, cases, execution results, coverage against the project minimum, and a six-phase `VERIFICATION REPORT` (build, type, lint, tests, security, diff) |
+| `architecture` | `/architecture` | `architecture` | `Read, Grep, Glob, Bash, Edit` | ADRs, design docs and diagrams under `docs/architecture/` produced via the skill (Mermaid, draw.io, optional archify), plus the `gap-analysis` audit outcome |
 
 Each sub-agent declares a **verification loop** the parent agent must run. For `review`: confirm every modified file was covered, confirm each suggestion is actionable, confirm severity matches the final verdict.
 
@@ -710,6 +711,7 @@ cp references/agents/engineer.md .claude/agents/engineer.md
 cp references/agents/plan.md .claude/agents/plan.md
 cp references/agents/review.md .claude/agents/review.md
 cp references/agents/test.md .claude/agents/test.md
+cp references/agents/architecture.md .claude/agents/architecture.md
 ```
 
 Replace the following placeholders with values discovered in Phase 1:
@@ -726,10 +728,11 @@ If the repository uses a stack not covered in the templates (e.g., Go, Rust, Kot
 
 #### Template references
 
-- `references/agents/engineer.md` — lead orchestrator and architectural triage
+- `references/agents/engineer.md` — tech lead running the `orchestrator` skill
 - `references/agents/plan.md` — SPEC SDD writer
-- `references/agents/review.md` — code and security reviewer
-- `references/agents/test.md` — test executor and validator
+- `references/agents/review.md` — code and security reviewer (`qa-analyst` + `code-review-and-quality`)
+- `references/agents/test.md` — test executor and validator (`quality-test-implementation`)
+- `references/agents/architecture.md` — architecture documentation owner (`architecture` skill)
 
 ### 3.13 .claude/skills
 
@@ -921,7 +924,7 @@ Anti-patterns, quality checklist, final report template and handoff steps are in
 
 1. Pre-flight: clean tree confirmed, branch `feature/claude-{YYYYMMDD}-bootstrap-claude-harness` created.
 2. Discovery Summary citing `package.json` (Node, Jest, ESLint) and `.github/workflows/ci.yml` (`npm ci && npm test && npm run lint`); no legacy harness found. **Pause for confirmation.**
-3. After confirmation: `.claude/` created with `settings.json`, `rules/global-rules.md`, the three sub-agents, memory files, and `CLAUDE.md` written at the root.
+3. After confirmation: `.claude/` created with `settings.json`, `rules/global-rules.md`, the five sub-agents, memory files, and `CLAUDE.md` written at the root.
 4. Validation 4.1 returns empty, 4.2 and 4.3 all pass.
 5. Commit on the feature branch and a pull request proposed to `main`.
 

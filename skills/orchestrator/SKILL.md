@@ -3,7 +3,7 @@ name: orchestrator
 license: MIT
 description: "Central entry point of the afonsoft agent harness. Use when starting a new project, resuming an existing one, planning features/Epics/releases, or running any multi-step agent-driven work. Validates and reconciles SPECs (SDD), audits the codebase and harness for gaps (security, architecture, performance, hygiene), proposes improvements, fragments work into GitHub Issues, delegates implementation/QA/review to specialized skills, and re-validates everything until delivery. Also use to review unapproved SPECs, reconcile open GitHub Issues with code, or run a final gap check before closing a release."
 metadata:
-  version: "2.5.0"
+  version: "2.6.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -188,7 +188,7 @@ Audit the structure produced by `create-agent-harness`:
 [ ] CLAUDE.md (single source of truth) and AGENTS.md (thin reference)
 [ ] .claude/settings.json (permissions, hooks, env)
 [ ] .claude/rules/global-rules.md and stack-scoped rules/
-[ ] .claude/agents/ (review.md, plan.md, test.md)
+[ ] .claude/agents/ (engineer.md, plan.md, review.md, test.md, architecture.md)
 [ ] .claude/memory/ and .claude/MEMORY.md
 [ ] .claude/CONTEXT.md, .claude/RULES.md, .claude/TOOLS.md, .claude/WORKFLOWS.md
 [ ] .claude/README.md (harness infrastructure)
@@ -243,6 +243,7 @@ flowchart TB
 
     subgraph Gate["Phase 5 - QA"]
         G_Q[/qa-analyst/]
+        G_T[/quality-test-implementation/]
         G_R[/code-review-and-quality/]
         G_A[/architecture/]
         G_GA[/gap-analysis/]
@@ -268,8 +269,10 @@ flowchart TB
     S_V -->|fail| S_D
     S_CM -->|next slice| S_R
     S_CM -->|Epic done| G_Q
-    G_Q -->|approved| G_R
+    G_Q -->|approved| G_T
     G_Q -->|fail| S_T
+    G_T -->|coverage met| G_R
+    G_T -->|fail| S_T
     G_R -->|approved| G_A
     G_A -->|invokes| G_GA
     G_GA -->|"no gaps / register only"| G_M
@@ -356,13 +359,14 @@ After each slice and at the end of each Epic/DAG:
 1. Run proportional verifications: tests, lint, type check, build.
 2. If it fails, invoke `/diagnose` before continuing.
 3. When the DAG is complete, invoke `/qa-analyst` without exception of tier. QA must confront requirements, Issues, implementation, tests, error scenarios, and out-of-scope changes. Failures reopen Issues or create new tasks.
-4. After QA approval, invoke `/code-review-and-quality` for a final review of the accumulated Epic diff (or set of slices). Quality failures reopen Issues or create new tasks.
-5. After review approval, invoke `/architecture`. It owns everything under `docs/architecture/` — the editable draw.io system diagram (falling back to Mermaid in headless environments), native Mermaid diagrams and design docs, any pending ADRs, and the optional interactive archify HTML diagram — **and ends by invoking `/gap-analysis`** for the final evidence-backed audit of the delivered state before documentation sync.
+4. After QA approval, invoke `/quality-test-implementation` to raise coverage and clear quality debt on the affected stack. Unmet coverage targets or quality gates reopen Issues or create new tasks.
+5. After the quality gate passes, invoke `/code-review-and-quality` for a final review of the accumulated Epic diff (or set of slices). Quality failures reopen Issues or create new tasks.
+6. After review approval, invoke `/architecture`. It owns everything under `docs/architecture/` — the editable draw.io system diagram (falling back to Mermaid in headless environments), native Mermaid diagrams and design docs, any pending ADRs, and the optional interactive archify HTML diagram — **and ends by invoking `/gap-analysis`** for the final evidence-backed audit of the delivered state before documentation sync.
    - The `gap-analysis` approval gate (pt-BR, owned by that skill) decides the outcome: `sim` → confirmed gaps become Issues via `/create-issues` and the approved SPECs re-enter through Phase 3 into the Phase 4 queue (repeat Phase 5 when they finish); `não` → the generated SPECs stay `Draft` and Phase 6 surfaces them for review later.
    - If it returns no confirmed gaps → continue.
-6. After the gap audit is resolved, invoke `/create-readme` to update `README.md` with the delivered features, stack, and instructions.
-7. **Archive the completed SPEC SDD(s)**. Once the Epic/DAG is delivered, create `docs/specs/` if it does not exist and move the corresponding `.specs/SPEC-{YYYYMMDD}-{slug}.md` to `docs/specs/SPEC-{YYYYMMDD}-{slug}.md`. Update the frontmatter status (e.g., from `Approved` to `Completed`) and add a `Delivered` subsection with the merge commit/PR. Commit the move as part of the Epic closure.
-8. Only after that can delivery by PR occur. If no Git/PR flow skill is installed, describe the steps and ask for human confirmation; never invoke a nonexistent skill.
+7. After the gap audit is resolved, invoke `/create-readme` to update `README.md` with the delivered features, stack, and instructions.
+8. **Archive the completed SPEC SDD(s)**. Once the Epic/DAG is delivered, create `docs/specs/` if it does not exist and move the corresponding `.specs/SPEC-{YYYYMMDD}-{slug}.md` to `docs/specs/SPEC-{YYYYMMDD}-{slug}.md`. Update the frontmatter status (e.g., from `Approved` to `Completed`) and add a `Delivered` subsection with the merge commit/PR. Commit the move as part of the Epic closure.
+9. Only after that can delivery by PR occur. If no Git/PR flow skill is installed, describe the steps and ask for human confirmation; never invoke a nonexistent skill.
 
 ## Phase 6 — Unapproved SPEC Review
 
@@ -522,8 +526,8 @@ This phase ensures no knowledge is lost between sessions. The next Orchestrator 
 | Phase 4 — bug or build failure | `/diagnose` | Reproduce, minimise, instrument, fix, regress | Root cause resolved + regression test |
 | Phase 4 — code review per slice | `/code-review-and-quality` | Review diff before next step | Required changes or approval |
 | Phase 4 — SPEC ambiguity | `/write-specs` | Missing or conflicting requirement | Updated SPEC with new decisions |
-|| Phase 4 — whole-repo quality gate | `/quality-test-implementation` | Raise coverage and clear quality debt after Epic implementation | Measured quality report, coverage at target |
 | Phase 5 — QA gate | `/qa-analyst` | Mandatory pre-PR verification | QA approval or new Issues |
+| Phase 5 — quality gate | `/quality-test-implementation` | Raise coverage and clear quality debt after QA approval, before final review | Measured quality report, coverage at target |
 | Phase 5 — final review | `/code-review-and-quality` | Accumulated Epic diff review | Final approval or rework |
 | Phase 5 — architecture docs & diagrams | `/architecture` | Update everything in `docs/architecture/` after delivery — routes to `/drawio-architecture`, `/mermaid-architecture`, optional `archify`, and ends with `/gap-analysis` | ADRs, design docs, draw.io/Mermaid diagrams, optional interactive HTML, gap audit |
 | Phase 5 — final gap audit | `/gap-analysis` (via `/architecture`) | Evidence-backed gap check before documentation sync — invoked by `/architecture`, never called directly | Confirmed gaps routed to Issues/queue or registered as Draft SPECs |

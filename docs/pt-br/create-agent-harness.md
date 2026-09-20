@@ -11,7 +11,7 @@ A skill segue um fluxo de trabalho rigorosamente baseado em evidências:
    - `CLAUDE.md`: A Fonte Única da Verdade (SSoT).
    - `.claude/rules/`: Guardrails específicos por domínio.
    - `.claude/skills/`: Guias comportamentais especializados.
-   - `.claude/agents/`: Sub-agentes especializados (Plan, Review, Test).
+   - `.claude/agents/`: Sub-agentes especializados (Engineer, Plan, Review, Test, Architecture), cada um ligado à sua skill (`orchestrator`, `write-specs`, `qa-analyst` + `code-review-and-quality`, `quality-test-implementation`, `architecture`).
 3. **Validação**: Garante que todos os artefatos sejam consistentes e as permissões estejam seguras.
 
 ## 🚀 Uso

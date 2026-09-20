@@ -27,4 +27,4 @@ Use esta skill ao iniciar ou retomar um projeto, planejar um Epic, ou coordenar 
 - **Anterior**: `write-specs` produz SPECs aprovados.
 - **Paralela**: `create-issues` transforma SPECs em Issues.
 - **Execução**: `execute-specs` implementa cada fatia; `diagnose` trata regressões; `code-review-and-quality` revisa diffs.
-- **Posterior**: `qa-analyst` realiza a revisão obrigatória pré-PR; `architecture` atualiza tudo em `docs/architecture/` (roteando para `drawio-architecture`, `mermaid-architecture` e o `archify` opcional) e invoca `gap-analysis` para a auditoria final baseada em evidências antes do `create-readme`.
+- **Posterior**: `qa-analyst` realiza a revisão obrigatória pré-PR; `quality-test-implementation` eleva a cobertura e limpa o débito de qualidade; `code-review-and-quality` executa a revisão final do diff; `architecture` atualiza tudo em `docs/architecture/` (roteando para `drawio-architecture`, `mermaid-architecture` e o `archify` opcional) e invoca `gap-analysis` para a auditoria final baseada em evidências antes do `create-readme`.

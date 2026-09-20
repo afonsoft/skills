@@ -11,7 +11,7 @@ The skill follows a strict evidence-based workflow:
    - `CLAUDE.md`: The Single Source of Truth.
    - `.claude/rules/`: Domain-specific guardrails.
    - `.claude/skills/`: Specialized behavioral guides.
-   - `.claude/agents/`: Specialized sub-agents (Plan, Review, Test).
+   - `.claude/agents/`: Specialized sub-agents (Engineer, Plan, Review, Test, Architecture), each wired to its skill (`orchestrator`, `write-specs`, `qa-analyst` + `code-review-and-quality`, `quality-test-implementation`, `architecture`).
 3. **Validation**: Ensures all artifacts are consistent and permissions are secure.
 
 ## 🚀 Usage

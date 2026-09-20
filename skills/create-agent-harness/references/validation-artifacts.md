@@ -35,7 +35,7 @@ Reference for `create-agent-harness` Phase 4 — anti-patterns, quality checklis
 - [ ] `CLAUDE.md` explicitly connects every always-on artifact: native (`CLAUDE.md`, `.claude/rules/global-rules.md`) and read-ritual (`.claude/memory/memory.md`, `.claude/CONTEXT.md`, `.claude/RULES.md`)
 - [ ] Domain rules use `paths:`, never `applyTo`
 - [ ] Skills carry the tripartite description: What / When / Do NOT
-- [ ] Three sub-agents present, stack-specialized, `name:` matching the file name
+- [ ] Five sub-agents present (`engineer`, `plan`, `review`, `test`, `architecture`), stack-specialized, `name:` matching the file name
 - [ ] Each sub-agent declares a verification loop
 - [ ] `plan` sub-agent uses the SPEC SDD template and writes to `.specs/` before implementation
 - [ ] `.claude/CONTEXT.md`, `.claude/RULES.md`, `.claude/MEMORY.md`, `.claude/TOOLS.md`, `.claude/WORKFLOWS.md` and `.claude/README.md` generated
@@ -67,7 +67,7 @@ Reference for `create-agent-harness` Phase 4 — anti-patterns, quality checklis
 - [ ] rules/global-rules.md (mandatory, always-on)
 - [ ] rules/{domain}.md (with paths:)
 - [ ] skills/{slug}/SKILL.md (one per stack domain)
-- [ ] agents/review.md, agents/plan.md (SPEC SDD writer), agents/test.md (mandatory)
+- [ ] agents/engineer.md (`orchestrator` runner), agents/plan.md (SPEC SDD writer), agents/review.md (`qa-analyst` + `code-review-and-quality`), agents/test.md (`quality-test-implementation`), agents/architecture.md (`architecture` skill) — all mandatory
 - [ ] memory/memory.md (short-term)
 - [ ] memory/{YYYYMMDD}-memory.md (long-term)
 - [ ] commands/{slug}.md (if applicable)

@@ -4,7 +4,7 @@ set -euo pipefail
 TARGET_DIR="${1:-.}"
 AGENTS_DIR="${TARGET_DIR}/.claude/agents"
 SPECS_DIR="${TARGET_DIR}/.specs"
-REQUIRED_AGENTS=("engineer" "plan" "review" "test")
+REQUIRED_AGENTS=("engineer" "plan" "review" "test" "architecture")
 ERRORS=0
 
 log_info() { echo -e "\033[34m[INFO]\033[0m $1"; }
@@ -64,6 +64,12 @@ for agent in "${REQUIRED_AGENTS[@]}"; do
   if [[ "${agent}" == "test" ]]; then
     if grep -q "{{TEST_CMD}}" "${file}"; then
       log_err "test.md: Placeholder {{TEST_CMD}} não foi resolvido para um comando real."
+    fi
+  fi
+
+  if [[ "${agent}" == "architecture" ]]; then
+    if ! grep -q "docs/architecture/" "${file}"; then
+      log_err "architecture.md: Deve conter referência ao diretório docs/architecture/."
     fi
   fi
 
