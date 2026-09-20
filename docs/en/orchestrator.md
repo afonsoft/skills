@@ -14,7 +14,7 @@ Govern the full lifecycle of agent-driven software delivery by delegating comple
 4. **Phase 2 — Audit**: Identify architectural gaps and security vulnerabilities (`sonarqube-autofix`).
 5. **Phase 3 — GitHub Fragmentation**: Turn approved gaps into GitHub Issues.
 6. **Phase 4 — Implementation Loop**: Run sliced Issues one by one with `design` (UI), DB migrations, and `execute-specs`, handling review rejections with corrective refactoring.
-7. **Phase 5 — Verification and QA**: Run QA, code review, resilient architecture diagrams (`drawio` / `mermaid`), a final evidence-backed `gap-analysis` audit (execute confirmed gaps now or register SPECs), README & CHANGELOG updates, and SPEC archiving.
+7. **Phase 5 — Verification and QA**: Run QA, code review, resilient architecture deliverables via `/architecture` (`docs/architecture/` — draw.io, Mermaid, ADRs/design docs, optional `archify` HTML — ending with the `gap-analysis` audit it owns), README & CHANGELOG updates, and SPEC archiving.
 8. **Phase 6 — Unapproved SPEC Review**: Scan leftover SPECs; approved SPECs enter the full queue through Phase 4 and 5.
 9. **Phase 7 — Final Verification & Gap Check**: Confirm all SPECs, Issues, and gaps are closed; if a next item exists, continue automatically.
 
@@ -27,4 +27,4 @@ Use this skill when starting or resuming a project, planning an Epic, or coordin
 - **Upstream**: `write-specs` produces approved SPECs.
 - **Parallel**: `create-issues` turns SPECs into Issues.
 - **Execution**: `execute-specs` implements each slice; `diagnose` handles regressions; `code-review-and-quality` reviews diffs.
-- **Downstream**: `qa-analyst` performs the mandatory pre-PR review; `drawio-architecture` and `mermaid-architecture` update architecture diagrams in `docs/architecture/`; `gap-analysis` runs the final evidence-backed audit before `create-readme`.
+- **Downstream**: `qa-analyst` performs the mandatory pre-PR review; `architecture` updates everything under `docs/architecture/` (routing to `drawio-architecture`, `mermaid-architecture`, and optional `archify`) and invokes `gap-analysis` for the final evidence-backed audit before `create-readme`.

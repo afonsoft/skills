@@ -22,7 +22,7 @@ All questions and confirmations directed at the user must be in **Portuguese (pt
 - Before a release, to verify that specs, docs, and code still agree.
 - After an audit or review, to convert findings into tracked work.
 - When the user asks "what is missing", "what diverges from the spec", "audit gaps", "map gaps".
-- Invoked by `orchestrator` as the final evidence-backed audit before documentation sync.
+- Invoked by `architecture` (on behalf of `orchestrator` in Phase 5) as the final evidence-backed audit before documentation sync.
 - User asks or mentions this skill in English (e.g., "use /gap-analysis", "run gap-analysis").
 - O usuário pede ou menciona esta skill em português (ex.: "use /gap-analysis", "execute gap-analysis").
 
@@ -171,6 +171,7 @@ Write the consolidated report to `.claude/memory/gap-analysis-{YYYYMMDD}.md` usi
 - `references/gap-record.md` — candidate record, verdict rules, priority rubric
 - `references/report-template.md` — consolidated report / resume state format
 - `scripts/collect-sources.sh` — mechanical source inventory (read-only)
+- `architecture` — caller in Phase 5; hands off delivery context and consumes the audit outcome
 - `write-specs` — produces the per-gap SPEC SDD
 - `create-issues` — publishes the Epic + slice Issues
 - `orchestrator` — validates and executes approved SPECs

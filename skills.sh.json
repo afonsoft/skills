@@ -20,6 +20,7 @@
       "title": "Architecture & Design",
       "description": "Skills for analyzing, visualizing, and refining system architecture.",
       "skills": [
+        "architecture",
         "improve-codebase-architecture",
         "drawio-architecture",
         "mermaid-architecture"

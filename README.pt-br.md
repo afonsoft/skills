@@ -36,8 +36,7 @@ flowchart TD
     F -->|por fatia| M[/execute-specs\]
     F -->|bug| N[/diagnose\]
     G --> O[/qa-analyst\]
-    G --> P[/drawio-architecture\]
-    G --> Q[/mermaid-architecture\]
+    G --> P[/architecture\]
     G --> R[/gap-analysis\]
 ```
 
@@ -63,6 +62,7 @@ As skills estão organizadas em torno do pipeline do orchestrator: **Engenharia 
 - **[`qa-analyst`](skills/qa-analyst/SKILL.md)**: Ciclo completo de QA — análise de requisitos, plano de testes, casos de teste, execução, relatórios de bugs e melhoria contínua de processos.
 - **[`diagnose`](skills/diagnose/SKILL.md)**: Diagnóstico disciplinado e loop de re-validação para bugs difíceis e regressões de performance.
 - **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Identifica oportunidades de aprofundamento arquitetural lendo `.claude/CONTEXT.md`, `.claude/MEMORY.md` e `docs/architecture/`, e gera um relatório em HTML.
+- **[`architecture`](docs/pt-br/architecture.md)**: A dona única de `docs/architecture/`. Roteia ADRs, docs de design e diagramas para `drawio-architecture`, `mermaid-architecture` e a skill opcional `archify` (HTML interativo, instalada sob demanda via `npx skills add tt-a1i/archify` com aprovação do usuário), e encerra com a auditoria de evidências `gap-analysis` que ela possui.
 - **[`gap-analysis`](docs/pt-br/gap-analysis.md)**: Auditoria baseada em evidências do AS-IS do código vs. TO-BE de specs/docs. Gaps confirmados viram SPECs Draft (`write-specs`), um Epic rastreável com slices (`create-issues`) e execução orquestrada (`orchestrator`) — atrás de um gate de aprovação explícito.
 
 ### 💎 Qualidade e Revisão de Código

@@ -41,8 +41,7 @@ flowchart TD
     F -->|per slice| M[/execute-specs\]
     F -->|bug| N[/diagnose\]
     G --> O[/qa-analyst\]
-    G --> P[/drawio-architecture\]
-    G --> Q[/mermaid-architecture\]
+    G --> P[/architecture\]
     G --> R[/gap-analysis\]
 ```
 
@@ -68,6 +67,7 @@ The skills are organized around the orchestrator's pipeline: **Harness Engineeri
 - **[`qa-analyst`](skills/qa-analyst/SKILL.md)**: Full QA cycle — requirements analysis, test planning, test cases, execution, bug reports, and process improvement.
 - **[`diagnose`](skills/diagnose/SKILL.md)**: Disciplined diagnosis and re-validation loop for hard bugs and performance regressions.
 - **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Finds architectural deepening opportunities by reading `.claude/CONTEXT.md`, `.claude/MEMORY.md`, and `docs/architecture/`, and produces an HTML report.
+- **[`architecture`](docs/en/architecture.md)**: The single owner of `docs/architecture/`. Routes ADRs, design docs, and diagrams to `drawio-architecture`, `mermaid-architecture`, and the optional `archify` skill (interactive HTML, installed on demand via `npx skills add tt-a1i/archify` with user approval), then ends with the `gap-analysis` evidence audit it owns.
 - **[`gap-analysis`](docs/en/gap-analysis.md)**: Evidence-backed audit of AS-IS code vs. TO-BE specs/docs. Confirmed gaps become Draft SPECs (`write-specs`), a tracked Epic with slices (`create-issues`), and orchestrated execution (`orchestrator`) — behind an explicit approval gate.
 
 ### 💎 Code Quality & Review

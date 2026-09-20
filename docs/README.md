@@ -11,6 +11,7 @@ Per-skill documentation for [Spec Driven](../README.md) (`afonsoft/skills`). Eac
 
 | Skill | English | Português |
 |-------|---------|-----------|
+| `architecture` | [doc](en/architecture.md) | [doc](pt-br/architecture.md) |
 | `building-mcp-servers` | [doc](en/building-mcp-servers.md) | [doc](pt-br/building-mcp-servers.md) |
 | `code-review-and-quality` | [doc](en/code-review-and-quality.md) | [doc](pt-br/code-review-and-quality.md) |
 | `composio-mcp` | [doc](en/composio-mcp.md) | [doc](pt-br/composio-mcp.md) |

@@ -39,7 +39,7 @@ mkdir -p docs/architecture
 - Visualizing **workflows**, **state machines**, **business logic**, **ETL pipelines**, or **decision trees**.
 - Mapping code to diagrams (Spring Boot, FastAPI, React, Node/Express, Python ETL, Java).
 - Creating or updating full **design documents** (System Design, Architecture, API Design, Database Schema).
-- In the **Orchestrator pipeline (Phase 5)**: called right after `/drawio-architecture` to update or generate native Markdown Mermaid diagrams in `docs/architecture/`.
+- In the **Orchestrator pipeline (Phase 5)**: invoked via `/architecture` (the umbrella skill that owns `docs/architecture/`) to update or generate native Markdown Mermaid diagrams.
 
 - User asks or mentions this skill in English (e.g., "use /mermaid-architecture", "run mermaid-architecture", "generate mermaid diagram").
 - O usuário pede ou menciona esta skill em português (ex.: "use /mermaid-architecture", "execute mermaid-architecture", "gerar diagrama mermaid").
@@ -52,7 +52,7 @@ mkdir -p docs/architecture
 
 ## Orchestrator Integration
 
-In the Orchestrator lifecycle (Phase 5 — Verification & QA Gate):
+In the Orchestrator lifecycle (Phase 5 — Verification & QA Gate), the orchestrator calls `/architecture`, which routes work to the specialized engines:
 1. `/drawio-architecture` updates the visual editable `.drawio` system diagram.
 2. `/mermaid-architecture` runs immediately after to generate or update the native Mermaid architecture diagrams and embedded Markdown files in `docs/architecture/`.
 3. `/create-readme` then references the generated diagrams in `README.md`.
@@ -194,4 +194,5 @@ python3 skills/mermaid-architecture/scripts/resilient_diagram.py --code "..." --
 - `references/guides/unicode-symbols/guide.md` — Complete semantic symbol index
 - `references/guides/troubleshooting.md` — 28 common syntax error solutions
 - `references/guides/resilient-workflow.md` — Error recovery and validation protocol
+- `architecture` — Umbrella skill that owns `docs/architecture/` and routes diagram work to this engine
 - `drawio-architecture` — Companion skill for editable draw.io visual diagrams
