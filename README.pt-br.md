@@ -62,7 +62,7 @@ As skills estão organizadas em torno do pipeline do orchestrator: **Engenharia 
 - **[`qa-analyst`](skills/qa-analyst/SKILL.md)**: Ciclo completo de QA — análise de requisitos, plano de testes, casos de teste, execução, relatórios de bugs e melhoria contínua de processos.
 - **[`diagnose`](skills/diagnose/SKILL.md)**: Diagnóstico disciplinado e loop de re-validação para bugs difíceis e regressões de performance.
 - **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Identifica oportunidades de aprofundamento arquitetural lendo `.claude/CONTEXT.md`, `.claude/MEMORY.md` e `docs/architecture/`, e gera um relatório em HTML.
-- **[`architecture`](docs/pt-br/architecture.md)**: A dona única de `docs/architecture/`. Roteia ADRs, docs de design e diagramas para `drawio-architecture`, `mermaid-architecture` e a skill opcional `archify` (HTML interativo, instalada sob demanda via `npx skills add tt-a1i/archify` com aprovação do usuário), e encerra com a auditoria de evidências `gap-analysis` que ela possui.
+- **[`architecture`](docs/pt-br/architecture.md)**: A dona única de `docs/architecture/`. Roteia ADRs, docs de design e diagramas para `drawio-architecture`, `mermaid-architecture` e a skill opcional `archify` (HTML interativo, usada apenas quando já instalada — nunca instalada em tempo de execução), e encerra com a auditoria de evidências `gap-analysis` que ela possui.
 - **[`gap-analysis`](docs/pt-br/gap-analysis.md)**: Auditoria baseada em evidências do AS-IS do código vs. TO-BE de specs/docs. Gaps confirmados viram SPECs Draft (`write-specs`), um Epic rastreável com slices (`create-issues`) e execução orquestrada (`orchestrator`) — atrás de um gate de aprovação explícito.
 
 ### 💎 Qualidade e Revisão de Código
@@ -94,15 +94,16 @@ As skills estão organizadas em torno do pipeline do orchestrator: **Engenharia 
 
 Resultados mais recentes da auditoria de terceiros do [skills.sh](https://skills.sh) (**Gen Agent Trust Hub**, **Socket**, **Snyk**). Clique em **Ver** para ver o relatório completo de cada skill.
 
-> **Atualizado em:** 2026-09-17
+> **Atualizado em:** 2026-09-20
 
 | Skill | Gen Agent Trust Hub | Socket alerts | Snyk | Detalhes |
 |-------|---------------------|---------------|------|----------|
-| `building-mcp-servers` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/building-mcp-servers) |
+| `architecture` | ✅ safe | 1 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/architecture) |
+| `building-mcp-servers` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/building-mcp-servers) |
 | `code-review-and-quality` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/code-review-and-quality) |
 | `composio-mcp` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/composio-mcp) |
 | `create-agent-harness` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/create-agent-harness) |
-| `create-issues` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/create-issues) |
+| `create-issues` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/create-issues) |
 | `create-readme` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/create-readme) |
 | `design` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/design) |
 | `diagnose` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/diagnose) |

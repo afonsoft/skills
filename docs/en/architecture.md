@@ -28,7 +28,7 @@ docs/architecture/
    - `/drawio-architecture` → editable `.drawio` diagrams via draw.io MCP or desktop CLI export.
    - `archify` (optional, third-party) → interactive standalone HTML diagrams.
 3. **ADRs** — writes sequential `AD-NNNN-<slug>.md` records (Context / Decision / Consequences / Related SPEC).
-4. **Archify availability** — detects the skill across the known skills roots; if missing, asks the user (in pt-BR) to approve `npx skills add tt-a1i/archify`. If declined, falls back to Mermaid — a missing optional engine never blocks the pipeline.
+4. **Archify availability** — detects the skill across the known skills roots; if missing, falls back to Mermaid — a missing optional engine never blocks the pipeline. External skills are never installed at runtime.
 5. **Gap audit handoff** — ends the pipeline by invoking `gap-analysis` for the evidence-backed audit (see `references/gap-audit-handoff.md`); the orchestrator no longer calls it directly. Its own pt-BR gate decides whether confirmed gaps become Issues.
 6. **Validates** — each engine's own validator runs before success is reported.
 
@@ -44,7 +44,7 @@ Use this skill when:
 ## 🔗 Correlation
 
 - **Upstream**: `orchestrator` calls `/architecture` in Phase 5 after the final code review.
-- **Engines**: `drawio-architecture`, `mermaid-architecture`, and optional `archify` (`npx skills add tt-a1i/archify`, [tt-a1i/archify](https://github.com/tt-a1i/archify)).
+- **Engines**: `drawio-architecture`, `mermaid-architecture`, and optional `archify` (used only when already installed, [tt-a1i/archify](https://github.com/tt-a1i/archify)).
 - **Audit**: invokes `gap-analysis` at the end of the pipeline — approved gaps re-enter the orchestrator queue via `create-issues`.
 - **Downstream**: `create-readme` references the generated diagrams in `README.md`.
 - **Helpers**: `scripts/architecture-doctor.sh` (read-only preflight), `references/architecture-inventory.md`, `references/gap-audit-handoff.md`.

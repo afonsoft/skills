@@ -67,7 +67,7 @@ The skills are organized around the orchestrator's pipeline: **Harness Engineeri
 - **[`qa-analyst`](skills/qa-analyst/SKILL.md)**: Full QA cycle — requirements analysis, test planning, test cases, execution, bug reports, and process improvement.
 - **[`diagnose`](skills/diagnose/SKILL.md)**: Disciplined diagnosis and re-validation loop for hard bugs and performance regressions.
 - **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Finds architectural deepening opportunities by reading `.claude/CONTEXT.md`, `.claude/MEMORY.md`, and `docs/architecture/`, and produces an HTML report.
-- **[`architecture`](docs/en/architecture.md)**: The single owner of `docs/architecture/`. Routes ADRs, design docs, and diagrams to `drawio-architecture`, `mermaid-architecture`, and the optional `archify` skill (interactive HTML, installed on demand via `npx skills add tt-a1i/archify` with user approval), then ends with the `gap-analysis` evidence audit it owns.
+- **[`architecture`](docs/en/architecture.md)**: The single owner of `docs/architecture/`. Routes ADRs, design docs, and diagrams to `drawio-architecture`, `mermaid-architecture`, and the optional `archify` skill (interactive HTML, used only when already installed — never installed at runtime), then ends with the `gap-analysis` evidence audit it owns.
 - **[`gap-analysis`](docs/en/gap-analysis.md)**: Evidence-backed audit of AS-IS code vs. TO-BE specs/docs. Confirmed gaps become Draft SPECs (`write-specs`), a tracked Epic with slices (`create-issues`), and orchestrated execution (`orchestrator`) — behind an explicit approval gate.
 
 ### 💎 Code Quality & Review
@@ -99,17 +99,18 @@ The skills are organized around the orchestrator's pipeline: **Harness Engineeri
 
 Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen Agent Trust Hub**, **Socket**, **Snyk**). Click **View** to see the full report for a skill.
 
-> **Updated:** 2026-09-17
+> **Updated:** 2026-09-20
 >
 > **Mitigations applied** (PR #11): `notebooklm-mcp`, `orchestrator`, and `wordpress-mcp` were hardened with explicit-approval gates, pinned installs, credential isolation, untrusted-content handling, and audit logging. The table below reflects the rescan after those changes.
 
 | Skill | Gen Agent Trust Hub | Socket alerts | Snyk | Details |
 |-------|---------------------|---------------|------|---------|
-| `building-mcp-servers` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/building-mcp-servers) |
+| `architecture` | ✅ safe | 1 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/architecture) |
+| `building-mcp-servers` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/building-mcp-servers) |
 | `code-review-and-quality` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/code-review-and-quality) |
 | `composio-mcp` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/composio-mcp) |
 | `create-agent-harness` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/create-agent-harness) |
-| `create-issues` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/create-issues) |
+| `create-issues` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/create-issues) |
 | `create-readme` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/create-readme) |
 | `design` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/design) |
 | `diagnose` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/diagnose) |

@@ -82,7 +82,7 @@ if ! command -v drawio >/dev/null 2>&1 && ! command -v draw.io >/dev/null 2>&1; 
   echo "- drawio CLI absent: use drawio-architecture Path A (MCP) or fall back to mermaid-architecture"
 fi
 if [ -z "$(find_skill archify)" ]; then
-  echo "- archify not installed: ask the user before running 'npx skills add tt-a1i/archify'"
+  echo "- archify not installed: optional engine skipped; falls back to mermaid-architecture (never install external skills at runtime)"
 fi
 if [ -z "$(find_skill gap-analysis)" ]; then
   echo "- gap-analysis missing: skip the audit handoff and report it to the user"

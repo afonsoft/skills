@@ -28,7 +28,7 @@ docs/architecture/
    - `/drawio-architecture` → diagramas `.drawio` editáveis via MCP do draw.io ou export pela CLI desktop.
    - `archify` (opcional, terceiros) → diagramas HTML interativos e autocontidos.
 3. **ADRs** — escreve registros sequenciais `AD-NNNN-<slug>.md` (Context / Decision / Consequences / Related SPEC).
-4. **Disponibilidade do archify** — detecta a skill nos diretórios de skills conhecidos; se ausente, pergunta ao usuário (em pt-BR) se aprova `npx skills add tt-a1i/archify`. Se recusado, faz fallback para Mermaid — um motor opcional ausente nunca bloqueia o pipeline.
+4. **Disponibilidade do archify** — detecta a skill nos diretórios de skills conhecidos; se ausente, faz fallback para Mermaid — um motor opcional ausente nunca bloqueia o pipeline. Skills externas nunca são instaladas em tempo de execução.
 5. **Handoff de auditoria** — encerra o pipeline invocando `gap-analysis` para a auditoria baseada em evidências (ver `references/gap-audit-handoff.md`); o orchestrator não a chama mais diretamente. O gate pt-BR dela decide se gaps confirmados viram Issues.
 6. **Valida** — o validador de cada motor roda antes de reportar sucesso.
 
@@ -44,7 +44,7 @@ Use esta skill quando:
 ## 🔗 Correlação
 
 - **Anterior**: `orchestrator` chama `/architecture` na Fase 5, após o code review final.
-- **Motores**: `drawio-architecture`, `mermaid-architecture` e o opcional `archify` (`npx skills add tt-a1i/archify`, [tt-a1i/archify](https://github.com/tt-a1i/archify)).
+- **Motores**: `drawio-architecture`, `mermaid-architecture` e o opcional `archify` (usado apenas quando já instalado, [tt-a1i/archify](https://github.com/tt-a1i/archify)).
 - **Auditoria**: invoca `gap-analysis` ao final do pipeline — gaps aprovados retornam à fila do orchestrator via `create-issues`.
 - **Posterior**: `create-readme` referencia os diagramas gerados no `README.md`.
 - **Auxiliares**: `scripts/architecture-doctor.sh` (preflight read-only), `references/architecture-inventory.md`, `references/gap-audit-handoff.md`.

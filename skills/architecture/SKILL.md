@@ -1,7 +1,7 @@
 ---
 name: architecture
 license: MIT
-description: "Single owner of everything under docs/architecture/ — ADRs, architecture and design documents, and architecture diagrams. Routes each deliverable to the right engine: /mermaid-architecture for Markdown-native diagrams, /drawio-architecture for editable .drawio diagrams, and the optional third-party archify skill for interactive standalone HTML diagrams (installed on demand via `npx skills add tt-a1i/archify`, only with explicit user approval). Use whenever architecture documentation, ADRs, or architecture diagrams must be created or updated."
+description: "Single owner of everything under docs/architecture/ — ADRs, architecture and design documents, and architecture diagrams. Routes each deliverable to the right engine: /mermaid-architecture for Markdown-native diagrams, /drawio-architecture for editable .drawio diagrams, and the optional archify skill for interactive standalone HTML diagrams (used only when already installed in the environment; never installed at runtime). Use whenever architecture documentation, ADRs, or architecture diagrams must be created or updated."
 metadata:
   version: "1.0.0"
   visibility: public
@@ -49,15 +49,15 @@ Pick the engine by deliverable, never by habit:
 | Design doc (system / API / DB / feature) | `/mermaid-architecture` assets | Templates live in `mermaid-architecture/assets/` |
 | Markdown-native diagram (C4, sequence, flow, ER, state) | `/mermaid-architecture` | Renders in GitHub/Obsidian/wikis, works headless |
 | Editable `.drawio` diagram or PNG/SVG export | `/drawio-architecture` | draw.io MCP or desktop CLI; fall back to `/mermaid-architecture` if graphical rendering fails in headless environments |
-| Interactive standalone HTML diagram (presentations, explorability, trace motion) | `archify` (third-party, optional) | Self-contained HTML + inline SVG with themes and export — see below |
+| Interactive standalone HTML diagram (presentations, explorability, trace motion) | `archify` (optional, only if already installed) | Self-contained HTML + inline SVG with themes and export — see below |
 | Evidence-backed audit (delivered state vs code/specs/docs) | `/gap-analysis` | Owned by this skill at the end of the pipeline — see `references/gap-audit-handoff.md` |
 
 **Default order in the Orchestrator pipeline (Phase 5):** `/drawio-architecture` for the editable system diagram → `/mermaid-architecture` for native Markdown diagrams → `archify` for the interactive runtime diagram when installed → `/gap-analysis` for the final evidence-backed audit.
 
 ## Guardrails
 
-- **Never install archify silently.** Archify is a third-party skill (`tt-a1i/archify`). Detect first; if missing, present the install command and wait for explicit user approval — consistent with the orchestrator's "no silent execution" and "trusted delegation only" rules.
-- **Graceful degradation.** If archify is absent and the user declines the install, deliver the same content through `/mermaid-architecture` (and `/drawio-architecture` when editable output is needed). A missing optional engine never blocks the pipeline.
+- **Never install external skills.** Archify is used only when already installed in the environment. If absent, skip it — do not prompt for, suggest, or run any install command — consistent with the orchestrator's "no silent execution" and "trusted delegation only" rules.
+- **Graceful degradation.** If archify is absent, deliver the same content through `/mermaid-architecture` (and `/drawio-architecture` when editable output is needed). A missing optional engine never blocks the pipeline.
 - **Never bypass the gap-analysis gate.** `gap-analysis` is read-only until the user answers its own pt-BR approval gate. This skill invokes it and reports the outcome; it never pre-approves, answers for the user, or skips the audit silently.
 - **Verify before claiming.** Validate Mermaid syntax, `.drawio` XML, and archify receipts with each engine's own validator before reporting success.
 
@@ -114,24 +114,11 @@ done
 
 The installed skill is also visible when the agent runtime lists `archify` among available skills.
 
-### Step 2 — Request install (never auto-install)
+### Step 2 — Absent means skip (never install)
 
-If not found, ask the user in **Portuguese (pt-BR)**:
+If not found, do **not** offer, suggest, or run any installation. Fall back to `/mermaid-architecture` and continue — a missing optional engine never blocks the pipeline. If the user wants interactive HTML later, they install `archify` themselves outside this skill's scope.
 
-```text
-A skill opcional 'archify' (tt-a1i/archify) não está instalada.
-Ela gera diagramas de arquitetura interativos em HTML autônomo.
-
-Deseja instalá-la? Comando:
-  npx skills add tt-a1i/archify
-
-(sim/não) — em caso negativo, gero o diagrama equivalente via /mermaid-architecture.
-```
-
-- `sim` → run `npx skills add tt-a1i/archify`, then verify with `node <archify-skill-path>/bin/archify.mjs doctor`.
-- `não` or install failure → fall back to `/mermaid-architecture` and continue.
-
-### Step 3 — Generate
+### Step 3 — Generate (only when already installed)
 
 Invoke the installed `archify` skill with the repository-grounded prompt:
 
@@ -189,7 +176,7 @@ When invoked mid-implementation (not only at Phase 5), apply the same routing: n
 - `/mermaid-architecture` — Markdown-native diagrams + design doc templates (`assets/`)
 - `/drawio-architecture` — editable `.drawio` diagrams via MCP or local CLI export
 - `/gap-analysis` — final evidence-backed audit, invoked by this skill (see `references/gap-audit-handoff.md`)
-- `archify` — optional third-party interactive HTML diagrams (`npx skills add tt-a1i/archify`, https://github.com/tt-a1i/archify)
+- `archify` — optional third-party interactive HTML diagrams, used only when already installed (https://github.com/tt-a1i/archify)
 - `/scaffold-mvp` — creates `docs/architecture/` and `AD-0001` in new projects
 - `/improve-codebase-architecture` — code-level architecture deepening (upstream consumer of these docs)
 - `/create-readme` — surfaces the diagrams in `README.md`
