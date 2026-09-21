@@ -3,7 +3,7 @@ name: diagnose
 license: MIT
 description: Use when the user reports a hard bug, unexpected failure, or performance regression that needs root-cause analysis.
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -29,6 +29,15 @@ If the redacted output is not enough to diagnose the bug, say so and ask the use
 - O usuário pede ou menciona esta skill em português (ex.: "use /diagnose", "execute diagnose").
 - The failure is the agent session itself (loops, context drift, repeated tool calls) → jump to [Agent Self-Debug](#agent-self-debug--introspection-use-when-the-failure-is-the-agent-itself).
 - The misbehaving system is an agent or AI workflow → run the [AI Workflow Diagnostic](#ai-workflow-diagnostic).
+
+## Stack playbooks
+
+When the target codebase matches one of these stacks, load the matching playbook from `references/` before building the loop — they contain ready-made reproduction commands, debugger/profiler workflows, instrumentation snippets, and log-query cheat sheets:
+
+- `references/dotnet-debugging.md` — .NET / ASP.NET Core / EF Core (dotnet-counters, dotnet-stack, dotnet-dump, dotnet-trace, EF `LogTo`/`TagWith`, journalctl/jq queries)
+- `references/angular-debugging.md` — Angular (Angular DevTools profiler, `ng.*` console APIs, RxJS `tap`, change-detection profiling)
+- `references/python-debugging.md` — Python (`breakpoint()`/`pdb`, pytest `--pdb`, py-spy, faulthandler, tracemalloc, asyncio debug)
+- `references/react-debugging.md` — React (React DevTools profiler, why-did-you-render, re-render/effect bug patterns)
 
 ## Phase 1 — Build a feedback loop
 
@@ -371,6 +380,10 @@ Diagnosis is iterative. After every change, re-run the reproduction. If the bug 
 ## References
 
 - `scripts/hitl-loop.template.sh` — human-in-the-loop reproduction driver
+- `references/dotnet-debugging.md` — .NET diagnostics tools and log queries
+- `references/angular-debugging.md` — Angular DevTools, change-detection and RxJS debugging
+- `references/python-debugging.md` — pdb/pytest/py-spy debugging and log queries
+- `references/react-debugging.md` — React DevTools and re-render debugging
 - `qa-analyst` — for test planning and bug reporting
 - `write-specs` — for producing specs when the bug reveals missing requirements
 - `improve-codebase-architecture` — when the diagnosis reveals missing seams or structural problems
