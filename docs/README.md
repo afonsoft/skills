@@ -18,6 +18,7 @@ Per-skill documentation for [Spec Driven](../README.md) (`afonsoft/skills`). Eac
 | `create-agent-harness` | [doc](en/create-agent-harness.md) | [doc](pt-br/create-agent-harness.md) |
 | `create-readme` | [doc](en/create-readme.md) | [doc](pt-br/create-readme.md) |
 | `design` | [doc](en/design.md) | [doc](pt-br/design.md) |
+| `diagnose` | [doc](en/diagnose.md) | [doc](pt-br/diagnose.md) |
 | `drawio-architecture` | [doc](en/drawio-architecture.md) | [doc](pt-br/drawio-architecture.md) |
 | `execute-specs` | [doc](en/execute-specs.md) | [doc](pt-br/execute-specs.md) |
 | `gap-analysis` | [doc](en/gap-analysis.md) | [doc](pt-br/gap-analysis.md) |
