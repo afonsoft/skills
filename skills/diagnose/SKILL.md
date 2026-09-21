@@ -3,7 +3,7 @@ name: diagnose
 license: MIT
 description: Use when the user reports a hard bug, unexpected failure, or performance regression that needs root-cause analysis.
 metadata:
-  version: "1.1.1"
+  version: "1.2.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -13,18 +13,26 @@ metadata:
 
 A discipline for hard bugs and regressions. Skip phases only when explicitly justified. All questions and findings reported to the user must be in **Portuguese (pt-BR)**.
 
-When exploring the codebase, use the project's domain glossary from `.claude/CONTEXT.md` to get a clear mental model of the relevant modules, and check `docs/architecture/` for decisions in the area you are touching.
+When exploring the codebase, use the project's domain glossary from `.claude/CONTEXT.md` (if it exists) to get a clear mental model of the relevant modules, and check `docs/architecture/` for decisions and ADRs in the area you are touching.
 
 **Re-validation loop**: after every hypothesis, fix, or change, re-run the reproduction and the regression checks before declaring the bug resolved.
+
+## Redact
+
+This skill has you show commands, outputs, and captured artifacts. **Redact every secret first**: write `<REDACTED>` in its place. Build loops against env vars so credentials stay in the environment, not in what you show. Captured artifacts carry auth headers — quote only the lines that carry the signal.
+
+If the redacted output is not enough to diagnose the bug, say so and ask the user (in Portuguese).
 
 ## When to Use
 
 - User asks or mentions this skill in English (e.g., "use /diagnose", "run diagnose").
 - O usuário pede ou menciona esta skill em português (ex.: "use /diagnose", "execute diagnose").
+- The failure is the agent session itself (loops, context drift, repeated tool calls) → jump to [Agent Self-Debug](#agent-self-debug--introspection-use-when-the-failure-is-the-agent-itself).
+- The misbehaving system is an agent or AI workflow → run the [AI Workflow Diagnostic](#ai-workflow-diagnostic).
 
 ## Phase 1 — Build a feedback loop
 
-**This is the skill.** Everything else is mechanical. If you have a fast, deterministic, agent-runnable pass/fail signal for the bug, you will find the cause — bisection, hypothesis-testing, and instrumentation all just consume that signal. If you do not have one, no amount of staring at code will save you.
+**This is the skill.** Everything else is mechanical. If you have a **tight** pass/fail signal for the bug — one that goes red on *this* bug — you will find the cause; bisection, hypothesis-testing, and instrumentation all just consume that signal. If you don't have one, no amount of staring at code will save you.
 
 Spend disproportionate effort here. **Be aggressive. Be creative. Refuse to give up.**
 
@@ -35,100 +43,170 @@ Spend disproportionate effort here. **Be aggressive. Be creative. Refuse to give
 3. **CLI invocation** with a fixture input, diffing stdout against a known-good snapshot.
 4. **Headless browser script** (Playwright / Puppeteer) — drives the UI, asserts on DOM/console/network.
 5. **Replay a captured trace.** Save a real network request / payload / event log to disk; replay it through the code path in isolation.
-6. **Throwaway harness.** Spin up a minimised version of the problem in a new project, then debug that.
+6. **Throwaway harness.** Spin up a minimal subset of the system (one service, mocked deps) that exercises the bug code path with a single call.
+7. **Property / fuzz loop.** If the bug is "sometimes wrong output", run 1000 random inputs and look for the failure mode.
+8. **Bisection harness.** If the bug appeared between two known states (commit, dataset, version), automate "boot at state X, check, repeat" so you can `git bisect run` it.
+9. **Differential loop.** Run the same input through old-version vs new-version (or two configs) and diff outputs.
+10. **HITL bash script.** Last resort. If a human must click, drive *them* with `scripts/hitl-loop.template.sh` so the loop is still structured; captured output feeds back to you.
 
-Ask the user in Portuguese when you need more data:
+Build the right feedback loop, and the bug is 90% fixed.
+
+### Tighten the loop
+
+Treat the loop as a product. Once you have *a* loop, tighten it:
+
+- **Faster?** Cache setup, skip unrelated init, narrow the test scope.
+- **Sharper signal?** Assert on the specific symptom, not "didn't crash".
+- **More deterministic?** Pin time, seed RNG, isolate filesystem, freeze network.
+
+A 30-second flaky loop is barely better than no loop; a 2-second deterministic one is a debugging superpower.
+
+### Non-deterministic bugs
+
+The goal is not a clean repro but a **higher reproduction rate**. Loop the trigger 100×, parallelise, add stress, narrow timing windows, inject sleeps. A 50%-flake bug is debuggable; 1% is not — keep raising the rate until it is debuggable.
+
+### When you genuinely cannot build a loop
+
+Stop and say so explicitly, in Portuguese. List what you tried. Ask for: (a) access to whatever environment reproduces it, (b) a redacted captured artifact (HAR file, log dump, core dump, screen recording with timestamps), or (c) permission to add temporary production instrumentation. Do **not** proceed to hypothesise without a loop.
 
 ```text
-Preciso de um exemplo minimo que reproduza o erro. Voce consegue me fornecer:
+Preciso de um exemplo mínimo que reproduza o erro. Você consegue me fornecer:
 
-1. O comando ou acao que dispara o problema.
-2. A saida ou mensagem de erro exata.
-3. O ambiente (local, CI, staging, producao).
+1. O comando ou ação que dispara o problema.
+2. A saída ou mensagem de erro exata.
+3. O ambiente (local, CI, staging, produção).
+4. Se possível, um artefato capturado (HAR, dump de log, gravação de tela) com segredos redigidos.
 
-➡️ Se nao tiver, vou tentar construir um caso de reproducao sozinho.
+➡️ Se não tiver, vou tentar construir um caso de reprodução sozinho.
 ```
 
-## Phase 2 — Minimise the problem
+### Completion criterion: a tight loop that goes red
 
-**This is the skill.** If you cannot reproduce the bug in isolation, you cannot fix it. If you cannot minimise the problem, you cannot reproduce it. If you cannot reproduce it, you cannot fix it.
+Phase 1 is done when you can name **one command** (script path, test invocation, curl) that you have **already run at least once** — show the invocation and its output, redacted — and that is:
 
-### Ways to minimise — try them in roughly this order
+- [ ] **Red-capable** — drives the actual bug code path and asserts the user's exact symptom, so it can go red on *this* bug and green once fixed. "Runs without erroring" is not enough; it must be able to *catch this specific bug*.
+- [ ] **Deterministic** — same verdict every run (for flaky bugs: a pinned, high reproduction rate).
+- [ ] **Fast** — seconds, not minutes.
+- [ ] **Agent-runnable** — you can run it unattended; a human only via `scripts/hitl-loop.template.sh`.
 
-1. **Remove code** until the bug disappears. Add it back in small chunks to find the culprit.
-2. **Remove data** until the bug disappears. Add it back in small chunks to find the culprit.
-3. **Remove configuration** until the bug disappears. Add it back in small chunks to find the culprit.
-4. **Remove dependencies** until the bug disappears. Add them back in small chunks to find the culprit.
-5. **Remove environment** until the bug disappears. Add it back in small chunks to find the culprit.
+If you catch yourself reading code to build a theory before this command exists, **stop — jumping straight to a hypothesis is the exact failure this skill prevents.** No red-capable command, no Phase 2.
+
+## Phase 2 — Reproduce + minimise
+
+Run the loop. Watch it go red as the bug appears. Confirm:
+
+- [ ] The loop produces the failure mode the **user** described, not a different failure that happens to be nearby. Wrong bug = wrong fix.
+- [ ] The failure is reproducible across multiple runs (or, for non-deterministic bugs, at a high enough rate to debug against).
+- [ ] You captured the exact symptom (error message, wrong output, slow timing) so later phases can verify the fix actually addresses it.
+
+### Minimise
+
+Shrink the repro to the **smallest scenario that still goes red**. Cut **one thing at a time**, re-running the loop after each cut, and keep only what is load-bearing for the failure:
+
+1. Remove **code** until the bug disappears.
+2. Remove **data**.
+3. Remove **configuration**.
+4. Remove **dependencies**.
+5. Remove **environment**.
+
+Why bother: a minimal repro shrinks the hypothesis space in Phase 3 (fewer moving parts to suspect) and becomes the clean regression test in Phase 5.
+
+**Done when every remaining element is load-bearing** — removing any one of them makes the loop go green. Do not proceed until you have reproduced **and** minimised.
 
 ## Phase 3 — Hypothesise
 
-**This is the skill.** If you cannot explain the bug, you cannot fix it.
+Generate **3–5 ranked hypotheses before testing any of them**. Single-hypothesis generation anchors on the first plausible idea.
 
-### Ways to hypothesise — try them in roughly this order
+Each hypothesis must be **falsifiable** — state the prediction it makes:
 
-1. **Check the obvious.** Is the bug in the code you are looking at? Is it in the code you are calling? Is it in the code calling you?
-2. **Check the documentation.** Is the bug in the docs you are looking at? Is it in the docs you are calling?
-3. **Check the logs.** Are the logs telling the truth? Are they masking the real error?
-4. **Check the tests.** Is the bug in the tests you are running? Are they covering the real path?
-5. **Check the codebase.** Are there other call sites with the same pattern?
+> "If \<X\> is the cause, then \<changing Y\> will make the bug disappear / \<changing Z\> will make it worse."
 
-Report the hypothesis to the user in Portuguese:
+If you cannot state the prediction, the hypothesis is a vibe — discard or sharpen it.
+
+Where to look, in roughly this order:
+
+1. **The code** — is the bug in the code you are looking at, the code it calls, or the code calling it?
+2. **The docs** — is the documented behaviour even correct?
+3. **The logs** — are they telling the truth, or masking the real error?
+4. **The tests** — do they cover the real path?
+5. **The codebase** — are there other call sites with the same pattern?
+
+**Show the ranked list to the user before testing** — domain knowledge re-ranks instantly ("we just deployed a change to #3", "#2 is already ruled out"). Cheap checkpoint, big time saver. Don't block on it: proceed with your ranking if the user is AFK.
 
 ```text
-Hipotese atual: [DESCRICAO_DA_HIPOTESE].
+Hipóteses ranqueadas:
 
-Vou validar com [ACAO_EXPERIMENTAL]. Se confirmar, o proximo passo e [PROXIMO_PASSO].
+1. [HIPOTESE_1] — previsão: [PREDICAO_1]
+2. [HIPOTESE_2] — previsão: [PREDICAO_2]
+3. [HIPOTESE_3] — previsão: [PREDICAO_3]
 
-Concorda ou quer que eu teste outra hipotese primeiro?
+Vou validar a nº [N] com [ACAO_EXPERIMENTAL]. Se confirmar, o próximo passo é [PROXIMO_PASSO].
+
+Concorda, ou quer que eu teste outra hipótese primeiro?
 ```
 
 ## Phase 4 — Instrument
 
-**This is the skill.** If you cannot see the bug, you cannot fix it.
+Each probe must map to a specific prediction from Phase 3. **Change one variable at a time.**
 
-### Ways to instrument — try them in roughly this order
+Tool preference:
 
-1. **Add logs** around the suspect seam.
-2. **Add metrics** to measure the suspect behaviour.
-3. **Add traces** to follow the request path.
-4. **Add assertions** to fail fast on invariants.
-5. **Add tests** that reproduce the bug before the fix.
+1. **Debugger / REPL inspection** if the environment supports it — one breakpoint beats ten logs.
+2. **Targeted logs** at the boundaries that distinguish hypotheses.
+3. **Metrics / traces** to measure the suspect behaviour and follow the request path.
+4. **Assertions** that fail fast on invariants.
+5. Never "log everything and grep".
 
-## Phase 5 — Fix
+**Tag every debug log** with a unique prefix, e.g. `[DEBUG-a4f2]` — cleanup at the end becomes a single grep. Untagged logs survive; tagged logs die.
 
-Do the smallest, safest change that removes the root cause. Avoid band-aids. If the fix touches many files, present the plan to the user in Portuguese before editing.
+**Perf branch.** For performance regressions, logs are usually wrong. Establish a baseline measurement (timing harness, profiler, query plan), then bisect. Measure first, fix second.
+
+## Phase 5 — Fix + regression test
+
+Write the regression test **before the fix**, but only if there is a **correct seam** for it — a seam where the test exercises the real bug pattern as it occurs at the call site. If the only available seam is too shallow (a unit test that cannot replicate the chain that triggered the bug), a regression test there gives false confidence.
+
+**If no correct seam exists, that itself is a finding.** The architecture is preventing the bug from being locked down — flag it for Phase 6 and for `improve-codebase-architecture`.
+
+If a correct seam exists:
+
+1. Turn the minimised repro into a failing test at that seam.
+2. Watch it fail.
+3. Apply the smallest, safest change that removes the root cause — no band-aids.
+4. Watch it pass.
+5. Re-run the Phase 1 feedback loop against the original (un-minimised) scenario.
+
+If the fix touches many files, present the plan to the user in Portuguese before editing:
 
 ```text
 Raiz do problema: [RAIZ].
-Correcao proposta: [DESCRICAO_DA_CORRECAO].
+Correção proposta: [DESCRICAO_DA_CORRECAO].
 Arquivos afetados: [LISTA].
 
-Posso aplicar a correcao e depois rodar os testes?
+Posso aplicar a correção e depois rodar os testes?
 ```
 
-## Phase 6 — Regression-test and re-validate
+## Phase 6 — Cleanup + re-validate
 
-**This is the skill.** If you cannot verify the fix, you cannot call it done.
+Required before declaring done:
 
-### Required checks
-
-1. **Reproduction fails before the fix, passes after.**
-2. **Add a regression test** for the fixed bug.
-3. **Run the affected test layer** (unit, integration, E2E).
-4. **Run a lightweight regression** on neighbouring flows.
-5. **Remove or revert instrumentation** that is no longer needed.
+- [ ] Original repro no longer reproduces (re-run the Phase 1 loop).
+- [ ] Regression test passes (or absence of a correct seam is documented).
+- [ ] Affected test layer run (unit, integration, e2e) plus a lightweight regression on neighbouring flows.
+- [ ] All `[DEBUG-...]` instrumentation removed (`grep` the prefix).
+- [ ] Throwaway prototypes deleted (or moved to a clearly marked debug location).
+- [ ] The hypothesis that turned out correct is stated in the commit / PR message, so the next debugger learns.
 
 Report the result in Portuguese:
 
 ```text
-Correcao aplicada em [ARQUIVOS].
+Correção aplicada em [ARQUIVOS].
 
-- Teste de reproducao: [PASS/FAIL]
-- Testes de regressao: [PASS/FAIL]
+- Reprodução original: [não reproduz mais / ainda falha]
+- Teste de regressão: [PASS/FAIL]
 - Testes afetados: [PASS/FAIL]
+- Instrumentação removida: [SIM/NÃO]
 
-O bug esta resolvido. Quer que eu abra uma Issue para documentar a causa raiz com /create-issues?
+O bug está resolvido. Quer que eu abra uma Issue para documentar a causa raiz com /create-issues?
 ```
 
 ## Agent Self-Debug / Introspection (use when the failure is the agent itself)
@@ -164,7 +242,7 @@ Match the failure to a known pattern:
 | `ECONNREFUSED` / timeout | service unavailable or wrong port | verify service health, URL, and port assumptions |
 | `429` / quota exhaustion | retry storm or missing backoff | count repeated calls and inspect retry spacing |
 | file missing after write / stale diff | race, wrong cwd, or branch drift | re-check path, cwd, git status, and actual file existence |
-| tests still failing after “fix” | wrong hypothesis | isolate the exact failing test and re-derive the bug |
+| tests still failing after "fix" | wrong hypothesis | isolate the exact failing test and re-derive the bug |
 
 Diagnosis questions:
 - is this a logic failure, state failure, environment failure, or policy failure?
@@ -198,6 +276,61 @@ End with:
 - Preventive change to encode later:
 ```
 
+## AI Workflow Diagnostic
+
+When the misbehaving system is an agent or AI workflow (not a code path), audit it across 5 dimensions. Score each 1–5 and report specific findings in Portuguese.
+
+### Dimension 1 — Prompt Quality
+Structure (role, context, instructions, output zones); explicit output schema; instruction clarity; edge-case handling; anti-patterns (wall of text, contradictions, implicit format).
+
+### Dimension 2 — Context Efficiency
+Context budget allocation (planned vs. ad-hoc); attention gradient (critical info at start/end); context window utilisation; state management (explicit vs. implicit); memory strategy appropriate for conversation length.
+
+### Dimension 3 — Tool Health
+Tool count (3–7 ideal, 13+ problematic); description quality; error handling; schema completeness (input/output/error); idempotency. **Scope attribution**: distinguish project-configured tools from agent-level/built-in tools — only flag overhead the project can actually control.
+
+### Dimension 4 — Architecture Fitness
+Topology appropriateness (single vs. multi-agent justified); agent boundaries (clear vs. overlapping); handoff protocols (structured vs. ad-hoc); observability; cost awareness.
+
+### Dimension 5 — Safety & Reliability
+Input validation; output filtering (PII, content policy — scope contextually: user's own frontend→backend is lower risk than external services); cost controls; error recovery; evaluation strategy (golden tests vs. "it seems to work").
+
+### Report format
+
+```text
+╔══════════════════════════════════════╗
+║          WORKFLOW DIAGNOSTIC         ║
+╠══════════════════════════════════════╣
+║ Prompt Quality       ████░  4/5      ║
+║ Context Efficiency   ███░░  3/5      ║
+║ Tool Health          ██░░░  2/5      ║
+║ Architecture         ████░  4/5      ║
+║ Safety & Reliability ██░░░  2/5      ║
+╠══════════════════════════════════════╣
+║ Overall Score:       15/25           ║
+╚══════════════════════════════════════╝
+
+ACHADOS CRÍTICOS:
+1. [Problema mais severo — ação imediata]
+2. [Segundo mais severo]
+3. [Terceiro]
+
+AÇÕES RECOMENDADAS:
+1. [Correção específica para o achado nº 1]
+2. [Correção específica para o achado nº 2]
+3. [Correção específica para o achado nº 3]
+```
+
+### Scoring guide
+
+| Score | Meaning | Recommended Action |
+| --- | --- | --- |
+| 5 | Production-excellent | No action needed |
+| 4 | Good with minor gaps | Polish prompt clarity or output schema |
+| 3 | Functional but risky | Add error handling or reduce complexity |
+| 2 | Significant issues | Immediate attention — add retries/guards |
+| 1 | Broken or missing | Rebuild from scratch with clear structure |
+
 ## Silent-Failure Hunt
 
 When the code "works" but misbehaves quietly, hunt for silent failures before declaring the bug resolved.
@@ -225,16 +358,23 @@ Diagnosis is iterative. After every change, re-run the reproduction. If the bug 
 
 | Mistake | Fix |
 | --- | --- |
-| Fixing without a reproduction first | Build a reproduction before changing code. |
+| Fixing without a reproduction first | Build a red-capable loop before changing code. |
+| Hypothesising before a tight loop exists | Phase 1 completion criterion first — no red command, no theory. |
+| Testing the first plausible hypothesis only | Generate 3–5 ranked, falsifiable hypotheses. |
 | Skipping minimisation | Minimise first, or you fix symptoms, not the cause. |
-| Removing instrumentation too early | Keep it until the fix is verified. |
+| Asserting "didn't crash" instead of the symptom | Sharpen the signal — assert the exact user-reported failure. |
+| Regression test at a seam too shallow | Use a correct seam, or document that none exists. |
+| Removing instrumentation too early | Keep `[DEBUG-...]` logs until the fix is verified, then grep-clean. |
 | Not adding a regression test | Every fixed bug deserves a test. |
 | Declaring done without re-validation | Re-run the reproduction and the suite. |
 
 ## References
 
+- `scripts/hitl-loop.template.sh` — human-in-the-loop reproduction driver
 - `qa-analyst` — for test planning and bug reporting
 - `write-specs` — for producing specs when the bug reveals missing requirements
-- `improve-codebase-architecture` — when the diagnosis reveals structural seams that need deepening
+- `improve-codebase-architecture` — when the diagnosis reveals missing seams or structural problems
+- `observability-and-instrumentation` — when the fix needs durable logging/metrics/tracing, not throwaway probes
+- `create-issues` — to track the documented root cause
 - `agent-introspection-debugging` — when the failure is the agent session itself (loops, context drift, repeated tool calls)
 - `silent-failure-hunter` — when the code works but misbehaves quietly
