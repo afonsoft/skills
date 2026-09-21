@@ -3,7 +3,7 @@ name: diagnose
 license: MIT
 description: Use when the user reports a hard bug, unexpected failure, or performance regression that needs root-cause analysis.
 metadata:
-  version: "1.3.0"
+  version: "1.4.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -16,6 +16,27 @@ A discipline for hard bugs and regressions. Skip phases only when explicitly jus
 When exploring the codebase, use the project's domain glossary from `.claude/CONTEXT.md` (if it exists) to get a clear mental model of the relevant modules, and check `docs/architecture/` for decisions and ADRs in the area you are touching.
 
 **Re-validation loop**: after every hypothesis, fix, or change, re-run the reproduction and the regression checks before declaring the bug resolved.
+
+## Pipeline
+
+```text
+Phase 0  Frame the bug          → symptom, expected vs actual, env, frequency, scope
+Phase 1  Build a feedback loop  → ONE tight, red-capable command (the core of this skill)
+Phase 2  Reproduce + minimise   → smallest scenario that still goes red
+Phase 3  Hypothesise            → 3–5 ranked, falsifiable predictions
+Phase 4  Instrument             → one probe per prediction, one variable at a time
+Phase 5  Fix + regression test  → test at a correct seam, watch red → green
+Phase 6  Cleanup + re-validate  → remove probes, re-run the original repro
+
+   ↺ If the bug survives or mutates, return to Phase 3.
+   ↺ If every hypothesis dies, see "Stuck — when hypotheses run out".
+```
+
+Entry points for non-code failures:
+
+- The bug is the agent session itself → [Agent Self-Debug](#agent-self-debug--introspection-use-when-the-failure-is-the-agent-itself)
+- The misbehaving system is an agent/AI workflow → [AI Workflow Diagnostic](#ai-workflow-diagnostic)
+- The code "works" but quietly produces wrong/absent effects → [Silent-Failure Hunt](#silent-failure-hunt)
 
 ## Redact
 
@@ -38,6 +59,34 @@ When the target codebase matches one of these stacks, load the matching playbook
 - `references/angular-debugging.md` — Angular (Angular DevTools profiler, `ng.*` console APIs, RxJS `tap`, change-detection profiling)
 - `references/python-debugging.md` — Python (`breakpoint()`/`pdb`, pytest `--pdb`, py-spy, faulthandler, tracemalloc, asyncio debug)
 - `references/react-debugging.md` — React (React DevTools profiler, why-did-you-render, re-render/effect bug patterns)
+
+## Phase 0 — Frame the bug
+
+Before building anything, pin down what "broken" means. A fuzzy symptom produces a fuzzy loop, and a fuzzy loop wastes every phase after it.
+
+Capture — from the user, the bug report, or the evidence:
+
+- [ ] **Symptom, verbatim** — the exact error message, wrong value, or timing. Quote it; do not paraphrase.
+- [ ] **Expected vs actual** — what should happen vs what does happen.
+- [ ] **Environment** — local / CI / staging / prod; OS, runtime, versions, config profile.
+- [ ] **Since when** — first sighting; the deploy, commit, or data change it correlates with; or "always".
+- [ ] **Frequency** — every run, flaky (roughly how often?), or once.
+- [ ] **Scope** — one user / input / environment, or everything.
+- [ ] **Recent changes** — code, dependencies, config, data, infrastructure.
+
+If the report is thin, interview the reporter before touching code (in Portuguese):
+
+```text
+Antes de investigar, preciso enquadrar o bug:
+
+1. O que deveria acontecer vs o que aconteceu? (mensagem de erro exata, se houver)
+2. Onde acontece — local, CI, staging, produção?
+3. Desde quando? Relacionado a algum deploy ou mudança recente?
+4. Com que frequência — sempre, às vezes (quantas?), ou uma vez só?
+5. Atinge um caso específico ou tudo?
+```
+
+**Output of Phase 0**: a one-sentence bug statement — *"In \<env\>, \<input/action\> produces \<actual\> instead of \<expected\>, since \<when\> (\<frequency\>)."* If you cannot write that sentence, keep interviewing — do not start Phase 1.
 
 ## Phase 1 — Build a feedback loop
 
@@ -132,7 +181,14 @@ Each hypothesis must be **falsifiable** — state the prediction it makes:
 
 If you cannot state the prediction, the hypothesis is a vibe — discard or sharpen it.
 
-Where to look, in roughly this order:
+Sources for hypotheses — cheap checks first:
+
+1. **Recent diffs** — `git log -p --since="<first sighting>"` on the touched area, plus dependency and config changes. Bugs correlate strongly with fresh changes; "it worked before" is a bisection waiting to happen.
+2. **Working vs broken path** — find a sibling flow that *does* work and diff the two paths (inputs, config, call chain, data shape).
+3. **Environment delta** — diff env vars, config files, feature flags, and dependency versions between an environment that works and the one that doesn't.
+4. **Boundary check** — is the bad value already wrong at the entry boundary, or does it appear mid-pipeline? Each boundary that verifies clean halves the suspect zone.
+
+Where the bug may live, in roughly this order:
 
 1. **The code** — is the bug in the code you are looking at, the code it calls, or the code calling it?
 2. **The docs** — is the documented behaviour even correct?
@@ -154,6 +210,22 @@ Vou validar a nº [N] com [ACAO_EXPERIMENTAL]. Se confirmar, o próximo passo é
 Concorda, ou quer que eu teste outra hipótese primeiro?
 ```
 
+### Diagnostic journal
+
+For anything non-trivial, keep a running journal — it prevents re-testing a rejected hypothesis and survives context drift/compaction:
+
+```markdown
+## Diagnostic Journal — <one-sentence bug statement>
+- Loop: `<the Phase 1 command>` → currently red
+- Min repro: <smallest red scenario>
+
+| Hypothesis | Prediction | Test run | Result |
+|---|---|---|---|
+| H1: ... | ... | ... | rejected / confirmed |
+
+- Root cause: <filled at the end>
+```
+
 ## Phase 4 — Instrument
 
 Each probe must map to a specific prediction from Phase 3. **Change one variable at a time.**
@@ -167,6 +239,10 @@ Tool preference:
 5. Never "log everything and grep".
 
 **Tag every debug log** with a unique prefix, e.g. `[DEBUG-a4f2]` — cleanup at the end becomes a single grep. Untagged logs survive; tagged logs die.
+
+**Probe placement.** Put probes at the boundaries that bisect the hypothesis space: function entry/exit, before and after each transformation, each external call (network, DB, filesystem), and every state transition. One probe that discriminates between H1 and H2 beats ten that don't.
+
+**Correlation.** Stamp a request/trace id as early as possible and log it at every probe — otherwise concurrent flows interleave and your evidence is ambiguous.
 
 **Perf branch.** For performance regressions, logs are usually wrong. Establish a baseline measurement (timing harness, profiler, query plan), then bisect. Measure first, fix second.
 
@@ -217,6 +293,15 @@ Correção aplicada em [ARQUIVOS].
 
 O bug está resolvido. Quer que eu abra uma Issue para documentar a causa raiz com /create-issues?
 ```
+
+## Stuck — when hypotheses run out
+
+If every hypothesis is rejected, the failure is upstream of your assumptions:
+
+1. **Question the loop** — is it really red-capable on *this* bug? Re-check the Phase 1 completion checklist; a loop that cannot go red makes every later phase theater.
+2. **Question the frame** — re-run Phase 0. The reported symptom may be downstream of the real one (e.g. the user sees a timeout, but the root cause is a deadlock ten seconds earlier).
+3. **Widen the search** — the cause may sit outside the code: data, config, infrastructure, a dependency's changed behaviour. Diff the whole environment, not just the source diff.
+4. **Bring evidence to the user** — report the diagnostic journal in Portuguese: what was tried, what each test proved or disproved, and what you need next (access, an artifact, or a decision).
 
 ## Agent Self-Debug / Introspection (use when the failure is the agent itself)
 
@@ -367,6 +452,7 @@ Diagnosis is iterative. After every change, re-run the reproduction. If the bug 
 
 | Mistake | Fix |
 | --- | --- |
+| Investigating a vague symptom | Phase 0 first — one-sentence bug statement or keep interviewing. |
 | Fixing without a reproduction first | Build a red-capable loop before changing code. |
 | Hypothesising before a tight loop exists | Phase 1 completion criterion first — no red command, no theory. |
 | Testing the first plausible hypothesis only | Generate 3–5 ranked, falsifiable hypotheses. |
@@ -375,6 +461,10 @@ Diagnosis is iterative. After every change, re-run the reproduction. If the bug 
 | Regression test at a seam too shallow | Use a correct seam, or document that none exists. |
 | Removing instrumentation too early | Keep `[DEBUG-...]` logs until the fix is verified, then grep-clean. |
 | Not adding a regression test | Every fixed bug deserves a test. |
+| Re-testing a rejected hypothesis | Keep the diagnostic journal; record every result. |
+| Assuming recent changes are innocent | Diff first — fresh code is the prime suspect. |
+| Ambiguous evidence from concurrent flows | Stamp a correlation id and log it at every probe. |
+| Debugging the wrong environment | Verify env matches the Phase 0 report before trusting results. |
 | Declaring done without re-validation | Re-run the reproduction and the suite. |
 
 ## References
