@@ -3,7 +3,7 @@ name: write-specs
 license: MIT
 description: Use when the user needs to create or refine a feature SPEC SDD before implementation.
 metadata:
-  version: "1.3.0"
+  version: "1.4.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -194,6 +194,23 @@ Use `[A DEFINIR]` only when the user explicitly declines to answer. The goal is 
 4. If the user approves, update `Status: Approved`.
 5. Only after `Status = Approved` may implementation begin. Do not write implementation code.
 
+## GitHub Issue Label Sync
+
+Whenever a GitHub Issue is linked to the SPEC — already existing (via the `Ticket` field or a title search) or created through `create-issues` — keep its labels in sync with the SPEC state, per the Label Contract in `create-issues`:
+
+- **SPEC in `Draft`**: ensure the Issue carries its kind label plus the `backlog` status label.
+  - Kind label by SPEC `Type`: `Bugfix` → `bug`; `Feature`, `Frontend`, `API`, `Infra`, `Refactor`, `Docs` → `feature`; an Issue that tracks an Epic → `epic`.
+  - If the user asks to open the Issue while the SPEC is still `Draft`, create it with kind label + `backlog`.
+- **SPEC approved (`Status: Approved`)**: swap the status label `backlog` → `todo` on the existing Issue, or create the Issue directly with kind label + `todo`.
+
+Status labels are mutually exclusive — always remove the previous status label when applying the next:
+
+```bash
+gh issue edit <number> --remove-label backlog --add-label todo
+```
+
+If `gh` is unavailable or unauthenticated, report it and continue without label sync — never block the SPEC on label management.
+
 ## GitHub Issue Handoff
 
 After the SPEC is approved, always ask the user — in Portuguese — whether to open a GitHub Issue for it using the `create-issues` skill. The recommended answer is **yes** (default):
@@ -204,7 +221,8 @@ After the SPEC is approved, always ask the user — in Portuguese — whether to
 ➡️ Meu palpite: `Sim`
 ```
 
-- If the user answers **yes** (or accepts the default): invoke `create-issues` to create the Issue from the approved `.specs/SPEC-*.md`. Capture the returned issue number/URL and update the `Ticket` field in section 0 of the SPEC with the issue reference (e.g., `#123` plus the issue link). Then report the created Issue number and link back to the user.
+- If the user answers **yes** (or accepts the default): invoke `create-issues` to create the Issue from the approved `.specs/SPEC-*.md` — it is created with its kind label plus `todo` (the SPEC is already `Approved`). Capture the returned issue number/URL and update the `Ticket` field in section 0 of the SPEC with the issue reference (e.g., `#123` plus the issue link). Then report the created Issue number and link back to the user.
+- If the Issue already existed from the `Draft` phase: do not create a duplicate — just swap `backlog` → `todo` and ensure `Ticket` points to it.
 - If the user answers **no**: leave `Ticket` as is and finish.
 - If GitHub is unavailable (`gh` not authenticated or no remote), report it and finish without creating the Issue — do not mark the SPEC as tracked.
 
@@ -218,6 +236,8 @@ After the SPEC is approved, always ask the user — in Portuguese — whether to
 - [ ] User explicitly approved the SPEC.
 - [ ] User was asked about opening a GitHub Issue (recommended answer: yes).
 - [ ] If the Issue was created, `Ticket` in section 0 was updated with the issue number/link.
+- [ ] If an Issue existed while the SPEC was `Draft`, it carries its kind label + `backlog`.
+- [ ] On approval, the Issue status label was swapped `backlog` → `todo` (or the Issue was created with `todo`).
 
 ## Common Mistakes
 
@@ -230,6 +250,8 @@ After the SPEC is approved, always ask the user — in Portuguese — whether to
 | Writing a SPEC without user confirmation | The user must explicitly approve. |
 | Ending without asking about the GitHub Issue | Always ask after approval, with yes as the recommended answer. |
 | Creating the Issue but leaving `Ticket` empty | Update section 0 with the issue number/link right after `gh issue create` returns. |
+| Leaving `backlog` on an approved SPEC's Issue | Swap `backlog` → `todo` the moment `Status` becomes `Approved`. |
+| Stacking `backlog` and `todo` | Status labels are exclusive — remove the old one when adding the next. |
 
 ## References
 

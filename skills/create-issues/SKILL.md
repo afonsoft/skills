@@ -3,7 +3,7 @@ name: create-issues
 license: MIT
 description: Use when turning approved plans, specs, PRDs, or Epics into trackable GitHub Issues.
 metadata:
-  version: "1.3.2"
+  version: "1.4.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -49,6 +49,70 @@ Check access with:
 ```bash
 gh auth status
 gh repo view
+```
+
+## Label Contract
+
+This skill owns the canonical label set. Every work-tracking Issue carries **one kind label** (immutable, set at creation) and **exactly one status label** (changes over the lifecycle). `blocked` is the only additive label.
+
+### Kind labels
+
+| Label | Applied to |
+| --- | --- |
+| `epic` | Epic tracking Issue |
+| `slice` | Vertical slice Issue under an Epic |
+| `feature` | Issue from a SPEC of Type `Feature`, `Frontend`, `API`, `Infra`, `Refactor`, or `Docs` |
+| `bug` | Issue from a SPEC of Type `Bugfix` |
+
+### Status labels
+
+| Label | Meaning | Set by |
+| --- | --- | --- |
+| `backlog` | Issue exists but the SPEC is still `Draft` / not approved | `write-specs`, `create-issues` |
+| `todo` | SPEC `Approved`, queued for implementation | `write-specs`, `create-issues` |
+| `in_progress` | Implementation started | `execute-specs` |
+| `in_review` | Implementation finished, under QA / code review | `execute-specs` |
+| `in_pullrequest` | Pull request open | `execute-specs`, `orchestrator` |
+| `done` | PR merged and delivered | `execute-specs`, `orchestrator` |
+| `canceled` | SPEC or Issue canceled | `execute-specs`, `orchestrator` |
+
+Lifecycle: `backlog → todo → in_progress → in_review → in_pullrequest → done`. `canceled` is terminal and may be applied from any state.
+
+`blocked` is orthogonal: add it **on top of** the current status label together with a pt-BR comment describing the blocker, and remove it (with a short comment) when the blocker clears. Never replace the stage label with `blocked` — the stage is preserved so the Issue can resume where it stopped.
+
+### Commands
+
+Ensure the canonical labels exist before applying them (`--force` updates in place if a label already exists):
+
+```bash
+gh label create epic --color "FF0000" --description "High-level deliverable" --force
+gh label create slice --color "00FF00" --description "Vertical work item" --force
+gh label create feature --color "1D76DB" --description "Feature-level work item" --force
+gh label create bug --color "D73A4A" --description "Bugfix work item" --force
+gh label create backlog --color "C5DEF5" --description "Tracked, SPEC not approved yet" --force
+gh label create todo --color "0E8A16" --description "Approved, ready to implement" --force
+gh label create in_progress --color "FBCA04" --description "Implementation in progress" --force
+gh label create in_review --color "D4C5F9" --description "Under QA / code review" --force
+gh label create in_pullrequest --color "5319E7" --description "Pull request open" --force
+gh label create blocked --color "B60205" --description "Blocked — see latest comment" --force
+gh label create done --color "006B75" --description "Merged and delivered" --force
+gh label create canceled --color "EDEDED" --description "Canceled work" --force
+```
+
+Swap a status label (always remove the previous status label — never stack two):
+
+```bash
+gh issue edit 123 --remove-label backlog --add-label todo
+```
+
+Flag / clear a blocker:
+
+```bash
+gh issue edit 123 --add-label blocked
+gh issue comment 123 --body "Bloqueio: <descrição do bloqueio em pt-BR>."
+
+gh issue edit 123 --remove-label blocked
+gh issue comment 123 --body "Bloqueio resolvido: <o que mudou>."
 ```
 
 ## Epic Traceability Contract
@@ -100,10 +164,11 @@ gh repo view
 gh issue create \
   --title "E10 - Product foundation" \
   --label "epic" \
+  --label "todo" \
   --body-file /path/to/epic-body.md
 ```
 
-Save the returned issue number. Add the link back to the roadmap.
+Save the returned issue number. Add the link back to the roadmap. Use `backlog` instead of `todo` when the Issue is created before the underlying SPEC is approved.
 
 ### Create a slice Issue
 
@@ -111,6 +176,7 @@ Save the returned issue number. Add the link back to the roadmap.
 gh issue create \
   --title "[E10] Set up project harness" \
   --label "slice" \
+  --label "todo" \
   --body-file /path/to/slice-body.md
 ```
 
@@ -122,10 +188,7 @@ gh issue edit 124 --add-linked-issue 123 --link-type blocked_by
 
 ### Add labels
 
-```bash
-gh label create epic --color "FF0000" --description "High-level deliverable"
-gh label create slice --color "00FF00" --description "Vertical work item"
-```
+Use the canonical set from the Label Contract above — never invent ad-hoc labels.
 
 ### Add issues to a milestone or project
 
@@ -146,7 +209,7 @@ When creating many Issues, generate a `issues.json` list and loop over it:
 
 ```bash
 while IFS= read -r title; do
-  gh issue create --title "$title" --label slice --body-file "slices/${title}.md"
+  gh issue create --title "$title" --label slice --label todo --body-file "slices/${title}.md"
 done < slices.txt
 ```
 
@@ -163,6 +226,7 @@ Before finishing, confirm:
 [ ] Every link points to /issues/<number>
 [ ] No Epic ID is duplicated
 [ ] Epic Issue references its child slices
+[ ] Every Issue has exactly one kind label and exactly one status label
 [ ] Roadmap and GitHub states are consistent
 ```
 
@@ -191,7 +255,7 @@ The business or technical result expected.
 
 ## State
 
-todo | in_progress | done
+Tracked by the status label on this Issue: `backlog | todo | in_progress | in_review | in_pullrequest | done | canceled` (+ `blocked` when flagged).
 ```
 
 ## Slice Issue Template
@@ -227,10 +291,11 @@ When a GitHub Issue is being created from an approved `.specs/SPEC-*.md`, compos
 gh issue create \
   --title "E10 - [feature-name]" \
   --label "epic" \
+  --label "todo" \
   --body-file /path/to/filled-spec-issue.md
 ```
 
-For Epic issues, keep the full SDD structure. For child slice issues, include only the parent Epic, scope, acceptance criteria, and verification sections, and set the `slice` label.
+For Epic issues, keep the full SDD structure. For child slice issues, include only the parent Epic, scope, acceptance criteria, and verification sections, and set the `slice` label. For a standalone (non-Epic) Issue created from a SPEC, use the kind label that matches the SPEC `Type` (`feature` or `bug` per the Label Contract). In all cases the status label is `todo` when the SPEC is `Approved` and `backlog` when it is still `Draft`.
 
 ## Common Mistakes
 
@@ -240,6 +305,8 @@ For Epic issues, keep the full SDD structure. For child slice issues, include on
 | Creating slices before the Epic Issue | Create the Epic first, then reference its number in child Issues. |
 | Missing `Blocked by` links | Link dependencies explicitly with `gh issue edit --add-linked-issue`. |
 | Inventing Epics without a roadmap/spec | Stop and ask the user or the owning skill for the source of truth. |
+| Stacking two status labels | Status labels are exclusive — always `--remove-label` the old one when adding the next; only `blocked` coexists. |
+| Inventing ad-hoc labels | Use only the canonical kind/status labels from the Label Contract. |
 
 ## References
 

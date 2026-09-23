@@ -3,7 +3,7 @@ name: gap-analysis
 license: MIT
 description: "Use when auditing a repository for evidence-backed gaps between code, SPECs, architecture, and documentation — before a release, after a review, or when the user asks what is missing or divergent. Confirmed gaps become Draft SPECs via write-specs, a tracked GitHub Epic via create-issues, and orchestrated execution via orchestrator, with an explicit approval gate before any external action."
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -130,8 +130,8 @@ No Issue, branch, commit, push, PR, or spec execution before an explicit `sim`.
 
 After approval, invoke `create-issues` per its contract:
 
-1. One Epic Issue `gap-analysis-{YYYYMMDD}` (label `epic`) summarizing the audit, with the gap list and links.
-2. One slice Issue per approved gap (label `slice`), linked to the Epic and to its SPEC path; dependencies via `Blocked by` with real Issue numbers.
+1. One Epic Issue `gap-analysis-{YYYYMMDD}` (labels `epic` + `todo`) summarizing the audit, with the gap list and links.
+2. One slice Issue per approved gap (labels `slice` + `todo`), linked to the Epic and to its SPEC path; dependencies via `Blocked by` with real Issue numbers. Status labels follow the Label Contract in `create-issues`.
 3. An equivalent Issue already exists → link it, never duplicate.
 4. Record Issue numbers/URLs in the run state file.
 
@@ -160,7 +160,7 @@ Write the consolidated report to `.claude/memory/gap-analysis-{YYYYMMDD}.md` usi
 | Promoting "I didn't find it" to a gap | Prove TO-BE + AS-IS + impact with evidence first. |
 | Flagging something a test or linter already covers | Check coverage before the verdict; mark `REJEITADO` with the covering evidence. |
 | Creating Issues before the gate | The gate is hard: no external action without explicit approval. |
-| Inventing labels, milestones, or assignees | Use only `epic`/`slice` per `create-issues`; anything else needs proof it exists. |
+| Inventing labels, milestones, or assignees | Use only the canonical kind/status labels per the `create-issues` Label Contract; anything else needs proof it exists. |
 | Hiding rejected or inconclusive candidates | Report every verdict — rejections are part of the audit's value. |
 | Silently picking a side in contradictory docs | Mark `INCONCLUSIVO` and ask the user. |
 | Copying a secret into evidence to prove a point | Reference `path:line` with `<redacted>` — never the value. |

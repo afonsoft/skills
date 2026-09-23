@@ -3,7 +3,7 @@ name: execute-specs
 license: MIT
 description: "Use when the user asks to implement an approved SPEC SDD using test-driven development."
 metadata:
-  version: "1.3.1"
+  version: "1.4.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -47,12 +47,15 @@ Load `.specs/SPEC-{YYYYMMDD}-{feature}.md` and identify:
 - Section 6 — acceptance criteria in BDD `Given...when...then`.
 - Section 7 — task plan and validation strategy.
 - Section 3 — files to create or modify.
+- Section 0 — the `Ticket` field: resolve the linked GitHub Issue number (e.g. `#123`) if present.
 
 If the SPEC is not approved, stop and invoke `/write-specs`.
 
 ### 2. Slice the work
 
 Order the work by the task plan (Section 7). Each slice is one requirement or one acceptance criterion. Never write all tests upfront.
+
+When the first slice starts, set the SPEC `Status` to `In implementation` and sync the linked Issue to `in_progress` (see GitHub Issue Status Sync).
 
 ### 3. Red-Green-Refactor loop
 
@@ -103,8 +106,39 @@ When all slices are green:
 - Run the full suite (unit, integration, relevant E2E).
 - Run the validation strategy from the SPEC (Section 7.1).
 - Update `docs/qa/test-plan-<feature>.md` or equivalent if it exists.
+- Sync the linked Issue to `in_review` (see GitHub Issue Status Sync).
 - Invoke `/qa-analyst` for the mandatory pre-PR review.
 - Do not open the PR until QA approves.
+- When the PR opens, sync the Issue to `in_pullrequest`. When the PR merges and delivery is finalized, sync to `done`, set the SPEC `Status` to `Done`, and close the Issue if GitHub did not close it automatically.
+
+## GitHub Issue Status Sync
+
+When the SPEC's `Ticket` field points to a GitHub Issue, keep its status label in sync with execution, per the Label Contract in `create-issues`. Status labels are exclusive — always remove the previous one when applying the next. If `gh` is unavailable or the SPEC has no linked Issue, skip the sync and continue — never let label management block TDD.
+
+| Moment | Action |
+| --- | --- |
+| Implementation starts (first slice) | Swap current status label → `in_progress`; set SPEC `Status: In implementation` |
+| All slices green (before the QA gate) | Swap → `in_review` |
+| PR opened | Swap → `in_pullrequest` |
+| PR merged and delivery finalized | Swap → `done`; set SPEC `Status: Done`; close the Issue if still open |
+| SPEC canceled at any point | Swap → `canceled` + pt-BR comment with the reason; set SPEC `Status: Canceled` |
+
+**Blockers** — PR merge conflict, failing CI that cannot be resolved in the slice, missing dependency, unanswered question, or any other impediment: keep the current status label, add `blocked`, and post a pt-BR comment describing the blocker. When the blocker clears, remove `blocked` and comment the resolution.
+
+```bash
+# status transition (exclusive)
+gh issue edit 123 --remove-label todo --add-label in_progress
+
+# flag a blocker
+gh issue edit 123 --add-label blocked
+gh issue comment 123 --body "Bloqueio: conflito de merge no PR #45 em src/foo.ts. Aguardando resolução."
+
+# blocker cleared
+gh issue edit 123 --remove-label blocked
+gh issue comment 123 --body "Bloqueio resolvido: conflito do PR #45 resolvido no merge com develop."
+```
+
+After flagging a blocker, report it to the user in Portuguese and pause that work item — do not mark the slice as done while `blocked`.
 
 ## Anti-Patterns
 
@@ -122,6 +156,8 @@ When all slices are green:
 | The test does not map to the SPEC | Link every test to `RF-###` or `AC-###`. |
 | Slice too large | Break the slice until one behavior is tested. |
 | Not running the full suite after a green test | Re-validate before moving on. |
+| Leaving the Issue status label stale | Sync the label at every transition (`in_progress` → `in_review` → `in_pullrequest` → `done`). |
+| Hiding a blocker | Add `blocked` + a pt-BR comment on the Issue and report to the user; never silently stall. |
 
 ## References
 

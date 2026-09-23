@@ -17,7 +17,7 @@ Reference for `create-agent-harness` Phase 3 / `plan` sub-agent.
 | Repository | `[repo path]` |
 | Branch | `feature/{AgentLLM}-{YYYYMMDD}-{short-description}` |
 | Ticket | `[TICKET-123]` |
-| Status | `[Draft | Approved | In implementation | Done]` |
+| Status | `[Draft | Approved | In implementation | Done | Canceled]` |
 
 ## 1. User Story
 
