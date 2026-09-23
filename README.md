@@ -153,7 +153,7 @@ Copies the skills into each IDE's skills directory and generates slash commands:
 ./install.sh --all        # all supported IDEs/CLIs + slash commands
 ./install.sh --claude     # Claude Code only
 ./install.sh --opencode   # OpenCode only
-./install.sh --devin      # Devin only
+./install.sh --devin      # Devin Desktop + Devin CLI
 ./install.sh --cursor     # Cursor only
 ./install.sh --codex      # OpenAI Codex CLI only
 ./install.sh --agy        # Google Antigravity CLI only
@@ -171,7 +171,8 @@ Slash commands follow each CLI's own convention — some clients do not accept `
 
 | CLI | Invocation | Mechanism |
 |-----|-----------|-----------|
-| Claude Code, OpenCode, Devin | `/spec-driven` and `/spec-driven:<skill>` | `commands/spec-driven:<skill>.md` shims |
+| Claude Code, OpenCode, Devin Desktop | `/spec-driven` and `/spec-driven:<skill>` | `commands/spec-driven:<skill>.md` shims |
+| Devin CLI | `/<skill>` | skills are native slash commands — no shims needed; installed to `~/.config/devin/skills/` |
 | Qwen Code | `/spec-driven` and `/spec-driven:<skill>` | `commands/spec-driven/<skill>.md` (namespace via subdirectory) |
 | Codex CLI | `/prompts:spec-driven-<skill>` | `prompts/spec-driven-<skill>.md` (custom prompts are deprecated — prefer `$<skill>`/`/skills`) |
 | Cline | `/spec-driven-<skill>` | `~/.cline/data/workflows/` workflows |

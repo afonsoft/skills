@@ -15,7 +15,7 @@
 #   ./install.sh --all            Install for all IDEs/CLIs + slash commands
 #   ./install.sh --claude         Install for Claude Code
 #   ./install.sh --opencode       Install for OpenCode
-#   ./install.sh --devin          Install for Devin
+#   ./install.sh --devin          Install for Devin (Desktop + CLI)
 #   ./install.sh --cursor         Install for Cursor
 #   ./install.sh --codex          Install for OpenAI Codex CLI
 #   ./install.sh --agy            Install for Google Antigravity CLI (agy)
@@ -55,7 +55,7 @@ Targets:
   --all, -a        Install for every supported IDE/CLI
   --claude, -c     Claude Code            (~/.claude, ~/.agents)
   --opencode, -o   OpenCode               (~/.opencode, ~/.config/opencode)
-  --devin, -d      Devin                  (~/.devin)
+  --devin, -d      Devin                  (~/.devin, ~/.config/devin, ~/.config/cognition)
   --cursor         Cursor                 (~/.cursor)
   --codex          OpenAI Codex CLI       (~/.codex)
   --agy            Antigravity CLI (agy)  (~/.gemini/antigravity-cli)
@@ -221,7 +221,7 @@ generate_slash_commands() {
       write_command "$HOME/.config/opencode/commands/spec-driven:$skill_name.md" "$skill_name"
     fi
 
-    # Devin: /spec-driven:<skill>
+    # Devin Desktop: /spec-driven:<skill> (Devin CLI exposes skills natively as /<skill>)
     if [ "$INSTALL_DEVIN" = true ]; then
       run rm -f "$HOME/.devin/commands/architecture:$skill_name.md"
       write_command "$HOME/.devin/commands/spec-driven:$skill_name.md" "$skill_name"
@@ -323,7 +323,11 @@ if [ "$INSTALL_OPENCODE" = true ]; then
 fi
 
 if [ "$INSTALL_DEVIN" = true ]; then
-  install_skills "$HOME/.devin/skills"
+  install_skills "$HOME/.devin/skills"              # Devin Desktop
+  install_skills "$HOME/.cognition/skills"          # Devin Desktop (Cognition variant)
+  install_skills "$HOME/.config/devin/skills"       # Devin CLI
+  install_skills "$HOME/.config/cognition/skills"   # Devin CLI (Cognition variant)
+  install_skills "$HOME/.agents/skills"             # cross-agent standard, also read by Devin CLI
 fi
 
 if [ "$INSTALL_CURSOR" = true ]; then
@@ -377,7 +381,7 @@ echo ""
 echo "Slash command usage per CLI:"
 if [ "$INSTALL_CLAUDE" = true ]; then echo "   Claude Code : /spec-driven:<skill>"; fi
 if [ "$INSTALL_OPENCODE" = true ]; then echo "   OpenCode    : /spec-driven:<skill>"; fi
-if [ "$INSTALL_DEVIN" = true ]; then echo "   Devin       : /spec-driven:<skill>"; fi
+if [ "$INSTALL_DEVIN" = true ]; then echo "   Devin       : /<skill> (Devin CLI, native); /spec-driven:<skill> (Devin Desktop)"; fi
 if [ "$INSTALL_QWEN" = true ]; then echo "   Qwen Code   : /spec-driven:<skill>"; fi
 if [ "$INSTALL_CODEX" = true ]; then echo "   Codex CLI   : /prompts:spec-driven-<skill> (deprecated prompts; prefer \$<skill> or /skills)"; fi
 if [ "$INSTALL_CLINE" = true ]; then echo "   Cline       : /spec-driven-<skill>"; fi
