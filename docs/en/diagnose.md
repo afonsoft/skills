@@ -24,6 +24,17 @@ When the codebase matches a supported stack, the skill loads a ready-made playbo
 - `python-debugging.md` — `breakpoint()`/`pdb`, pytest `--pdb`/`--trace`, py-spy, faulthandler, tracemalloc, asyncio debug mode
 - `react-debugging.md` — React DevTools profiler, why-did-you-render, re-render/effect bug patterns
 
+## 🧰 Technique References & Scripts
+
+Technique references merged from `obra/superpowers` systematic-debugging (v1.5.0):
+
+- `references/root-cause-tracing.md` — trace a bad value backward through the call stack to its origin; fix at the source, not the throw site
+- `references/defense-in-depth.md` — validate at every layer bad data crosses, so the bug class becomes impossible
+- `references/condition-based-waiting.md` — replace guessed `sleep`/`setTimeout` with condition polling in flaky tests
+- `scripts/find-polluter.sh` — bisects test files to find which one leaves stray files/state behind
+
+The skill also enforces an **iron rule** (no fixes without a red loop and a confirmed root cause), a **red-flags** self-check list, and a **three-strike rule** that escalates to an architecture review after 3 failed fixes.
+
 ## 🧩 Special Modes
 
 - **Agent Self-Debug** — when the failure is the agent session itself (tool-call loops, context drift): Failure Capture → Root-Cause Diagnosis → Contained Recovery → Self-Debug Report.

@@ -3,7 +3,7 @@ name: diagnose
 license: MIT
 description: Use when the user reports a hard bug, unexpected failure, or performance regression that needs root-cause analysis.
 metadata:
-  version: "1.4.0"
+  version: "1.5.0"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -16,6 +16,8 @@ A discipline for hard bugs and regressions. Skip phases only when explicitly jus
 When exploring the codebase, use the project's domain glossary from `.claude/CONTEXT.md` (if it exists) to get a clear mental model of the relevant modules, and check `docs/architecture/` for decisions and ADRs in the area you are touching.
 
 **Re-validation loop**: after every hypothesis, fix, or change, re-run the reproduction and the regression checks before declaring the bug resolved.
+
+**Iron rule:** NO FIXES WITHOUT A RED LOOP AND A CONFIRMED ROOT CAUSE. A change made before Phase 1 produced a red signal and Phase 4 confirmed a hypothesis is a guess — and guessing under pressure is how one bug becomes three. This holds ESPECIALLY under time pressure, when the bug "looks simple", and after a previous fix already failed: those are exactly the moments the process pays off. Violating the letter of this process is violating the spirit of debugging.
 
 ## Pipeline
 
@@ -103,7 +105,7 @@ Spend disproportionate effort here. **Be aggressive. Be creative. Refuse to give
 5. **Replay a captured trace.** Save a real network request / payload / event log to disk; replay it through the code path in isolation.
 6. **Throwaway harness.** Spin up a minimal subset of the system (one service, mocked deps) that exercises the bug code path with a single call.
 7. **Property / fuzz loop.** If the bug is "sometimes wrong output", run 1000 random inputs and look for the failure mode.
-8. **Bisection harness.** If the bug appeared between two known states (commit, dataset, version), automate "boot at state X, check, repeat" so you can `git bisect run` it.
+8. **Bisection harness.** If the bug appeared between two known states (commit, dataset, version), automate "boot at state X, check, repeat" so you can `git bisect run` it. For "which test creates this stray file/state?", `scripts/find-polluter.sh` runs test files one-by-one until the polluter appears.
 9. **Differential loop.** Run the same input through old-version vs new-version (or two configs) and diff outputs.
 10. **HITL bash script.** Last resort. If a human must click, drive *them* with `scripts/hitl-loop.template.sh` so the loop is still structured; captured output feeds back to you.
 
@@ -122,6 +124,8 @@ A 30-second flaky loop is barely better than no loop; a 2-second deterministic o
 ### Non-deterministic bugs
 
 The goal is not a clean repro but a **higher reproduction rate**. Loop the trigger 100×, parallelise, add stress, narrow timing windows, inject sleeps. A 50%-flake bug is debuggable; 1% is not — keep raising the rate until it is debuggable.
+
+If the flake lives in a test that guesses timing with `sleep`/`setTimeout`, the flaky wait may *be* the bug — replace guessed delays with condition polling (`references/condition-based-waiting.md`).
 
 ### When you genuinely cannot build a loop
 
@@ -187,6 +191,7 @@ Sources for hypotheses — cheap checks first:
 2. **Working vs broken path** — find a sibling flow that *does* work and diff the two paths (inputs, config, call chain, data shape).
 3. **Environment delta** — diff env vars, config files, feature flags, and dependency versions between an environment that works and the one that doesn't.
 4. **Boundary check** — is the bad value already wrong at the entry boundary, or does it appear mid-pipeline? Each boundary that verifies clean halves the suspect zone.
+5. **Backward trace** — when the error surfaces deep in the call stack, the throw site is a symptom, not the cause. Trace the bad value back to its original trigger before forming hypotheses (`references/root-cause-tracing.md`).
 
 Where the bug may live, in roughly this order:
 
@@ -242,6 +247,8 @@ Tool preference:
 
 **Probe placement.** Put probes at the boundaries that bisect the hypothesis space: function entry/exit, before and after each transformation, each external call (network, DB, filesystem), and every state transition. One probe that discriminates between H1 and H2 beats ten that don't.
 
+**Multi-component sweep.** When the bug could sit anywhere in a pipeline (CI → build → deploy, API → service → DB, frontend → gateway → backend), do ONE evidence run before drilling in: log what enters and what exits *each* component boundary — data shape, env/config propagation, state — in a single pass. That run usually reveals which layer breaks; then concentrate probes on that layer instead of instrumenting the whole pipeline.
+
 **Correlation.** Stamp a request/trace id as early as possible and log it at every probe — otherwise concurrent flows interleave and your evidence is ambiguous.
 
 **Perf branch.** For performance regressions, logs are usually wrong. Establish a baseline measurement (timing harness, profiler, query plan), then bisect. Measure first, fix second.
@@ -259,6 +266,7 @@ If a correct seam exists:
 3. Apply the smallest, safest change that removes the root cause — no band-aids.
 4. Watch it pass.
 5. Re-run the Phase 1 feedback loop against the original (un-minimised) scenario.
+6. If the root cause was invalid data or a violated invariant that reached deep into the system, harden the layers it passed through — a single check fixes *this* bug; validation at each layer makes the *class* of bug impossible (`references/defense-in-depth.md`).
 
 If the fix touches many files, present the plan to the user in Portuguese before editing:
 
@@ -296,12 +304,15 @@ O bug está resolvido. Quer que eu abra uma Issue para documentar a causa raiz c
 
 ## Stuck — when hypotheses run out
 
+**Three-strike rule.** Count applied fixes, not hypotheses: if 3 fixes failed and the bug survives or mutates — each fix revealing a new problem in a different place, or each fix needing a workaround to land — the pattern itself is suspect. STOP and question the architecture with the user (in Portuguese) before attempting fix #4: is this design fundamentally sound, or are we fixing symptoms of a wrong structure? That conversation is `improve-codebase-architecture` territory, not another patch.
+
 If every hypothesis is rejected, the failure is upstream of your assumptions:
 
 1. **Question the loop** — is it really red-capable on *this* bug? Re-check the Phase 1 completion checklist; a loop that cannot go red makes every later phase theater.
 2. **Question the frame** — re-run Phase 0. The reported symptom may be downstream of the real one (e.g. the user sees a timeout, but the root cause is a deadlock ten seconds earlier).
 3. **Widen the search** — the cause may sit outside the code: data, config, infrastructure, a dependency's changed behaviour. Diff the whole environment, not just the source diff.
 4. **Bring evidence to the user** — report the diagnostic journal in Portuguese: what was tried, what each test proved or disproved, and what you need next (access, an artifact, or a decision).
+5. **"No root cause" is a last resort, not a conclusion** — most "environmental / unexplainable" verdicts are incomplete investigations. If the evidence genuinely points outside the system (timing, external service, hardware), document what was ruled out, add handling at the boundary (retry, timeout, explicit error), and add durable monitoring via `observability-and-instrumentation` so the next occurrence brings evidence with it.
 
 ## Agent Self-Debug / Introspection (use when the failure is the agent itself)
 
@@ -448,6 +459,22 @@ For each finding:
 
 Diagnosis is iterative. After every change, re-run the reproduction. If the bug moves or changes, go back to Phase 3. Do not declare the bug fixed until the reproduction passes and the regression suite is green.
 
+## Red Flags — STOP and re-enter the pipeline
+
+If you catch yourself thinking any of these, you are off the process — return to the phase you skipped:
+
+- "Quick fix for now, investigate later."
+- "Just try changing X and see if it works."
+- "It's probably X — let me fix it." (a fix without a confirmed hypothesis is a guess)
+- "Bundle a few changes and run the tests." (you won't know what worked)
+- "Skip the repro, I'll verify manually."
+- "I don't fully understand it, but this might work."
+- "The bug looks simple — no need for the whole process." (simple bugs have root causes too; the loop is *fast* for simple bugs)
+- "Emergency — no time for process." (systematic beats thrashing, especially under pressure)
+- "One more fix attempt" — after 2+ failures. Three failed fixes means wrong architecture, not wrong hypothesis (see Stuck).
+
+User redirections are the same signal from the outside: "is that really happening?", "did you verify?", "stop guessing", "we're going in circles". When you hear one, stop and return to the phase you skipped.
+
 ## Common Mistakes
 
 | Mistake | Fix |
@@ -466,10 +493,18 @@ Diagnosis is iterative. After every change, re-run the reproduction. If the bug 
 | Ambiguous evidence from concurrent flows | Stamp a correlation id and log it at every probe. |
 | Debugging the wrong environment | Verify env matches the Phase 0 report before trusting results. |
 | Declaring done without re-validation | Re-run the reproduction and the suite. |
+| Fixing where the error is thrown | Trace the bad value back to its origin (`references/root-cause-tracing.md`). |
+| Fixing only the immediate cause | Add validation at every layer the bad data crosses (`references/defense-in-depth.md`). |
+| Flaky test fixed by bumping a `sleep` | Wait on the actual condition, not guessed time (`references/condition-based-waiting.md`). |
+| Instrumenting a whole pipeline at once | One sweep across all component boundaries first, then drill into the failing layer. |
 
 ## References
 
 - `scripts/hitl-loop.template.sh` — human-in-the-loop reproduction driver
+- `scripts/find-polluter.sh` — bisects test files to find which one creates stray files/state
+- `references/root-cause-tracing.md` — trace a bad value backward through the call stack to its origin
+- `references/defense-in-depth.md` — validate at every layer so the bug class becomes impossible
+- `references/condition-based-waiting.md` — replace guessed sleeps with condition polling in flaky tests
 - `references/dotnet-debugging.md` — .NET diagnostics tools and log queries
 - `references/angular-debugging.md` — Angular DevTools, change-detection and RxJS debugging
 - `references/python-debugging.md` — pdb/pytest/py-spy debugging and log queries

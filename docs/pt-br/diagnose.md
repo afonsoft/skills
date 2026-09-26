@@ -24,6 +24,17 @@ Quando o código corresponde a um stack suportado, a skill carrega um playbook p
 - `python-debugging.md` — `breakpoint()`/`pdb`, pytest `--pdb`/`--trace`, py-spy, faulthandler, tracemalloc, modo debug de asyncio
 - `react-debugging.md` — React DevTools profiler, why-did-you-render, padrões de bugs de re-render/effect
 
+## 🧰 Referências de Técnica & Scripts
+
+Referências de técnica incorporadas do systematic-debugging de `obra/superpowers` (v1.5.0):
+
+- `references/root-cause-tracing.md` — rastreia um valor inválido de volta pela pilha de chamadas até a origem; corrige na fonte, não no ponto do erro
+- `references/defense-in-depth.md` — valida em cada camada por onde o dado inválido passa, tornando a classe do bug impossível
+- `references/condition-based-waiting.md` — substitui `sleep`/`setTimeout` chutados por polling de condição em testes flaky
+- `scripts/find-polluter.sh` — faz bisseção em arquivos de teste para achar qual deixa arquivos/estado para trás
+
+A skill também impõe uma **regra de ferro** (sem correção sem loop vermelho e causa raiz confirmada), uma lista de **red flags** para autochecagem e a **regra dos três strikes**, que escala para revisão de arquitetura após 3 correções falhas.
+
 ## 🧩 Modos Especiais
 
 - **Agent Self-Debug** — quando a falha é a própria sessão do agente (loops de tool calls, context drift): Failure Capture → Root-Cause Diagnosis → Contained Recovery → Self-Debug Report.
