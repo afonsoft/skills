@@ -28,12 +28,11 @@ elif [ -n "${SONARQUBE_ENTERPRISE_TOKEN:-}" ]; then
   SONAR_TOKEN="$SONARQUBE_ENTERPRISE_TOKEN"
   SONAR_EDITION="enterprise"
 elif [ -n "${SONARQUBE_OPEN_TOKEN:-}" ] || [ -n "${SONAR_TK:-}" ]; then
-  [ -n "${SONARQUBE_OPEN_URL:-}" ] || error_exit "SONARQUBE_OPEN_URL not configured."
-  SONAR_BASE_URL="$SONARQUBE_OPEN_URL"
+  SONAR_BASE_URL="${SONARQUBE_OPEN_URL:-https://sonarcloud.io}"
   SONAR_TOKEN="${SONARQUBE_OPEN_TOKEN:-$SONAR_TK}"
   SONAR_EDITION="open"
 else
-  error_exit "No SonarQube configuration found. Set SONARQUBE_CUSTOM_URL, or SONARQUBE_ENTERPRISE_TOKEN + SONARQUBE_ENTERPRISE_URL, or SONARQUBE_OPEN_TOKEN/SONAR_TK + SONARQUBE_OPEN_URL."
+  error_exit "No SonarQube configuration found. Set SONARQUBE_CUSTOM_URL, or SONARQUBE_ENTERPRISE_TOKEN + SONARQUBE_ENTERPRISE_URL, or SONARQUBE_OPEN_TOKEN/SONAR_TK (defaults to https://sonarcloud.io)."
 fi
 
 # Detect branch for Enterprise/Custom enterprise editions

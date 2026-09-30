@@ -1,9 +1,9 @@
 ---
 name: sonarqube-autofix
 license: MIT
-description: Use when analyzing SonarQube issues and turning them into SPEC SDDs for TDD implementation.
+description: Use when analyzing SonarQube issues and turning them into SPEC SDDs and tracked GitHub Issues for TDD implementation.
 metadata:
-  version: 2.0.2
+  version: 2.1.0
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -27,8 +27,9 @@ Analyze issues reported by SonarQube, **regardless of language or framework**, c
 The process is:
 1. **Issue analysis** — download and inspect unresolved SonarQube issues.
 2. **Classification** — group issues by type: `bug`, `code smell`, or `security`.
-3. **SPEC generation** — write one SPEC SDD per issue (or per small, related group) using `references/spec-sdd-template.md`.
-4. **Hand-off** — mark each SPEC as `Approved` and invoke `/execute-specs` to implement the fixes.
+3. **SPEC generation** — write one SPEC SDD per issue (or per small, related group) using `references/spec-sdd-template.md`; if the `write-specs` skill is available, use it to author the SPECs.
+4. **GitHub issues** — open the issues on GitHub, one per generated SPEC (or per related group), so every fix is trackable; if the `create-issues` skill is available, use it.
+5. **Hand-off** — mark each SPEC as `Approved` and invoke `/execute-specs` to implement the fixes.
 
 ## 🛡️ Untrusted Input Handling
 
@@ -59,7 +60,13 @@ The skill supports multiple SonarQube editions through environment variables. De
 #### For SonarQube Open (Default)
 - `SONARQUBE_OPEN_TOKEN`: Authentication token for SonarQube Open (preferred)
 - `SONAR_TK`: Authentication token for SonarQube Open (fallback for compatibility, used only if SONARQUBE_OPEN_TOKEN is not set)
-- `SONARQUBE_OPEN_URL`: Base URL of SonarQube Open (required, no fallback)
+- `SONARQUBE_OPEN_URL`: Base URL of SonarQube Open (default: `https://sonarcloud.io`)
+
+**Default URL (SonarCloud):** when `SONARQUBE_OPEN_URL` is not set, the default is SonarCloud — the project's public issues page follows the pattern `https://sonarcloud.io/project/issues?id=<project_id>`.
+
+Resolve `<project_id>` (the SonarCloud project key) in this order:
+1. Search the codebase and the repository's documentation for references: `sonar-project.properties` (`sonar.projectKey`), `README`/badge links containing `sonarcloud.io`, CI workflow files (`.github/workflows/`), and files under `docs/`.
+2. If the `project_id` is not found, ask the user for the public SonarCloud link or the `project_id`.
 
 ### Branch Support
 
@@ -220,8 +227,8 @@ sonar.javascript.lcov.reportPaths=coverage/lcov.info
 
      1. **Custom URL** (highest priority): If `$SONARQUBE_CUSTOM_URL` is set
      2. **Enterprise**: If `$SONARQUBE_ENTERPRISE_TOKEN` is set
-     3. **Open**: If `$SONARQUBE_OPEN_TOKEN` or `$SONAR_TK` is set
-     4. **Error**: If none of the above, abort and request the environment variables to be configured (there is no automatic/fallback URL).
+     3. **Open**: If `$SONARQUBE_OPEN_TOKEN` or `$SONAR_TK` is set — when `SONARQUBE_OPEN_URL` is not set, the base URL defaults to `https://sonarcloud.io`
+     4. **Error**: If none of the above, abort and request the environment variables to be configured.
 
      **Download issues with automatic detection:**
      Load the reference script `references/download-issues.sh` and execute it.
@@ -266,7 +273,7 @@ Sort the board by: `VULNERABILITY` → `SECURITY_HOTSPOT` → `BUG` → `CODE_SM
 
 ### Phase 3: Generate SPEC SDDs
 
-For each issue (or small, related group of the same SonarQube type), create an approved SPEC SDD in `.specs/SPEC-{YYYYMMDD}-{issue-key}-{slug}.md` using `references/spec-sdd-template.md`:
+For each issue (or small, related group of the same SonarQube type), create an approved SPEC SDD in `.specs/SPEC-{YYYYMMDD}-{issue-key}-{slug}.md` using `references/spec-sdd-template.md`. If the `write-specs` skill is available, use it to author the SPECs, passing the classified issue data (rule, type, file, lines, message) as the starting point:
 
 1. **Metadata** — set `Status: Approved` and `Type` based on the SonarQube type:
    - `BUG` → `Bugfix`
@@ -283,9 +290,10 @@ For each issue (or small, related group of the same SonarQube type), create an a
 
 Mark each generated SPEC as `Status: Approved`. Do **not** implement the code in this skill.
 
-### Phase 3.5: Hand off to `/execute-specs`
+### Phase 3.5: Open GitHub Issues and Hand off to `/execute-specs`
 
-After all SPECs are approved, invoke `/execute-specs` for each one, in the order of the sorted ToDo Board. The implementation skill will follow the red-green-refactor cycle using the generated SPECs as source of truth.
+1. **Open GitHub issues** — after all SPECs are approved, open one GitHub Issue per SPEC (or per related group), linking each Issue to its `.specs/SPEC-*.md` path so every fix is trackable. If the `create-issues` skill is available, use it to create and label the Issues.
+2. **Hand-off** — invoke `/execute-specs` for each SPEC, in the order of the sorted ToDo Board. The implementation skill will follow the red-green-refactor cycle using the generated SPECs as source of truth.
 
 ### Phase 4: Documentation and Finalization
 
@@ -660,15 +668,3 @@ Bulk fixes without tests drastically increase the risk of regressions. Fix one i
 ### ❌ "I don't need to run the local scan, the pipeline will validate"
 
 Local validation saves time and avoids pipeline rejections. Use the `sonar-local-scan.sh` script.
-
-## Adaptations for this catalog
-
-This skill follows the agent catalog standards:
-- **Frontmatter** aligned to repo standard: `license: MIT`, `metadata.version`, `metadata.author`, tripartite `description` with explicit `Do NOT use for` clause
-- **Language:** English (en-us) for content, technical terms in English
-- **Branch policy:** follow `feature/{agent}-{YYYYMMDD}-{short-description}`
-- **Git workflow:** branches created from `develop`, PR target is `develop` (not `main`)
-
-## Origin
-
-This skill was created following patterns from `obra/superpowers/skills/writing-skills` and adapted for SonarQube auto-fix workflows across multiple stacks.

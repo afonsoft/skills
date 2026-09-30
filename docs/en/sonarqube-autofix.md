@@ -11,8 +11,9 @@ Bridge the gap between automated static analysis and executable specifications. 
 1. **Stack Detection**: Identifies the project's language and build tools.
 2. **Issue Extraction**: Downloads unresolved issues from SonarQube via API.
 3. **Classification**: Groups issues by the four SonarQube types: `BUG`, `CODE_SMELL`, `VULNERABILITY`, `SECURITY_HOTSPOT`.
-4. **SPEC Generation**: Writes one approved `.specs/SPEC-{YYYYMMDD}-{issue-key}-{slug}.md` per issue using `references/spec-sdd-template.md`.
-5. **Hand-off**: Invokes `execute-specs` to implement each SPEC with tests and coverage.
+4. **SPEC Generation**: Writes one approved `.specs/SPEC-{YYYYMMDD}-{issue-key}-{slug}.md` per issue using `references/spec-sdd-template.md` (delegating to `write-specs` when available).
+5. **GitHub Issues**: Opens one GitHub Issue per SPEC (via `create-issues` when available) so every fix is trackable.
+6. **Hand-off**: Invokes `execute-specs` to implement each SPEC with tests and coverage.
 
 ## 🚀 Usage
 
