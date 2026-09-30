@@ -8,7 +8,7 @@ compatibility: Needs Python 3.10+ and a user-installed `notebooklm-mcp-cli`
   installed. Headless servers use manual cookie file mode or an external CDP
   provider (OpenClaw). Works on macOS/Linux/Windows.
 metadata:
-  version: 1.0.5
+  version: 1.0.6
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -39,7 +39,7 @@ Both paths share the **same cookie cache** at `~/.notebooklm-mcp-cli/profiles/<p
 - `nlm doctor` reports "Browser: not found" (headless server).
 - The user wants to authenticate NotebookLM on a server without a desktop browser.
 - The user asks to configure the NotebookLM MCP server for Claude Code / Cursor / Devin / Gemini.
-- You need to extract Google cookies manually or via an external CDP endpoint.
+- The user needs to extract Google cookies manually or authenticate via an external CDP endpoint.
 
 - User asks or mentions this skill in English (e.g., "use /notebooklm-mcp", "run notebooklm-mcp").
 - O usuário pede ou menciona esta skill em português (ex.: "use /notebooklm-mcp", "execute notebooklm-mcp").

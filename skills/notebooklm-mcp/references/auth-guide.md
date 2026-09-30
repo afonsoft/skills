@@ -1,6 +1,8 @@
 # NotebookLM — authentication deep dive
 
 > **Security notice**: NotebookLM (Gemini Notebook) has **no official API**. The only supported authentication path is to extract Google browser cookies and cache them locally. A `cookies.txt` file or `auth.json` cache is equivalent to a Google session. Treat them as secrets. Never commit, share, or expose them in logs, screenshots, or chat messages.
+>
+> **All extraction and import steps in this document are performed by the user**, on a machine and browser they control. The agent never extracts, reads, parses, or forwards cookie values — it runs `nlm` commands as black-box operations only after explicit user consent.
 
 NotebookLM (Gemini Notebook) has **no official API**. Authentication is done by extracting **Google browser cookies** from a logged-in session and caching them. The CLI/MCP refreshes CSRF tokens and session IDs automatically from those cookies.
 
@@ -25,7 +27,9 @@ Rules:
 - The file can contain the cookie string on one or multiple lines.
 - A template `cookies.txt` is included in the upstream repository.
 
-## How to extract cookies manually
+## How the user extracts cookies manually
+
+> User-performed steps — the agent must not execute them. The user follows this checklist on their own machine, then hands the resulting `cookies.txt` to the import step and deletes it right after.
 
 1. Open Chrome and go to **https://notebooklm.google.com**
 2. Make sure you are logged in to your Google account.

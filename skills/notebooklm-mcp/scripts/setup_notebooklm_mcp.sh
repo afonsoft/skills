@@ -188,7 +188,7 @@ fi
 if [ "$REMOVE" -eq 0 ] && [ "$DRY_RUN" -eq 0 ]; then
   echo ""
   echo "Done. Restart your agent for the change to take effect."
-  echo "Authenticate with: nlm login --manual --file cookies.txt"
+  echo "Authenticate with: nlm login   (manual cookie file is an emergency fallback: nlm login --manual --file cookies.txt)"
   echo "Verify with: bash $(dirname "$0")/verify_notebooklm.sh"
   echo ""
   echo "⚠ Antigravity users: also clear the MCP cache:"
