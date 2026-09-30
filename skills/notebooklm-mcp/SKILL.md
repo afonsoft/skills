@@ -2,13 +2,13 @@
 name: notebooklm-mcp
 description: Use when the user wants to configure, authenticate, or use Google NotebookLM via the nlm CLI or MCP.
 license: MIT
-compatibility: Needs Python 3.10+ and `notebooklm-mcp-cli` (`uv tool install notebooklm-mcp-cli`
-  or `pipx install notebooklm-mcp-cli`), providing the `nlm` and `notebooklm-mcp`
-  binaries. Auto auth mode needs a Chromium-family browser (Chrome/Chromium/Brave/Edge/Arc)
-  or Firefox installed. Headless servers use manual cookie file mode or an external
-  CDP provider (OpenClaw). Works on macOS/Linux/Windows.
+compatibility: Needs Python 3.10+ and a user-installed `notebooklm-mcp-cli`
+  distribution providing the `nlm` and `notebooklm-mcp` binaries. Auto auth mode
+  needs a Chromium-family browser (Chrome/Chromium/Brave/Edge/Arc) or Firefox
+  installed. Headless servers use manual cookie file mode or an external CDP
+  provider (OpenClaw). Works on macOS/Linux/Windows.
 metadata:
-  version: 1.0.4
+  version: 1.0.5
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -51,8 +51,8 @@ Both paths share the **same cookie cache** at `~/.notebooklm-mcp-cli/profiles/<p
 
 ## Guardrails
 
-- **Pin the CLI version**: install `notebooklm-mcp-cli` with an explicit `==<VERSION>`; do not run bare `uv tool install` or `pipx install` without a version.
-- **Verify upstream before install**: confirm the package name and version on [PyPI](https://pypi.org/project/notebooklm-mcp-cli/) and the upstream source. Treat it as an unofficial client.
+- **User-performed install**: the agent does not install or upgrade `notebooklm-mcp-cli`. If `nlm`/`notebooklm-mcp` is missing from PATH, stop and hand the user the Install block below — the user reviews it and runs it. Recommend an explicit pinned `==<VERSION>`; never a bare, unversioned install.
+- **Verify upstream before the user installs**: confirm the package name and version on [PyPI](https://pypi.org/project/notebooklm-mcp-cli/) and the upstream source. Treat it as an unofficial client.
 - **Human confirmation required for all auth methods**: the agent must obtain explicit user consent before any cookie extraction, file import or use of a managed browser CDP endpoint.
 - **No automated cookie collection**: never run cookie extraction in the background or against a browser the user does not explicitly authorize.
 - **Cookies are credentials**: a `cookies.txt` file or the cached `auth.json` is equivalent to a Google session. Never commit, share, log, screenshot, copy to clipboard, or transmit them.
@@ -70,9 +70,15 @@ Both paths share the **same cookie cache** at `~/.notebooklm-mcp-cli/profiles/<p
 
 ---
 
-# Install
+# Install (performed by the user, not the agent)
 
-Pin a known version before installing. Replace `<VERSION>` with the latest stable from `pip index versions notebooklm-mcp-cli` or the version required by the project.
+`notebooklm-mcp-cli` is a third-party PyPI distribution. The agent must not run
+package installs for it — if `nlm`/`notebooklm-mcp` is absent, present the block
+below verbatim and wait for the user to run it themselves.
+
+Pin a known version. Replace `<VERSION>` with a stable release the user verified
+on [PyPI](https://pypi.org/project/notebooklm-mcp-cli/) (e.g. via
+`pip index versions notebooklm-mcp-cli`).
 
 ```bash
 # Option 1: uv (recommended)

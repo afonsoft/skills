@@ -3,7 +3,7 @@ name: architecture
 license: MIT
 description: "Single owner of everything under docs/architecture/ — ADRs, architecture and design documents, and architecture diagrams. Routes each deliverable to the right engine: /mermaid-architecture for Markdown-native diagrams, /drawio-architecture for editable .drawio diagrams, and the optional archify skill for interactive standalone HTML diagrams (used only when already installed in the environment; never installed at runtime). Use whenever architecture documentation, ADRs, or architecture diagrams must be created or updated."
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills

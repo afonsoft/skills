@@ -9,7 +9,7 @@ NLM="${NLM:-nlm}"
 
 echo "=== NotebookLM install ==="
 if ! command -v "$NLM" >/dev/null 2>&1; then
-  echo "✗ nlm not on PATH. Install: uv tool install notebooklm-mcp-cli"
+  echo "✗ nlm not on PATH. Ask the user to install a pinned release, e.g.: uv tool install notebooklm-mcp-cli==<VERSION>"
   exit 1
 fi
 echo "✓ nlm found: $(command -v "$NLM")"
