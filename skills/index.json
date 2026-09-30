@@ -1,0 +1,344 @@
+{
+  "skills": [
+    {
+      "name": "architecture",
+      "version": "1.0.1-27b5db80",
+      "files": [
+        "architecture/SKILL.md",
+        "architecture/references/architecture-inventory.md",
+        "architecture/references/gap-audit-handoff.md",
+        "architecture/scripts/architecture-doctor.sh"
+      ]
+    },
+    {
+      "name": "building-mcp-servers",
+      "version": "1.4.0-b3beb09e",
+      "files": [
+        "building-mcp-servers/SKILL.md",
+        "building-mcp-servers/references/dotnet_mcp_server.md",
+        "building-mcp-servers/references/dotnet_mcp_v2.md",
+        "building-mcp-servers/references/evaluation.md",
+        "building-mcp-servers/references/mcp_best_practices.md",
+        "building-mcp-servers/references/node_mcp_server.md",
+        "building-mcp-servers/references/python_mcp_server.md",
+        "building-mcp-servers/references/quick-start.md",
+        "building-mcp-servers/references/transport-and-auth.md"
+      ]
+    },
+    {
+      "name": "code-review-and-quality",
+      "version": "1.1.1-28bbe627",
+      "files": [
+        "code-review-and-quality/SKILL.md",
+        "code-review-and-quality/references/performance-checklist.md",
+        "code-review-and-quality/references/security-checklist.md"
+      ]
+    },
+    {
+      "name": "composio-mcp",
+      "version": "1.1.1-5d04dc29",
+      "files": [
+        "composio-mcp/SKILL.md",
+        "composio-mcp/references/cli-reference.md",
+        "composio-mcp/references/mcp-config.md",
+        "composio-mcp/references/platform-quirks.md",
+        "composio-mcp/references/tools-inventory.md",
+        "composio-mcp/references/troubleshooting.md",
+        "composio-mcp/scripts/setup_composio_mcp.sh",
+        "composio-mcp/scripts/verify_composio.sh"
+      ]
+    },
+    {
+      "name": "create-agent-harness",
+      "version": "2.3.0-cbda9b9f",
+      "files": [
+        "create-agent-harness/SKILL.md",
+        "create-agent-harness/references/agents/architecture.md",
+        "create-agent-harness/references/agents/engineer.md",
+        "create-agent-harness/references/agents/plan.md",
+        "create-agent-harness/references/agents/review.md",
+        "create-agent-harness/references/agents/test.md",
+        "create-agent-harness/references/context-engineering.md",
+        "create-agent-harness/references/memory-protocol.md",
+        "create-agent-harness/references/migration-map.md",
+        "create-agent-harness/references/platform-quirks.md",
+        "create-agent-harness/references/spec-sdd-template.md",
+        "create-agent-harness/references/validation-artifacts.md",
+        "create-agent-harness/scripts/validate-harness.sh"
+      ]
+    },
+    {
+      "name": "create-issues",
+      "version": "1.4.0-9c357397",
+      "files": [
+        "create-issues/SKILL.md",
+        "create-issues/references/spec-sdd-template.md"
+      ]
+    },
+    {
+      "name": "create-readme",
+      "version": "1.2.1-7cd518e3",
+      "files": [
+        "create-readme/SKILL.md"
+      ]
+    },
+    {
+      "name": "design",
+      "version": "1.1.1-2a90fb06",
+      "files": [
+        "design/SKILL.md",
+        "design/references/accessibility.md",
+        "design/references/angular-design.md",
+        "design/references/anti-patterns.md",
+        "design/references/blazor-design.md",
+        "design/references/color-system.md",
+        "design/references/components-patterns.md",
+        "design/references/craft-floor.md",
+        "design/references/css-frameworks.md",
+        "design/references/design-tokens.md",
+        "design/references/framework-comparison.md",
+        "design/references/harden.md",
+        "design/references/layout-grid.md",
+        "design/references/mobile-first.md",
+        "design/references/motion.md",
+        "design/references/onboard.md",
+        "design/references/polish.md",
+        "design/references/react-design.md",
+        "design/references/responsive-breakpoints.md",
+        "design/references/shape.md",
+        "design/references/spacing-system.md",
+        "design/references/testing-responsive.md",
+        "design/references/typography.md",
+        "design/references/ux-writing.md"
+      ]
+    },
+    {
+      "name": "diagnose",
+      "version": "1.5.0-18808290",
+      "files": [
+        "diagnose/SKILL.md",
+        "diagnose/references/angular-debugging.md",
+        "diagnose/references/condition-based-waiting.md",
+        "diagnose/references/defense-in-depth.md",
+        "diagnose/references/dotnet-debugging.md",
+        "diagnose/references/python-debugging.md",
+        "diagnose/references/react-debugging.md",
+        "diagnose/references/root-cause-tracing.md",
+        "diagnose/scripts/find-polluter.sh",
+        "diagnose/scripts/hitl-loop.template.sh"
+      ]
+    },
+    {
+      "name": "drawio-architecture",
+      "version": "1.0.2-adff54d0",
+      "files": [
+        "drawio-architecture/SKILL.md",
+        "drawio-architecture/references/architecture-patterns.md",
+        "drawio-architecture/references/cloud-icons.md",
+        "drawio-architecture/references/mcp-config.md",
+        "drawio-architecture/references/mcp-tools-reference.md",
+        "drawio-architecture/references/mcp-tools-reference.pt-br.md",
+        "drawio-architecture/references/style-guide.md",
+        "drawio-architecture/references/usage-examples.md",
+        "drawio-architecture/references/usage-examples.pt-br.md",
+        "drawio-architecture/references/usage-guide.md",
+        "drawio-architecture/references/usage-guide.pt-br.md",
+        "drawio-architecture/scripts/setup_drawio_mcp.py",
+        "drawio-architecture/scripts/validate_drawio.py"
+      ]
+    },
+    {
+      "name": "execute-specs",
+      "version": "1.4.0-c46ffad4",
+      "files": [
+        "execute-specs/SKILL.md",
+        "execute-specs/references/deep-modules.md",
+        "execute-specs/references/interface-design.md",
+        "execute-specs/references/mocking.md",
+        "execute-specs/references/refactoring.md",
+        "execute-specs/references/tests.md",
+        "execute-specs/scripts/validate_spec.py"
+      ]
+    },
+    {
+      "name": "gap-analysis",
+      "version": "1.0.2-c3866dbb",
+      "files": [
+        "gap-analysis/SKILL.md",
+        "gap-analysis/references/gap-record.md",
+        "gap-analysis/references/report-template.md",
+        "gap-analysis/scripts/collect-sources.sh"
+      ]
+    },
+    {
+      "name": "improve-codebase-architecture",
+      "version": "1.1.1-b88e9c05",
+      "files": [
+        "improve-codebase-architecture/SKILL.md",
+        "improve-codebase-architecture/references/DEEPENING.md",
+        "improve-codebase-architecture/references/HTML-REPORT.md",
+        "improve-codebase-architecture/references/INTERFACE-DESIGN.md",
+        "improve-codebase-architecture/references/LANGUAGE.md"
+      ]
+    },
+    {
+      "name": "mermaid-architecture",
+      "version": "1.0.0-d61009f9",
+      "files": [
+        "mermaid-architecture/SKILL.md",
+        "mermaid-architecture/assets/api-design-template.md",
+        "mermaid-architecture/assets/architecture-design-template.md",
+        "mermaid-architecture/assets/database-design-template.md",
+        "mermaid-architecture/assets/feature-design-template.md",
+        "mermaid-architecture/assets/system-design-template.md",
+        "mermaid-architecture/examples/fastapi/README.md",
+        "mermaid-architecture/examples/java-webapp/README.md",
+        "mermaid-architecture/examples/node-webapp/README.md",
+        "mermaid-architecture/examples/python-etl/README.md",
+        "mermaid-architecture/examples/react/README.md",
+        "mermaid-architecture/examples/spring-boot/README.md",
+        "mermaid-architecture/references/guides/code-to-diagram/README.md",
+        "mermaid-architecture/references/guides/diagrams/activity-diagrams.md",
+        "mermaid-architecture/references/guides/diagrams/architecture-diagrams.md",
+        "mermaid-architecture/references/guides/diagrams/deployment-diagrams.md",
+        "mermaid-architecture/references/guides/diagrams/sequence-diagrams.md",
+        "mermaid-architecture/references/guides/resilient-workflow.md",
+        "mermaid-architecture/references/guides/troubleshooting.md",
+        "mermaid-architecture/references/guides/unicode-symbols/guide.md",
+        "mermaid-architecture/references/guides/wiki-ticket-and-github.md",
+        "mermaid-architecture/references/mermaid-diagram-guide.md",
+        "mermaid-architecture/scripts/extract_mermaid.py",
+        "mermaid-architecture/scripts/mermaid_to_image.py",
+        "mermaid-architecture/scripts/resilient_diagram.py"
+      ]
+    },
+    {
+      "name": "notebooklm-mcp",
+      "version": "1.0.6-caeb6099",
+      "files": [
+        "notebooklm-mcp/SKILL.md",
+        "notebooklm-mcp/references/auth-guide.md",
+        "notebooklm-mcp/references/mcp-config.md",
+        "notebooklm-mcp/references/platform-quirks.md",
+        "notebooklm-mcp/scripts/extract_cookies_help.sh",
+        "notebooklm-mcp/scripts/setup_notebooklm_mcp.sh",
+        "notebooklm-mcp/scripts/verify_notebooklm.sh"
+      ]
+    },
+    {
+      "name": "observability-and-instrumentation",
+      "version": "1.1.1-3ccbc7c7",
+      "files": [
+        "observability-and-instrumentation/SKILL.md",
+        "observability-and-instrumentation/references/observability-checklist.md"
+      ]
+    },
+    {
+      "name": "obsidian",
+      "version": "1.0.1-fce677be",
+      "files": [
+        "obsidian/SKILL.md",
+        "obsidian/references/CALLOUTS.md",
+        "obsidian/references/EMBEDS.md",
+        "obsidian/references/FUNCTIONS_REFERENCE.md",
+        "obsidian/references/PROPERTIES.md",
+        "obsidian/references/obsidian-bases.md",
+        "obsidian/references/obsidian-cli.md",
+        "obsidian/references/obsidian-markdown.md"
+      ]
+    },
+    {
+      "name": "orchestrator",
+      "version": "2.7.0-776b4319",
+      "files": [
+        "orchestrator/SKILL.md",
+        "orchestrator/references/ESTADO_ORQUESTRATOR.md",
+        "orchestrator/references/orchestrator-delegation-protocol.md",
+        "orchestrator/references/orchestrator_stats.md"
+      ]
+    },
+    {
+      "name": "qa-analyst",
+      "version": "1.1.2-9a283b3b",
+      "files": [
+        "qa-analyst/SKILL.md",
+        "qa-analyst/references/qa-templates.md"
+      ]
+    },
+    {
+      "name": "quality-test-implementation",
+      "version": "1.1.1-5eeaa5c3",
+      "files": [
+        "quality-test-implementation/SKILL.md",
+        "quality-test-implementation/references/coverage-dotnet.md",
+        "quality-test-implementation/references/coverage-java.md",
+        "quality-test-implementation/references/coverage-python.md",
+        "quality-test-implementation/references/run-coverage.sh"
+      ]
+    },
+    {
+      "name": "scaffold-mvp",
+      "version": "2.1.1-493ba4d2",
+      "files": [
+        "scaffold-mvp/SKILL.md"
+      ]
+    },
+    {
+      "name": "sonarqube-autofix",
+      "version": "2.1.0-00f3798e",
+      "files": [
+        "sonarqube-autofix/SKILL.md",
+        "sonarqube-autofix/references/detect-stack.sh",
+        "sonarqube-autofix/references/download-issues.sh",
+        "sonarqube-autofix/references/jsonf.sh",
+        "sonarqube-autofix/references/sonar-local-scan.sh",
+        "sonarqube-autofix/references/spec-sdd-template.md",
+        "sonarqube-autofix/references/templates/test-angular.md",
+        "sonarqube-autofix/references/templates/test-csharp.md",
+        "sonarqube-autofix/references/templates/test-go.md",
+        "sonarqube-autofix/references/templates/test-java.md",
+        "sonarqube-autofix/references/templates/test-javascript.md",
+        "sonarqube-autofix/references/templates/test-kotlin.md",
+        "sonarqube-autofix/references/templates/test-php.md",
+        "sonarqube-autofix/references/templates/test-python.md",
+        "sonarqube-autofix/references/templates/test-ruby.md",
+        "sonarqube-autofix/references/templates/test-scala.md",
+        "sonarqube-autofix/references/templates/test-typescript.md",
+        "sonarqube-autofix/references/validate-angular.sh",
+        "sonarqube-autofix/references/validate-csharp.sh",
+        "sonarqube-autofix/references/validate-go.sh",
+        "sonarqube-autofix/references/validate-java.sh",
+        "sonarqube-autofix/references/validate-js.sh",
+        "sonarqube-autofix/references/validate-php.sh",
+        "sonarqube-autofix/references/validate-python.sh",
+        "sonarqube-autofix/references/validate-ruby.sh",
+        "sonarqube-autofix/references/validate-scala.sh"
+      ]
+    },
+    {
+      "name": "wordpress-mcp",
+      "version": "1.2.3-524e6400",
+      "files": [
+        "wordpress-mcp/SKILL.md",
+        "wordpress-mcp/references/ai-engine-tools.md",
+        "wordpress-mcp/references/mcp-adapter-guide.md",
+        "wordpress-mcp/references/mcp-config.md",
+        "wordpress-mcp/references/platform-quirks.md",
+        "wordpress-mcp/references/real-world-workflows.md",
+        "wordpress-mcp/references/troubleshooting.md",
+        "wordpress-mcp/references/wp-mcp-ultimate.md",
+        "wordpress-mcp/scripts/install_wp_plugin.sh",
+        "wordpress-mcp/scripts/setup_wordpress_mcp.sh",
+        "wordpress-mcp/scripts/verify_wordpress_mcp.sh"
+      ]
+    },
+    {
+      "name": "write-specs",
+      "version": "1.4.0-2c51498a",
+      "files": [
+        "write-specs/SKILL.md",
+        "write-specs/references/spec-sdd-template.md"
+      ]
+    }
+  ]
+}

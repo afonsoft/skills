@@ -147,6 +147,23 @@ Installs skills **and** slash commands natively (no `install.sh` needed):
 ```
 Commands are namespaced by the plugin name: `/spec-driven:orchestrator` and `/spec-driven:<skill>` for each skill.
 
+### 🤖 via Codex plugin marketplace
+The repo ships a Codex plugin manifest (`.codex-plugin/plugin.json`) and a repo marketplace catalog (`.agents/plugins/marketplace.json`):
+```bash
+codex plugin marketplace add afonsoft/skills
+```
+Then install `spec-driven` from the Plugins Directory, or invoke skills directly with `$<skill>` — Codex discovers them from the bundled `skills/` directory. Skills are also discovered from `.agents/skills/` (repo scope) and `~/.agents/skills/` (user scope, via `install.sh --codex`).
+
+### 🌐 via OpenCode HTTP catalog
+Add the catalog URL to any `opencode.json` — OpenCode downloads `skills/index.json` and refreshes each skill automatically when its `version` changes:
+```jsonc
+{
+  "$schema": "https://opencode.ai/config.json",
+  "skills": ["https://raw.githubusercontent.com/afonsoft/skills/main/skills/"]
+}
+```
+Regenerate the catalog after skill changes with `python3 scripts/build-opencode-catalog.py`. OpenCode also discovers skills from `.opencode/skills/`, `.claude/skills/`, and `.agents/skills/` in project scope.
+
 ### 🖥️ via install.sh (local clone)
 Copies the skills into each IDE's skills directory and generates slash commands:
 ```bash
