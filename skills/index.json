@@ -259,9 +259,10 @@
     },
     {
       "name": "qa-analyst",
-      "version": "1.1.2-9a283b3b",
+      "version": "1.2.0-459fccdb",
       "files": [
         "qa-analyst/SKILL.md",
+        "qa-analyst/references/pr-analysis.md",
         "qa-analyst/references/qa-templates.md"
       ]
     },
@@ -285,7 +286,7 @@
     },
     {
       "name": "sonarqube-autofix",
-      "version": "2.1.0-00f3798e",
+      "version": "2.2.0-308959f8",
       "files": [
         "sonarqube-autofix/SKILL.md",
         "sonarqube-autofix/references/detect-stack.sh",

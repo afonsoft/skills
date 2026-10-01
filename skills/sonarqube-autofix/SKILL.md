@@ -3,7 +3,7 @@ name: sonarqube-autofix
 license: MIT
 description: Use when analyzing SonarQube issues and turning them into SPEC SDDs and tracked GitHub Issues for TDD implementation.
 metadata:
-  version: 2.1.0
+  version: 2.2.0
   visibility: public
   author: afonsoft
   url: https://github.com/afonsoft/skills
@@ -30,6 +30,7 @@ The process is:
 3. **SPEC generation** — write one SPEC SDD per issue (or per small, related group) using `references/spec-sdd-template.md`; if the `write-specs` skill is available, use it to author the SPECs.
 4. **GitHub issues** — open the issues on GitHub, one per generated SPEC (or per related group), so every fix is trackable; if the `create-issues` skill is available, use it.
 5. **Hand-off** — mark each SPEC as `Approved` and invoke `/execute-specs` to implement the fixes.
+6. **QA hand-off** — when all fixes are done, invoke `/qa-analyst` to re-validate the applied corrections (see Phase 4, step 5).
 
 ## 🛡️ Untrusted Input Handling
 
@@ -324,6 +325,11 @@ Mark each generated SPEC as `Status: Approved`. Do **not** implement the code in
      - Regressions avoided
      - Detected stack and tools used
 
+5. **QA hand-off to `/qa-analyst`**
+   - When every fix is applied, tests pass and the environment is clean, invoke the `qa-analyst` skill to re-validate the corrections: it re-runs the affected test cases and regression checks (its Re-Validation Loop) and, when invoked from a post-merge PR analysis, resumes verifying the remaining PR review findings.
+   - If `qa-analyst` surfaces new unresolved SonarQube issues during that re-validation, they may be handed back to this skill — the cycle repeats only while each iteration resolves new items. If a cycle leaves the exact same pending set as the previous one, stop and report to the user instead of looping.
+   - If `qa-analyst` is not available in the environment, skip this step and note it in `SONAR_FIX_REVIEW_NOTES.md`.
+
 ## 🛠️ Integrated External Tools
 
 The skill automatically integrates external tools per stack to validate and format the code after fixes.
@@ -449,6 +455,7 @@ The skill generates tests automatically based on stack-specific templates. Load 
 - [ ] .gitignore updated with `.sonar_devin_auto_fix/**`
 - [ ] SONAR_FIX_REVIEW_NOTES.md generated with complete instructions
 - [ ] No new issue introduced (verified via code review and tests)
+- [ ] `/qa-analyst` invoked for post-fix re-validation (or skip noted in review notes)
 
 ## Useful Commands (Examples by Stack)
 
