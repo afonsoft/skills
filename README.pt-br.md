@@ -38,6 +38,9 @@ flowchart TD
     G --> O[/qa-analyst\]
     G --> P[/architecture\]
     G --> R[/gap-analysis\]
+
+    S[/migration-planner\] -.->|planos por domínio| J
+    T[/web-design-guidelines\] -.->|grupos de pendências| J
 ```
 
 O orchestrator avança automaticamente entre as fases assim que a validação passa. Ele só para em escalation gates (segurança, schema, APIs públicas, dados), falhas de validação ou pedido explícito do usuário.

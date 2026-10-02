@@ -27,6 +27,6 @@ Use when converting a roadmap/SPEC/PRD into GitHub Issues, slicing an Epic into 
 
 ## 🔗 Correlation
 
-- **Upstream**: `orchestrator` Phase 3 fragments approved work into Issues; `write-specs` and `gap-analysis` produce the SPECs/roadmap it consumes.
+- **Upstream**: `orchestrator` Phase 3 fragments approved work into Issues; `write-specs`, `gap-analysis`, `migration-planner`, and `web-design-guidelines` produce the SPECs/roadmaps/Epics it consumes.
 - **Downstream**: `execute-specs` and `qa-analyst` work against the created Issues; `diagnose` can open Issues for documented root causes.
 - **Sibling**: `create-agent-harness` when GitHub access or harness is missing.

@@ -24,7 +24,7 @@ Use this skill when starting or resuming a project, planning an Epic, or coordin
 
 ## 🔗 Correlation
 
-- **Upstream**: `write-specs` produces approved SPECs.
+- **Upstream**: `write-specs` produces approved SPECs. Feeder audits — `gap-analysis` (code vs. docs gaps), `migration-planner` (legacy → .NET domain plans), `web-design-guidelines` (UI findings) — invoke `write-specs` with evidence packets and land Epics/Issues in the queue it reconciles.
 - **Parallel**: `create-issues` turns SPECs into Issues.
 - **Execution**: `execute-specs` implements each slice; `diagnose` handles regressions; `code-review-and-quality` reviews diffs.
 - **Downstream**: `qa-analyst` performs the mandatory pre-PR review; `quality-test-implementation` raises coverage and clears quality debt; `code-review-and-quality` runs the final diff review; `architecture` updates everything under `docs/architecture/` (routing to `drawio-architecture`, `mermaid-architecture`, and optional `archify`) and invokes `gap-analysis` for the final evidence-backed audit before `create-readme`.

@@ -27,6 +27,6 @@ Use ao converter um roadmap/SPEC/PRD em GitHub Issues, fatiar um Epic em trabalh
 
 ## 🔗 Correlação
 
-- **Upstream**: `orchestrator` fragmenta trabalho aprovado em Issues na Phase 3; `write-specs` e `gap-analysis` produzem os SPECs/roadmap que ela consome.
+- **Upstream**: `orchestrator` fragmenta trabalho aprovado em Issues na Phase 3; `write-specs`, `gap-analysis`, `migration-planner` e `web-design-guidelines` produzem os SPECs/roadmaps/Epics que ela consome.
 - **Downstream**: `execute-specs` e `qa-analyst` trabalham sobre as Issues criadas; `diagnose` pode abrir Issues para causas raiz documentadas.
 - **Irmã**: `create-agent-harness` quando falta acesso ao GitHub ou o harness.

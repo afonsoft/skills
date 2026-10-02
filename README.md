@@ -43,6 +43,9 @@ flowchart TD
     G --> O[/qa-analyst\]
     G --> P[/architecture\]
     G --> R[/gap-analysis\]
+
+    S[/migration-planner\] -.->|domain plans| J
+    T[/web-design-guidelines\] -.->|finding groups| J
 ```
 
 The orchestrator advances automatically between phases once validation passes. It only pauses for escalation gates (security, schema, public APIs, data changes), validation failures, or an explicit user request to stop.

@@ -25,6 +25,7 @@ Per-skill documentation for [Spec Driven](../README.md) (`afonsoft/skills`). Eac
 | `gap-analysis` | [doc](en/gap-analysis.md) | [doc](pt-br/gap-analysis.md) |
 | `improve-codebase-architecture` | [doc](en/improve-codebase-architecture.md) | [doc](pt-br/improve-codebase-architecture.md) |
 | `mermaid-architecture` | [doc](en/mermaid-architecture.md) | [doc](pt-br/mermaid-architecture.md) |
+| `migration-planner` | [doc](en/migration-planner.md) | [doc](pt-br/migration-planner.md) |
 | `notebooklm-mcp` | [doc](en/notebooklm-mcp.md) | [doc](pt-br/notebooklm-mcp.md) |
 | `observability-and-instrumentation` | [doc](en/observability-and-instrumentation.md) | [doc](pt-br/observability-and-instrumentation.md) |
 | `obsidian` | [doc](en/obsidian.md) | [doc](pt-br/obsidian.md) |
@@ -33,6 +34,7 @@ Per-skill documentation for [Spec Driven](../README.md) (`afonsoft/skills`). Eac
 | `quality-test-implementation` | [doc](en/quality-test-implementation.md) | [doc](pt-br/quality-test-implementation.md) |
 | `scaffold-mvp` | [doc](en/scaffold-mvp.md) | [doc](pt-br/scaffold-mvp.md) |
 | `sonarqube-autofix` | [doc](en/sonarqube-autofix.md) | [doc](pt-br/sonarqube-autofix.md) |
+| `web-design-guidelines` | [doc](en/web-design-guidelines.md) | [doc](pt-br/web-design-guidelines.md) |
 | `wordpress-mcp` | [doc](en/wordpress-mcp.md) | [doc](pt-br/wordpress-mcp.md) |
 | `write-specs` | [doc](en/write-specs.md) | [doc](pt-br/write-specs.md) |
 

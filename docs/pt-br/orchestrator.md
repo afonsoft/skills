@@ -24,7 +24,7 @@ Use esta skill ao iniciar ou retomar um projeto, planejar um Epic, ou coordenar 
 
 ## 🔗 Correlação
 
-- **Anterior**: `write-specs` produz SPECs aprovados.
+- **Anterior**: `write-specs` produz SPECs aprovados. Auditorias alimentadoras — `gap-analysis` (gaps código vs. docs), `migration-planner` (planos por domínio legado → .NET), `web-design-guidelines` (pendências de UI) — invocam `write-specs` com pacotes de evidências e despejam Epics/Issues na fila que ele reconcilia.
 - **Paralela**: `create-issues` transforma SPECs em Issues.
 - **Execução**: `execute-specs` implementa cada fatia; `diagnose` trata regressões; `code-review-and-quality` revisa diffs.
 - **Posterior**: `qa-analyst` realiza a revisão obrigatória pré-PR; `quality-test-implementation` eleva a cobertura e limpa o débito de qualidade; `code-review-and-quality` executa a revisão final do diff; `architecture` atualiza tudo em `docs/architecture/` (roteando para `drawio-architecture`, `mermaid-architecture` e o `archify` opcional) e invoca `gap-analysis` para a auditoria final baseada em evidências antes do `create-readme`.
