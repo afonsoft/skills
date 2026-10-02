@@ -331,6 +331,16 @@
       ]
     },
     {
+      "name": "web-design-guidelines",
+      "version": "1.0.0-cbbb3f52",
+      "files": [
+        "web-design-guidelines/SKILL.md",
+        "web-design-guidelines/references/interface-guidelines.md",
+        "web-design-guidelines/references/lighthouse-verification.md",
+        "web-design-guidelines/references/report-template.md"
+      ]
+    },
+    {
       "name": "wordpress-mcp",
       "version": "1.2.3-524e6400",
       "files": [

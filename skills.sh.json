@@ -19,12 +19,13 @@
     },
     {
       "title": "Architecture & Design",
-      "description": "Skills for analyzing, visualizing, and refining system architecture.",
+      "description": "Skills for analyzing, visualizing, and refining system architecture and UI design.",
       "skills": [
         "architecture",
         "improve-codebase-architecture",
         "drawio-architecture",
-        "mermaid-architecture"
+        "mermaid-architecture",
+        "web-design-guidelines"
       ]
     },
     {
