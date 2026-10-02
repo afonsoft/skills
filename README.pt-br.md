@@ -75,6 +75,7 @@ As skills estão organizadas em torno do pipeline do orchestrator: **Engenharia 
 ### 🎨 Frontend e Design
 *Moldar interfaces com design responsivo e mobile-first.*
 - **[`design`](docs/pt-br/design.md)**: Design de UI frontend para Angular, React e Blazor. Cobre layouts responsivos mobile-first, tipografia, cor, componentes, acessibilidade, motion, design tokens, exemplos Bootstrap/Tailwind CSS e endurecimento para produção.
+- **[`web-design-guidelines`](docs/pt-br/web-design-guidelines.md)**: Validação de web design, merge das skills vercel-labs/web-design-guidelines + lighthouse-95. Audita arquivos de UI contra o conjunto completo de regras de interface (findings `file:line`, com mapeamentos Angular/Blazor) e/ou verifica páginas publicadas contra Lighthouse 95+ (mobile + desktop, veredicto de 3 execuções), e converte pendências confirmadas em SPECs Draft (`write-specs`), Epic + Issues (`create-issues`) e correções orquestradas (`orchestrator`).
 
 ### 🔌 Extensibilidade e Integração
 *Expandindo o que o agente pode realmente fazer.*
@@ -122,6 +123,7 @@ Resultados mais recentes da auditoria de terceiros do [skills.sh](https://skills
 | `quality-test-implementation` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/quality-test-implementation) |
 | `scaffold-mvp` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/scaffold-mvp) |
 | `sonarqube-autofix` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/sonarqube-autofix) |
+| `web-design-guidelines` | ⚪ pendente | 0 | ⚪ pendente | [Ver](https://skills.sh/afonsoft/skills/web-design-guidelines) |
 | `wordpress-mcp` | 🟡 medium | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/wordpress-mcp) |
 | `write-specs` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/write-specs) |
 

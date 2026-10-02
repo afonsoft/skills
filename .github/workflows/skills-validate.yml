@@ -89,6 +89,7 @@ jobs:
           - obsidian
           - quality-test-implementation
           - sonarqube-autofix
+          - web-design-guidelines
           - wordpress-mcp
     steps:
       - uses: actions/checkout@v5
