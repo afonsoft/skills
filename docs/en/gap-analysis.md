@@ -30,5 +30,5 @@ Use this skill when:
 ## 🔗 Correlation
 
 - **Downstream**: `write-specs` authors each gap's SPEC SDD; `create-issues` publishes the Epic and slices; `orchestrator` executes the approved SPECs.
-- **Sibling**: `improve-codebase-architecture` handles P2 deepening opportunities; `sonarqube-autofix` handles P1/P2 static-analysis findings.
+- **Sibling**: `improve-codebase-architecture` handles P2 deepening opportunities; `sonarqube-autofix` handles P1/P2 static-analysis findings. `migration-planner` and `web-design-guidelines` follow the same evidence → Draft SPECs → Epic + slices → `orchestrator` pattern for legacy migrations and UI audits.
 - **Contrast**: `orchestrator` Phase 2 runs a structural harness checklist; `gap-analysis` runs the deep evidence-based audit of code vs. docs vs. specs.

@@ -23,6 +23,7 @@ Use this skill when:
 
 ## 🔗 Correlation
 
+- **Upstream**: `gap-analysis`, `migration-planner`, and `web-design-guidelines` invoke `write-specs` with evidence packets — confirmed gaps, per-domain migration plans, and UI finding groups respectively.
 - **Downstream**: `execute-specs` implements each vertical slice from the approved SPEC.
 - **Parallel**: `create-issues` turns approved SPECs into traceable GitHub Issues.
 - **Sibling**: `scaffold-mvp` bootstraps a new project once the domain and initial SPEC are established.

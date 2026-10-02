@@ -23,6 +23,7 @@ Use esta skill quando:
 
 ## 🔗 Correlação
 
+- **Anterior**: `gap-analysis`, `migration-planner` e `web-design-guidelines` invocam `write-specs` com pacotes de evidências — gaps confirmados, planos de migração por domínio e grupos de pendências de UI, respectivamente.
 - **Posterior**: `execute-specs` implementa cada fatia vertical a partir do SPEC aprovado.
 - **Paralela**: `create-issues` converte SPECs aprovados em GitHub Issues rastreáveis.
 - **Relacionada**: `scaffold-mvp` inicializa um novo projeto após o domínio e o SPEC inicial estarem estabelecidos.
