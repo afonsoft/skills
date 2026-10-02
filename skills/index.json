@@ -213,6 +213,20 @@
       ]
     },
     {
+      "name": "migration-planner",
+      "version": "1.0.0-3315632b",
+      "files": [
+        "migration-planner/SKILL.md",
+        "migration-planner/references/assessment-framework.md",
+        "migration-planner/references/dotnet-target-strategies.md",
+        "migration-planner/references/plan-phase.md",
+        "migration-planner/references/research-phase.md",
+        "migration-planner/references/spec-handoff.md",
+        "migration-planner/references/strangler-fig-patterns.md",
+        "migration-planner/references/testing-safety-nets.md"
+      ]
+    },
+    {
       "name": "notebooklm-mcp",
       "version": "1.0.6-caeb6099",
       "files": [

@@ -83,6 +83,7 @@ jobs:
           - create-readme
           - drawio-architecture
           - gap-analysis
+          - migration-planner
           - notebooklm-mcp
           - observability-and-instrumentation
           - obsidian

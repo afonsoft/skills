@@ -69,6 +69,7 @@ The skills are organized around the orchestrator's pipeline: **Harness Engineeri
 - **[`improve-codebase-architecture`](docs/en/improve-codebase-architecture.md)**: Finds architectural deepening opportunities by reading `.claude/CONTEXT.md`, `.claude/MEMORY.md`, and `docs/architecture/`, and produces an HTML report.
 - **[`architecture`](docs/en/architecture.md)**: The single owner of `docs/architecture/`. Routes ADRs, design docs, and diagrams to `drawio-architecture`, `mermaid-architecture`, and the optional `archify` skill (interactive HTML, used only when already installed — never installed at runtime), then ends with the `gap-analysis` evidence audit it owns.
 - **[`gap-analysis`](docs/en/gap-analysis.md)**: Evidence-backed audit of AS-IS code vs. TO-BE specs/docs. Confirmed gaps become Draft SPECs (`write-specs`), a tracked Epic with slices (`create-issues`), and orchestrated execution (`orchestrator`) — behind an explicit approval gate.
+- **[`migration-planner`](docs/en/migration-planner.md)**: Evidence-based legacy → .NET migration planning with the Strangler Fig pattern. Researches the codebase, maps bounded contexts, designs seams (YARP, DI, EF Core dual-write, Blazor/MAUI), writes per-domain plans + roadmap in `migration-plan/`, then converts each domain into Draft SPECs (`write-specs`), a tracked Epic (`create-issues`), and orchestrated execution (`orchestrator`) — behind an explicit approval gate. Default targets: Blazor WebAssembly, .NET MAUI, ASP.NET Core.
 
 ### 💎 Code Quality & Review
 *Ensuring the output meets professional standards.*
@@ -119,6 +120,7 @@ Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen 
 | `gap-analysis` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/gap-analysis) |
 | `improve-codebase-architecture` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/improve-codebase-architecture) |
 | `mermaid-architecture` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/mermaid-architecture) |
+| `migration-planner` | ⚪ pending | 0 | ⚪ pending | [View](https://skills.sh/afonsoft/skills/migration-planner) |
 | `notebooklm-mcp` | ✅ safe | 1 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/notebooklm-mcp) |
 | `observability-and-instrumentation` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/observability-and-instrumentation) |
 | `obsidian` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/obsidian) |
