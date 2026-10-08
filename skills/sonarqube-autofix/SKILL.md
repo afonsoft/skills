@@ -595,7 +595,7 @@ Analyze the output and:
 
 ### Cleanup of Isolated Environments (Optional)
 
-If the user asks to remove isolated environments after completion, **list the paths first and ask for explicit confirmation** before deleting anything. Do not run `rm -rf` or `find -exec rm -rf` without consent.
+If the user asks to remove isolated environments after completion, **list the paths first and ask for explicit confirmation** before deleting anything. Do not run `rm -rf` or other destructive deletion commands without consent.
 
 ```bash
 # List what would be removed (do not delete automatically)

@@ -1,0 +1,39 @@
+# Cisco Skill Scanner policy — afonsoft/skills
+# ============================================================
+# Base preset: low-noise. Adds repo-scoped suppressions for findings that were
+# reviewed and confirmed to be intentional design or safety-guardrail prose.
+# Suppressed findings stay out of verdicts and exit codes but remain visible
+# as SARIF suppressions.
+
+policy_name: afonsoft-skills
+policy_version: "1.0"
+preset_base: low-noise
+
+# Cross-skill rules fire on the collection itself: in a repo that ships dozens
+# of skills which legitimately document external endpoints (npm, draw.io,
+# SonarQube, NotebookLM), collector/exfiltrator correlation is inherent noise.
+severity_overrides:
+  - rule_id: CROSS_SKILL_DATA_RELAY
+    severity: LOW
+    reason: "Skills collection: shared external destinations across skills are by design"
+  - rule_id: CROSS_SKILL_SHARED_URL
+    severity: LOW
+    reason: "Skills collection: skills legitimately reference the same vendor endpoints"
+
+suppressions:
+  - rule_id: ACTIVE_REMOTE_ACQUIRE_EXECUTE
+    skills: ["sonarqube-autofix"]
+    paths: ["SKILL.md"]
+    reason: "Instructs the agent to run the repo-vendored helper download-issues.sh; no remote code fetch"
+  - rule_id: CORRELATED_SENSITIVE_NETWORK_FLOW
+    skills: ["sonarqube-autofix"]
+    paths: ["references/download-issues.sh"]
+    reason: "Sends SONAR_TOKEN as Bearer to the configured SonarQube base URL — the script's sole purpose"
+  - rule_id: LLM_DATA_EXFILTRATION
+    skills: ["sonarqube-autofix"]
+    paths: ["references/download-issues.sh"]
+    reason: "Same reviewed curl: auth header scoped to the user's own SonarQube instance"
+  - rule_id: ACTIVE_REMOTE_ACQUIRE_EXECUTE
+    skills: ["drawio-architecture"]
+    paths: ["SKILL.md"]
+    reason: "Security-guidance section documenting a version-pinned npx MCP server invocation"

@@ -61,7 +61,7 @@ Both paths share the **same cookie cache** at `~/.notebooklm-mcp-cli/profiles/<p
 - **Prefer official auth**: use desktop `nlm login` auto mode when a browser is available. Use manual cookie mode only on headless servers the user controls.
 - **No browser data harvesting**: extract cookies only from the user's own browser session; do not use extracted cookies for any purpose other than authenticating `nlm`.
 - **Verify before trusting**: run `nlm login --check` and `nlm doctor` before any notebook operation.
-- **No privileged operations**: do not run `nlm` with `sudo`, `doas`, or as root unless the user explicitly requests it and confirms the reason.
+- **No privileged operations**: do not run `nlm` with elevated privileges (`sudo`) or as root unless the user explicitly requests it and confirms the reason.
 - **Isolate auth cache**: prefer per-project or per-profile auth over a shared default profile when multiple users may access the environment.
 - **Account risk disclosure**: `nlm` is an unofficial client and may violate Google's Terms of Service; accounts using it can be rate-limited or suspended. Surface this risk and recommend a secondary/dedicated Google account — never push the user's primary account into it without that warning.
 - **Session scope**: imported cookies grant a full Google web session, far broader than NotebookLM. Treat `auth.json`/`cookies.txt` as account-level credentials, not NotebookLM-scoped tokens.

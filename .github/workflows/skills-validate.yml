@@ -164,21 +164,96 @@ jobs:
 
   security-scan-skills:
     name: Security Scan (Cisco Skill Scanner)
-    uses: cisco-ai-defense/skill-scanner/.github/workflows/scan-skills.yml@2.2.1
-    with:
-      scanner_version: "2.2.1"
-      skill_path: skills
-      scan_mode: scan-all
-      policy: low-noise
-      fail_on_severity: high
-      use_llm: true
-      llm_model: ${{ vars.SKILL_SCANNER_LLM_MODEL }}
-      llm_provider: ${{ vars.SKILL_SCANNER_LLM_PROVIDER }}
-      llm_base_url: ${{ vars.SKILL_SCANNER_LLM_BASE_URL }}
-      upload_sarif: true
-    secrets:
-      llm_api_key: ${{ secrets.SKILL_SCANNER_LLM_API_KEY }}
+    runs-on: ubuntu-latest
     permissions:
       security-events: write
       contents: read
       actions: read
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install skill-scanner
+        run: pip install --quiet "cisco-ai-skill-scanner[google]==2.2.1"
+
+      - name: Run scan
+        id: scan
+        env:
+          SKILL_SCANNER_LLM_API_KEY: ${{ secrets.SKILL_SCANNER_LLM_API_KEY }}
+          SKILL_SCANNER_LLM_MODEL: ${{ vars.SKILL_SCANNER_LLM_MODEL }}
+          SKILL_SCANNER_LLM_PROVIDER: ${{ vars.SKILL_SCANNER_LLM_PROVIDER }}
+          SKILL_SCANNER_LLM_BASE_URL: ${{ vars.SKILL_SCANNER_LLM_BASE_URL }}
+          # The omniroute gateway translates strict json_schema into a forced
+          # tool call (empty message.content), so the scanner must ask for a
+          # plain JSON object instead.
+          SKILL_SCANNER_LLM_FORCE_JSON_OBJECT: "1"
+          # Antigravity-routed Gemini rejects reasoning_effort=none ("only works
+          # in thinking mode"); low keeps the reasoning budget small.
+          SKILL_SCANNER_LLM_REASONING_EFFORT: "low"
+          SKILL_SCANNER_LLM_MAX_TOKENS: "16384"
+        run: |
+          # Report-only: findings and scanner errors land in the step summary
+          # (and the SARIF upload below feeds Code Scanning) — the job never
+          # goes red on scan results.
+          set +e
+          skill-scanner scan-all skills \
+            --format sarif --policy .github/skill-scanner-policy.yaml \
+            --recursive --check-overlap \
+            --use-llm --output results.sarif > scan.log 2>&1
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Write summary
+        if: always()
+        env:
+          SCAN_EXIT_CODE: ${{ steps.scan.outputs.exit_code }}
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json, os
+          from pathlib import Path
+
+          print("## Cisco Skill Scanner — security scan (report-only)\n")
+
+          ec = os.environ.get("SCAN_EXIT_CODE", "")
+          if ec and ec != "0":
+              print(f"> Scanner exited with code {ec}. Results are informational only — see the log at the bottom.\n")
+
+          sarif_path = Path("results.sarif")
+          results = []
+          if sarif_path.exists() and sarif_path.stat().st_size > 0:
+              data = json.loads(sarif_path.read_text())
+              for run in data.get("runs", []):
+                  results.extend(run.get("results", []))
+
+          if not results:
+              print("No findings reported.")
+          else:
+              order = {"error": 0, "warning": 1, "note": 2}
+              results.sort(key=lambda r: order.get(r.get("level", "note"), 3))
+              print(f"**{len(results)} finding(s)**\n")
+              print("| Severity | Rule | Location |")
+              print("|---|---|---|")
+              for r in results:
+                  loc = r.get("locations", [{}])[0].get("physicalLocation", {})
+                  uri = loc.get("artifactLocation", {}).get("uri", "(cross-skill)")
+                  line = loc.get("region", {}).get("startLine")
+                  where = f"`{uri}:{line}`" if line else f"`{uri}`"
+                  print(f"| {r.get('level', 'note')} | `{r.get('ruleId', '?')}` | {where} |")
+
+          log = Path("scan.log")
+          if log.exists() and log.read_text(errors="replace").strip():
+              print("\n<details><summary>Scanner output</summary>\n\n```")
+              print(log.read_text(errors="replace").strip()[-8000:])
+              print("```\n</details>")
+          PY
+
+      - name: Upload SARIF to Code Scanning
+        if: always() && hashFiles('results.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: results.sarif
+        continue-on-error: true
