@@ -99,16 +99,16 @@ As skills estão organizadas em torno do pipeline do orchestrator: **Engenharia 
 
 Resultados mais recentes da auditoria de terceiros do [skills.sh](https://skills.sh) (**Gen Agent Trust Hub**, **Socket**, **Snyk**). Clique em **Ver** para ver o relatório completo de cada skill.
 
-> **Atualizado em:** 2026-09-20
+> **Atualizado em:** 2026-10-08
 
 | Skill | Gen Agent Trust Hub | Socket alerts | Snyk | Detalhes |
 |-------|---------------------|---------------|------|----------|
-| `architecture` | ✅ safe | 1 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/architecture) |
+| `architecture` | 🟡 medium | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/architecture) |
 | `building-mcp-servers` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/building-mcp-servers) |
 | `code-review-and-quality` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/code-review-and-quality) |
 | `composio-mcp` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/composio-mcp) |
 | `create-agent-harness` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/create-agent-harness) |
-| `create-issues` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/create-issues) |
+| `create-issues` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/create-issues) |
 | `create-readme` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/create-readme) |
 | `design` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/design) |
 | `diagnose` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/diagnose) |
@@ -117,16 +117,16 @@ Resultados mais recentes da auditoria de terceiros do [skills.sh](https://skills
 | `gap-analysis` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/gap-analysis) |
 | `improve-codebase-architecture` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/improve-codebase-architecture) |
 | `mermaid-architecture` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/mermaid-architecture) |
-| `migration-planner` | ⚪ pendente | 0 | ⚪ pendente | [Ver](https://skills.sh/afonsoft/skills/migration-planner) |
-| `notebooklm-mcp` | ✅ safe | 1 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/notebooklm-mcp) |
+| `migration-planner` | ✅ safe | 0 | ⚪ pendente | [Ver](https://skills.sh/afonsoft/skills/migration-planner) |
+| `notebooklm-mcp` | 🟡 medium | 1 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/notebooklm-mcp) |
 | `observability-and-instrumentation` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/observability-and-instrumentation) |
 | `obsidian` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/obsidian) |
 | `orchestrator` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/orchestrator) |
 | `qa-analyst` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/qa-analyst) |
 | `quality-test-implementation` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/quality-test-implementation) |
 | `scaffold-mvp` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/scaffold-mvp) |
-| `sonarqube-autofix` | ✅ safe | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/sonarqube-autofix) |
-| `web-design-guidelines` | ⚪ pendente | 0 | ⚪ pendente | [Ver](https://skills.sh/afonsoft/skills/web-design-guidelines) |
+| `sonarqube-autofix` | ✅ safe | 1 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/sonarqube-autofix) |
+| `web-design-guidelines` | ✅ safe | 0 | ⚪ pendente | [Ver](https://skills.sh/afonsoft/skills/web-design-guidelines) |
 | `wordpress-mcp` | 🟡 medium | 0 | 🟡 medium | [Ver](https://skills.sh/afonsoft/skills/wordpress-mcp) |
 | `write-specs` | ✅ safe | 0 | 🟢 low | [Ver](https://skills.sh/afonsoft/skills/write-specs) |
 

@@ -104,18 +104,18 @@ The skills are organized around the orchestrator's pipeline: **Harness Engineeri
 
 Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen Agent Trust Hub**, **Socket**, **Snyk**). Click **View** to see the full report for a skill.
 
-> **Updated:** 2026-09-20
+> **Updated:** 2026-10-08
 >
-> **Mitigations applied** (PR #11): `notebooklm-mcp`, `orchestrator`, and `wordpress-mcp` were hardened with explicit-approval gates, pinned installs, credential isolation, untrusted-content handling, and audit logging. The table below reflects the rescan after those changes.
+> **Mitigations applied** (PR #11): `notebooklm-mcp`, `orchestrator`, and `wordpress-mcp` were hardened with explicit-approval gates, pinned installs, credential isolation, untrusted-content handling, and audit logging. The latest scan still flags `architecture`, `notebooklm-mcp`, and `wordpress-mcp` as 🟡 medium risk on Gen Agent Trust Hub, and `notebooklm-mcp` and `sonarqube-autofix` each carry 1 Socket alert.
 
 | Skill | Gen Agent Trust Hub | Socket alerts | Snyk | Details |
 |-------|---------------------|---------------|------|---------|
-| `architecture` | ✅ safe | 1 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/architecture) |
+| `architecture` | 🟡 medium | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/architecture) |
 | `building-mcp-servers` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/building-mcp-servers) |
 | `code-review-and-quality` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/code-review-and-quality) |
 | `composio-mcp` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/composio-mcp) |
 | `create-agent-harness` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/create-agent-harness) |
-| `create-issues` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/create-issues) |
+| `create-issues` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/create-issues) |
 | `create-readme` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/create-readme) |
 | `design` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/design) |
 | `diagnose` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/diagnose) |
@@ -124,16 +124,16 @@ Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen 
 | `gap-analysis` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/gap-analysis) |
 | `improve-codebase-architecture` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/improve-codebase-architecture) |
 | `mermaid-architecture` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/mermaid-architecture) |
-| `migration-planner` | ⚪ pending | 0 | ⚪ pending | [View](https://skills.sh/afonsoft/skills/migration-planner) |
-| `notebooklm-mcp` | ✅ safe | 1 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/notebooklm-mcp) |
+| `migration-planner` | ✅ safe | 0 | ⚪ pending | [View](https://skills.sh/afonsoft/skills/migration-planner) |
+| `notebooklm-mcp` | 🟡 medium | 1 | 🟢 low | [View](https://skills.sh/afonsoft/skills/notebooklm-mcp) |
 | `observability-and-instrumentation` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/observability-and-instrumentation) |
 | `obsidian` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/obsidian) |
 | `orchestrator` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/orchestrator) |
 | `qa-analyst` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/qa-analyst) |
 | `quality-test-implementation` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/quality-test-implementation) |
 | `scaffold-mvp` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/scaffold-mvp) |
-| `sonarqube-autofix` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/sonarqube-autofix) |
-| `web-design-guidelines` | ⚪ pending | 0 | ⚪ pending | [View](https://skills.sh/afonsoft/skills/web-design-guidelines) |
+| `sonarqube-autofix` | ✅ safe | 1 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/sonarqube-autofix) |
+| `web-design-guidelines` | ✅ safe | 0 | ⚪ pending | [View](https://skills.sh/afonsoft/skills/web-design-guidelines) |
 | `wordpress-mcp` | 🟡 medium | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/wordpress-mcp) |
 | `write-specs` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/write-specs) |
 ---
