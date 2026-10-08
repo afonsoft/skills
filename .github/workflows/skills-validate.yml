@@ -58,7 +58,9 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.23'
+          # skill-validator requires go >= 1.25.5; pinning an older version
+          # triggers a toolchain auto-download that can 404. 'stable' avoids it.
+          go-version: 'stable'
 
       - name: Install skill-validator
         run: go install github.com/agent-ecosystem/skill-validator/cmd/skill-validator@latest
