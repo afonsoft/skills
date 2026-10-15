@@ -131,6 +131,7 @@ Latest results from the [skills.sh](https://skills.sh) third-party audit (**Gen 
 | `orchestrator` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/orchestrator) |
 | `qa-analyst` | ✅ safe | 0 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/qa-analyst) |
 | `quality-test-implementation` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/quality-test-implementation) |
+| `reverse-engineer` | ⚪ pending | 0 | ⚪ pending | [View](https://skills.sh/afonsoft/skills/reverse-engineer) |
 | `scaffold-mvp` | ✅ safe | 0 | 🟢 low | [View](https://skills.sh/afonsoft/skills/scaffold-mvp) |
 | `sonarqube-autofix` | ✅ safe | 1 | 🟡 medium | [View](https://skills.sh/afonsoft/skills/sonarqube-autofix) |
 | `web-design-guidelines` | ✅ safe | 0 | ⚪ pending | [View](https://skills.sh/afonsoft/skills/web-design-guidelines) |
