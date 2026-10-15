@@ -1,12 +1,12 @@
-# 自动化入口
+# Automation entry
 
-推荐开场顺序：
+Recommended opening sequence:
 
-1. `js-reverse_new_page` 或 `js-reverse_navigate_page` 打开页面
-2. `js-reverse_list_network_requests` 看最近请求
-3. `js-reverse_get_request_initiator` 找调用栈
-4. `js-reverse_list_scripts` 建立脚本范围
-5. `js-reverse_search_in_sources` 搜请求路径、参数名、函数名
-6. 必要时 `js-reverse_break_on_xhr` 或 `js-reverse_set_breakpoint_on_text`
+1. `js-reverse_new_page` or `js-reverse_navigate_page` open the page
+2. `js-reverse_list_network_requests` View recent requests
+3. `js-reverse_get_request_initiator` Find the call stack
+4. `js-reverse_list_scripts` creates script range
+5. `js-reverse_search_in_sources` search request path, parameter name, function name
+6. `js-reverse_break_on_xhr` or `js-reverse_set_breakpoint_on_text` if necessary
 
-默认不要一上来就猜 `window`、`document`、`navigator` 该怎么补。
+By default, don’t guess how to fix `window`, `document`, `navigator` right from the start.

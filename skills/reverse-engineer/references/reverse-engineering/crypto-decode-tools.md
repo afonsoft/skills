@@ -1,220 +1,220 @@
-# 加解密 / 编解码工具速查
+# Quick Reference for Encryption/Decryption and Encoding/Decoding Tools
 
-> 逆向和 CTF 中经常遇到加密/编码/哈希数据。本文档按场景列出最实用的工具。
+> Encryption/encoding/hash data is often encountered in reverse engineering and CTF. This document lists the most practical tools by scenario.
 
 ---
 
-## 自动识别 + 解密（不知道用了什么加密时）
+## Automatic Recognition + Decryption (when you don't know what encryption was used)
 
-| 工具 | Stars | 用途 | 链接 |
+| Tool | Stars | Purpose | Link |
 |------|-------|------|------|
-| **Ciphey** | 18k+ | AI 自动识别并解密（支持 50+ 编码/加密/哈希） | https://github.com/Ciphey/Ciphey |
-| **CyberChef** | 29k+ | 在线/离线编解码瑞士军刀（拖拽式操作） | https://github.com/gchq/CyberChef |
-| **dcode.fr** | — | 在线 900+ 密码/编码/数学工具 | https://www.dcode.fr/ |
+| **Ciphey** | 18k+ | AI automatically identifies and decrypts (supports 50+ encodings/encryptions/hashes) | https://github.com/Ciphey/Ciphey |
+| **CyberChef** | 29k+ | Online/Offline encoding and decoding Swiss Army knife (drag-and-drop operation) | https://github.com/gchq/CyberChef |
+| **dcode.fr** | — | Online 900+ password/code/mathematics tools | https://www.dcode.fr/ |
 
-### Ciphey 使用
+### Using Ciphey
 
 ```bash
 pip install ciphey
-# 自动检测并解密
+# Automatically detect and decrypt
 ciphey -t "密文"
-# 从文件读取
+# Read from file
 ciphey -f encrypted.txt
 ```
 
-Ciphey 支持：Base64/32/16、Caesar、Vigenere、XOR、AES（弱密钥）、Morse、Binary、Hex、URL encoding、HTML entities、哈希识别等。
+Ciphey supports: Base64/32/16, Caesar, Vigenere, XOR, AES (weak keys), Morse, Binary, Hex, URL encoding, HTML entities, hash recognition, etc.
 
-### CyberChef 使用
+### Using CyberChef
 
 ```text
-在线版：https://gchq.github.io/CyberChef/
-离线版：下载 GitHub Release 的 HTML 文件直接打开
+Online version: https://gchq.github.io/CyberChef/
+Offline version: Download the HTML file from the GitHub Release and open it directly
 
-常用 Recipe：
-- From Base64 → 解 Base64
-- XOR → 异或解密（可暴力尝试 key）
-- AES Decrypt → AES 解密
-- Magic → 自动检测编码类型
+Common Recipe:
+- From Base64 → Decode Base64
+- XOR → XOR decryption (key can be brute-forced)
+- AES Decrypt → AES Decrypt
+- Magic → Automatically detect encoding type
 ```
 
 ---
 
-## 哈希识别与破解
+## Hash Identification and Cracking
 
-| 工具 | 用途 | 链接 |
+| Tool | Purpose | Link |
 |------|------|------|
-| **hashID** | 识别哈希类型（MD5/SHA/bcrypt 等） | https://github.com/psypanda/hashID |
-| **hash-identifier** | 同上，Python 版 | https://github.com/blackploit/hash-identifier |
-| **haiti** | 现代哈希识别工具（更准确） | `gem install haiti` |
-| **Hashcat** | GPU 哈希破解 | https://hashcat.net/ |
-| **John the Ripper** | CPU 哈希破解 | https://www.openwall.com/john/ |
-| **hashes.com** | 在线哈希查询（彩虹表） | https://hashes.com/ |
+| **hashID** | Identify hash type (MD5/SHA/bcrypt, etc.) | https://github.com/psypanda/hashID |
+| **hash-identifier** | Same as above, Python version | https://github.com/blackploit/hash-identifier |
+| **haiti** | Modern hash identification tool (more accurate) | `gem install haiti` |
+| **Hashcat** | GPU hash cracking | https://hashcat.net/ |
+| **John the Ripper** | CPU Hash Cracking | https://www.openwall.com/john/ |
+| **hashes.com** | Online hash lookup (rainbow table) | https://hashes.com/ |
 
 ```bash
-# 识别哈希类型
+# Identify Hash Types
 hashid '5f4dcc3b5aa765d61d8327deb882cf99'
-# 输出: [+] MD5
+# Output: [+] MD5
 
-# haiti（更准确）
+# haiti (more accurate)
 haiti '5f4dcc3b5aa765d61d8327deb882cf99'
 
-# Hashcat 破解
+# Hashcat Cracking
 hashcat -m 0 hash.txt rockyou.txt  # MD5
 hashcat -m 1000 hash.txt rockyou.txt  # NTLM
 ```
 
 ---
 
-## RSA 攻击
+## RSA Attack
 
-| 工具 | 用途 | 链接 |
+| Tool | Purpose | Link |
 |------|------|------|
-| **RsaCtfTool** | RSA 自动攻击（20+ 攻击方式） | https://github.com/Ganapati/RsaCtfTool |
-| **SageMath** | 数学计算（大数分解/椭圆曲线） | https://www.sagemath.org/ |
-| **factordb.com** | 在线大数分解查询 | http://factordb.com/ |
-| **yafu** | 本地大数分解 | https://github.com/bbuhrow/yafu |
+| **RsaCtfTool** | RSA automatic attack (20+ attack methods) | https://github.com/Ganapati/RsaCtfTool |
+| **SageMath** | Mathematical computation (large number factorization / elliptic curves) | https://www.sagemath.org/ |
+| **factordb.com** | Online Large Number Factorization Lookup | http://factordb.com/ |
+| **yafu** | Local Large Number Factorization | https://github.com/bbuhrow/yafu |
 
 ```bash
-# RsaCtfTool 自动攻击
+# RsaCtfTool Automatic Attack
 python RsaCtfTool.py --publickey pub.pem --private
 python RsaCtfTool.py --publickey pub.pem --uncipherfile cipher.txt
 
-# 支持的攻击：
+# Supported Attacks:
 # Wiener、Boneh-Durfee、Fermat、Pollard p-1、Williams p+1
-# Common modulus、Small q、Hastads、Noveltyprimes 等
+# Common modulus, Small q, Hastads, Noveltyprimes, etc.
 ```
 
 ---
 
-## XOR 分析
+## XOR Analysis
 
-| 工具 | 用途 | 链接 |
+| Tool | Purpose | Link |
 |------|------|------|
-| **xortool** | XOR 密钥长度猜测 + 已知明文攻击 | https://github.com/hellman/xortool |
-| **CyberChef XOR** | 可视化 XOR 操作 | CyberChef 内置 |
+| **xortool** | XOR key length guessing + known-plaintext attack | https://github.com/hellman/xortool |
+| **CyberChef XOR** | Visual XOR Operation | Built-in to CyberChef |
 
 ```bash
-# 猜测 XOR key 长度
+# Guess XOR key length
 xortool encrypted_file
-# 用猜测的 key 长度解密
+# Decrypt using the guessed key length
 xortool -l 4 -c 00 encrypted_file
 
-# 已知明文攻击（知道部分明文）
+# Known-plaintext attack (knowing part of the plaintext)
 xortool-xor -f encrypted -s "known_plaintext"
 ```
 
 ---
 
-## 古典密码
+## Classical Cryptography
 
-| 密码类型 | 工具 | 说明 |
+| Password Type | Tool | Description |
 |---------|------|------|
-| Caesar | CyberChef / dcode.fr | 暴力 25 种偏移 |
-| Vigenere | dcode.fr / Ciphey | 需要猜 key 长度 |
-| Substitution | quipqiup.com | 频率分析自动求解 |
-| Enigma | dcode.fr | 在线模拟器 |
-| Rail Fence | dcode.fr / CyberChef | 栅栏密码 |
-| Playfair | dcode.fr | 需要 key |
-| Morse | CyberChef | 点划转文字 |
-| Bacon | dcode.fr | 二进制隐写 |
-| ROT13/47 | CyberChef / `tr` | 简单替换 |
+| Caesar | CyberChef / dcode.fr | Brute force 25 types of shifts |
+| Vigenere | dcode.fr / Ciphey | Needs to guess key length |
+| Substitution | quipqiup.com | Frequency Analysis Automatic Solver |
+| Enigma | dcode.fr | Online Simulator |
+| Rail Fence | dcode.fr / CyberChef | Rail Fence Cipher |
+| Playfair | dcode.fr | requires key |
+| Morse | CyberChef | Dots and Dashes to Text |
+| Bacon | dcode.fr | Binary Steganography |
+| ROT13/47 | CyberChef / `tr` | Simple Replacement |
 
 ---
 
-## 编码识别与转换
+## Encoding Recognition and Conversion
 
-| 编码 | 识别特征 | 解码方式 |
+| Code | Identification Features | Decoding Method |
 |------|---------|---------|
-| Base64 | 末尾 `=` 或 `==`，字符集 A-Za-z0-9+/ | `base64 -d` / CyberChef |
-| Base32 | 大写字母 + 2-7，末尾 `=` | CyberChef |
-| Base58 | 无 0/O/I/l，常见于短标识符编码 | CyberChef |
-| Hex | 只有 0-9a-f，长度为偶数 | `xxd -r -p` / CyberChef |
-| URL encoding | `%XX` 格式 | `urldecode` / CyberChef |
-| HTML entities | `&#XX;` 或 `&amp;` 格式 | CyberChef |
-| Unicode escape | `\uXXXX` 格式 | Python `decode('unicode_escape')` |
-| JWT | `xxxxx.yyyyy.zzzzz`（三段 Base64URL） | jwt.io / CyberChef |
-| Brainfuck | 只有 `><+-.,[]` 八个字符 | 在线解释器 |
-| Ook! | 只有 `Ook.` `Ook!` `Ook?` | 在线解释器 |
+| Base64 | Ends with `=` or `==`, character set A-Za-z0-9+/ | `base64 -d` / CyberChef |
+| Base32 | Uppercase letters + 2-7, ending with `=` | CyberChef |
+| Base58 | No 0/O/I/l, commonly used in short identifier encoding | CyberChef |
+| Hex | Only 0-9a-f, even length | `xxd -r -p` / CyberChef |
+| URL encoding | `%XX` format | `urldecode` / CyberChef |
+| HTML entities | `&#XX;` or `&amp;` format | CyberChef |
+| Unicode escape | `\uXXXX` format | Python `decode('unicode_escape')` |
+| JWT | `xxxxx.yyyyy.zzzzz` (three-part Base64URL) | jwt.io / CyberChef |
+| Brainfuck | Only `><+-.,[]` eight characters | Online Interpreter |
+| Ook! | Only `Ook.` `Ook!` `Ook?` | Online Interpreter |
 
 ---
 
-## 逆向中的加密识别
+## Encryption Recognition in Reverse Engineering
 
-### 通过常量识别算法
+### Through Constant Recognition Algorithm
 
-| 常量/特征 | 算法 |
+| Constant/Feature | Algorithm |
 |-----------|------|
 | `0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476` | MD5 |
 | `0x6A09E667, 0xBB67AE85, 0x3C6EF372` | SHA-256 |
-| `0x63, 0x7C, 0x77, 0x7B` (S-Box 开头) | AES |
-| `0x243F6A88` (π 的十六进制) | Blowfish |
+| `0x63, 0x7C, 0x77, 0x7B` (starting with S-Box) | AES |
+| `0x243F6A88` (hexadecimal of π) | Blowfish |
 | `0xB7E15163, 0x9E3779B9` | RC5/RC6/TEA |
 | `0x61707865` ("expa") | ChaCha20/Salsa20 |
 | `0xC6EF3720` | XTEA |
 
-### 通过行为识别
+### Through Behavior Recognition
 
-| 行为特征 | 可能的算法 |
+| Behavioral Characteristics | Possible Algorithms |
 |---------|-----------|
-| 256 字节查找表 + swap 操作 | RC4 |
-| 16 字节块 + 多轮置换 | AES |
-| Feistel 结构（左右交换） | DES/Blowfish/TEA |
-| 大数乘法/模幂 | RSA |
-| 椭圆曲线点运算 | ECDSA/ECDH |
-| 固定 64 轮循环 | TEA/XTEA |
-| 32 轮 + delta 常量 | XTEA |
+| 256-byte lookup table + swap operation | RC4 |
+| 16-byte block + multiple rounds of substitution | AES |
+| Feistel structure (left-right swap) | DES/Blowfish/TEA |
+| Large Number Multiplication/Modular Exponentiation | RSA |
+| Elliptic Curve Point Operations | ECDSA/ECDH |
+| Fixed 64-round cycle | TEA/XTEA |
+| 32 rounds + delta constant | XTEA |
 
 ---
 
-## 自动化密码分析
+## Automated Password Analysis
 
-| 工具 | 用途 | 链接 |
+| Tool | Purpose | Link |
 |------|------|------|
-| **FeatherDuster** | 自动化密码分析框架 | https://github.com/nccgroup/featherduster |
-| **PkCrack** | ZIP 已知明文攻击 | https://www.unix-ag.uni-kl.de/~conrad/krypto/pkcrack.html |
-| **bkcrack** | ZIP 已知明文攻击（现代版） | https://github.com/kimci86/bkcrack |
-| **z3** | SMT 求解器（约束求解） | https://github.com/Z3Prover/z3 |
-| **angr** | 符号执行（自动求解输入） | https://angr.io/ |
+| **FeatherDuster** | Automated Password Analysis Framework | https://github.com/nccgroup/featherduster |
+| **PkCrack** | Known-plaintext attack on ZIP | https://www.unix-ag.uni-kl.de/~conrad/krypto/pkcrack.html |
+| **bkcrack** | ZIP known-plaintext attack (modern version) | https://github.com/kimci86/bkcrack |
+| **z3** | SMT solver (constraint solving) | https://github.com/Z3Prover/z3 |
+| **angr** | Symbolic execution (automatically solve inputs) | https://angr.io/ |
 
 ---
 
-## 快速决策树
+## Fast Decision Tree
 
 ```text
-拿到一段未知数据：
+Received a piece of unknown data:
 
-1. 看长度和字符集
-   - 只有 hex 字符 → 可能是 hex 编码或哈希
-   - 末尾有 = → Base64
-   - 三段点分 → JWT
-   - 32/40/64 字符 hex → 哈希（MD5/SHA1/SHA256）
+1. Look at the length and character set
+- Only hex characters → possibly hex encoding or hash
+- Ends with = → Base64
+- Ellipsis → JWT
+- 32/40/64 character hex → hash (MD5/SHA1/SHA256)
 
-2. 用 Ciphey 自动尝试
-   ciphey -t "数据"
+2. Automatically try with Ciphey
+ciphey -t "data"
 
-3. 如果 Ciphey 失败 → 用 CyberChef Magic 模式
+3. If Ciphey fails → use CyberChef Magic mode
 
-4. 如果是哈希 → hashID 识别类型 → Hashcat/John 破解
+4. If it is a hash → hashID identification type → Hashcat/John crack
 
-5. 如果是 RSA → RsaCtfTool 自动攻击
+5. If it is RSA → RsaCtfTool automatic attack
 
-6. 如果是 XOR → xortool 分析 key
+6. If it is XOR → use xortool to analyze the key
 
-7. 如果是传统 ZIP 加密 → 优先使用 `bkcrack` 已知明文攻击，不要先做无证据的密码暴力
+7. If it is traditional ZIP encryption → prioritize using `bkcrack` known-plaintext attack, do not start with an evidence-less password brute force
 
-8. 如果是自定义加密 → IDA/Ghidra 逆向算法 → 手写解密脚本
+8. If it is custom encryption → IDA/Ghidra reverse algorithm → manually write decryption script
 ```
 
 ---
 
-## 在线资源
+## Online Resources
 
-| 资源 | 链接 | 用途 |
+| Resource | Link | Purpose |
 |------|------|------|
-| CyberChef | https://gchq.github.io/CyberChef/ | 万能编解码 |
-| dcode.fr | https://www.dcode.fr/ | 900+ 密码工具 |
-| quipqiup | https://quipqiup.com/ | 替换密码自动求解 |
-| factordb | http://factordb.com/ | RSA 大数分解 |
-| jwt.io | https://jwt.io/ | JWT 解码/验证 |
-| hashes.com | https://hashes.com/ | 哈希反查 |
-| crackstation | https://crackstation.net/ | 在线哈希破解 |
+| CyberChef | https://gchq.github.io/CyberChef/ | Universal Encoder/Decoder |
+| dcode.fr | https://www.dcode.fr/ | 900+ password tools |
+| quipqiup | https://quipqiup.com/ | Automatic substitution cipher solver |
+| factordb | http://factordb.com/ | RSA large number factorization |
+| jwt.io | https://jwt.io/ | JWT Decode/Verify |
+| hashes.com | https://hashes.com/ | Hash Reverse Lookup |
+| crackstation | https://crackstation.net/ | Online Hash Cracking |

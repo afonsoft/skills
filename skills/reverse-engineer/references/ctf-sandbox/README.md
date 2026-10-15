@@ -1,23 +1,23 @@
 ---
 name: ctf-sandbox
-description: Thin PRIMARY for CTF / AWD / 靶场 multi-type orchestration. Hands off to the sidecar CTF-Sandbox-Orchestrator. Use when the user says CTF, AWD, 靶场, or 比赛题 and no more specific pwn/APK/IDA route already won.
+description: Thin PRIMARY for CTF / AWD / range multi-type orchestration. Hands off to the sidecar CTF-Sandbox-Orchestrator. Use when the user says CTF, AWD, range, or competition problem and no more specific pwn/APK/IDA route has already won.
 ---
 
 # CTF sandbox entry (sidecar, not a second router)
 
-## ACTION REQUIRED（读完后立刻执行）
+## ACTION REQUIRED (execute immediately after reading)
 
-1. `NOW`: 跑 `../scripts/case-init.ps1`；`auth.status=granted` 前禁止对真实外网 ACT。竞赛/靶场用 `-NetworkProfile lab` 或 `offline`。
-2. `NOW`: 打开包根下的 `../../CTF-Sandbox-Orchestrator/ctf-sandbox-orchestrator/README.md`，按它的 sandbox 假设继续。
-3. `MUST NOT` 把 40+ 个 `competition-*` 子技能写进 `routing.json`。本入口只是一条 PRIMARY 门闩。
-4. `ACT`: 由 orchestrator 选一个 downstream `competition-*`。具体题型已明确时（pwn/ROP、APK、IDA）应已由 `routing.json` 更靠前的规则赢下，不要再抢。
+1. `NOW`: ACT to the real external network is prohibited before running `../scripts/case-init.ps1`; `auth.status=granted`. For competition/range use `-NetworkProfile lab` or `offline`.
+2. `NOW`: Open `../../CTF-Sandbox-Orchestrator/ctf-sandbox-orchestrator/README.md` under the package root and click its sandbox to continue.
+3. `MUST NOT` writes 40+ `competition-*` sub-skills into `routing.json`. This entrance is a PRIMARY latch only.
+4. `ACT`: The orchestrator selects a downstream `competition-*`. When the specific question type has been clarified (pwn/ROP, APK, IDA), it should have been won by the more advanced rules of `routing.json`, so don’t grab it again.
 
-## 为什么单独一层
+## Why a separate layer?
 
-`CTF-Sandbox-Orchestrator/` 是 **GPL 旁路包**，授权默认是沙箱内部。核心路由包仍是 MIT + `scope.md` 门禁。本 skill 只做关键词入口，不把竞赛树并进核心。
+`CTF-Sandbox-Orchestrator/` is a **GPL bypass package**, and the license is inside the sandbox by default. The core routing package is still MIT + `scope.md` gated. This skill only provides keyword entry and does not incorporate the competition tree into the core.
 
-## 任务完成自检（声称完成前 MUST 通过）
+## Task completion self-test (MUST pass before claiming completion)
 
-- [ ] 我是否先走了 case-init / scope，而不是把“用户说了 CTF”当成已授权外网？
-- [ ] 我是否打开了 sidecar orchestrator，而不是把 40 个子技能当 PRIMARY？
-- [ ] 若任务其实是 pwn/APK/IDA，我是否让更具体的 PRIMARY 接手？
+- [ ] Do I go case-init/scope first instead of treating "user said CTF" as an authorized external network?
+- [ ] Did I turn on the sidecar orchestrator instead of using the 40 sub-skills as PRIMARY?
+- [ ] If the task is actually pwn/APK/IDA, do I let a more specific PRIMARY take over?

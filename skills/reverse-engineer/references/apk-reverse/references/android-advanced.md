@@ -1,45 +1,45 @@
-# Android 高级逆向参考
+# Android advanced reverse reference
 
-> 覆盖 Native SO 分析、Frida 高级用法、SSL Pinning 绕过、Root 检测对抗、加固脱壳、Flutter/React Native 逆向。
+> Covers Native SO analysis, Frida advanced usage, SSL Pinning bypass, Root detection and countermeasures, hardened unpacking, Flutter/React Native reverse engineering.
 
 ---
 
-## Native SO 逆向
+## Native SO Reverse
 
-### 分析流程
+### Analysis process
 
 ```text
-1. 从 APK 中提取 .so 文件
+1. Extract the .so file from the APK
    unzip app.apk lib/arm64-v8a/*.so -d extracted/
 
-2. 确认架构和基本信息
+2. Confirm the architecture and basic information
    file libxxx.so
    rabin2 -I libxxx.so
 
-3. 找 JNI 入口
-   - 搜索 JNI_OnLoad（动态注册）
-   - 搜索 Java_com_xxx_yyy（静态注册）
+3. Find the JNI entry
+- Search for JNI_OnLoad (dynamic registration)
+- Search Java_com_xxx_yyy (static registration)
    - nm -D libxxx.so | grep -i java
 
-4. IDA/Ghidra 加载分析
-   - 导入 JNI 头文件（jni.h 类型）
-   - 标注 JNIEnv* 参数
-   - 找 RegisterNatives 调用（动态注册的函数表）
+4. IDA/Ghidra loading analysis
+- Import JNI header file (jni.h type)
+- Annotate JNIEnv* parameters
+- Find the RegisterNatives call (dynamically registered function table)
 
-5. 定位关键逻辑
-   - 从 Java 层 native 方法名追踪
-   - 从字符串（密钥、URL、错误信息）交叉引用
-   - 从 crypto 库函数（AES/MD5/SHA）调用追踪
+5. Position key logic
+- Tracing from Java layer native method name
+- Cross-referencing from strings (keys, URLs, error messages)
+- Call trace from crypto library function (AES/MD5/SHA)
 ```
 
-### JNI 函数注册
+### JNI function registration
 
 ```c
-// 静态注册：函数名 = Java_包名_类名_方法名
+// Static registration: function name = Java_packageName_className_methodName
 JNIEXPORT jstring JNICALL Java_com_example_app_Security_getSign(
     JNIEnv *env, jobject thiz, jstring input) { ... }
 
-// 动态注册：在 JNI_OnLoad 中调用 RegisterNatives
+// Dynamic registration: Call RegisterNatives in JNI_OnLoad
 static JNINativeMethod methods[] = {
     {"getSign", "(Ljava/lang/String;)Ljava/lang/String;", (void*)native_getSign},
 };
@@ -53,30 +53,30 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
 }
 ```
 
-### IDA 中分析 JNI 的技巧
+### Tips for analyzing JNI in IDA
 
 ```text
-1. 导入 JNI 类型库
+1. Import the JNI type library
    File → Load File → Parse C Header → jni.h
 
-2. 标注第一个参数为 JNIEnv*
-   右键参数 → Set type → JNIEnv*
-   这样 env->FindClass / env->GetMethodID 等调用会自动识别
+2. Mark the first parameter as JNIEnv*
+Right-click parameters → Set type → JNIEnv*
+In this way, calls such as env->FindClass / env->GetMethodID will automatically recognize
 
-3. 找 RegisterNatives
-   搜索对 JNIEnv vtable offset 0x35C (ARM64) 的调用
-   → 第三个参数是 JNINativeMethod 数组
-   → 从数组中提取所有 native 函数地址
+3. Find RegisterNatives
+Search for calls to JNIEnv vtable offset 0x35C (ARM64)
+→ The third parameter is the JNINativeMethod array
+→ Extract all native function addresses from the array
 ```
 
 ---
 
-## Frida 高级用法
+## Frida advanced usage
 
-### Hook Native 函数
+### Hook Native function
 
 ```javascript
-// Hook libc 函数
+// Hook libc function
 Interceptor.attach(Module.findExportByName("libc.so", "open"), {
     onEnter: function(args) {
         this.path = args[0].readUtf8String();
@@ -90,7 +90,7 @@ Interceptor.attach(Module.findExportByName("libc.so", "open"), {
     }
 });
 
-// Hook 自定义 SO 中的函数
+// Hook functions in custom SO
 var base = Module.findBaseAddress("libsecurity.so");
 var targetFunc = base.add(0x1234);  // 偏移地址
 Interceptor.attach(targetFunc, {
@@ -103,11 +103,11 @@ Interceptor.attach(targetFunc, {
 });
 ```
 
-### Hook Java 方法
+### Hook Java method
 
 ```javascript
 Java.perform(function() {
-    // Hook 实例方法
+// Hook instance method
     var Security = Java.use("com.example.app.Security");
     Security.getSign.implementation = function(input) {
         console.log("[getSign] input: " + input);
@@ -116,13 +116,13 @@ Java.perform(function() {
         return result;
     };
 
-    // Hook 构造函数
+// Hook constructor
     Security.$init.overload('java.lang.String').implementation = function(key) {
         console.log("[Security.<init>] key: " + key);
         this.$init(key);
     };
 
-    // Hook 重载方法
+// Hook override method
     Security.encrypt.overload('java.lang.String', 'int').implementation = function(data, mode) {
         console.log("[encrypt] data=" + data + " mode=" + mode);
         return this.encrypt(data, mode);
@@ -130,10 +130,10 @@ Java.perform(function() {
 });
 ```
 
-### 内存搜索与修改
+### Memory search and modification
 
 ```javascript
-// 搜索内存中的字符串
+// Search for a string in memory
 Process.enumerateModules().forEach(function(module) {
     if (module.name === "libtarget.so") {
         Memory.scan(module.base, module.size, "48 65 6C 6C 6F", {  // "Hello"
@@ -144,7 +144,7 @@ Process.enumerateModules().forEach(function(module) {
     }
 });
 
-// 修改内存（patch 指令）
+// Modify memory (patch instruction)
 var addr = Module.findBaseAddress("libsecurity.so").add(0x5678);
 Memory.patchCode(addr, 4, function(code) {
     var writer = new Arm64Writer(code, {pc: addr});
@@ -155,15 +155,15 @@ Memory.patchCode(addr, 4, function(code) {
 
 ---
 
-## SSL Pinning 绕过
+## SSL Pinning Bypass
 
-### 通用方案（推荐）
+### General solution (recommended)
 
 ```javascript
-// Frida 通用 SSL Pinning 绕过
-// 来源: https://github.com/0xCD4/SSL-bypass
+// Frida general SSL Pinning bypass
+// Source: https://github.com/0xCD4/SSL-bypass
 Java.perform(function() {
-    // 1. TrustManager 绕过
+// 1. TrustManager bypass
     var TrustManager = Java.registerClass({
         name: 'com.custom.TrustManager',
         implements: [Java.use('javax.net.ssl.X509TrustManager')],
@@ -174,12 +174,12 @@ Java.perform(function() {
         }
     });
 
-    // 2. SSLContext 替换
+// 2. Replace SSLContext
     var SSLContext = Java.use('javax.net.ssl.SSLContext');
     var sslContext = SSLContext.getInstance("TLS");
     sslContext.init(null, [TrustManager.$new()], null);
 
-    // 3. OkHttp CertificatePinner 绕过
+// 3. OkHttp CertificatePinner bypass
     try {
         var CertificatePinner = Java.use('okhttp3.CertificatePinner');
         CertificatePinner.check.overload('java.lang.String', 'java.util.List').implementation = function() {};
@@ -187,23 +187,23 @@ Java.perform(function() {
 });
 ```
 
-### 各框架绕过
+### Each framework bypasses
 
-| 框架 | 绕过方法 |
+| Framework | Bypass method |
 |------|---------|
-| OkHttp3 | Hook `CertificatePinner.check` 返回空 |
-| Retrofit | 同 OkHttp（底层用 OkHttp） |
-| Volley | Hook `HurlStack` 的 SSL 工厂 |
-| Flutter | Hook `dart:io` 的 `SecurityContext`（需要特殊脚本） |
+| OkHttp3 | Hook `CertificatePinner.check` returns empty |
+| Retrofit | Same as OkHttp (the bottom layer uses OkHttp) |
+| Volley | SSL Factory for Hook `HurlStack` |
+| Flutter | Hook `SecurityContext` for `dart:io` (requires special script) |
 | React Native | Hook `OkHttpClientProvider` |
 | WebView | Hook `WebViewClient.onReceivedSslError` |
 
-### Flutter 专项
+### Flutter special project
 
 ```javascript
-// Flutter SSL Pinning 绕过（需要找到 ssl_verify_peer_cert 函数）
+// Flutter SSL Pinning Bypass (need to find the ssl_verify_peer_cert function)
 var flutter_lib = Module.findBaseAddress("libflutter.so");
-// 搜索 ssl_verify_peer_cert 的特征码
+// Search for the signature code of ssl_verify_peer_cert
 var pattern = "FF 03 05 D1 FD 7B 0F A9";  // ARM64 特征
 Memory.scan(flutter_lib, Module.findModuleByName("libflutter.so").size, pattern, {
     onMatch: function(address) {
@@ -216,20 +216,20 @@ Memory.scan(flutter_lib, Module.findModuleByName("libflutter.so").size, pattern,
 
 ---
 
-## Root 检测绕过
+## Root detection bypass
 
-### 常见检测方式
+### Common detection methods
 
-| 检测方式 | 绕过方法 |
+| Detection methods | Bypass methods |
 |---------|---------|
-| 检查 `/system/app/Superuser.apk` | Hook `File.exists()` 返回 false |
-| 检查 `su` 命令 | Hook `Runtime.exec()` 拦截 su 调用 |
-| 检查 `/proc/self/mounts` | Hook 文件读取，过滤 magisk 相关 |
-| SafetyNet/Play Integrity | Magisk Hide / Zygisk + Shamiko |
-| 检查 Magisk 包名 | 随机化 Magisk 包名 |
-| 检查 `/data/adb/` | Hook `opendir`/`access` |
+| Check `/system/app/Superuser.apk` | Hook `File.exists()` return false |
+| Check `su` command | Hook `Runtime.exec()` intercept su call |
+| Check `/proc/self/mounts` | Hook file reading, filter magisk related |
+| SafetyNet/Play Integrity | Magical Hide / Zygisk + Shamiko |
+| Check Magisk package names | Randomize Magisk package names |
+| Check `/data/adb/` | Hook `opendir`/`access` |
 
-### Frida 通用 Root 绕过
+### Frida Universal Root Bypass
 
 ```javascript
 Java.perform(function() {
@@ -259,41 +259,41 @@ Java.perform(function() {
 
 ---
 
-## 加固/壳识别与脱壳
+## Reinforcement/shell identification and shelling
 
-### 常见加固厂商
+### Common reinforcement manufacturers
 
-| 加固 | 识别特征 | 脱壳方式 |
+| Reinforcement | Identification features | Shelling method |
 |------|---------|---------|
-| 360 加固 | `libjiagu.so`、`com.stub.StubApp` | FART / Frida dump dex |
-| 腾讯乐固 | `libshell*.so`、`com.tencent.StubShell` | FART / BlackDex |
-| 梆梆加固 | `libDexHelper.so`、`com.secneo.apkwrapper` | FART |
-| 爱加密 | `libexec.so`、`s.h.e.l.l` | Frida dump |
-| 网易易盾 | `libnesec.so` | Frida dump |
-| 娜迦 | `libnaga.so` | Frida dump |
+| 360 Reinforcement | `libjiagu.so`, `com.stub.StubApp` | FART / Frida dump dex |
+| Tencent Legu | `libshell*.so`, `com.tencent.StubShell` | FART / BlackDex |
+| Bangbang reinforcement | `libDexHelper.so`, `com.secneo.apkwrapper` | FART |
+| Love Encryption | `libexec.so`, `s.h.e.l.l` | Frida dump |
+| NetEase Yidun | `libnesec.so` | Frida dump |
+| Naga | `libnaga.so` | Frida dump |
 
-### 通用脱壳方法
+### General shelling method
 
 ```text
-方法 1: FART（ART 环境脱壳）
-- 刷入 FART ROM 或使用 Frida 版 FART
-- 自动 dump 所有 ClassLoader 加载的 dex
+Method 1: FART (ART environment unpacking)
+- Flash FART ROM or use Frida version of FART
+- Automatically dump all dex loaded by ClassLoader
 
-方法 2: Frida DEX Dump
+Method 2: Frida DEX Dump
 - frida -U -f com.target.app -l dex_dump.js
-- 在 DexFile::OpenMemory 处 hook，dump 内存中的 dex
+- Hook at DexFile::OpenMemory and dump dex in memory
 
-方法 3: BlackDex
-- 免 root 脱壳工具
-- 直接安装 BlackDex APK，选择目标应用脱壳
+Method 3: BlackDex
+- Root-free unpacking tool
+- Install BlackDex APK directly and select the target application to unpack
 
-方法 4: 手动 dump
-- 用 Frida 枚举所有 ClassLoader
-- 找到应用的 ClassLoader → 获取 DexFile 对象
-- 读取 dex 内存区域并保存
+Method 4: Manual dump
+- Use Frida to enumerate all ClassLoaders
+- Find the application's ClassLoader → Get the DexFile object
+- Read the dex memory area and save it
 ```
 
-### Frida DEX Dump 脚本
+### Frida DEX Dump Script
 
 ```javascript
 Java.perform(function() {
@@ -312,54 +312,54 @@ Java.perform(function() {
 
 ---
 
-## React Native / Flutter 逆向
+## React Native / Flutter reverse engineering
 
 ### React Native
 
 ```text
-1. 解压 APK → assets/index.android.bundle（JS 代码）
-2. 格式化 JS → 搜索 API 地址、密钥、签名逻辑
-3. 如果有 Hermes 字节码（.hbc 文件）→ 用 hermes-dec 反编译
-4. Hook: 用 Frida hook Java 层的 ReactBridge
+1. Unzip APK → assets/index.android.bundle (JS code)
+2. Format JS → Search API address, key, signature logic
+3. If there is Hermes bytecode (.hbc file) → decompile with hermes-dec
+4. Hook: ReactBridge using Frida hook Java layer
 ```
 
 ### Flutter
 
 ```text
-1. Flutter 代码编译为 libapp.so（Dart AOT）
-2. 无法直接反编译为 Dart 源码
-3. 分析方法：
-   - reFlutter 工具：patch libflutter.so 获取 snapshot
-   - Doldrums：解析 Dart snapshot 恢复类/函数信息
-   - Frida hook libflutter.so 中的关键函数
-4. 网络分析：Flutter 不走系统代理，需要特殊处理 SSL
+1. Flutter code is compiled into libapp.so (Dart AOT)
+2. Cannot be directly decompiled into Dart source code
+3. Analysis method:
+- reFlutter tool: patch libflutter.so to get snapshot
+- Doldrums: parse Dart snapshot recovery class/function information
+- Frida hook key functions in libflutter.so
+4. Network analysis: Flutter does not use system proxy and requires special processing of SSL
 ```
 
 ---
 
-## 工具速查
+## Tool Quick Check
 
-| 工具 | 用途 | 安装 |
+| Tools | Purpose | Installation |
 |------|------|------|
-| jadx | Java 反编译 | 已在 bootstrap 中 |
-| apktool | 解包/重打包 | 已在 bootstrap 中 |
-| Frida | 动态 Hook | `pip install frida-tools` |
-| Objection | Frida 封装（更易用） | `pip install objection` |
-| MobSF | 自动化移动安全分析 | Docker 部署 |
-| BlackDex | 免 root 脱壳 | APK 安装 |
-| FART | ART 脱壳 | 刷入 ROM 或 Frida 版 |
-| hermes-dec | Hermes 字节码反编译 | npm 安装 |
-| reFlutter | Flutter 逆向辅助 | pip 安装 |
-| Magisk + Shamiko | Root 隐藏 | 刷入 |
+| jadx | Java decompilation | Already in bootstrap |
+| apktool | unpack/repack | Already in bootstrap |
+| Frida | Dynamic Hook | `pip install frida-tools` |
+| Objection | Frida package (easier to use) | `pip install objection` |
+| MobSF | Automated mobile security analysis | Docker deployment |
+| BlackDex | Root-free unpacking | APK installation |
+| FART | ART unpacking | Flash ROM or Frida version |
+| hermes-dec | Hermes bytecode decompilation | npm installation |
+| reFlutter | Flutter reverse assistance | pip installation |
+| Magisk + Shamiko | Root Hide | Flash In |
 
 ---
 
-## 参考资源
+## Reference resources
 
-| 资源 | 说明 | 链接 |
+| Resources | Description | Links |
 |------|------|------|
-| OWASP MASTG | 移动安全测试指南 | https://mas.owasp.org/ |
-| FridaBypassKit | 通用绕过框架 | https://github.com/okankurtuluss/FridaBypassKit |
-| SSL-bypass | 通用 SSL Pinning 绕过 | https://github.com/0xCD4/SSL-bypass |
-| awesome-frida | Frida 资源合集 | https://github.com/dweinstein/awesome-frida |
-| Android Security Awesome | Android 安全资源 | https://github.com/ashishb/android-security-awesome |
+| OWASP MASTG | Mobile Security Testing Guide | https://mas.owasp.org/ |
+| FridaBypassKit | Universal bypass framework | https://github.com/okankurtuluss/FridaBypassKit |
+| SSL-bypass | Universal SSL Pinning bypass | https://github.com/0xCD4/SSL-bypass |
+| awesome-frida | Frida resource collection | https://github.com/dweinstein/awesome-frida |
+| Android Security Awesome | Android Security Resources | https://github.com/ashishb/android-security-awesome |

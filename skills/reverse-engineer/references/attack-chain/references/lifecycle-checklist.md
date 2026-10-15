@@ -1,37 +1,37 @@
-# 渗透/攻击链生命周期检查单
+# Penetration/attack chain life cycle checklist
 
-> 对照社区 pentest skill 包（如 Orizon claude-code-pentest 六阶段）与本包 `attack-chain` + `ops` 整合。  
-> 来源启发：公开 Claude pentest lifecycle skills（2026-07 检索）；**命令与授权以本包 scope 为准**。  
-> 日期：2026-07-17
+> Compare community pentest skill packages (such as Orizon claude-code-pentest six stages) and integrate this package `attack-chain` + `ops`.
+> Source inspiration: Public Claude pentest lifecycle skills (retrieved in 2026-07); **Commands and authorizations are subject to the scope of this package**.
+> Date: 2026-07-17
 
-## 使用前
+## Before use
 
-- [ ] `case-init` 完成，`auth.status=granted`
-- [ ] `network_profile` ≠ 误用 unrestricted 打生产
-- [ ] `lead` 已指定 specialist_roles（`ops/role-map.md`）
+- [ ] `case-init` done, `auth.status=granted`
+- [ ] `network_profile` ≠ Misuse unrestricted for production
+- [ ] `lead` specialist_roles specified (`ops/role-map.md`)
 
-## 阶段门闩
+## stage latch
 
-| 阶段 | 角色 | 本包 skill | 完成标准 |
+| Stage | Role | This package skill | Completion criteria |
 |------|------|------------|----------|
 | 0 Scope | lead | ops/scope-contract | ready_for_act |
-| 1 Recon | cie | pentest-tools | assets 列表 + timeline |
-| 2 Enum/Vuln | cpe | pentest-tools / api-security | 候选 F-* 草稿 |
+| 1 Recon | cie | pentest-tools | assets list + timeline |
+| 2 Enum/Vuln | cpe | pentest-tools/api-security | candidate F-* draft |
 | 3 Validate | cpe | pentest-tools | E-* + validated Finding |
-| 4 Post-ex（若授权） | cpe/lead | attack-chain 后半 | 不超 out_of_scope |
-| 5 RE 辅助 | cre | ida/apk/js/… | 仅当需要客户端/二进制 |
+| 4 Post-ex (if authorized) | cpe/lead | attack-chain second half | not beyond out_of_scope |
+| 5 RE Auxiliary | cre | ida/apk/js/… | Only if client/binary is required |
 | 6 Report | doc | docs-generator | Evidence→Finding→Path |
-| 7 Journal | lead | field-journal | 脱敏 |
+| 7 Journal | lead | field-journal | desensitization |
 
-## 与「给一个域名全自动打穿」类 skill 的差异（特色）
+## Differences from the "automatically penetrate a domain name" skill (features)
 
-| 外部自动化包常见 | reverse-skill |
+| Common external automation packages | reverse-skill |
 |------------------|---------------|
-| 默认对域名狂扫 | 必须 scope 资产列表 |
-| 弱证据直接写报告 | 强制 E/F/P 链 |
-| 单会话无角色 | role-map 交接 |
-| 无工具索引 | tool-index + bootstrap |
+| Domain names are scanned by default | Required scope asset list |
+| Write a report directly with weak evidence | Force E/F/P chain |
+| Single session without role | role-map handover |
+| tool-index + bootstrap | tool-index + bootstrap |
 
-## 每阶段 timeline 最少一条
+## Each stage has at least one timeline
 
-格式见 `ops/timeline-workitem.md`。
+See `ops/timeline-workitem.md` for format.

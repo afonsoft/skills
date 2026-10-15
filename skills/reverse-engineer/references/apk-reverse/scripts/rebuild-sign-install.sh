@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# rebuild-sign-install.sh — APK 重打包 + 签名 + 安装
-# 等价于 Windows 版的 rebuild-sign-install.ps1
+# rebuild-sign-install.sh — APK repackaging + signing + installation
+# Equivalent to Windows version rebuild-sign-install.ps1
 #
-# 用法:
+# usage:
 #   bash rebuild-sign-install.sh <project_dir> [--out <dir>] [--name <base>]
 #                                [--keystore <path>] [--install] [--reinstall]
 #                                [--device <serial>] [--clean]
@@ -13,7 +13,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 KALI_BOOTSTRAP="$(cd "$SCRIPT_DIR/../../../kali/scripts" 2>/dev/null && pwd)/bootstrap-reverse.sh"
 DEFAULT_KEYSTORE="$HOME/.android/debug.keystore"
 
-# ─── 参数 ──────────────────────────────────────────────────────────────────────────
+# ─── Parameters ──────────────────────────────────────────────────────────────────
 
 PROJECT_DIR=""
 OUT_DIR=""
@@ -46,17 +46,17 @@ done
 
 if [[ -z "$PROJECT_DIR" || ! -d "$PROJECT_DIR" ]]; then
     echo "用法: $0 <apktool_project_dir> [options]"
-    echo "  --out <dir>        输出目录（默认: 项目父目录）"
-    echo "  --name <base>      输出文件名前缀"
-    echo "  --keystore <path>  签名密钥库（默认: ~/.android/debug.keystore）"
-    echo "  --install          签名后安装到设备"
-    echo "  --reinstall        覆盖安装"
-    echo "  --device <serial>  指定设备"
-    echo "  --clean            清理旧产物"
+    echo "--out <dir> output directory (default: project parent directory)"
+    echo "--name <base> Output file name prefix"
+    echo "--keystore <path> signing keystore (default: ~/.android/debug.keystore)"
+    echo "--install Sign and install to device"
+    echo "--reinstall overwrite installation"
+    echo "--device <serial> specifies the device"
+    echo "--clean clean old products"
     exit 1
 fi
 
-# ─── 工具检测 ──────────────────────────────────────────────────────────────────────
+# ───Tool detection───────────────────────────────────────────────────────────────
 
 ensure_tool() {
     local name="$1"
@@ -83,7 +83,7 @@ ensure_tool "apksigner"
 ensure_tool "keytool"
 [[ "$DO_INSTALL" == "true" ]] && ensure_tool "adb"
 
-# ─── 生成 debug keystore（如果不存在） ─────────────────────────────────────────────
+# ─── Generate debug keystore (if it does not exist) ───────────────────────────────────────────
 
 if [[ ! -f "$KEYSTORE" ]]; then
     echo "INFO: 生成 debug keystore: $KEYSTORE"
@@ -96,7 +96,7 @@ if [[ ! -f "$KEYSTORE" ]]; then
         -dname "CN=Android Debug,O=ReverseSkill,C=CN"
 fi
 
-# ─── 路径计算 ──────────────────────────────────────────────────────────────────────
+# ─── Path calculation ────────────────────────────────────────────────────────────────
 
 OUT_DIR="${OUT_DIR:-$(dirname "$PROJECT_DIR")}"
 BASE_NAME="${BASE_NAME:-$(basename "$PROJECT_DIR")}"
@@ -110,19 +110,19 @@ if [[ "$CLEAN" == "true" ]]; then
     rm -f "$UNSIGNED_APK" "$ALIGNED_APK" "$SIGNED_APK"
 fi
 
-# ─── 重打包 ───────────────────────────────────────────────────────────────────────
+# ───Repackaging────────────────────────────────────────────────────────────────
 
-echo "=== apktool 重打包 ==="
+echo "=== apktool repackage ==="
 apktool b "$PROJECT_DIR" -o "$UNSIGNED_APK"
 
-# ─── 对齐 ─────────────────────────────────────────────────────────────────────────
+# ─── Alignment ─────────────────────────────────────────────────────────────────
 
-echo "=== zipalign 对齐 ==="
+echo "=== zipalign alignment ==="
 zipalign -f -p 4 "$UNSIGNED_APK" "$ALIGNED_APK"
 
-# ─── 签名 ─────────────────────────────────────────────────────────────────────────
+# ───Signature ─────────────────────────────────────────────────────────────────
 
-echo "=== apksigner 签名 ==="
+echo "=== apksigner signature ==="
 apksigner sign \
     --ks "$KEYSTORE" \
     --ks-key-alias "$KEY_ALIAS" \
@@ -131,24 +131,24 @@ apksigner sign \
     --out "$SIGNED_APK" \
     "$ALIGNED_APK"
 
-# ─── 验证 ─────────────────────────────────────────────────────────────────────────
+# ─── Verification ────────────────────────────────────────────────────────────────
 
-echo "=== 验证签名 ==="
+echo "=== Verify signature ==="
 apksigner verify --print-certs "$SIGNED_APK"
 
 echo ""
 echo "═══════════════════════════════════════════"
-echo "  APK 重打包完成"
+echo "APK repackaging completed"
 echo "═══════════════════════════════════════════"
 echo "  unsigned_apk=$UNSIGNED_APK"
 echo "  aligned_apk=$ALIGNED_APK"
 echo "  signed_apk=$SIGNED_APK"
 echo "  keystore=$KEYSTORE"
 
-# ─── 安装 ─────────────────────────────────────────────────────────────────────────
+# ───Installation ────────────────────────────────────────────────────────────────
 
 if [[ "$DO_INSTALL" == "true" ]]; then
-    echo "=== adb 安装 ==="
+    echo "=== adb installation ==="
     ADB_ARGS=()
     [[ -n "$DEVICE_SERIAL" ]] && ADB_ARGS+=("-s" "$DEVICE_SERIAL")
     ADB_ARGS+=("install")

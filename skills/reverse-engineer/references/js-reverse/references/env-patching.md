@@ -1,6 +1,6 @@
-# 补环境规则
+# Supplement environment rules
 
-- 只补页面证据已经证明需要的对象
-- 一次补一个最小因果单元
-- 先补值，再补函数壳，再补返回对象契约
-- 每次补丁都要重新执行并记录 first divergence 是否前移
+- Only add the objects that the page evidence has proven to be needed
+- Complement the minimum causal unit one at a time
+- First add the value, then the function shell, then the return object contract
+- Each patch must be re-executed and record whether the first divergence is moved forward.

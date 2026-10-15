@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# recon.sh — radare2 快速侦察（二进制基本信息、节区、导入导出、字符串）
-# 等价于 Windows 版的 recon.ps1
+# recon.sh — radare2 Quick Reconnaissance (Basic Binary Information, Sections, Imports/Exports, Strings)
+# Equivalent to the Windows version of recon.ps1
 #
-# 用法:
+# Usage:
 #   bash recon.sh <target_file> [--strings-limit 40] [--imports-limit 80] [--analyze]
 
 set -euo pipefail
@@ -10,7 +10,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 KALI_BOOTSTRAP="$(cd "$SCRIPT_DIR/../../../kali/scripts" 2>/dev/null && pwd)/bootstrap-reverse.sh"
 
-# ─── 参数 ──────────────────────────────────────────────────────────────────────────
+# ─── Parameters ──────────────────────────────────────────────────────────────────────────
 
 TARGET=""
 STRINGS_LIMIT=40
@@ -37,7 +37,7 @@ if [[ ! -f "$TARGET" ]]; then
     exit 1
 fi
 
-# ─── 工具检测 ──────────────────────────────────────────────────────────────────────
+# ─── Tool Detection ──────────────────────────────────────────────────────────────────────
 
 ensure_tool() {
     local name="$1"
@@ -57,35 +57,35 @@ ensure_tool() {
 ensure_tool "rabin2"
 [[ "$RUN_ANALYSIS" == "true" ]] && ensure_tool "r2"
 
-# ─── 绝对路径 ──────────────────────────────────────────────────────────────────────
+# ─── Absolute Path ──────────────────────────────────────────────────────────────────────
 
 TARGET="$(realpath "$TARGET")"
 echo "目标文件: $TARGET"
 
-# ─── 侦察 ─────────────────────────────────────────────────────────────────────────
+# ─── Reconnaissance ─────────────────────────────────────────────────────────────────────────
 
 echo ""
-echo "=== 基本信息 ==="
+echo "=== Basic Information ==="
 rabin2 -I -- "$TARGET"
 
 echo ""
-echo "=== 节区 ==="
+echo "=== Section ==="
 rabin2 -S -- "$TARGET"
 
 echo ""
-echo "=== 导入 ==="
+echo "=== Import ==="
 rabin2 -i -- "$TARGET" | head -n "$IMPORTS_LIMIT"
 
 echo ""
-echo "=== 导出 ==="
+echo "=== Export ==="
 rabin2 -E -- "$TARGET"
 
 echo ""
-echo "=== 字符串 ==="
+echo "=== String ==="
 rabin2 -zz -- "$TARGET" | head -n "$STRINGS_LIMIT"
 
 if [[ "$RUN_ANALYSIS" == "true" ]]; then
     echo ""
-    echo "=== 函数与入口分析 ==="
+    echo "=== Function and Entry Analysis ==="
     r2 -A -q -c 's entry0;afl;iz;ii;q' -- "$TARGET"
 fi

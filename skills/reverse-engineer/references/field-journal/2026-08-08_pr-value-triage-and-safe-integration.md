@@ -1,42 +1,42 @@
-# 2026-08-08 开放 PR 价值分级与安全集成
+# 2026-08-08 Open PR value classification and security integration
 
-## 场景分类
+## Scene classification
 
-其他 / 仓库维护 / 贡献审查
+Others / Warehouse Maintenance / Contribution Review
 
-## 目标概述
+## Goal Overview
 
-在保留工作树未提交内容的前提下同步上游主线，审查多个开放 PR，并将低风险、高复用价值的贡献安全集成到本地主线。
+Synchronize the upstream mainline while retaining uncommitted content of the work tree, review multiple open PRs, and safely integrate low-risk, high-reuse value contributions into the local mainline.
 
-## 完整执行链路
+## Complete execution link
 
-1. 检查远端、分支落后程度和工作树改动。
-2. 使用 stash 隔离用户改动，fast-forward 到最新主线后恢复并验证。
-3. 拉取开放 PR refs，比较提交、文件范围和三方合并结果。
-4. 将仅包含脱敏 field-journal 的贡献归为低风险候选。
-5. 对核心脚本 PR 检查冲突文件、变更规模与主线重复实现。
-6. 合并 4 个 journal PR，统一校正索引，运行 smoke 与 routing coherence。
+1. Check the remote end, branch lag and work tree changes.
+2. Use stash to isolate user changes, fast-forward to the latest mainline, restore and verify.
+3. Pull open PR refs and compare commits, file ranges, and three-way merge results.
+4. Classify contributions containing only desensitized field-journal as low-risk candidates.
+5. Check the conflict files, change scale and mainline duplication for core script PR.
+6. Merge 4 journal PRs, correct the index uniformly, and run smoke and routing coherence.
 
-## 踩坑记录
+## Trampling on pit records
 
-| 问题 | 原因 | 解决方案 |
+| Problem | Cause | Solution |
 |---|---|---|
-| 拉取主线会覆盖本地索引修改 | 上游与工作树同时修改 `_index.md` | stash 隔离，fast-forward 后恢复 |
-| 旧 PR 的索引统计相互覆盖 | 多个 PR 基于同一旧基线 | 合并内容文件后统一重算索引 |
-| 大型 PR 看似高价值但无法直接合并 | 主线已演进，核心脚本发生内容冲突 | 暂缓，要求 rebase 并专项测试 |
+| Pulling the mainline will overwrite local index modifications | Upstream and working trees modify `_index.md` at the same time | Stash isolation, recovery after fast-forward |
+| Index statistics of old PRs overwrite each other | Multiple PRs are based on the same old baseline | Unified recalculation of indexes after merging content files |
+| Large PR seems to be of high value but cannot be merged directly | The mainline has evolved and the core script has content conflicts | Suspended, requiring rebase and special testing |
 
-## 可复用模式
+## Reusable mode
 
-- 先按“文档/执行代码”分层，再按复用价值、冲突面和测试证据排序。
-- 对仅 journal 的 PR，可将内容合并与索引协调分离处理。
-- 对核心基础设施 PR，冲突不是简单文本问题，应重新验证行为等价性。
+- First layer by "document/execution code", and then sort by reuse value, conflict surface and test evidence.
+- For journal-only PRs, content merging and index coordination can be processed separately.
+- For Core Infrastructure PRs where the conflict is not a simple textual matter, behavioral equivalence should be re-validated.
 
-## 验证结果
+## Verification results
 
-- smoke：全部通过。
-- routing coherence：全部通过。
-- 用户工作树内容：完整恢复，无冲突。
+- smoke: All passed.
+- routing coherence: all passed.
+- User working tree content: full recovery, no conflicts.
 
-## 脱敏复核
+## Desensitization review
 
-不包含凭据、私有目标、用户身份或内部 URL。
+Does not include credentials, private destinations, user identities, or internal URLs.

@@ -1,9 +1,9 @@
 ﻿#Requires -Version 5.1
-# 生成 references/INDEX.md：从各模块 README.md 的 frontmatter 提取 name+description，生成导航索引。
-# 幂等：重复运行输出一致（CI 用 git diff 校验防 drift）。
-# 用法：
+# Generate references/INDEX.md: Extract name + description from the frontmatter of each module README.md to generate a navigation index.
+# Idempotent: Repeated execution produces consistent output (CI uses git diff to check for drift).
+# Usage:
 #   powershell -NoProfile -ExecutionPolicy Bypass -File references/scripts/extract-summaries.ps1
-#   powershell -File references/scripts/extract-summaries.ps1 -Check   # 只校验不写（CI 模式，不一致 exit 1）
+# powershell -File references/scripts/extract-summaries.ps1 -Check   # Only check without writing (CI mode, exit 1 if inconsistent)
 param(
     [switch] $Check
 )
@@ -14,7 +14,7 @@ if (-not $scriptDir) { $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.P
 $skillsRoot = Split-Path -Parent $scriptDir
 $indexPath = Join-Path $skillsRoot 'INDEX.md'
 
-# 扫描版本库中的模块 README.md（排除本地 ignored/private trees，保证 clean clone 与开发机幂等）。
+# Scan the modules' README.md in the repository (excluding local ignored/private trees, ensuring a clean clone and idempotence with the development machine).
 $skipDirs = @('ops', 'scripts', 'config', 'tests', 'field-journal', 'references')
 $packageRoot = Split-Path -Parent $skillsRoot
 $trackedSkillFiles = @()
@@ -41,7 +41,7 @@ $skillFiles = $candidateSkillFiles | Where-Object {
 $rows = New-Object System.Collections.ArrayList
 foreach ($sf in $skillFiles) {
     $rel = $sf.FullName.Substring($skillsRoot.Length + 1)
-    # 兼容 Windows（\）与 Linux/macOS（/）两种路径分隔符
+    # Compatible with both Windows (\) and Linux/macOS (/) path separators
     $dir = $rel.Split(@('\', '/'))[0]
     $head = Get-Content -LiteralPath $sf.FullName -TotalCount 15 -Encoding UTF8
     $name = ''; $desc = ''; $blockMode = $false; $inFm = $false
@@ -55,7 +55,7 @@ foreach ($sf in $skillFiles) {
         if ($line -match '^description:\s*\|') { $blockMode = $true; continue }
         if ($line -match '^description:\s*(.+)$') { $desc = $Matches[1].Trim(); continue }
         if ($blockMode) {
-            # YAML 块：缩进的文本行拼接（取首行，超长截断）
+            # YAML block: indented text lines concatenation (take the first line, truncate if too long)
             if ($line -match '^\s{2,}(.+)$') {
                 if (-not $desc) { $desc = $Matches[1].Trim() }
             } elseif ($line -match '^\S') { $blockMode = $false }
@@ -101,7 +101,7 @@ foreach ($r in $rows) {
 [void]$sb.AppendLine('歧义场景读 `references/routing.md` 全矩阵；CTF 多类型任务走 `CTF-Sandbox-Orchestrator/`。')
 
 $newContent = $sb.ToString()
-# 统一 LF 行尾：与 .gitattributes (*.md eol=lf) 保持一致，保证 clone 后 -Check 幂等
+# Unify LF line endings: consistent with .gitattributes (*.md eol=lf) to ensure idempotence after clone -Check
 $newContent = $newContent -replace "`r`n", "`n"
 $utf8 = New-Object System.Text.UTF8Encoding $true
 
@@ -110,7 +110,7 @@ if ($Check) {
         Write-Host '[CHECK] INDEX.md missing' -ForegroundColor Red
         exit 1
     }
-    # 行尾免疫：autocrlf=true 的机器上 worktree 可能是 CRLF，normalize 后再比
+    # End-of-line immunity: On machines with autocrlf=true, the worktree may use CRLF, compare after normalizing
     $old = ([System.IO.File]::ReadAllText($indexPath)) -replace "`r`n", "`n"
     if ($old -eq $newContent) {
         Write-Host '[CHECK] INDEX.md up to date' -ForegroundColor Green

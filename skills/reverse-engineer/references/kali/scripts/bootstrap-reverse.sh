@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# bootstrap-reverse.sh — Kali Linux 版自动安装/补齐工具
-# 等价于 Windows 版的 bootstrap-reverse.ps1
+# bootstrap-reverse.sh — Automatic installation/completion tool for Kali Linux
+# Equivalent to the Windows version of bootstrap-reverse.ps1
 #
-# 用法:
+# usage:
 #   bash bootstrap-reverse.sh <capability1> [capability2] ... [--start-services] [--skip-refresh]
 #
-# 示例:
+# Example:
 #   bash bootstrap-reverse.sh jadx apktool frida
 #   bash bootstrap-reverse.sh idapro --start-services
 #   bash bootstrap-reverse.sh jshookmcp anything-analyzer
@@ -16,7 +16,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 KALI_MANIFEST="$SCRIPT_DIR/bootstrap-manifest.json"
 source "$SCRIPT_DIR/lib/tool-discovery.sh"
 
-# ─── 参数解析 ──────────────────────────────────────────────────────────────────────
+# ─── Parameter analysis ────────────────────────────────────────────────────────────────
 
 CAPABILITIES=()
 START_SERVICES=false
@@ -42,30 +42,30 @@ done
 if [[ ${#CAPABILITIES[@]} -eq 0 ]]; then
     echo "用法: $0 <capability1> [capability2] ... [--start-services] [--skip-refresh]"
     echo ""
-    echo "可用能力:"
+    echo "Available capabilities:"
     echo ""
-    echo "  [逆向分析]"
+    echo "[Reverse analysis]"
     echo "    jadx apktool jeb-pro frida frida-ps idalib-mcp r2 rabin2 adb gef pwntools"
     echo ""
-    echo "  [渗透测试 - 经典工具]"
+    echo "[Penetration Testing - Classic Tools]"
     echo "    nmap sqlmap hashcat hydra gobuster ffuf msfconsole nuclei"
     echo "    netexec responder crackmapexec bloodhound certipy wfuzz"
     echo "    aircrack-ng coercer evil-winrm-py"
     echo ""
-    echo "  [渗透测试 - Kali 2026.1 新增]"
+    echo "[Penetration Testing - New in Kali 2026.1]"
     echo "    adaptixc2 atomic-operator sstimap xsstrike wpprobe fluxion"
     echo ""
-    echo "  [MCP 服务]"
+    echo "[MCP Service]"
     echo "    jshookmcp reqable-mcp xquik-mcp anything-analyzer idapro agent-browser"
     echo "    mcp-kali-server metasploitmcp hexstrike-ai pentestswarm"
     echo ""
-    echo "  [CTF 压缩包]"
+    echo "[CTF compressed package]"
     echo "    bkcrack"
     echo ""
-    echo "  [其他]"
+    echo "[other]"
     echo "    ghidra-mcp seclists proxycat burpsuite-mcp"
     echo ""
-    echo "示例:"
+    echo "Example:"
     echo "  $0 mcp-kali-server metasploitmcp hexstrike-ai pentestswarm  # 全部渗透 MCP"
     echo "  $0 adaptixc2 sstimap xsstrike wpprobe          # 安装 2026.1 新工具"
     echo "  $0 pentestswarm --start-services               # 安装 Swarm AI"
@@ -73,14 +73,14 @@ if [[ ${#CAPABILITIES[@]} -eq 0 ]]; then
     exit 1
 fi
 
-# ─── 辅助函数 ──────────────────────────────────────────────────────────────────────
+# ─── Auxiliary functions ────────────────────────────────────────────────────────────────
 
 log_info() { echo -e "\033[36m[INFO]\033[0m $*"; }
 log_ok() { echo -e "\033[32m[OK]\033[0m $*"; }
 log_warn() { echo -e "\033[33m[WARN]\033[0m $*"; }
 log_err() { echo -e "\033[31m[ERR]\033[0m $*"; }
 
-# 检查是否有 sudo 权限
+# Check if you have sudo permissions
 check_sudo() {
     if [[ $EUID -eq 0 ]]; then
         return 0
@@ -92,7 +92,7 @@ check_sudo() {
     return 1
 }
 
-# apt 安装
+# apt installation
 install_apt_package() {
     local package="$1"
     log_info "apt install $package ..."
@@ -103,7 +103,7 @@ install_apt_package() {
     fi
 }
 
-# pip 安装
+# pip install
 install_pip_package() {
     local package="$1"
     local source="${2:-}"
@@ -113,7 +113,7 @@ install_pip_package() {
         || pip3 install --upgrade "$target"
 }
 
-# npm 全局安装
+# npm global installation
 install_npm_global() {
     local package="$1"
     log_info "npm install -g $package ..."
@@ -188,7 +188,7 @@ install_git_commit() {
     fi
 }
 
-# GitHub Release 下载并解压。
+# Download and unzip GitHub Release.
 # Args: repo asset_regex install_dir [release_tag] [expected_sha256]
 install_github_release() {
     local repo="$1"
@@ -261,10 +261,10 @@ install_github_release() {
     fi
     log_ok "SHA-256 校验通过: $actual"
 
-    # 创建安装目录
+    # Create installation directory
     mkdir -p "$install_dir"
 
-    # 根据文件类型解压
+    # Unzip based on file type
     case "$filename" in
         *.tar.gz|*.tgz)
             tar -xzf "$tmp_file" -C "$install_dir" --strip-components=1 2>/dev/null \
@@ -273,7 +273,7 @@ install_github_release() {
         *.zip)
             tmp_extract=$(mktemp -d /tmp/reverse-bootstrap-extract.XXXXXX)
             unzip -qo "$tmp_file" -d "$tmp_extract"
-            # 如果只有一个顶层目录，strip 它
+            # If there is only one top-level directory, strip it
             local top_dirs
             top_dirs=$(find "$tmp_extract" -maxdepth 1 -mindepth 1 -type d)
             if [[ $(printf '%s\n' "$top_dirs" | wc -l) -eq 1 ]]; then
@@ -296,7 +296,7 @@ install_github_release() {
 
     cleanup_github_release
 
-    # 把 bin 目录加入 PATH（当前 session）
+    # Add the bin directory to PATH (current session)
     if [[ -d "$install_dir/bin" ]]; then
         export PATH="$install_dir/bin:$PATH"
     else
@@ -306,7 +306,7 @@ install_github_release() {
     log_ok "已安装到 $install_dir"
 }
 
-# 注册 MCP server 到 Claude 配置
+# Register MCP server to Claude configuration
 register_mcp_server() {
     local server_name="$1"
     local config_json="$2"  # JSON 格式的 server 配置
@@ -332,7 +332,7 @@ register_mcp_server() {
     fi
 }
 
-# 等待端口就绪
+# Wait for port to be ready
 wait_for_port() {
     local port="$1"
     local timeout="${2:-90}"
@@ -348,7 +348,7 @@ wait_for_port() {
     return 1
 }
 
-# ─── 能力安装逻辑 ──────────────────────────────────────────────────────────────────
+# ─── Capability installation logic ──────────────────────────────────────────────────────────────
 
 manifest_field() {
     local capability="$1"
@@ -402,7 +402,7 @@ ensure_capability() {
         verify_command="pwn"
     fi
 
-    # 先检查是否已可用
+    # First check if it is available
     if command -v "$verify_command" &>/dev/null; then
         log_ok "$name 已可用: $(command -v "$verify_command")"
         return 0
@@ -411,7 +411,7 @@ ensure_capability() {
     log_info "开始安装: $name"
 
     case "$name" in
-        # ─── apt 预装/可装的工具 ───
+        # ─── apt pre-installed/installable tools ───
         nmap|sqlmap|hashcat|hydra|gobuster|ffuf|adb|bkcrack)
             install_apt_package "$name"
             ;;
@@ -429,7 +429,7 @@ ensure_capability() {
         seclists)
             install_apt_package "seclists"
             ;;
-        # ─── Kali 2026.1 新增工具（全部 apt 直装） ───
+        # ─── Kali 2026.1 new tools (all apt direct installation) ───
         adaptixc2)
             install_apt_package "adaptixc2"
             ;;
@@ -479,7 +479,7 @@ ensure_capability() {
         aircrack-ng)
             install_apt_package "aircrack-ng"
             ;;
-        # ─── Kali 原生 MCP 工具（apt 安装 + MCP 注册） ───
+        # ─── Kali native MCP tool (apt installation + MCP registration) ───
         mcp-kali-server)
             install_apt_package "mcp-kali-server"
             register_mcp_server "kali-server" '{
@@ -507,7 +507,7 @@ ensure_capability() {
             }'
             log_info "HexStrike AI 已安装。150+ 安全工具通过 MCP 暴露给 AI agent。"
             ;;
-        # ─── Pentest Swarm AI（群体智能渗透框架） ───
+        # ─── Pentest Swarm AI (Swarm Intelligence Penetration Framework) ───
         pentestswarm)
             if command -v pentestswarm &>/dev/null; then
                 log_ok "pentestswarm 已可用"
@@ -534,7 +534,7 @@ ensure_capability() {
             log_info "  需要设置: export PENTESTSWARM_ORCHESTRATOR_API_KEY=<your-claude-key>"
             ;;
 
-        # ─── pip 安装 ───
+        # ─── pip installation ───
         frida|frida-ps)
             install_pip_package "frida-tools==14.10.4"
             ;;
@@ -638,7 +638,7 @@ EOF
             npx playwright install chromium 2>/dev/null || true
             ;;
 
-        # ─── 本地 HTTP MCP 服务 ───
+        # ─── Local HTTP MCP service ───
         anything-analyzer)
             register_mcp_server "anything-analyzer" "{\"url\": \"http://localhost:23816/mcp\"}"
             if [[ "$START_SERVICES" == "true" ]]; then
@@ -646,7 +646,7 @@ EOF
             fi
             ;;
         idapro)
-            # 先确保 idalib-mcp 已安装
+            # First make sure idalib-mcp is installed
             ensure_capability "idalib-mcp"
             register_mcp_server "idapro" "{\"url\": \"http://127.0.0.1:13337/mcp\"}"
             if [[ "$START_SERVICES" == "true" ]]; then
@@ -654,7 +654,7 @@ EOF
             fi
             ;;
 
-        # ─── 手动安装 ───
+        # ─── Manual installation ───
         burpsuite-mcp)
             log_warn "MANUAL_INSTALL_REQUIRED: burpsuite-mcp"
             log_warn "Kali 预装 BurpSuite，在扩展市场搜索 MCP 插件安装"
@@ -668,7 +668,7 @@ EOF
     esac
 }
 
-# ─── 服务启动 ──────────────────────────────────────────────────────────────────────
+# ───Service startup────────────────────────────────────────────────────────────────
 
 start_anything_analyzer() {
     local repo_dir="$HOME/tools/anything-analyzer"
@@ -721,7 +721,7 @@ start_idapro_service() {
     fi
 }
 
-# ─── 主流程 ────────────────────────────────────────────────────────────────────────
+# ─── Main process ────────────────────────────────────────────────────────────────
 
 RESULTS=()
 
@@ -739,7 +739,7 @@ for cap in "${CAPABILITIES[@]}"; do
     fi
 done
 
-# 刷新工具索引
+# Refresh tool index
 if [[ "$SKIP_REFRESH" != "true" ]]; then
     log_info "刷新工具索引 ..."
     bash "$SCRIPT_DIR/refresh-tool-index.sh" >/dev/null 2>&1 || true
@@ -752,10 +752,10 @@ elif [[ "$MANUAL_REQUIRED" == "true" ]]; then
     final_exit_code=2
 fi
 
-# 输出结果
+# Output results
 echo ""
 echo "═══════════════════════════════════════════"
-echo "  Bootstrap 完成"
+echo "Bootstrap complete"
 echo "═══════════════════════════════════════════"
 for r in "${RESULTS[@]}"; do
     name=$(echo "$r" | jq -r '.name' 2>/dev/null || echo "$r")

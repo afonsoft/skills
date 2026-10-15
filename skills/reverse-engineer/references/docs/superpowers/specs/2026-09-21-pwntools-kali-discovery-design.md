@@ -31,7 +31,7 @@ Keep the #144 catalog entry but use the `version` subcommand and the executable 
 Expected generated record:
 
 ```text
-pwntools|reverse-engineering|CTF pwn 利用开发框架|yes|<stub>/pwn|[*] Pwntools v4.15.0|command
+pwntools|reverse-engineering|CTF pwn utilization development framework|yes|<stub>/pwn|[*] Pwntools v4.15.0|command
 ```
 
 ### Capability status

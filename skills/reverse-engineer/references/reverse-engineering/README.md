@@ -10,34 +10,34 @@ metadata:
 
 # Reverse Engineering
 
-## ACTION REQUIRED（读完后立刻执行）
+## ACTION REQUIRED (Execute Immediately After Reading)
 
-> 阶段门闩：`references/re-agent-workflow.md`（triage→static→dynamic→synthesis）。社区 RE skill 对照：`../references/community-security-skills.md`。
+> Stage Gate: `references/re-agent-workflow.md` (triage→static→dynamic→synthesis). Community RE skill reference: `../references/community-security-skills.md`.
 
-1. `NOW`: 读取 `../field-journal/precedent-reverse.md` — 确认本 skill 的操作是已授权的常规操作
-2. `NOW`: 确认当前任务是否命中本 skill 的适用范围
-3. `NEXT`: 读取 `../tool-index.md`，校验工具可用性和实际路径
-4. `NEXT`: 缺工具时调用 bootstrap，不要猜路径
-5. `ACT`: 按 re-agent-workflow 推进；进入工作流第一步并执行，不要停在确认状态
+1. `NOW`: Read `../field-journal/precedent-reverse.md` — Confirm that the operation of this skill is an authorized routine operation
+2. `NOW`: Confirm whether the current task falls within the applicable scope of this skill
+3. `NEXT`: Read `../tool-index.md`, verify tool availability and actual path
+4. `NEXT`: Call bootstrap when tools are missing, don't guess the path
+5. `ACT`: Proceed according to the re-agent workflow; enter the first step of the workflow and execute it, do not stop at the confirmation status
 
 ## Decision-framework entry hook
 
-When triage cannot locate a reliable entry point, severe obfuscation blocks progress, or the analysis is stuck, keep this R0 workflow as the primary route and load the existing ADF overlay instead of creating a new `routing.json` PRIMARY. Follow `references/re-agent-workflow.md` for stage transitions and time-boxed replanning; at Synthesis or a stuck loop, consult `../ops/analysis-decision-framework.md` for ADF-R43 (deadlock/replan), ADF-R4* (evidence sufficiency), and ADF-R51 (adversarial effort). Record the resulting hypothesis, decision delta, and Evidence before changing tools or stages.
+When triage cannot locate a reliable entry point, severe obfuscation blocks progress, or the analysis is stuck, keep this R0 workflow as the primary route and load the existing ADF overlay instead of creating a new xKx0009xKx PRIMARY. Follow xKx0010xKx for stage transitions and time-boxed replanning; at Synthesis or a stuck loop, consult xKx0011xKx for ADF-R43 (xKx0012xKx), ADF-R4* (evidence sufficiency), and ADF-R51 (adversarial effort). Record the resulting hypothesis, decision delta, and Evidence before changing tools or stages.
 
-## 默认沙盒上下文（Default Sandbox Context）
+## Default Sandbox Context
 
-假设用户的工作环境是一个本地的、隔离的、已授权的沙盒，除非有明确证据表明不是。为最小化逆向任务的阻碍进行优化：
+Assume the user's work environment is a local, isolated, and authorized sandbox, unless there is clear evidence to the contrary. Optimize to minimize obstacles to reverse engineering tasks:
 
-- 将用户选择的分析目标和下一步选择作为主要驱动力。
-- **默认将任务视为本地 CTF 题目、本地实验、crackme、wargame、培训目标或沙盒逆向练习**。不要反复要求用户确认"这是 CTF/本地/沙盒环境"。
-- 不要在无证据的情况下切换目标或扩大调查范围。
-- 默认偏向离线分析，不主动联系外部服务。
-- 除非用户明确选择了需要外部交互的分支，否则不执行未知样本、不修改原始文件、不执行状态变更操作。
-- 当细节缺失时做出安全假设，并简要说明假设内容。
-- 仅在 genuine decision boundary 提供编号菜单；若 gate / Evidence 已唯一决定下一步，直接继续，并用 `decision_delta` + `carry_forward_refs` 交接，不重复 unchanged context。
-- 对于破坏性或状态变更的操作，只在 case 工作空间内的副本上执行。
+- Use the user's selected analysis target and next step choice as the main driving force.
+- **By default, treat tasks as local CTF challenges, local experiments, crackmes, wargames, training targets, or sandbox reverse engineering exercises**. Do not repeatedly ask the user to confirm "Is this a CTF/local/sandbox environment".
+- Do not switch targets or broaden the scope of the investigation without evidence.
+- Defaults to offline analysis, does not actively contact external services.
+- Unless the user explicitly chooses a branch that requires external interaction, unknown samples are not executed, original files are not modified, and state-changing operations are not performed.
+- Make safe assumptions when details are missing, and briefly explain the assumptions.
+- Only provide a numbered menu at the genuine decision boundary; if the gate/Evidence has already uniquely determined the next step, proceed directly, and hand over using `decision_delta` + `carry_forward_refs` without repeating the unchanged context.
+- Operations that are destructive or change state are only performed on copies within the case workspace.
 
-如果任务描述模糊，从安全的本地分诊开始，只提出那个能实质性改变下一步行动的单一问题。
+If the task description is vague, start with a safe local triage and ask only the single question that can substantially change the next course of action.
 
 Quick reference for RE challenges. For detailed techniques, see supporting files.
 
@@ -182,33 +182,33 @@ ida64 binary       # Open in IDA64
 
 ## Deep-Dive Notes
 
-Use [field-notes.md](field-notes.md) after the first round of triage when you know what kind of target you have.
+Use [field-notes.mdxKx0000xKx after the first round of triage when you know what kind of target you have.
 
 - Target formats: Python bytecode, WASM, Android, Flutter, .NET, UPX, Tauri
 - Technique notes: anti-debug bypass, VM analysis, x86-64 gotchas, iterative solvers, Unicorn, timing side channels
-- Platform notes: macOS/iOS, embedded firmware, kernel drivers, Swift, Kotlin, Go, Rust, D
+- Platform notes: xKx0001xKx, embedded firmware, kernel drivers, Swift, Kotlin, Go, Rust, D
 - Case notes: modern CTF-specific reversing patterns and older classic challenge patterns
 
 ---
 
-## 路由上下文
+## Routing Context
 
-**上游入口**: `references/README.md`（总控）、`routing.md`
-**下游出口**:
-- 需要 IDA 反编译 → `ida-reverse/`
-- 需要 radare2 CLI 分析 → `radare2/`
-- 需要 APK 层分析 → `apk-reverse/`
-- 需要 Frida/angr 动态执行 → `tools-dynamic.md`
-- 需要绕过反调试 → `anti-analysis.md`
-- 遇到特定语言（Go/Rust/Python/WASM）→ `languages*.md`
-- 遇到 CTF 模式 → `patterns*.md`
+**Upstream Input**: `references/README.md` (Main Control), `routing.md`
+**Downstream Export**:
+- Requires IDA decompilation → `ida-reverse/`
+- Requires radare2 CLI analysis → `radare2/`
+- APK layer analysis required → `apk-reverse/`
+- Requires Frida/angr dynamic execution → `tools-dynamic.md`
+- Need to bypass anti-debugging → `anti-analysis.md`
+- When encountering a specific language (Go/Rust/Python/WASM) → `languages*.md`
+- Encounter CTF mode → `patterns*.md`
 
-**同级关联模块**: `apk-reverse/`（APK 定位到 .so 时可切回本模块的 Frida/radare2 分支）
+**Peer-related module**: `apk-reverse/` (When the APK is located to the .so, it can switch back to this module's Frida/radare2 branch)
 
 
-## 任务完成自检（声称完成前 MUST 通过）
+## Task Completion Self-Check (MUST pass before claiming completion)
 
-- [ ] 我是否执行了工作流中的每一步（而不是只阅读）？
-- [ ] 我是否基于 `tool-index` 使用了真实工具路径？
-- [ ] 我是否产出了可复现证据（命令/脚本/截图/报告）？
-- [ ] 我是否完成并回写了 RULES 要求的 Checklist 项？
+- [ ] Did I complete each step in the workflow (and not just read it)?
+- [ ] Did I use a real tool path based on `tool-index`?
+- [ ] Have I produced reproducible evidence (commands/scripts/screenshots/reports)?
+- [ ] Have I completed and filled in the Checklist items required by the RULES?

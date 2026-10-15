@@ -132,7 +132,7 @@ Expected Agent behavior:
 ├── README_AI.md                 # AI Agent bootstrap entry (English)
 ├── RULES.md                     # Global routing and execution rules
 ├── docs/OVERVIEW.md              # Detailed overview (English)
-├── docs/OVERVIEW_zh.md           # Detailed overview (Chinese)
+├── docs/OVERVIEW.md           # Detailed overview (Chinese)
 ├── docs/ARCHITECTURE.md          # Architecture notes
 ├── docs/PLATFORMS.md             # Platform support matrix
 ├── references/                      # Main Skill directory
@@ -200,7 +200,7 @@ Keywords: AI Agent, Skill Router, Tool Orchestration, MCP, Workflow Automation, 
 - [README.md](../README.md): Main entry (English)
 - [README_zh.md](../README_zh.md): Main entry (Chinese)
 - [README_AI.md](../README_AI.md): AI bootstrap entry
-- [OVERVIEW_zh.md](OVERVIEW_zh.md): Chinese overview
+- [OVERVIEW.md](OVERVIEW.md): Chinese overview
 - [PLATFORMS.md](PLATFORMS.md): platform support matrix
 - [platforms/linux.md](platforms/linux.md): generic Linux setup
 - [platforms/macos.md](platforms/macos.md): macOS setup

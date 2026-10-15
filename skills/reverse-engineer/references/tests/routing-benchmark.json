@@ -12,12 +12,12 @@
       "quick": true
     },
     {
-      "hint": "安卓 APK 加固 反编译",
+      "hint": "Android APK Hardening and Reverse Engineering",
       "expect": "R1",
       "quick": false
     },
     {
-      "hint": "重打包 APK 修改 smali",
+      "hint": "Repackaging APK to modify smali",
       "expect": "R1",
       "quick": false
     },
@@ -27,7 +27,7 @@
       "quick": false
     },
     {
-      "hint": "绕过 root 检测 证书校验",
+      "hint": "Bypass root detection and certificate verification",
       "expect": "R1",
       "quick": false
     },
@@ -42,7 +42,7 @@
       "quick": true
     },
     {
-      "hint": "IPA 逆向",
+      "hint": "IPA Reverse",
       "expect": "R2",
       "quick": false
     },
@@ -52,7 +52,7 @@
       "quick": false
     },
     {
-      "hint": "iOS 越狱 检测绕过",
+      "hint": "iOS jailbreak detection bypass",
       "expect": "R2",
       "quick": false
     },
@@ -62,7 +62,7 @@
       "quick": true
     },
     {
-      "hint": "前端签名 加密参数 js逆向",
+      "hint": "Frontend signature encryption parameters JS reverse engineering",
       "expect": "R3",
       "quick": false
     },
@@ -72,7 +72,7 @@
       "quick": false
     },
     {
-      "hint": "抓包 分析请求 重放",
+      "hint": "Packet capture Analyze request Replay",
       "expect": "R3",
       "quick": false
     },
@@ -82,7 +82,7 @@
       "quick": true
     },
     {
-      "hint": "自定义虚拟机 指令集逆向",
+      "hint": "Custom Virtual Machine Instruction Set Reverse Engineering",
       "expect": "R4",
       "quick": false
     },
@@ -97,12 +97,12 @@
       "quick": true
     },
     {
-      "hint": "C# 逆向 confuserex 脱壳",
+      "hint": "C# reverse confuserex unpacking",
       "expect": "R5",
       "quick": false
     },
     {
-      "hint": "dotnet 脱混淆",
+      "hint": "dotnet deobfuscation",
       "expect": "R5",
       "quick": false
     },
@@ -112,7 +112,7 @@
       "quick": true
     },
     {
-      "hint": "反汇编 静态分析 二进制",
+      "hint": "Disassembly Static Analysis Binary",
       "expect": "R6",
       "quick": false
     },
@@ -147,7 +147,7 @@
       "quick": true
     },
     {
-      "hint": "固件逆向 路由器",
+      "hint": "Firmware reverse engineering router",
       "expect": "R8",
       "quick": false
     },
@@ -157,7 +157,7 @@
       "quick": true
     },
     {
-      "hint": "恶意样本分析 沙箱",
+      "hint": "Malware Sample Analysis Sandbox",
       "expect": "R9",
       "quick": false
     },
@@ -167,7 +167,7 @@
       "quick": false
     },
     {
-      "hint": "ransomware 勒索软件 分析",
+      "hint": "Ransomware Analysis",
       "expect": "R9",
       "quick": false
     },
@@ -177,12 +177,12 @@
       "quick": true
     },
     {
-      "hint": "红队 横向移动 内网渗透",
+      "hint": "Red Team lateral-movement internal network penetration",
       "expect": "R10",
       "quick": false
     },
     {
-      "hint": "从外网打到域控",
+      "hint": "Accessing the domain controller from the external network",
       "expect": "R10",
       "quick": false
     },
@@ -192,17 +192,17 @@
       "quick": true
     },
     {
-      "hint": "渗透测试 端口扫描 sql注入",
+      "hint": "Penetration testing, port scanning, SQL injection",
       "expect": "R11",
       "quick": false
     },
     {
-      "hint": "bug bounty src 漏洞挖掘",
+      "hint": "bug bounty source vulnerability hunting",
       "expect": "R11",
       "quick": false
     },
     {
-      "hint": "burpsuite intruder 爆破",
+      "hint": "burpsuite intruder brute force",
       "expect": "R11",
       "quick": false
     },
@@ -212,7 +212,7 @@
       "quick": true
     },
     {
-      "hint": "越权 未授权访问 接口安全",
+      "hint": "Exceeding authority Unauthorized access Interface security",
       "expect": "R12",
       "quick": false
     },
@@ -227,7 +227,7 @@
       "quick": true
     },
     {
-      "hint": "供应链 依赖扫描 gitleaks",
+      "hint": "Supply chain relies on scanning gitleaks",
       "expect": "R13",
       "quick": false
     },
@@ -237,7 +237,7 @@
       "quick": true
     },
     {
-      "hint": "提示词注入 模型越狱",
+      "hint": "Prompt injection model jailbreak",
       "expect": "R14",
       "quick": false
     },
@@ -252,7 +252,7 @@
       "quick": true
     },
     {
-      "hint": "符号迁移 PDB 缺失",
+      "hint": "Symbol migration PDB missing",
       "expect": "R15",
       "quick": false
     },
@@ -262,7 +262,7 @@
       "quick": true
     },
     {
-      "hint": "补丁差分 CVE 复现",
+      "hint": "Patch difference CVE reproduction",
       "expect": "R16",
       "quick": false
     },
@@ -272,7 +272,7 @@
       "quick": true
     },
     {
-      "hint": "栈溢出 堆溢出 exploit",
+      "hint": "Stack overflow Heap overflow exploit",
       "expect": "R17",
       "quick": false
     },
@@ -287,7 +287,7 @@
       "quick": true
     },
     {
-      "hint": "免杀 AMSI patch",
+      "hint": "AMSI bypass patch",
       "expect": "R18",
       "quick": false
     },
@@ -297,7 +297,7 @@
       "quick": true
     },
     {
-      "hint": "浏览器自动化 填表",
+      "hint": "Browser Automation Form Filling",
       "expect": "R19",
       "quick": false
     },
@@ -307,7 +307,7 @@
       "quick": false
     },
     {
-      "hint": "渗透测试报告 写报告",
+      "hint": "Penetration Testing Report Write Report",
       "expect": "R11",
       "quick": false
     },
@@ -317,7 +317,7 @@
       "quick": true
     },
     {
-      "hint": "流程图 架构图 mermaid",
+      "hint": "Flowchart Architecture Diagram mermaid",
       "expect": "R39",
       "quick": false
     },
@@ -327,7 +327,7 @@
       "quick": true
     },
     {
-      "hint": "协议逆向 pcap wireshark",
+      "hint": "protocol reverse engineering pcap wireshark",
       "expect": "R21",
       "quick": false
     },
@@ -337,7 +337,7 @@
       "quick": true
     },
     {
-      "hint": "无 IDA 用 ghidra 反编译",
+      "hint": "Decompile with Ghidra without IDA",
       "expect": "R22",
       "quick": false
     },
@@ -347,7 +347,7 @@
       "quick": true
     },
     {
-      "hint": "容器逃逸 k8s 云安全",
+      "hint": "Container Escape k8s Cloud Security",
       "expect": "R23",
       "quick": false
     },
@@ -357,7 +357,7 @@
       "quick": true
     },
     {
-      "hint": "域渗透 kerberos 攻击",
+      "hint": "domain-penetration Kerberos attack",
       "expect": "R24",
       "quick": false
     },
@@ -372,12 +372,12 @@
       "quick": true
     },
     {
-      "hint": "内存取证 应急响应",
+      "hint": "Memory Forensics Emergency Response",
       "expect": "R25",
       "quick": false
     },
     {
-      "hint": "手机取证 磁盘取证",
+      "hint": "Mobile Forensics Disk Forensics",
       "expect": "R25",
       "quick": false
     },
@@ -387,7 +387,7 @@
       "quick": true
     },
     {
-      "hint": "白盒 代码审计 sast",
+      "hint": "White-box code audit SAST",
       "expect": "R26",
       "quick": false
     },
@@ -397,7 +397,7 @@
       "quick": true
     },
     {
-      "hint": "威胁狩猎 检测工程",
+      "hint": "Threat Hunting Detection Project",
       "expect": "R27",
       "quick": false
     },
@@ -407,7 +407,7 @@
       "quick": true
     },
     {
-      "hint": "工控 OT ICS 安全",
+      "hint": "Industrial Control OT ICS Security",
       "expect": "R28",
       "quick": false
     },
@@ -417,7 +417,7 @@
       "quick": true
     },
     {
-      "hint": "无线渗透 wifi攻击",
+      "hint": "Wireless Penetration WiFi Attack",
       "expect": "R29",
       "quick": false
     },
@@ -427,7 +427,7 @@
       "quick": true
     },
     {
-      "hint": "浏览器扩展 逆向 crx",
+      "hint": "Browser extension reverse engineering crx",
       "expect": "R30",
       "quick": false
     },
@@ -437,7 +437,7 @@
       "quick": true
     },
     {
-      "hint": "mac 逆向 Mach-O",
+      "hint": "Mac reverse engineering Mach-O",
       "expect": "R31",
       "quick": false
     },
@@ -447,7 +447,7 @@
       "quick": true
     },
     {
-      "hint": "厚客户端 安全测试",
+      "hint": "Thick Client Security Testing",
       "expect": "R32",
       "quick": false
     },
@@ -457,7 +457,7 @@
       "quick": true
     },
     {
-      "hint": "go 二进制 逆向 stripped",
+      "hint": "go binary reverse stripped",
       "expect": "R33",
       "quick": false
     },
@@ -467,7 +467,7 @@
       "quick": true
     },
     {
-      "hint": "硬件调试 UART 串口",
+      "hint": "Hardware Debugging UART Serial Port",
       "expect": "R34",
       "quick": false
     },
@@ -477,7 +477,7 @@
       "quick": true
     },
     {
-      "hint": "数据库安全 mongodb redis",
+      "hint": "Database security mongodb redis",
       "expect": "R35",
       "quick": false
     },
@@ -487,7 +487,7 @@
       "quick": true
     },
     {
-      "hint": "钓鱼邮件分析",
+      "hint": "Phishing Email Analysis",
       "expect": "R36",
       "quick": false
     },
@@ -497,7 +497,7 @@
       "quick": true
     },
     {
-      "hint": "联邦身份 单点登录",
+      "hint": "Federated Identity Single Sign-On",
       "expect": "R37",
       "quick": false
     },
@@ -507,7 +507,7 @@
       "quick": true
     },
     {
-      "hint": "射频 SDR 信号分析",
+      "hint": "RF SDR Signal Analysis",
       "expect": "R38",
       "quick": false
     },
@@ -517,17 +517,17 @@
       "quick": true
     },
     {
-      "hint": "逆向 反调试 ollvm",
+      "hint": "Reverse engineering anti-debugging ollvm",
       "expect": "R0",
       "quick": false
     },
     {
-      "hint": "gdb angr unicorn 符号执行",
+      "hint": "gdb angr unicorn symbolic execution",
       "expect": "R0",
       "quick": false
     },
     {
-      "hint": "越狱 提示词 红队 ai",
+      "hint": "Jailbreak prompt red team AI",
       "expect": "R10",
       "quick": false
     },
@@ -537,22 +537,22 @@
       "quick": false
     },
     {
-      "hint": "LLM 越狱",
+      "hint": "LLM jailbreak",
       "expect": "R14",
       "quick": false
     },
     {
-      "hint": "iOS 越狱 检测绕过",
+      "hint": "iOS jailbreak detection bypass",
       "expect": "R2",
       "quick": false
     },
     {
-      "hint": "域渗透 完整渗透 攻击链",
+      "hint": "domain-penetration full penetration attack chain",
       "expect": "R10",
       "quick": false
     },
     {
-      "hint": "打到域控",
+      "hint": "Attack the domain controller",
       "expect": "R10",
       "quick": false
     },
@@ -567,7 +567,7 @@
       "quick": false
     },
     {
-      "hint": "oauth2 oidc sso 联邦",
+      "hint": "oauth2 oidc sso federation",
       "expect": "R37",
       "quick": false
     },
@@ -577,7 +577,7 @@
       "quick": false
     },
     {
-      "hint": "radio 信号",
+      "hint": "radio signal",
       "expect": "R0",
       "quick": false
     },
@@ -587,7 +587,7 @@
       "quick": false
     },
     {
-      "hint": "git 仓库",
+      "hint": "git repository",
       "expect": "R0",
       "quick": false
     },
@@ -597,7 +597,7 @@
       "quick": false
     },
     {
-      "hint": "k8s 渗透",
+      "hint": "k8s penetration",
       "expect": "R23",
       "quick": false
     },
@@ -607,12 +607,12 @@
       "quick": false
     },
     {
-      "hint": "macOS 逆向",
+      "hint": "macOS reverse engineering",
       "expect": "R31",
       "quick": false
     },
     {
-      "hint": "electron app 逆向",
+      "hint": "electron app reverse engineering",
       "expect": "R32",
       "quick": false
     },
@@ -627,12 +627,12 @@
       "quick": false
     },
     {
-      "hint": "Windows AD 域渗透 kerberos",
+      "hint": "Windows AD domain-penetration kerberos",
       "expect": "R24",
       "quick": false
     },
     {
-      "hint": "AD 域控攻击",
+      "hint": "AD domain controller attack",
       "expect": "R24",
       "quick": false
     },
@@ -657,167 +657,167 @@
       "quick": false
     },
     {
-      "hint": "sql 注入 数据库",
+      "hint": "SQL Injection Database",
       "expect": "R11",
       "quick": false
     },
     {
-      "hint": "iot 设备",
+      "hint": "IoT devices",
       "expect": "R8",
       "quick": false
     },
     {
-      "hint": "ot 安全评估",
+      "hint": "OT Security Assessment",
       "expect": "R28",
       "quick": false
     },
     {
-      "hint": "forensics 取证",
+      "hint": "forensics evidence collection",
       "expect": "R25",
       "quick": false
     },
     {
-      "hint": "burpsuite 抓包 重放",
+      "hint": "Burp Suite packet capture and replay",
       "expect": "R3",
       "quick": false
     },
     {
-      "hint": "ctf 逆向题",
+      "hint": "CTF reverse engineering challenge",
       "expect": "R41",
       "quick": false
     },
     {
-      "hint": "awd 靶场",
+      "hint": "awd shooting range",
       "expect": "R41",
       "quick": true
     },
     {
-      "hint": "CTF pwn 栈溢出",
+      "hint": "CTF pwn stack overflow",
       "expect": "R17",
       "quick": false
     },
     {
-      "hint": "符号执行 angr",
+      "hint": "Symbolic execution angr",
       "expect": "R0",
       "quick": false
     },
     {
-      "hint": "mermaid 时序图",
+      "hint": "mermaid sequence diagram",
       "expect": "R39",
       "quick": false
     },
     {
-      "hint": "攻击路径图",
+      "hint": "Attack Path Map",
       "expect": "R39",
       "quick": false
     },
     {
-      "hint": "威胁狩猎 检测规则 sigma",
+      "hint": "Threat Hunting Detection Rules sigma",
       "expect": "R27",
       "quick": false
     },
     {
-      "hint": "蓝牙 BLE 分析",
+      "hint": "Bluetooth BLE Analysis",
       "expect": "R38",
       "quick": false
     },
     {
-      "hint": "wifi 密码 破解",
+      "hint": "WiFi password cracking",
       "expect": "R29",
       "quick": false
     },
     {
-      "hint": "usb 设备 逆向",
+      "hint": "USB device reverse engineering",
       "expect": "R34",
       "quick": false
     },
     {
-      "hint": "so 文件 native 分析",
+      "hint": "so file native analysis",
       "expect": "R6",
       "quick": false
     },
     {
-      "hint": "unity 游戏 逆向",
+      "hint": "Unity game reverse engineering",
       "expect": "R0",
       "quick": false
     },
     {
-      "hint": "dump 内存 分析",
+      "hint": "dump memory analysis",
       "expect": "R25",
       "quick": false
     },
     {
-      "hint": "js 加密 解密 逆向",
+      "hint": "JS encryption decryption reverse engineering",
       "expect": "R3",
       "quick": false
     },
     {
-      "hint": "接口 越权 IDOR",
+      "hint": "Interface Privilege Escalation IDOR",
       "expect": "R12",
       "quick": false
     },
     {
-      "hint": "渗透 报告 输出",
+      "hint": "Penetration Report Output",
       "expect": "R20",
       "quick": false
     },
     {
-      "hint": "mimikatz 抓取凭证",
+      "hint": "mimikatz credential harvesting",
       "expect": "R24",
       "quick": false
     },
     {
-      "hint": "wireshark 分析流量",
+      "hint": "Wireshark traffic analysis",
       "expect": "R21",
       "quick": false
     },
     {
-      "hint": "linux 提权",
+      "hint": "Linux privilege escalation",
       "expect": "R11",
       "quick": false
     },
     {
-      "hint": "linux 权限提升 提权",
+      "hint": "Linux privilege escalation",
       "expect": "R11",
       "quick": false
     },
     {
-      "hint": "云安全 存储桶 泄露",
+      "hint": "Cloud Security Bucket Leak",
       "expect": "R23",
       "quick": false
     },
     {
-      "hint": "s3 bucket 权限",
+      "hint": "s3 bucket permissions",
       "expect": "R23",
       "quick": false
     },
     {
-      "hint": "frida 动态调试 so",
+      "hint": "frida dynamic debugging so",
       "expect": "R0",
       "quick": false
     },
     {
-      "hint": "安卓 动态调试",
+      "hint": "Android Dynamic Debugging",
       "expect": "R1",
       "quick": false
     },
     {
-      "hint": "app 抓包 https",
+      "hint": "app packet capture https",
       "expect": "R3",
       "quick": false
     },
     {
-      "hint": "sqlmap 注入",
+      "hint": "sqlmap injection",
       "expect": "R11",
       "quick": false
     },
     {
-      "hint": "hashcat 破解",
+      "hint": "hashcat crack",
       "expect": "R11",
       "quick": false
     },
     {
-      "hint": "webshell 检测",
+      "hint": "webshell detection",
       "expect": "R9",
       "quick": false
     },
@@ -827,17 +827,17 @@
       "quick": false
     },
     {
-      "hint": "应急响应",
+      "hint": "Emergency response",
       "expect": "R25",
       "quick": false
     },
     {
-      "hint": "安全评估 报告",
+      "hint": "Safety Assessment Report",
       "expect": "R11",
       "quick": false
     },
     {
-      "hint": "风险评估",
+      "hint": "Risk Assessment",
       "expect": "R11",
       "quick": false
     },
@@ -847,12 +847,12 @@
       "quick": true
     },
     {
-      "hint": "案件审查 证据链 可追溯性",
+      "hint": "Case review, evidence chain, traceability",
       "expect": "R40",
       "quick": false
     },
     {
-      "hint": "案例审计 证据图 可追溯性 fixity 校验",
+      "hint": "Case Audit Evidence Diagram Traceability Fixity Verification",
       "expect": "R40",
       "quick": false
     },
@@ -867,7 +867,7 @@
       "quick": true
     },
     {
-      "hint": "公开 X 推文补充这个恶意域名的威胁情报",
+      "hint": "Publicly X tweet to supplement threat intelligence on this malicious domain",
       "expect": "R44",
       "quick": false
     },
@@ -887,7 +887,7 @@
       "quick": true
     },
     {
-      "hint": "使用 Binja 查看 MLIL 和函数交叉引用",
+      "hint": "Using Binja to view MLIL and function cross-references",
       "expect": "R45",
       "quick": false
     },

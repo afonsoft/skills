@@ -94,8 +94,10 @@ It merges two upstream packs:
    `references/ops/evidence-finding-path.md`.
 5. Stuck: time-box, switch axis (static↔dynamic, Java↔native, observe↔breakpoint);
    decision framework in `references/ops/analysis-decision-framework.md`.
-6. Missing tool: check generated `references/tool-index.md` (refresh with
-   `references/scripts/refresh-tool-index.sh`); install only via
+6. Missing tool: run `references/scripts/check-tools.sh <module>` — read-only
+   per-module readiness (required/optional + bootstrap hint; `--all`, `--list`,
+   `--json`). Tool inventory lives in generated `references/tool-index.md`
+   (refresh with `references/scripts/refresh-tool-index.sh`); install only via
    `references/scripts/bootstrap-reverse.sh <capability>` after disclosure —
    capabilities listed in `references/scripts/bootstrap-manifest.json`.
 7. Report/journal on request: `references/docs-generator/`,

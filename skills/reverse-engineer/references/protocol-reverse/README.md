@@ -5,94 +5,94 @@ description: Use for authorized reverse engineering of custom binary protocols, 
 
 # Protocol Reverse Engineering
 
-## ACTION REQUIRED（读完后立刻执行）
+## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. `NOW`: 读取 `../field-journal/precedent-reverse.md` — 确认授权与常规操作边界
-2. `NOW`: 确认任务是否为**协议/流量/序列化格式**逆向（非纯 Web 参数签名 → 转 `js-reverse/`）
-3. `NOW`: 若有目标网络交互 → `../scripts/case-init.ps1` 完成 scope；`auth` 未 granted 禁止对目标 ACT
-4. `NEXT`: 读取 `../tool-index.md`；缺工具 bootstrap（tshark/wireshark 等可能需手动）
-5. `ACT`: 进入工作流 Phase 1，产出帧布局或消息字典草稿
+1. `NOW`: Read `../field-journal/precedent-reverse.md` — Confirm authorization and regular operation boundaries
+2. `NOW`: Confirm whether the task is **protocol/traffic/serialization format** reverse engineering (not purely web parameter signing → go to `js-reverse/`)
+3. `NOW`: If there is interaction with the target network → `../scripts/case-init.ps1` complete scope; `auth` if not granted, prohibit actions on the target ACT
+4. `NEXT`: Read `../tool-index.md`; missing tool bootstrap (tshark/wireshark and others may need to be done manually)
+5. `ACT`: Enter workflow Phase 1, produce draft frame layout or message dictionary
 
-## 适用场景
+## Applicable Scenarios
 
-- 自定义 TCP/UDP 二进制协议
+- Custom TCP/UDP binary protocol
 - Protobuf / gRPC / FlatBuffers / MessagePack
-- WebSocket / MQTT / 私有 RPC
-- PCAP / PCAPNG 还原字段与状态机
-- 客户端-服务端校验、序列号、加密帧头
+- WebSocket / MQTT / Private RPC
+- PCAP / PCAPNG Restore Fields and State Machine
+- Client-server verification, serial number, encrypted frame header
 
-## 不走本 skill
+## Not Using This Skill
 
-| 情况 | 去哪 |
+| Situation | Where to go |
 |------|------|
-| 仅 HTTP 参数签名 / JS 加密 | `js-reverse/` |
-| 仅 TLS 证书问题 | `pentest-tools/` 或浏览器代理 |
-| 固件内协议栈深挖 + 仿真 | `firmware-pentest/` 后再回本 skill |
+| HTTP parameter signature / JS encryption only | `js-reverse/` |
+| Only TLS certificate issues | `pentest-tools/` or browser proxy |
+| In-depth exploration of the firmware protocol stack + simulation | `firmware-pentest/` then recover the skill |
 
-## 工作流
+## Workflow
 
-### Phase 1 — 采集与分诊
+### Phase 1 — Collection and Triage
 
 ```text
-□ 拿到样本：PCAP / 代理导出 / 客户端日志 / 二进制
-□ 标记方向：C→S / S→C；是否有握手、心跳、重连
-□ 固定头？魔数？长度字段？TLV？定长？
-□ 是否压缩（zlib/gzip/lz4）或加密（AES/ChaCha 帧内）
+□ Obtain samples: PCAP / proxy export / client logs / binaries
+□ Direction marker: C→S / S→C; whether there is handshake, heartbeat, reconnection
+□ Fixed header? Magic number? Length field? TLV? Fixed length?
+□ Whether to compress (zlib/gzip/lz4) or encrypt (AES/ChaCha within the frame)
 □ tshark -r cap.pcap -T fields -e frame.number -e ip.src -e tcp.payload
 ```
 
-### Phase 2 — 帧布局还原
+### Phase 2 — Frame Layout Restoration
 
 ```text
-□ 对齐多个同类消息，找不变字节 / 自增序列号
-□ 长度字段：大端/小端、含头/不含头
-□ 校验：CRC16/32、checksum、HMAC 位置
-□ 画出状态机：Connect → Auth → Ready → Request/Response → Close
-□ 工具：Wireshark 自定义 dissector 草稿 / ImHex / 010 Editor 模板 / Kaitai Struct
+□ Align multiple similar messages, find unchanged bytes / increment sequence numbers
+□ Length field: big-endian/little-endian, including header/not including header
+□ Verification: CRC16/32, checksum, HMAC position
+□ Draw the state machine: Connect → Auth → Ready → Request/Response → Close
+□ Tools: Wireshark custom dissector draft / ImHex / 010 Editor template / Kaitai Struct
 ```
 
-### Phase 3 — 序列化与加密
+### Phase 3 — Serialization and Encryption
 
 ```text
-□ Protobuf：.proto 恢复（blackboxprotobuf / pbtk / protoc --decode_raw）
+□ Protobuf: .proto restoration (blackboxprotobuf / pbtk / protoc --decode_raw)
 □ gRPC：HTTP/2 headers + protobuf body
-□ 加密：找密钥派生（客户端 so/dll/JS）→ 联合 ida-reverse / js-reverse / apk-reverse
-□ 重放：仅在授权 scope 内；先无害字段再敏感操作
+□ Encryption: Find key derivation (client so/dll/JS) → Combined ida-reverse / js-reverse / apk-reverse
+□ Replay: Only within the authorized scope; non-sensitive fields first, then sensitive operations
 ```
 
-### Phase 4 — 产物
+### Phase 4 — Products
 
 ```text
-MUST 产出：
-- 消息类型表（name / opcode / fields）
-- 至少 1 条可复现的解码命令或脚本
-- Evidence：原始 hex 摘录 + 解码结果（脱敏）
+MUST Output:
+- Message type table (name / opcode / fields)
+- At least one reproducible decoding command or script
+- Evidence: Original hex excerpt + decoded result (anonymized)
 ```
 
-## 工具链
+## Toolchain
 
-| 工具 | 必需 | 用途 | 自举 |
+| Tool | Essential | Purpose | Bootstrap |
 |------|------|------|------|
-| tshark / Wireshark | 强烈建议 | PCAP 解析 | 手动 / winget |
-| Python3 | 是 | 解码脚本 | 系统 |
-| blackboxprotobuf | 可选 | 未知 protobuf | pip |
-| ImHex / 010 | 可选 | 结构模板 | 手动 |
-| IDA / r2 / Ghidra | 按需 | 客户端序列化函数 | 见对应 skill |
+| tshark / Wireshark | Strongly Recommended | PCAP Analysis | Manual / winget |
+| Python3 | is | decoding script | system |
+| blackboxprotobuf | Optional | Unknown protobuf | pip |
+| ImHex / 010 | Optional | Structure Template | Manual |
+| IDA / r2 / Ghidra | As needed | Client-side serialization functions | See corresponding skill |
 
-## 参考
+## References
 
-- `references/protocol-workflow.md` — 帧布局与 Protobuf 速查
-- 相关：`../ida-reverse/` `../js-reverse/` `../firmware-pentest/` `../pentest-tools/`
+- `references/protocol-workflow.md` — Frame Layout and Protobuf Quick Reference
+- Related: `../ida-reverse/` `../js-reverse/` `../firmware-pentest/` `../pentest-tools/`
 
-## 路由上下文
+## Routing Context
 
-**上游**: `MASTER-ROUTING` R21 · `routing.md`  
-**下游**: 需客户端算法 → `ida-reverse`/`js-reverse`；需利用重放 → `pentest-tools`/`api-security`  
-**同级**: `malware-analysis`（C2 协议）、`digital-forensics`（流量取证）
+**Upstream**: `MASTER-ROUTING` R21 · `routing.md`
+**Downstream**: Requires client-side algorithm → `ida-reverse`/`js-reverse`; Requires replay → `pentest-tools`/`api-security`
+**Same level**: `malware-analysis` (C2 protocol), `digital-forensics` (traffic forensics)
 
-## 任务完成自检
+## Task Completion Self-Check
 
-- [ ] 是否还原了消息布局或状态机（而非只贴 hex）？
-- [ ] 是否有可复现解码命令？
-- [ ] 是否遵守 scope / 脱敏？
-- [ ] 是否回写 field-journal / 报告 Checklist？
+- [ ] Has the message layout or state machine been restored (rather than just pasting hex)?
+- [ ] Is there a reproducible decoding command?
+- [ ] Are the scope / desensitization being followed?
+- [ ] Whether to write back to the field-journal / report Checklist?

@@ -1,9 +1,9 @@
-# SSO 流清单
+# SSO flow list
 
-- [ ] redirect_uri 白名单精确性  
-- [ ] state / nonce  
-- [ ] PKCE（公共客户端）  
-- [ ] 签名算法与密钥管理  
-- [ ] audience / issuer 校验  
-- [ ] 登出与会话撤销  
-- [ ] 账户链接逻辑  
+- [ ] redirect_uri whitelist accuracy
+- [ ] state / nonce
+- [ ] PKCE (Public Client)
+- [ ] Signature algorithm and key management
+- [ ] audience / issuer verification
+- [ ] Logout and session revocation
+- [ ] Account link logic

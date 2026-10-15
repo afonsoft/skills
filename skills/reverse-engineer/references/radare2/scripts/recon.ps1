@@ -9,7 +9,7 @@
     [switch]$RunAnalysis
 )
 
-# 强制当前脚本使用 UTF-8 输出，尽量减少中文标题乱码。
+# Force the current script to output in UTF-8, minimizing garbled Chinese titles as much as possible.
 [Console]::InputEncoding = [System.Text.UTF8Encoding]::new($false)
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
@@ -47,7 +47,7 @@ function Write-Section {
     [string]$Title
     )
 
-    # 用固定分段标题，方便人看，也方便后续 grep。
+    # Use fixed section headings, making it easier for people to read and also easier to grep later.
     ""
     "=== $Title ==="
 }
@@ -58,7 +58,7 @@ if ($RunAnalysis) {
     $r2 = Get-RequiredToolSpec -Name 'r2'
 }
 
-# 将输入路径规范化成绝对路径，避免 r2/rabin2 在相对路径下歧义解析。
+# Normalize the input path into an absolute path to avoid ambiguous parsing by r2/rabin2 under relative paths.
 $resolvedPath = Resolve-Path -LiteralPath $TargetPath
 $target = $resolvedPath.Path
 

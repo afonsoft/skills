@@ -5,7 +5,7 @@ This document records which community concerns can be addressed in-repository an
 | Issue | Assessment | Repository action |
 |---|---|---|
 | #21, #86 | AI safety refusal for a particular target | Added authorization-first and defensive-use guidance; this cannot override a client safety policy. |
-| #44, #61 | Installation and usage questions | Added `QUICKSTART_zh.md` and linked it from both READMEs. |
+| #44, #61 | Installation and usage questions | Added `QUICKSTART.md` and linked it from both READMEs. |
 | #47 | Codex/plugin integration request | Added the optional `plugins/reverse-skill/` adapter; the routing core remains client-neutral. |
 | #51 | Prefer uv over pip | Added correct guidance for `uv tool install` and `uv pip` without unsafe mechanical replacement. Bootstrap still uses pinned pipx. |
 | #58 | Antivirus alert | Superseded by the evidence-backed review in `docs/SECURITY-REVIEW-2026-09-03.md` and Issue #125. |

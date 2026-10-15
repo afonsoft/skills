@@ -5,51 +5,51 @@ description: Use for authorized email security review including phishing analysi
 
 # Email Security & Phishing Analysis
 
-## ACTION REQUIRED（读完后立刻执行）
+## ACTION REQUIRED (execute immediately after reading)
 
-1. `NOW`: 确认授权（分析样本邮件 / 租户配置评审）
-2. `NOW`: 不向真实用户二次投递恶意样本
-3. `ACT`: 头认证 → 内容/URL → 附件沙箱 → 租户控制面建议
+1. `NOW`: Confirm authorization (analyze sample emails/tenant configuration review)
+2. `NOW`: Do not re-deliver malicious samples to real users
+3. `ACT`: Header Authentication → Content/URL → Attachment Sandbox → Tenant Control Plane Recommendations
 
-## 适用场景
+## Applicable scenarios
 
-- 钓鱼邮件拆解与 IOC
-- SPF/DKIM/DMARC 配置评估
-- BEC 商务邮件欺诈模式
-- OAuth 应用钓鱼 / 邮箱令牌滥用（联合 llm/cloud 身份）
-- 安全意识演练设计（授权）
+- Phishing email disassembly and IOC
+- SPF/DKIM/DMARC configuration evaluation
+- BEC Business Email Fraud Pattern
+- OAuth App Phishing/Mailbox Token Abuse (Federated llm/cloud Identity)
+- Security awareness drill design (authorized)
 
-## 工作流
+## Workflow
 
 ```text
-□ 完整原始头：Received 链、From/Return-Path 一致性
-□ SPF/DKIM/DMARC 对齐结果
-□ URL 沙箱与附件静态（联合 malware-analysis）
-□ 仿冒品牌与回复地址差异
-□ 租户：反钓鱼策略、外部标记、MFA、OAuth app 同意
+□ Complete original header: Received chain, From/Return-Path consistency
+□ SPF/DKIM/DMARC alignment result
+□ URL sandbox and attachment static (joint malware-analysis)
+□ Differences in counterfeit brands and reply addresses
+□ Tenant: Anti-phishing policy, external tagging, MFA, OAuth app consent
 ```
 
-## 工具链
+## Toolchain
 
-| 工具 | 用途 |
+| Tools | Purpose |
 |------|------|
-| 邮件客户端「查看源」 | 头 |
-| dig/nslookup | SPF/DMARC 记录 |
-| urlscan / 沙箱 | 链接与附件 |
-| 租户管理中心 | 策略 |
+| Email client "View Source" | Header |
+| dig/nslookup | SPF/DMARC record |
+| urlscan/sandbox | links and attachments |
+| Tenant Management Center | Strategy |
 
-## 参考
+## Reference
 
 - `references/email-auth-checklist.md`
-- `../malware-analysis/` `../attack-chain/`（钓鱼阶段） `../windows-ad/`（令牌）
+- `../malware-analysis/` `../attack-chain/` (phishing stage) `../windows-ad/` (token)
 
-## 路由上下文
+## Routing context
 
-**上游**: MASTER R36  
-**MUST NOT**: 未授权对第三方域群发测试钓鱼
+**Upstream**: MASTER R36
+**MUST NOT**: Unauthorized mass testing of phishing for third-party domains
 
-## 任务完成自检
+## Task completion self-check
 
-- [ ] 头认证结论是否完整？
-- [ ] IOC 是否可检测化（联合 threat-hunting）？
+- [ ] Is the header authentication conclusion complete?
+- [ ] Is the IOC detectable (in conjunction with threat-hunting)?
 - [ ] Checklist？

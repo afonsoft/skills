@@ -1,6 +1,6 @@
-# 系统架构图
+# System architecture diagram
 
-## 完整行为链流程图
+## Complete behavior chain flow chart
 
 ```mermaid
 flowchart TD
@@ -34,7 +34,7 @@ flowchart TD
     UpdateIndex --> Output([输出最终结果])
 ```
 
-## Skills 模块关系图
+## Skills module relationship diagram
 
 ```mermaid
 flowchart LR
@@ -107,7 +107,7 @@ flowchart LR
     Docs --> Journal
 ```
 
-## Bootstrap 自举流程
+## Bootstrap bootstrapping process
 
 ```mermaid
 flowchart TD
@@ -129,7 +129,7 @@ flowchart TD
     Manual --> Wait([等待用户确认])
 ```
 
-## 渗透测试循环
+## Penetration testing cycle
 
 ```mermaid
 flowchart TD
@@ -151,7 +151,7 @@ flowchart TD
     Done[8. 完成检查] --> Report([生成最终报告])
 ```
 
-## 自动进化机制
+## Automatic evolution mechanism
 
 ```mermaid
 flowchart LR
@@ -170,7 +170,7 @@ flowchart LR
     ReadIdx --> Reuse[复用已有经验<br/>避免重复踩坑]
 ```
 
-## 多平台支持架构
+## Multi-platform support architecture
 
 ```mermaid
 flowchart TD
@@ -204,21 +204,21 @@ flowchart TD
     KaliRules --> Skills
 ```
 
-### 平台选择逻辑
+### Platform selection logic
 
-| 环境 | 使用的规则文件 | 使用的脚本 | 包管理 |
+| Environment | Rule files used | Scripts used | Package management |
 |------|--------------|-----------|--------|
 | Windows | `RULES.md` | `references/scripts/*.ps1` | winget / GitHub Release ZIP |
 | Kali Linux | `kali/RULES-kali.md` | `kali/scripts/*.sh` | apt / pip / npm / GitHub tar.gz |
 
-### Kali 版特点
+### Features of Kali version
 
-- **大量工具预装**：nmap、sqlmap、hashcat、hydra、metasploit、radare2、binwalk、burpsuite 等无需 bootstrap
-- **apt 统一管理**：不需要 winget、不需要手动解压 ZIP
-- **bash 原生**：脚本更简洁，无 PowerShell 依赖
-- **路径规范**：`/usr/bin/`、`/opt/`、`~/tools/`，无盘符和空格问题
+- **A large number of tools pre-installed**: nmap, sqlmap, hashcat, hydra, metasploit, radare2, binwalk, burpsuite, etc. do not require bootstrap
+- **apt unified management**: No need for winget or manual decompression of ZIP
+- **bash native**: more concise scripts, no PowerShell dependencies
+- **Path specification**: `/usr/bin/`, `/opt/`, `~/tools/`, no drive letter or space issues
 
-## 文件读取时序图
+## File reading timing diagram
 
 ```mermaid
 sequenceDiagram

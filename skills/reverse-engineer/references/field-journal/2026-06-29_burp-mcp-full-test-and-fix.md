@@ -1,51 +1,50 @@
-# 2026-06-29 burp-mcp-full 全量测试与修复
+# 2026-06-29 burp-mcp-full full testing and repair
 
-## 场景分类
-BurpSuite 扩展开发/测试
+## Scene classification
+BurpSuite extension development/testing
 
-## 目标概述
-对 burp-mcp-full 扩展(Burp Suite Professional MCP Full Control, 63 个工具)做全量运行时可用性测试,发现并修复 3 个 bug + 1 个桥接层竞争条件。
+## Goal Overview
+Conducted full runtime usability testing on burp-mcp-full extension (Burp Suite Professional MCP Full Control, 63 tools), found and fixed 3 bugs + 1 bridge layer race condition.
 
-## 完整执行链路
+## Complete execution link
 
-1. 静态验证:检查 Java dispatch 表 / getToolList() / bridge buildToolDefinitions 三处 63 工具一致性
-2. 编译:build.bat 自动化 fat-jar 打包(JDK 21, montoya-api 2025.5, gson 2.11.0, nanohttpd 2.3.1)
-3. 加载:在 Burp Suite Professional 2026.4.2 中加载扩展,确认 [MCP] Server started
-4. 运行时测试:分 5 批通过 node http 客户端直接调用 127.0.0.1:9876:
-   - 第一批:30 个只读/编解码/查询工具(零副作用)
-   - 第二批:网络发送类(send_request / repeater / intruder, 目标 scanme.nmap.org)
-   - 第三批:Intruder 7 变体(attack/async/wordlist/pitchfork/cluster_bomb/battering_ram/with_options, 小范围枚举)
-   - 第四批:Scope/配置/规则/handler/add_issue/compare
-   - 第五批:crawl + proxy_clear
-5. 发现并修复 3 个 bug,回归验证通过
+1. Static verification: Check Java dispatch table / getToolList() / bridge buildToolDefinitions three places 63 tool consistency
+2. Compile: build.bat automated fat-jar packaging (JDK 21, montoya-api 2025.5, gson 2.11.0, nanohttpd 2.3.1)
+3. Loading: Load the extension in Burp Suite Professional 2026.4.2 and confirm [MCP] Server started
+4. Runtime test: directly call 127.0.0.1:9876 through node http client in 5 batches:
+- First batch: 30 read-only/encoding/query tools (zero side effects)
+- The second batch: network sending class (send_request / repeater / intruder, target scanme.nmap.org)
+- The third batch: Intruder 7 variants (attack/async/wordlist/pitchfork/cluster_bomb/battering_ram/with_options, small range enumeration)
+- The fourth batch: Scope/Configuration/Rules/handler/add_issue/compare
+- The fifth batch: crawl + proxy_clear
+5. Found and fixed 3 bugs, and passed the regression verification
 
-## 踩坑记录
+## Trampling on pit records
 
-| 问题 | 原因 | 解决方案 | 耗时 |
+| Problem | Cause | Solution | Time consuming |
 |------|------|---------|------|
-| `scan()` request_count 恒为 0 | AuditConfiguration 不接受种子 URL,代码漏调 addRequest | 从 url 解析 host/port/路径,构造 GET HttpRequest 喂给 activeAudit.addRequest() | 2h(含验证) |
-| `send_to_intruder()` 报 HttpRequest must have an HttpService | 用 HttpRequest.httpRequest(raw) 无 service 重载 | 新增 buildRequestWithService(): 从 Host 头正则解析 host/port/https → HttpService,用 httpRequest(HttpService, raw) 重载 | 20min |
-| `set_upstream_proxy()` 缺参数时空指针 NPE | params.get("proxy_host") 返回 null → .getAsString() NPE | 加判空:if (!params.has("proxy_host")) 返回清晰错误 | 5min |
-| mcp-bridge.js API 异步竞争条件:4 个快速请求第 4 个丢失响应 | stdin close 时 process.exit(0) 杀死未完成的 HTTP 请求 | pending 计数器+stdinClosed 标志 → 所有请求完成后才 exit | 1h(含 mock 测试) |
-| curl HTTP_CODE=000 无法探测端口 | curl 在本机被沙箱禁止 | 改用 node http 模块做探测 | 5min |
-| Montoya API Audit 包路径推测错误 | 基于在线 javadoc 推断 Audit 在 scanner 包下 | javap 反编译真实 montoya-api-2025.5.jar 确认在 scanner.audit 包下 | 30min |
-| 文件编码问题导致 Edit 工具匹配失败 | UTF-8 with BOM 中文内容在终端显示编码错层 | 改用 Python 做替换,指定 utf-8-sig | 10min |
+| `scan()` request_count is always 0 | AuditConfiguration does not accept the seed URL, the code is missing addRequest | Parse the host/port/ path from the url, construct a GET HttpRequest and feed it to activeAudit.addRequest() | 2h (including verification) |
+| `send_to_intruder()` reports HttpRequest must have an HttpService | Use HttpRequest.httpRequest(raw) without service overload | Added buildRequestWithService(): Regularly parse host/port/https from the Host header → HttpService, use httpRequest(HttpService, raw) overload | 20min |
+| `set_upstream_proxy()` Missing parameter space pointer NPE | params.get("proxy_host") returns null → .getAsString() NPE | Add null judgment: if (!params.has("proxy_host")) returns clear error | 5min |
+| mcp-bridge.js API asynchronous race condition: the 4th of 4 fast requests lost response | process.exit(0) kills unfinished HTTP requests when stdin close | pending counter + stdinClosed flag → exit only after all requests are completed | 1h (including mock test) |
+| curl HTTP_CODE=000 cannot detect the port | curl is banned by the sandbox on this machine | Use the node http module for detection instead | 5min |
+| Montoya API Audit package path inference error | Based on online javadoc, it is inferred that Audit is under the scanner package | javap decompiles the real montoya-api-2025.5.jar and confirms that it is under the scanner.audit package | 30min |
+| File encoding problem causes the Edit tool to fail to match | UTF-8 with BOM Chinese content is displayed in the terminal with mis-encoding | Use Python for replacement, specify utf-8-sig | 10min |
 
-## 工具链发现
+## Toolchain discovery
 
-- montoya-api 2025.5 版 Audit 在 `burp.api.montoya.scanner.audit.Audit` (非 scanner.Audit)
-- AuditConfiguration 工厂方法不接受种子 URL,种子必须通过 Audit.addRequest(HttpRequest) 喂入
-- HttpRequest.httpRequest(raw) 无 service 重载对 Repeater 够用,但 Intruder 要求带 HttpService
-- Intruder.sendToIntruder(HttpRequest) 要求 request 必须附加 service
-- api.burpSuite().version() 的 major()/minor()/build() 已在 2025.5 中移除 deprecation→removal,需用 buildNumber()/edition()/toString() 替代
-- send_request 走 http.sendRequest(),不进 proxy history
-- 本机 curl 被沙箱屏蔽,需用 node http 做探测
-- IDA MCP 端口非固定 13337(实例间递增),但 Burp MCP 端口通过系统属性/env 可配,端口固定
+- montoya-api version 2025.5 Audit in `burp.api.montoya.scanner.audit.Audit` (not scanner.Audit)
+- AuditConfiguration factory method does not accept seed URL, the seed must be fed through Audit.addRequest(HttpRequest)
+- HttpRequest.httpRequest(raw) without service overload is enough for Repeater, but Intruder requires HttpService
+- Intruder.sendToIntruder(HttpRequest) requires that request must be appended with service
+- major()/minor()/build() of api.burpSuite().version() has been removed deprecation→removal in 2025.5 and needs to be replaced by buildNumber()/edition()/toString()
+- send_request uses http.sendRequest(), but does not enter proxy history.
+- The local curl is blocked by the sandbox, so you need to use node http for detection.
+- IDA MCP port is not fixed 13337 (incremented between instances), but Burp MCP port is configurable through system properties/env, and the port is fixed
 
-## 关键代码/命令
+## Key code/command
 
-### 全量测试脚本模式
-```javascript
+### Full test script mode```javascript
 const http = require('http');
 function call(tool, params={}, timeoutMs=30000) {
   return new Promise((resolve) => {
@@ -62,8 +61,7 @@ function call(tool, params={}, timeoutMs=30000) {
 }
 ```
 
-### buildRequestWithService (核心修复)
-```java
+### buildRequestWithService (core fix)```java
 private HttpRequest buildRequestWithService(String rawRequest) {
     java.util.regex.Matcher m = java.util.regex.Pattern.compile(
             "(?im)^Host:\\s*([^:\r\n]+)(?::(\\d+))?\\s*$").matcher(rawRequest);
@@ -77,17 +75,15 @@ private HttpRequest buildRequestWithService(String rawRequest) {
 }
 ```
 
-### 桥接层竞争条件修复 (mcp-bridge.js)
-```javascript
+### Bridge layer race condition fix (mcp-bridge.js)```javascript
 let pending = 0;
 let stdinClosed = false;
 rl.on('line', async (line) => { ... pending++; ... finally { pending--; if (stdinClosed && pending === 0) process.exit(0); } });
 rl.on('close', () => { stdinClosed = true; if (pending === 0) process.exit(0); });
 ```
 
-### scan() 种子修复
-```java
-// 从 URL 构造 GET 种子请求后喂给 audit
+### scan() seed repair```java
+// After constructing a GET seed request from the URL, feed it to audit
 java.net.URL u = new java.net.URL(url);
 String host = u.getHost();
 boolean isHttps = "https".equalsIgnoreCase(u.getProtocol());
@@ -100,42 +96,42 @@ HttpRequest seedReq = HttpRequest.httpRequest(svc,
 activeAudit.addRequest(seedReq);
 ```
 
-## 对本包的改进建议
+## Suggestions for improving this package
 
-- 路由矩阵已覆盖 BurpSuite MCP,无需修改
-- `burpsuite-mcp-guide.md` 已追加更新日志(3 个修复 + 桥接层 + 全量验证结果)
-- 工具表已更新 Scanner(scan 新增 mode 参数)和 Intruder(send_to_intruder Host header 要求)
-- 无需新增 bootstrap 条目(编译脚本 build.bat 已自包含)
-- IDA MCP 端口非固定,建议在 MCP 服务管理表中注明
+- The routing matrix has covered BurpSuite MCP, no modification is required
+- `burpsuite-mcp-guide.md` Update log added (3 fixes + bridge layer + full verification results)
+- The tool table has been updated Scanner (scan adds mode parameter) and Intruder (send_to_intruder Host header requirement)
+- No need to add new bootstrap entries (the compilation script build.bat is self-contained)
+- IDA MCP port is not fixed, it is recommended to indicate it in the MCP service management table
 
-## 可复用的模式/脚本片段
+## Reusable patterns/script snippets
 
-- 63 工具全量可用性测试脚本模式(见上方关键代码)。适用于任何 HTTP-based MCP 扩展的回归测试。
-- buildRequestWithService 模式:从 Host 头解析 HttpService。适用于所有 Montoya API 中需要从原始请求构造 HttpRequest + HttpService 的场景。
+- 63 tools full usability testing script mode (see key code above). Suitable for regression testing of any HTTP-based MCP extension.
+- buildRequestWithService mode: parse HttpService from Host header. Applicable to all scenarios in Montoya API where HttpRequest + HttpService need to be constructed from the original request.
 
-## 进化动作
-- [x] 更新了路由矩阵(路由已覆盖,无需修改)
-- [ ] 更新了 tool-index(使用 .template,无需修改)
-- [ ] 更新了 bootstrap-manifest(无新工具)
-- [x] 更新了子 skill 文档(burpsuite-mcp-guide.md 追加更新日志)
-- [x] 新增了 pitfall 记录(本条目)
-- [ ] 无需更新
+## Evolution action
+- [x] Updated routing matrix (routing has been covered, no need to modify)
+- [ ] Updated tool-index (use .template, no modification required)
+- [ ] Updated bootstrap-manifest (no new tools)
+- [x] Updated sub-skill documentation (burpsuite-mcp-guide.md adds update log)
+- [x] Added pitfall record (this entry)
+- [ ] No update required
 
-## 环境信息
+## Environment information
 - OS: Windows 11 Pro for Workstations 10.0.26200
-- 工具版本: JDK 21.0.11+10 / Burp Suite Professional 2026.4.2 (20260402000047704)
-- 目标平台: montoya-api 2025.5 / gson 2.11.0 / nanohttpd 2.3.1
-- 测试目标: scanme.nmap.org (授权测试站点)
+- Tool version: JDK 21.0.11+10 / Burp Suite Professional 2026.4.2 (20260402000047704)
+- Target platform: montoya-api 2025.5 / gson 2.11.0 / nanohttpd 2.3.1
+- Test target: scanme.nmap.org (authorized test site)
 
-## 脱敏要求
-测试目标为公开测试站点 scanme.nmap.org,无需脱敏。不含真实域名/IP/Token/用户名。
+## Desensitization requirements
+The test target is the public test site scanme.nmap.org, no desensitization is required. Does not include real domain name/IP/Token/ user name.
 
-## 索引同步（提交前最后一步）
+## Index synchronization (last step before submission)
 
-写完本日志后，必须同步更新 `_index.md`：
+After writing this log, `_index.md` must be updated simultaneously:
 
-1. 在「按场景分类」对应小节新增一行（含日期、关键词）
-2. 更新「累计统计」的计数与"最近更新"日期
+1. Add a new line (including date, keywords) in the corresponding section of "Classification by Scenario"
+2. Update the count of "Cumulative Statistics" and the "Last Update" date
 
 ---
-<!-- [社区贡献] 完成后询问用户是否 PR 到主仓库。流程见 CONTRIBUTE-BACK.md -->
+<!-- [Community Contribution] After completion, ask the user whether to PR to the main repository. See CONTRIBUTE-BACK.md for the process -->

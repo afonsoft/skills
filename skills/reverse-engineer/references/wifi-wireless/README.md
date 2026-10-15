@@ -5,51 +5,51 @@ description: Use for authorized wireless security assessment including Wi-Fi cap
 
 # Wi-Fi / Wireless Security
 
-## ACTION REQUIRED（读完后立刻执行）
+## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. `NOW`: 读取 precedent-pentest；**无线攻击法律风险高**，必须书面授权与物理范围
-2. `NOW`: scope 写明目标 SSID/BSSID/场地；禁止扫邻居网络
-3. `NEXT`: 确认适配器监听模式能力
-4. `ACT`: 侦察 → 采集 → 分析（实验室优先）
+1. `NOW`: Read precedent-pentest; **Wireless attacks carry high legal risks**, written authorization and physical scope are required
+2. `NOW`: scope specifies the target SSID/BSSID/ site; scanning neighbors' networks is prohibited
+3. `NEXT`: Confirm adapter listening mode capability
+4. `ACT`: Reconnaissance → Collection → Analysis (Laboratory First)
 
-## 适用场景
+## Applicable Scenarios
 
-- 授权 Wi-Fi 安全评估
-- WPA/WPA2 握手采集与离线评估
-- 流氓 AP / 钓鱼热点检测研究
-- 企业无线隔离与门户安全
+- Authorized Wi-Fi Security Assessment
+- WPA/WPA2 Handshake Collection and Offline Evaluation
+- Rogue AP / Phishing Hotspot Detection Research
+- Enterprise Wireless Isolation and Portal Security
 
-## 工作流
+## Workflow
 
 ```text
-□ iwconfig / airmon-ng 进入 monitor（合法环境）
-□ airodump-ng 锁定目标 BSSID 频道
-□ 握手或 PMKID 采集（仅目标）
-□ hashcat/aircrack 离线评估口令策略
-□ 报告：加密类型、隔离、门户绕过、建议
+□ iwconfig / airmon-ng enter monitor (legal environment)
+□ airodump-ng lock target BSSID channel
+□ Handshake or PMKID capture (target only)
+□ hashcat/aircrack Offline Evaluation Password Policy
+□ Report: Encryption Type, Isolation, Portal Bypass, Recommendations
 ```
 
-## 工具链
+## Toolchain
 
-| 工具 | 用途 |
+| Tool | Purpose |
 |------|------|
-| aircrack-ng suite | 采集/评估 |
+| aircrack-ng suite | Collection/Evaluation |
 | hcxdumptool / hcxtools | PMKID |
-| hashcat | 口令评估 |
-| Wireshark | 管理帧分析 |
+| hashcat | Password Evaluation |
+| Wireshark | Management Frame Analysis |
 
-## 参考
+## References
 
 - `references/wireless-lab-rules.md`
-- `../pentest-tools/` `../attack-chain/`（近源章节）
+- `../pentest-tools/` `../attack-chain/` (closely related chapters)
 
-## 路由上下文
+## Routing Context
 
-**上游**: MASTER R29  
-**MUST NOT**: 未授权 deauth、对非目标客户网络操作
+**Upstream**: MASTER R29
+**MUST NOT**: Unauthorized deauth, operations on non-target customer networks
 
-## 任务完成自检
+## Task Completion Self-Check
 
-- [ ] 是否严格锁定目标 BSSID？
-- [ ] 是否在报告中给出加固建议？
-- [ ] Checklist？
+- [ ] Strictly lock onto the target BSSID?
+- [ ] Are reinforcement suggestions provided in the report?
+- [ ] Checklist?
