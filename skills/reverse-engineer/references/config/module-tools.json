@@ -1,0 +1,685 @@
+{
+  "CTF-Sandbox-Orchestrator": {
+    "required": [
+      "bkcrack",
+      "frida",
+      "node",
+      "strings"
+    ],
+    "optional": [
+      "ROPgadget",
+      "angr",
+      "binwalk",
+      "checksec",
+      "curl",
+      "dnSpy",
+      "gdb",
+      "ghidra",
+      "hashcat",
+      "ida",
+      "jadx",
+      "john",
+      "make",
+      "pwndbg",
+      "pwntools",
+      "sqlmap",
+      "volatility",
+      "wireshark",
+      "z3"
+    ]
+  },
+  "api-security": {
+    "required": [
+      "python3"
+    ],
+    "optional": [
+      "ffuf",
+      "proxycat"
+    ]
+  },
+  "apk-reverse": {
+    "required": [
+      "adb",
+      "apksigner",
+      "apktool",
+      "curl",
+      "frida",
+      "frida-ps",
+      "frida-server",
+      "ida",
+      "jadx",
+      "objection",
+      "radare2",
+      "smali",
+      "strings",
+      "zipalign"
+    ],
+    "optional": [
+      "aapt",
+      "docker",
+      "ghidra",
+      "make",
+      "mitmproxy",
+      "mobSF",
+      "nm",
+      "npm",
+      "rabin2"
+    ]
+  },
+  "attack-chain": {
+    "required": [
+      "bloodhound",
+      "certipy",
+      "crackmapexec",
+      "curl",
+      "mimikatz",
+      "nmap",
+      "responder",
+      "sqlmap"
+    ],
+    "optional": [
+      "burpsuite",
+      "chisel",
+      "evil-winrm",
+      "hydra",
+      "ida",
+      "impacket",
+      "make",
+      "netexec",
+      "node",
+      "npm",
+      "pentestswarm",
+      "rubeus"
+    ]
+  },
+  "binary-diff": {
+    "required": [
+      "ida"
+    ],
+    "optional": [
+      "radare2",
+      "strings"
+    ]
+  },
+  "binary-ninja-reverse": {
+    "required": [
+      "strings"
+    ],
+    "optional": [
+      "binaryninja",
+      "ghidra",
+      "ida",
+      "radare2"
+    ]
+  },
+  "browser-automation": {
+    "required": [
+      "agent-browser",
+      "git",
+      "ida",
+      "mitmproxy",
+      "node",
+      "npm",
+      "x64dbg"
+    ],
+    "optional": [
+      "anything-analyzer",
+      "ida64",
+      "jshookmcp",
+      "wireshark"
+    ]
+  },
+  "browser-extension-reverse": {
+    "required": [],
+    "optional": [
+      "frida",
+      "jq",
+      "jshookmcp",
+      "yara"
+    ]
+  },
+  "case-review": {
+    "required": [
+      "python3"
+    ],
+    "optional": []
+  },
+  "cloud-k8s": {
+    "required": [],
+    "optional": [
+      "docker",
+      "nmap",
+      "node"
+    ]
+  },
+  "database-security": {
+    "required": [],
+    "optional": [
+      "sqlmap"
+    ]
+  },
+  "diagram-generator": {
+    "required": [
+      "node"
+    ],
+    "optional": [
+      "git",
+      "make",
+      "npm"
+    ]
+  },
+  "digital-forensics": {
+    "required": [
+      "volatility"
+    ],
+    "optional": [
+      "tshark"
+    ]
+  },
+  "docs-generator": {
+    "required": [
+      "ida",
+      "radare2"
+    ],
+    "optional": [
+      "frida",
+      "jadx",
+      "node"
+    ]
+  },
+  "dotnet-reverse": {
+    "required": [
+      "de4dot",
+      "die",
+      "dnSpy",
+      "ilspycmd",
+      "rubeus",
+      "strings"
+    ],
+    "optional": [
+      "bloodhound",
+      "ida",
+      "make",
+      "r2",
+      "radare2",
+      "screen"
+    ]
+  },
+  "edr-bypass-re": {
+    "required": [
+      "git",
+      "ida",
+      "windbg"
+    ],
+    "optional": [
+      "make",
+      "python3",
+      "radare2"
+    ]
+  },
+  "firmware-pentest": {
+    "required": [
+      "binwalk",
+      "checksec",
+      "docker",
+      "flashrom",
+      "gdb",
+      "ghidra",
+      "git",
+      "ida",
+      "jefferson",
+      "make",
+      "node",
+      "pip3",
+      "pwntools",
+      "python3",
+      "sasquatch",
+      "strings",
+      "unsquashfs",
+      "yara"
+    ],
+    "optional": [
+      "ROPgadget",
+      "curl",
+      "nmap",
+      "openssl",
+      "qemu-system-arm",
+      "qemu-user",
+      "radare2",
+      "ropper",
+      "wget"
+    ]
+  },
+  "ghidra-reverse": {
+    "required": [
+      "ghidra",
+      "ghidra-mcp",
+      "ida"
+    ],
+    "optional": [
+      "frida",
+      "gdb",
+      "radare2",
+      "strings"
+    ]
+  },
+  "go-rust-reverse": {
+    "required": [
+      "ida",
+      "strings"
+    ],
+    "optional": [
+      "frida",
+      "ghidra",
+      "rabin2",
+      "radare2"
+    ]
+  },
+  "hardware-security": {
+    "required": [],
+    "optional": [
+      "binwalk",
+      "flashrom",
+      "ghidra",
+      "screen"
+    ]
+  },
+  "ida-reverse": {
+    "required": [
+      "git",
+      "ida",
+      "idalib-mcp",
+      "idapro",
+      "strings"
+    ],
+    "optional": [
+      "angr",
+      "frida",
+      "make",
+      "r2",
+      "radare2"
+    ]
+  },
+  "js-reverse": {
+    "required": [
+      "anything-analyzer",
+      "jshookmcp",
+      "make",
+      "node"
+    ],
+    "optional": [
+      "radare2",
+      "strings"
+    ]
+  },
+  "llm-security": {
+    "required": [
+      "make"
+    ],
+    "optional": [
+      "curl",
+      "dnSpy",
+      "hydra",
+      "npm"
+    ]
+  },
+  "macos-reverse": {
+    "required": [
+      "frida",
+      "lldb"
+    ],
+    "optional": [
+      "ghidra",
+      "hopper",
+      "ida",
+      "nm"
+    ]
+  },
+  "malware-analysis": {
+    "required": [
+      "ida",
+      "rabin2",
+      "strings",
+      "wireshark",
+      "x64dbg",
+      "yara"
+    ],
+    "optional": [
+      "curl",
+      "die",
+      "dnSpy",
+      "floss",
+      "frida",
+      "frida-server",
+      "ghidra",
+      "git",
+      "ida64",
+      "radare2",
+      "screen",
+      "snort",
+      "windbg"
+    ]
+  },
+  "mobile-reverse": {
+    "required": [
+      "apktool",
+      "frida",
+      "frida-server",
+      "hopper",
+      "objection",
+      "smali"
+    ],
+    "optional": [
+      "adb",
+      "baksmali",
+      "cutter",
+      "dex2jar",
+      "frida-ps",
+      "ghidra",
+      "jd-gui",
+      "mitmproxy",
+      "mobSF",
+      "nm",
+      "openssl",
+      "python3",
+      "radare2",
+      "strings",
+      "wireshark"
+    ]
+  },
+  "ot-ics": {
+    "required": [],
+    "optional": [
+      "binwalk",
+      "ghidra",
+      "nmap",
+      "wireshark"
+    ]
+  },
+  "patch-diff-exploit": {
+    "required": [
+      "ghidra",
+      "git",
+      "ida",
+      "radare2"
+    ],
+    "optional": [
+      "binaryninja",
+      "idapro",
+      "make",
+      "r2",
+      "strings",
+      "wget"
+    ]
+  },
+  "pentest-tools": {
+    "required": [
+      "adb",
+      "agent-browser",
+      "apktool",
+      "bloodhound",
+      "burpsuite",
+      "certipy",
+      "chisel",
+      "crackmapexec",
+      "curl",
+      "docker",
+      "evil-winrm",
+      "ffuf",
+      "frida",
+      "ghidra",
+      "git",
+      "gobuster",
+      "hashcat",
+      "hydra",
+      "ida",
+      "impacket",
+      "jadx",
+      "john",
+      "jq",
+      "jshookmcp",
+      "ligolo",
+      "make",
+      "masscan",
+      "mimikatz",
+      "mitmproxy",
+      "nc",
+      "nikto",
+      "nmap",
+      "node",
+      "npm",
+      "objection",
+      "openssl",
+      "pentestswarm",
+      "proxycat",
+      "proxychains",
+      "python3",
+      "radare2",
+      "responder",
+      "rubeus",
+      "screen",
+      "seclists",
+      "smbclient",
+      "socat",
+      "sqlmap",
+      "strings",
+      "tcpdump",
+      "wfuzz",
+      "wget",
+      "wireshark",
+      "zaproxy"
+    ],
+    "optional": [
+      "anything-analyzer",
+      "binwalk",
+      "die",
+      "drozer",
+      "enum4linux",
+      "hopper",
+      "mobSF",
+      "netexec",
+      "nm",
+      "proxychains4",
+      "pwntools",
+      "reqable-mcp",
+      "smali",
+      "snort",
+      "sqlite3",
+      "strace",
+      "suricata",
+      "volatility",
+      "yara",
+      "zeek"
+    ]
+  },
+  "protocol-reverse": {
+    "required": [
+      "tshark",
+      "wireshark"
+    ],
+    "optional": [
+      "ghidra",
+      "ida",
+      "protoc",
+      "python3",
+      "r2"
+    ]
+  },
+  "pwn-chain": {
+    "required": [
+      "ROPgadget",
+      "checksec",
+      "gdb",
+      "gef",
+      "git",
+      "pwndbg",
+      "pwntools",
+      "ropper"
+    ],
+    "optional": [
+      "binwalk",
+      "nc",
+      "python3",
+      "radare2",
+      "readelf",
+      "strings"
+    ]
+  },
+  "radare2": {
+    "required": [
+      "curl",
+      "ida",
+      "r2",
+      "rabin2",
+      "radare2"
+    ],
+    "optional": [
+      "dnSpy",
+      "frida",
+      "gdb",
+      "strings"
+    ]
+  },
+  "radio-sdr": {
+    "required": [],
+    "optional": [
+      "hackrf",
+      "urh"
+    ]
+  },
+  "reverse-engineering": {
+    "required": [
+      "adb",
+      "angr",
+      "apktool",
+      "binaryninja",
+      "binwalk",
+      "bkcrack",
+      "capstone",
+      "checksec",
+      "curl",
+      "cutter",
+      "de4dot",
+      "die",
+      "dnSpy",
+      "docker",
+      "frida",
+      "frida-server",
+      "gcc",
+      "gdb",
+      "gef",
+      "ghidra",
+      "git",
+      "hashcat",
+      "ida",
+      "jadx",
+      "john",
+      "keystone",
+      "lldb",
+      "ltrace",
+      "make",
+      "nm",
+      "node",
+      "npm",
+      "objdump",
+      "openocd",
+      "openssl",
+      "pwndbg",
+      "pwntools",
+      "python3",
+      "r2",
+      "rabin2",
+      "radare2",
+      "readelf",
+      "rizin",
+      "smali",
+      "strace",
+      "strings",
+      "unicorn",
+      "upx",
+      "windbg",
+      "x64dbg",
+      "yara",
+      "z3"
+    ],
+    "optional": [
+      "aapt",
+      "baksmali",
+      "binutils",
+      "capa",
+      "cfr",
+      "clang",
+      "cmake",
+      "exeinfo",
+      "flashrom",
+      "floss",
+      "ida64",
+      "jd-gui",
+      "jefferson",
+      "nc",
+      "rubeus",
+      "snort",
+      "suricata",
+      "tcpdump",
+      "unsquashfs",
+      "volatility",
+      "volatility3",
+      "wget",
+      "wireshark"
+    ]
+  },
+  "supply-chain-security": {
+    "required": [
+      "docker",
+      "npm"
+    ],
+    "optional": [
+      "curl",
+      "git",
+      "jq",
+      "node"
+    ]
+  },
+  "thick-client": {
+    "required": [],
+    "optional": [
+      "dnSpy",
+      "frida",
+      "ghidra",
+      "ida",
+      "mitmproxy"
+    ]
+  },
+  "threat-hunting": {
+    "required": [
+      "yara"
+    ],
+    "optional": []
+  },
+  "threat-intelligence": {
+    "required": [
+      "xquik-mcp"
+    ],
+    "optional": []
+  },
+  "wifi-wireless": {
+    "required": [],
+    "optional": [
+      "hashcat",
+      "wireshark"
+    ]
+  },
+  "windows-ad": {
+    "required": [
+      "bloodhound",
+      "certipy",
+      "impacket"
+    ],
+    "optional": [
+      "mimikatz",
+      "netexec",
+      "responder",
+      "rubeus"
+    ]
+  }
+}

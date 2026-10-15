@@ -1,23 +1,23 @@
-# 2026-08-08 开放 PR 价值评估与合并报告
+# 2026-08-08 Open PR value evaluation and merger report
 
-## 结论
+## in conclusion
 
-基于最新 `origin/main` 审查 8 个开放 PR。本轮合并 #59、#19、#22、#29；暂缓 #43、#37、#36、#23。合并后的 smoke 与 routing coherence 检查均通过。
+8 open PRs based on latest `origin/main` review. This round merges #59, #19, #22, #29; suspends #43, #37, #36, #23. The merged smoke and routing coherence checks both pass.
 
-## 评估结果
+## Evaluation results
 
-| PR | 价值 | 风险/状态 | 决策 |
+| PR | Value | Risk/Status | Decision |
 |---|---|---|---|
-| #59 | Rust cdylib 差分复现方法完整，可复用性高 | 仅 journal 与索引，无可执行代码 | 合并 |
-| #19 | Windows 24H2 工具链兼容经验覆盖广 | 仅 journal 与索引 | 合并 |
-| #22 | Electron/Bytenode/更新链分析方法完整 | 仅 journal 与索引 | 合并 |
-| #29 | Next.js 双 API serializer 与契约重建经验完整 | 仅 journal 与索引 | 合并 |
-| #43 | 路由单一事实源、回归基准、CI 与版本固定价值很高；客户端接入只能作为可选适配层 | 38 文件、与主线 4 个关键文件冲突，原提案含 OpenCode 专用配置 | 暂缓，建议 rebase 后专项审查；不得让核心绑定 OpenCode |
-| #37 | evidence graph/case review 能补齐交付审计 | 与主线路由校验和文档冲突 | 暂缓，建议 rebase 后运行其单测 |
-| #36 | MCP/自举安全加固方向正确 | 6 个关键文件冲突，部分能力已由近期主线吸收 | 暂缓，做差分去重 |
-| #23 | Bash parity 与展示材料有生态价值 | 92 文件、展示资产多、2 个脚本冲突 | 暂缓，建议拆分 PR |
+| #59 | Rust cdylib differential reproduction method is complete and highly reusable | Only journal and index, no executable code | Merge |
+| #19 | Windows 24H2 tool chain compatibility experience covers wide | journal and index only | merge |
+| #22 | Electron/Bytenode/ update chain analysis method complete | only journal and index | merge |
+| #29 | Next.js dual API serializer and contract reconstruction experience complete | journal and index only | merge |
+| #43 | Routing single source of truth, regression baseline, CI and version fixation are of high value; client access can only be used as an optional adaptation layer | 38 files, conflicts with 4 key files of the main line, the original proposal contains OpenCode-specific configuration | Suspended, special review after rebase is recommended; the core must not be bound to OpenCode |
+| #37 | evidence graph/case review can complete the delivery audit | conflicts with the main line routing checksum document | suspended, it is recommended to rebase and then run its single test |
+| #36 | MCP/bootstrap security reinforcement is in the right direction | 6 key files conflict, some capabilities have been absorbed by the recent mainline | Suspended, do differential deduplication |
+| #23 | Bash parity and display materials have ecological value | 92 files, many display assets, 2 script conflicts | Suspended, recommended to split PR |
 
-## 决策图
+## Decision diagram
 
 ```mermaid
 flowchart TD
@@ -30,15 +30,15 @@ flowchart TD
     F -->|否| H[隔离运行测试后再决定]
 ```
 
-## 验证
+## verify
 
-- `references/scripts/smoke.ps1`: ALL PASS（9 个脚本解析、8 个路由用例）。
+- `references/scripts/smoke.ps1`: ALL PASS (9 script parsing, 8 routing use cases).
 - `references/scripts/verify-routing-coherence.ps1`: ALL ROUTING COHERENCE CHECKS PASSED。
-- 用户原有未提交 journal 在同步和合并期间通过 stash 隔离保存并恢复。
+- The user's original uncommitted journal is saved and restored through stash isolation during synchronization and merging.
 
-## 后续建议
+## Follow-up suggestions
 
-1. 优先让 #43 rebase 到当前 `main`，重点复核 JSON 路由等价性、供应链 pin gate 与跨平台路径。
-2. 让 #37 单独 rebase，并运行 `references/case-review/tests/test_review_case.py`。
-3. 对 #36 与已合并的安全修复逐文件比较，只提取尚未覆盖的测试或边界处理。
-4. 将 #23 拆成 Bash parity、插件元数据、演示资产三个独立 PR。
+1. Prioritize rebase #43 to the current `main`, focusing on reviewing JSON routing equivalence, supply chain pin gate and cross-platform paths.
+2. Let #37 rebase alone and run `references/case-review/tests/test_review_case.py`.
+3. File-by-file comparison of #36 with merged security fixes, extracting only tests or boundary treatments not yet covered.
+4. Split #23 into three independent PRs: Bash parity, plug-in metadata, and demo assets.

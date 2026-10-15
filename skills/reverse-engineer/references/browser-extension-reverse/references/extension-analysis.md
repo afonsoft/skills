@@ -1,10 +1,10 @@
-# 扩展分析要点
+#Extended analysis points
 
-| 字段 | 风险信号 |
+| Fields | Risk Signals |
 |------|----------|
-| host_permissions `<all_urls>` | 可读写任意站 |
-| webRequestBlocking | 中间人式改写 |
-| nativeMessaging | 出浏览器到本机 |
-| externally_connectable | 网页驱动扩展 |
+| host_permissions `<all_urls>` | Read and write to any station |
+| webRequestBlocking | Middleman rewriting |
+| nativeMessaging | Out of browser to local machine |
+| externally_connectable | Web driver extension |
 
-MV3：关注 service_worker 生命周期与 declarativeNetRequest。
+MV3: Pay attention to the service_worker life cycle and declarativeNetRequest.

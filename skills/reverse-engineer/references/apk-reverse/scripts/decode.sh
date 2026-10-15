@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# decode.sh — APK 解包（jadx 反编译 + apktool 解包）
-# 等价于 Windows 版的 decode.ps1
+# decode.sh — APK unpacking (jadx decompilation + apktool unpacking)
+# Equivalent to the Windows version of decode.ps1
 #
-# 用法:
+# usage:
 #   bash decode.sh <apk_path> [--name <task_name>] [--out <output_dir>]
 #                              [--skip-jadx] [--skip-apktool] [--clean]
 
@@ -11,7 +11,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 KALI_BOOTSTRAP="$(cd "$SCRIPT_DIR/../../../kali/scripts" 2>/dev/null && pwd)/bootstrap-reverse.sh"
 
-# ─── 参数解析 ──────────────────────────────────────────────────────────────────────
+# ─── Parameter analysis ────────────────────────────────────────────────────────────────
 
 APK_PATH=""
 TASK_NAME=""
@@ -42,7 +42,7 @@ if [[ ! -f "$APK_PATH" ]]; then
     exit 1
 fi
 
-# ─── 工具检测与自动安装 ─────────────────────────────────────────────────────────────
+# ───Tool detection and automatic installation ─────────────────────────────────────────────────────────
 
 ensure_tool() {
     local name="$1"
@@ -63,7 +63,7 @@ ensure_tool() {
 [[ "$SKIP_JADX" != "true" ]] && ensure_tool "jadx"
 [[ "$SKIP_APKTOOL" != "true" ]] && ensure_tool "apktool"
 
-# ─── 路径计算 ──────────────────────────────────────────────────────────────────────
+# ─── Path calculation ────────────────────────────────────────────────────────────────
 
 APK_BASENAME=$(basename "$APK_PATH" .apk | sed 's/[^A-Za-z0-9._-]/_/g')
 TASK_NAME="${TASK_NAME:-$APK_BASENAME}"
@@ -78,25 +78,25 @@ fi
 
 mkdir -p "$TASK_ROOT"
 
-# ─── jadx 反编译 ──────────────────────────────────────────────────────────────────
+# ───jadx decompile ──────────────────────────────────────────────────────────────
 
 JADX_EXIT=0
 if [[ "$SKIP_JADX" != "true" ]]; then
     rm -rf "$JADX_OUT"
-    echo "=== jadx 反编译 ==="
+    echo "=== jadx decompilation ==="
     jadx -d "$JADX_OUT" "$APK_PATH" || JADX_EXIT=$?
 fi
 
-# ─── apktool 解包 ─────────────────────────────────────────────────────────────────
+# ─── apktool unpack ───────────────────────────────────────────────────────────
 
 APKTOOL_EXIT=0
 if [[ "$SKIP_APKTOOL" != "true" ]]; then
     rm -rf "$APKTOOL_OUT"
-    echo "=== apktool 解包 ==="
+    echo "=== apktool unpacking ==="
     apktool d "$APK_PATH" -o "$APKTOOL_OUT" -f || APKTOOL_EXIT=$?
 fi
 
-# ─── 统计输出 ──────────────────────────────────────────────────────────────────────
+# ─── Statistical output ───────────────────────────────────────────────────────────────
 
 PACKAGE=""
 if [[ -f "$APKTOOL_OUT/AndroidManifest.xml" ]]; then
@@ -114,7 +114,7 @@ SO_COUNT=0
 
 echo ""
 echo "═══════════════════════════════════════════"
-echo "  APK 解包完成"
+echo "APK unpacking completed"
 echo "═══════════════════════════════════════════"
 echo "  task_root=$TASK_ROOT"
 echo "  jadx_out=$JADX_OUT"

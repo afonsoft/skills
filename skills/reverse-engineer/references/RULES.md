@@ -53,37 +53,37 @@ Core scripts MUST NOT write client-global configuration. Optional adapters belon
 
 ---
 
-## Trigger Keywords (ANY match triggers routing) — Bilingual / 中英双语
+## Trigger Keywords (ANY match triggers routing) — Bilingual / Chinese and English
 
-- APK, Android reverse, decompile, 反编译, smali, jadx, apktool, Frida, Hook
-- binary analysis, 二进制分析, IDA, radare2, r2, disassembly, 反汇编, reverse engineering, 逆向工程, RE, source recovery, 还原源码
-- frontend signature, 前端签名, encrypted params, 加密参数, JS reverse, JS 逆向, jshookmcp, CDP, SourceMap
-- packet capture, 抓包, HTTP capture, HTTP 捕获, request replay, 请求重放, anything-analyzer
-- CTF, Pwn, web pentest, Web 渗透, exploit, 漏洞利用, privilege escalation, 提权
-- MCP reverse tools, idalib-mcp, repackage, 重打包, certificate pinning, 证书校验, root detection, 反调试
+- APK, Android reverse, decompile, decompile, smali, jadx, apktool, Frida, Hook
+- binary analysis, binary analysis, IDA, radare2, r2, disassembly, disassembly, reverse engineering, reverse engineering, RE, source recovery, restore source code
+- frontend signature, front-end signature, encrypted params, encryption parameters, JS reverse, JS reverse, jshookmcp, CDP, SourceMap
+- packet capture, packet capture, HTTP capture, HTTP capture, request replay, request replay, anything-analyzer
+- CTF, Pwn, web pentest, Web penetration, exploit, vulnerability exploitation, privilege escalation, privilege escalation
+- MCP reverse tools, idalib-mcp, repackage, certificate pinning, certificate verification, root detection, anti-debugging
 - .so analysis, native hook, JNI
-- penetration testing, 渗透测试, red team, 红队, security assessment, 安全评估, blue team, 蓝队, incident response, 应急响应
-- report/docs generation in security context, 安全上下文中的报告/文档, writeup, pentest report, 渗透报告
-- security browser automation, 安全测试浏览器自动化, Playwright pentest, agent-browser recon
-- N-day, patch diff, 补丁差分, CVE reproduction, 1day, ghidriff, Diaphora
-- pwn, stack overflow, 栈溢出, heap overflow, ROP, ret2libc, pwntools, GEF, pwndbg, kernel pwn
-- firmware, 固件, IoT, binwalk, unblob, squashfs, EMBA, UART, JTAG, embedded exploitation
-- EDR bypass, EDR 绕过, AV bypass, 免杀, unhook, direct syscall, indirect syscall, AMSI patch, ETW patch
-- port scan, 端口扫描, Nmap, vulnerability scan, 漏洞扫描, Nuclei, SQL injection, SQL 注入, SQLMap, directory brute force, 目录爆破, FFUF, password cracking, 密码破解, Hashcat, Hydra, Metasploit, Impacket
-- SRC, Bug Bounty, 众测, WAF bypass, 绕过 WAF, IDOR, 越权
-- BurpSuite, Burp MCP, Intruder, Repeater, Collaborator, proxy history, 代理历史
-- LLM security, LLM 安全, AI security testing, Prompt injection, Prompt 注入, jailbreak, 越狱, Agent security, Agent 安全, agent skills security, Agentic Skills Top 10, skill supply chain, 恶意 skill, MCP supply chain
+- penetration testing, penetration testing, red team, red team, security assessment, security assessment, blue team, blue team, incident response, emergency response
+- report/docs generation in security context, report/documentation in security context, writeup, pentest report, penetration report
+- security browser automation, security test browser automation, Playwright pentest, agent-browser recon
+- N-day, patch diff, CVE reproduction, 1day, ghidriff, Diaphora
+- pwn, stack overflow, stack overflow, heap overflow, ROP, ret2libc, pwntools, GEF, pwndbg, kernel pwn
+- firmware, firmware, IoT, binwalk, unblob, squashfs, EMBA, UART, JTAG, embedded exploitation
+- EDR bypass, EDR bypass, AV bypass, anti-virus, unhook, direct syscall, indirect syscall, AMSI patch, ETW patch
+- port scan, port scan, Nmap, vulnerability scan, vulnerability scan, Nuclei, SQL injection, SQL injection, SQLMap, directory brute force, directory blasting, FFUF, password cracking, password cracking, Hashcat, Hydra, Metasploit, Impacket
+- SRC, Bug Bounty, public testing, WAF bypass, bypass WAF, IDOR, override
+- BurpSuite, Burp MCP, Intruder, Repeater, Collaborator, proxy history, proxy history
+- LLM security, LLM security, AI security testing, Prompt injection, Prompt injection, jailbreak, jailbreak, Agent security, Agent security, agent skills security, Agentic Skills Top 10, skill supply chain, malicious skill, MCP supply chain
 - OWASP LLM Top 10, ASI Top 10, Agentic AI, tool abuse, memory poisoning, garak, PyRIT, promptfoo
-- API security, API 安全, GraphQL, JWT attack, JWT 攻击, supply chain security, 供应链安全
-- iOS reverse, iOS 逆向, Objection, YARA, malware analysis, 恶意软件分析, AI decompilation, AI 反编译
-- internal network, 内网渗透, lateral movement, 横向移动, domain penetration, 域渗透, AD attack, BloodHound
-- privilege escalation, 权限提升, credential extraction, 凭证提取, Mimikatz, Kerberoasting, DCSync
-- C2, persistence, 持久化, Cobalt Strike, Sliver, Havoc
-- game reverse, 游戏逆向, anti-cheat, 反作弊, Unity, IL2CPP, Cheat Engine
-- .NET reverse, C# 逆向, dnSpy, dnSpyEx, de4dot, ConfuserEx, SmartAssembly, .NET Reactor, dnlib, IL patch, SharpHound, Rubeus
-- symbol migration, 符号迁移, bindiff, cross-version, PDB missing
-- OSINT, open source intelligence, threat intelligence, CTI, public X/Twitter IOC enrichment, 开源情报, 威胁情报, 公开 X/Twitter IOC 补充
-- security diagram, 安全图表, attack path diagram, 攻击路径图, security architecture, 安全架构图 — trigger `diagram-generator/`
+- API security, API security, GraphQL, JWT attack, JWT attack, supply chain security, supply chain security
+- iOS reverse, iOS reverse engineering, Objection, YARA, malware analysis, malware analysis, AI decompilation, AI decompilation
+- internal network, intranet penetration, lateral movement, domain penetration, domain penetration, AD attack, BloodHound
+- privilege escalation, credential extraction, Mimikatz, Kerberoasting, DCSync
+- C2, persistence, persistence, Cobalt Strike, Sliver, Havoc
+- game reverse, game reverse, anti-cheat, anti-cheat, Unity, IL2CPP, Cheat Engine
+- .NET reverse, C# reverse engineering, dnSpy, dnSpyEx, de4dot, ConfuserEx, SmartAssembly, .NET Reactor, dnlib, IL patch, SharpHound, Rubeus
+- symbol migration, symbol migration, bindiff, cross-version, PDB missing
+- OSINT, open source intelligence, threat intelligence, CTI, public X/Twitter IOC enrichment, open source intelligence, threat intelligence, public X/Twitter IOC enrichment
+- security diagram, security diagram, attack path diagram, attack path diagram, security architecture, security architecture diagram — trigger `diagram-generator/`
 
 ---
 
@@ -377,20 +377,20 @@ bash <SKILL_ROOT>/kali/scripts/refresh-tool-index.sh
 
 ### Trigger Keywords (Bilingual)
 
-- APK, Android reverse, 反编译, jadx, apktool, Frida, Hook
-- binary analysis, 二进制分析, IDA, radare2, r2, disassembly, 反汇编, reverse engineering, 逆向工程
-- frontend signature, 前端签名, JS reverse, JS 逆向, jshookmcp, CDP, SourceMap
-- packet capture, 抓包, HTTP capture, anything-analyzer
-- CTF, Pwn, web pentest, Web 渗透, exploit, 漏洞利用, privilege escalation, 提权
-- penetration testing, 渗透测试, red team, 红队, Nmap, Nuclei, SQLMap, FFUF, Hashcat, Metasploit
-- SRC, Bug Bounty, WAF bypass, IDOR, 越权
+- APK, Android reverse, decompile, jadx, apktool, Frida, Hook
+- binary analysis, binary analysis, IDA, radare2, r2, disassembly, disassembly, reverse engineering, reverse engineering
+- frontend signature, JS reverse, JS reverse, jshookmcp, CDP, SourceMap
+- packet capture, packet sniffing, HTTP capture, anything-analyzer
+- CTF, Pwn, web pentest, Web penetration, exploit, vulnerability exploitation, privilege escalation, privilege escalation
+- penetration testing, penetration testing, red team, red team, Nmap, Nuclei, SQLMap, FFUF, Hashcat, Metasploit
+- SRC, Bug Bounty, WAF bypass, IDOR, override
 - BurpSuite, Burp MCP, Intruder, Repeater, Collaborator
 - LLM security, Prompt injection, jailbreak, Agent security, garak, PyRIT
-- EDR bypass, 免杀, AV bypass, direct syscall
+- EDR bypass, evasion, AV bypass, direct syscall
 - firmware, IoT, binwalk, embedded
-- internal network, 内网渗透, lateral movement, domain penetration, BloodHound
-- API security, 供应链安全, supply chain, YARA, malware analysis, 恶意软件分析
-- iOS reverse, 游戏逆向, game reverse, anti-cheat, pwn, ROP, kernel pwn
+- internal network, intranet penetration, lateral movement, domain penetration, BloodHound
+- API security, supply chain security, supply chain, YARA, malware analysis, malware analysis
+- iOS reverse, game reverse, game reverse, anti-cheat, pwn, ROP, kernel pwn
 
 ### Post-Activation Execution (Compact — do NOT re-run first-time setup!)
 

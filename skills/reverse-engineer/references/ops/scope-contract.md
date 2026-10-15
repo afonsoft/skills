@@ -1,19 +1,19 @@
-# 通用 Scope 契约（任务启动硬门槛）
+# Universal Scope contract (hard threshold for task startup)
 
-> **MUST**：任何安全/逆向/渗透任务在 **ACT 之前** 在当前用户分析项目的 `work/<case>/` 落地 `scope.md`。
-> 无 scope → 只允许读文档/路由，**禁止** 对目标主动扫描、Hook、利用。
-> 模板可复制；字段名保持英文键，便于脚本校验。
+> **MUST**: Any security/reverse/penetration tasks land `scope.md` at `work/<case>/` of the current user analysis project before **ACT**.
+> No scope → Only allowed to read documents/routes, **prohibited** from actively scanning, hooking, and exploiting targets.
+> The template can be copied; field names remain in English to facilitate script verification.
 
-## 如何初始化
+## How to initialize
 
 Windows：
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File references\scripts\case-init.ps1 -Hint "<任务一句话>" -CaseName "my-case"
-# 默认产出：当前分析项目的 work/<case>/scope.md 等
-# 从其他目录调用 skill 时显式指定：-ProjectRoot "C:\path\to\analysis-project"
+# Default output: work/<case>/scope.md of the current analysis project
+# When calling a skill from another directory, explicitly specify: -ProjectRoot "C:\path\to\analysis-project"
 
-# 合法本地离线样本：auth granted + offline + explicit sample → ready_for_act=true
+# Legal local offline sample: auth granted + offline + explicit sample → ready_for_act=true
 powershell -NoProfile -ExecutionPolicy Bypass -File references\scripts\case-init.ps1 `
   -Hint "offline apk" -CaseName "my-sample" -Preset offline-sample -Sample ".\app.apk"
 ```
@@ -22,18 +22,18 @@ Linux / macOS / Kali：
 
 ```bash
 bash references/scripts/case-init.sh --hint "<任务一句话>" --case-name "my-case"
-# 默认产出：caller 当前分析项目的 work/<case>/scope.md 等
-# 从其他目录调用时显式指定：--project-root "/path/to/analysis-project"
+# Default output: caller current analysis project's work/<case>/scope.md etc.
+# When calling from other directories, explicitly specify: --project-root "/path/to/analysis-project"
 
-# 合法本地离线样本
+# Legal Local Offline Samples
 bash references/scripts/case-init.sh \
   --hint "offline apk" --case-name "my-sample" \
   --preset offline-sample --sample ./app.apk
 ```
 
-`-PackageRoot` / `--package-root` 保留为兼容参数；新流程应以 `ProjectRoot` / `--project-root` 表示 case artifact 的归属项目。
+`-PackageRoot` / `--package-root` are reserved as compatibility parameters; new processes should use `ProjectRoot` / `--project-root` to represent the case artifact's owning project.
 
-## scope.md 完整模板
+## scope.md complete template
 
 ```markdown
 # Case Scope
@@ -65,9 +65,9 @@ bash references/scripts/case-init.sh \
 ## network_profile
 - mode: offline | lab_only | authorized_target_only | unrestricted_lab
 - notes: |
-    offline = 无对外发包（纯静态/本地样本）
-    lab_only = 仅 lab/VM IP
-    authorized_target_only = 仅 in_scope 资产
+offline = no external outsourcing (pure static/local samples)
+lab_only = only lab/VM IP
+authorized_target_only = only in_scope assets
 - MUST NOT use unrestricted against production without written auth
 
 ## deliverables
@@ -90,28 +90,28 @@ bash references/scripts/case-init.sh \
   - [ ] out_of_scope reviewed
 ```
 
-## 路由挂钩（AI 必须执行）
+## Routing hooks (required for AI)
 
 ```text
 RULES / MASTER-ROUTING / SKILL:
   1) master-route → PRIMARY
-  2) 平台原生 case-init 或手写 scope.md
-  3) auth 未 granted → STOP，只允许补授权材料
-  4) ready_for_act = true → 打开 PRIMARY README.md → ACT
+2) Platform native case-init or handwritten scope.md
+3) auth is not granted → STOP, only additional authorized materials are allowed
+4) ready_for_act = true → open PRIMARY README.md → ACT
 ```
 
-`case-guard -Force` / `case-guard --force` 是兼容参数，**不得**绕过 `auth.status`、合法 scope、network profile 或 `ready_for_act` 硬门。
+`case-guard -Force` / `case-guard --force` are compatible parameters and MUST NOT bypass `auth.status`, legal scope, network profile or `ready_for_act` hard doors.
 
-## network_profile 速查
+## network_profile quick check
 
-| mode | 允许 | 禁止 |
+| mode | allow | disallow |
 |------|------|------|
-| `offline` | 静态分析、本地文件、模拟 | 任意外连、公网 RPC |
-| `lab_only` | lab/CTF 靶机网段 | 生产/未授权 IP |
-| `authorized_target_only` | in_scope 列表 | 列表外资产 |
-| `unrestricted_lab` | 隔离实验网（书面） | 互联网生产 |
+| `offline` | Static analysis, local files, simulation | Any external connection, public network RPC |
+| `lab_only` | lab/CTF target network segment | Production/unauthorized IP |
+| `authorized_target_only` | in_scope list | assets outside the list |
+| `unrestricted_lab` | Isolation Experiment Network (written) | Internet Production |
 
-## 特色
+## feature
 
-- 纯 Markdown，**无数据库**  
-- 与 `tool-index` / bootstrap 正交：scope 管「能不能打」，tool-index 管「用什么打」
+- Pure Markdown, **no database**
+- Orthogonal to `tool-index` / bootstrap: scope controls "whether it can be beaten", tool-index controls "what to use"

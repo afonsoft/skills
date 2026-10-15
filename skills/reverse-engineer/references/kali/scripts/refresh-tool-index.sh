@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# refresh-tool-index.sh — Kali Linux 版工具索引刷新
-# 等价于 Windows 版的 refresh-tool-index.ps1
-# 输出: references/tool-index.md + references/tool-index.json
+# refresh-tool-index.sh — Tool index refresh for Kali Linux
+# Equivalent to refresh-tool-index.ps1 on Windows
+# Output: references/tool-index.md + references/tool-index.json
 
 set -euo pipefail
 
@@ -13,10 +13,10 @@ OUTPUT_JSON="${2:-${SKILL_ROOT}/tool-index.json}"
 
 GENERATED_AT=$(date '+%Y-%m-%d %H:%M:%S %z')
 
-# ─── 生成 Markdown ────────────────────────────────────────────────────────────────
+# ─── Generate Markdown ──────────────────────────────────────────────────────────
 
 {
-    echo "# 逆向工具索引"
+    echo "#Reverse tool index"
     echo ""
     echo "- 扫描时间: $GENERATED_AT"
     echo "- 扫描平台: Kali Linux ($(uname -r))"
@@ -24,14 +24,14 @@ GENERATED_AT=$(date '+%Y-%m-%d %H:%M:%S %z')
     echo "- 说明: 本表由 \`kali/scripts/refresh-tool-index.sh\` 自动生成。"
     echo "- 注意: 对于 jshookmcp 这类 MCP server，\`yes\` 只表示本机具备通过 node/npx 拉起它的条件，不表示它已经在 MCP 配置里注册并启用。"
     echo ""
-    echo "| 工具 | 归属 skill | 作用 | 可用 | 路径 | 版本 | 来源 | 脚本引用 |"
+    echo "| Tools | Attribution to skill | Role | Available | Path | Version | Source | Script reference |"
     echo "|---|---|---|---|---|---|---|---|"
 
     for entry in "${TOOL_CATALOG[@]}"; do
         result=$(resolve_tool "$entry")
         IFS='|' read -r name skill purpose available resolved_path version source <<< "$result"
 
-        # 获取脚本引用
+        # Get script reference
         refs="${SCRIPT_REFS[$name]:-—}"
         refs_display="${refs//,/<br>}"
 
@@ -42,21 +42,21 @@ GENERATED_AT=$(date '+%Y-%m-%d %H:%M:%S %z')
     done
 } > "$OUTPUT_MD"
 
-# ─── 能力状态视图 ──────────────────────────────────────────────────────────────────
+# ───Ability status view─────────────────────────────────────────────────────────────
 
 {
     echo ""
     echo "---"
     echo ""
-    echo "## 能力状态视图 (Capability Status)"
+    echo "## Capability Status view (Capability Status)"
     echo ""
-    echo "| 能力 | 工具可用 | MCP 已注册 | 服务在线 | 可自动安装 | 安装方式 |"
+    echo "| Capabilities | Tools available | MCP registered | Service online | Automatic installation available | Installation method |"
     echo "|------|---------|-----------|---------|-----------|---------|"
 
     CAPABILITY_NAMES=("jadx" "apktool" "jeb-pro" "binaryninja" "frida" "idalib-mcp" "jshookmcp" "reqable-mcp" "xquik-mcp" "anything-analyzer" "idapro" "r2" "adb" "agent-browser" "ghidra-mcp" "seclists" "proxycat" "burpsuite-mcp" "nmap" "sqlmap" "hashcat" "hydra" "gobuster" "ffuf" "msfconsole" "nuclei" "pwntools" "bkcrack")
 
     for cap_name in "${CAPABILITY_NAMES[@]}"; do
-        # 检查工具是否可用
+        # Check if the tool is available
         tool_available="✗"
         case "$cap_name" in
             jeb-pro)
@@ -80,7 +80,7 @@ GENERATED_AT=$(date '+%Y-%m-%d %H:%M:%S %z')
                 ;;
         esac
 
-        # 检查 MCP 注册状态
+        # Check MCP registration status
         mcp_registered="—"
         mcp_name="$cap_name"
         case "$cap_name" in
@@ -92,7 +92,7 @@ GENERATED_AT=$(date '+%Y-%m-%d %H:%M:%S %z')
             mcp_registered="✓"
         fi
 
-        # 检查服务在线状态
+        # Check service online status
         service_online="—"
         case "$cap_name" in
             idapro)
@@ -109,7 +109,7 @@ GENERATED_AT=$(date '+%Y-%m-%d %H:%M:%S %z')
                 ;;
         esac
 
-        # 获取安装方式
+        # Get installation method
         can_auto="✓"
         bootstrap_kind="apt-package"
         case "$cap_name" in
@@ -142,14 +142,14 @@ GENERATED_AT=$(date '+%Y-%m-%d %H:%M:%S %z')
     done
 
     echo ""
-    echo "> ✓ = 是 | ✗ = 否 | — = 不适用或未检测"
+    echo "> ✓ = Yes | ✗ = No | — = Not applicable or not detected"
     echo ""
 } >> "$OUTPUT_MD"
 
-# ─── 生成 JSON ─────────────────────────────────────────────────────────────────────
+# ─── Generate JSON ──────────────────────────────────────────────────────────────
 
 if command -v jq &>/dev/null; then
-    # 使用 jq 生成结构化 JSON
+    # Generate structured JSON using jq
     json_tools="[]"
     for entry in "${TOOL_CATALOG[@]}"; do
         result=$(resolve_tool "$entry")
@@ -191,11 +191,11 @@ if command -v jq &>/dev/null; then
             tools: $tools
         }' > "$OUTPUT_JSON"
 else
-    # 无 jq 时生成简易 JSON
+    # Generate simple JSON without jq
     echo "{\"generated_at\": \"$GENERATED_AT\", \"platform\": \"kali-linux\", \"note\": \"install jq for full JSON output\"}" > "$OUTPUT_JSON"
 fi
 
-echo "✅ 工具索引已刷新"
+echo "✅ Tool index has been refreshed"
 echo "  markdown=$OUTPUT_MD"
 echo "  json=$OUTPUT_JSON"
 echo "  tools=${#TOOL_CATALOG[@]}"

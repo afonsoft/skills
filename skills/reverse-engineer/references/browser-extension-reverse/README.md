@@ -5,70 +5,70 @@ description: Use for authorized reverse engineering of browser extensions (Chrom
 
 # Browser Extension Reverse Engineering
 
-## ACTION REQUIRED（读完后立刻执行）
+## ACTION REQUIRED (execute immediately after reading)
 
-1. `NOW`: 读取 `../field-journal/precedent-reverse.md`
-2. `NOW`: 确认目标是**浏览器扩展**（crx/xpi/解压目录），不是普通网页 JS（普通 → `js-reverse/`）
-3. `NEXT`: 解压扩展；读 manifest
-4. `ACT`: 权限面 → 后台脚本 → 网络/存储钩子
+1. `NOW`: read `../field-journal/precedent-reverse.md`
+2. `NOW`: Confirm that the target is a **browser extension** (crx/xpi/ decompression directory), not an ordinary web page JS (ordinary → `js-reverse/`)
+3. `NEXT`: Decompress extension; read manifest
+4. `ACT`: Permissions → Background script → Network/storage hook
 
-## 适用场景
+## Applicable scenarios
 
-- Chrome/Edge MV2/MV3 扩展分析
-- Firefox 扩展
-- 恶意扩展 IOC、供应链扩展投毒调查
-- 扩展实现的签名/加密/代理逻辑还原
+- Chrome/Edge MV2/MV3 Extended analysis
+- Firefox extension
+- Malicious extension IOC, supply chain extension poisoning investigation
+- Extended implementation of signature/encryption/proxy logical restoration
 
-## 工作流
+## Workflow
 
-### 1. 包体
+### 1. Package body
 
 ```text
-□ crx 解压 / 从 profile 取扩展目录
+□ crx decompress / get extension directory from profile
 □ manifest.json：permissions、host_permissions、background、content_scripts
-□ 评估过度权限（<all_urls>、webRequest、debugger）
+□ Evaluate excessive permissions (<all_urls>, webRequest, debugger)
 ```
 
-### 2. 逻辑
+### 2. Logic
 
 ```text
-□ service_worker / background 入口
-□ content_script 注入点与世界（isolated）
-□ chrome.storage / IndexedDB 密钥
-□ 与 `js-reverse` 相同：Observe 网络与消息传递（runtime.sendMessage）
+□ service_worker / background entrance
+□ content_script injection point and world (isolated)
+□ chrome.storage/IndexedDB key
+□ Same as `js-reverse`: Observe Networking and Messaging (runtime.sendMessage)
 ```
 
-### 3. 动态
+### 3. Dynamic
 
 ```text
-□ 开发者模式加载解压目录
-□ chrome://extensions 检查错误
-□ DevTools 附加 service worker
-□ 必要时 Frida/浏览器 CDP（jshookmcp）
+□ Developer mode loads and decompresses the directory
+□ chrome://extensions check for errors
+□ DevTools additional service worker
+□ Frida/browser CDP (jshookmcp) if necessary
 ```
 
-## 工具链
+## Toolchain
 
-| 工具 | 用途 |
+| Tools | Purpose |
 |------|------|
-| 解压/jq | manifest |
-| Chrome DevTools | worker 调试 |
-| js-reverse 工具链 | 深度 JS |
-| YARA | 恶意扩展规则 |
+| Unzip/jq | manifest |
+| Chrome DevTools | worker debugging |
+| js-reverse tool chain | Deep JS |
+| YARA | Malicious Extension Rules |
 
-## 参考
+## Reference
 
 - `references/extension-analysis.md`
-- field-journal 扩展恢复相关条目
+- field-journal extension restores related entries
 - `../js-reverse/` `../malware-analysis/`
 
-## 路由上下文
+## Routing context
 
-**上游**: MASTER R30  
-**下游**: 复杂混淆 JS → `js-reverse`；投毒调查 → supply-chain / malware
+**Upstream**: MASTER R30
+**Downstream**: Complex obfuscated JS → `js-reverse`; poisoning investigation → supply-chain / malware
 
-## 任务完成自检
+## Task completion self-check
 
-- [ ] 是否列出权限面与入口脚本？
-- [ ] 是否还原关键数据流？
+- [ ] Are permission planes and entry scripts listed?
+- [ ] Restore critical data flows?
 - [ ] Checklist？

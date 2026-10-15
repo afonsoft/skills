@@ -1,68 +1,68 @@
-# SBOM + SCA 方法论
+# SBOM + SCA Methodology
 
-## SBOM 标准对比
+## SBOM Standard Comparison
 
-| 标准 | 格式 | 生态 | 推荐场景 |
+| Standard | Format | Ecology | Recommended Scenarios |
 |------|------|------|---------|
-| SPDX | JSON/YAML/tag-value | Linux Foundation、Yocto | 许可证合规优先 |
-| CycloneDX | JSON/XML | OWASP、Kubernetes | 安全分析优先 |
-| SWID | XML | ISO 标准 | 企业资产管理 |
+| SPDX | JSON/YAML/tag-value | Linux Foundation, Yocto | License Compliance Priority |
+| CycloneDX | JSON/XML | OWASP, Kubernetes | Security Analysis Priority |
+| SWID | XML | ISO Standard | Enterprise Asset Management |
 
-## SBOM 生成工具链
+## SBOM Generation Toolchain
 
 ```bash
-# cdxgen: 从源码生成 CycloneDX SBOM
+# cdxgen: Generate CycloneDX SBOM from source code
 cdxgen -o bom.json -t cyclonedx
 
-# Syft: 从容器/文件系统生成
+# Syft: Generate from container/filesystem
 syft nginx:latest -o spdx-json > sbom.spdx.json
 
-# SBOM-Tool: 微软工具链
+# SBOM-Tool: Microsoft Toolchain
 sbom-tool generate -b ./build -bc ./src -pn MyApp -pv 1.0
 ```
 
-## SCA 工具对比
+## SCA Tool Comparison
 
-| 工具 | 免费 | 速度 | 数据库 | 可达性 |
+| Tool | Free | Speed | Database | Accessibility |
 |------|:--:|------|--------|:--:|
-| OSV-Scanner | ✅ | 极快 | OSV.dev | ❌ |
-| Trivy | ✅ | 快 | 多源 | ❌ |
-| Dependency-Track | ✅ | 中 | NVD+OSV+GitHub | ❌ (需插件) |
-| Snyk | ❌ | 中 | 专有 | ✅ |
-| CodeQL | ✅ | 慢 | 代码级 | ✅ |
+| OSV-Scanner | ✅ | Extremely Fast | OSV.dev | ❌ |
+| Trivy | ✅ | Fast | Multi-source | ❌ |
+| Dependency-Track | ✅ | Medium | NVD+OSV+GitHub | ❌ (requires plugin) |
+| Snyk | ❌ | Medium | Proprietary | ✅ |
+| CodeQL | ✅ | Slow | Code-level | ✅ |
 
-## 漏洞优先级策略
+## Vulnerability Priority Strategy
 
 ```
-CVSS ≥ 9.0 + 有公开 PoC + 可达 → P0 立即修复
-CVSS ≥ 7.0 + 有 PoC + 可达 → P1 本周修复
-CVSS ≥ 7.0 + 无 PoC 或不可达 → P2 下个迭代修复
-其余 → 按常规流程
+CVSS ≥ 9.0 + public PoC available + reachable → P0 immediate fix
+CVSS ≥ 7.0 + has PoC + reachable → P1 fix this week
+CVSS ≥ 7.0 + no PoC or unreachable → P2 fix in the next iteration
+The rest → follow the regular procedure
 ```
 
-## 手工验证三步法
+## Three-Step Manual Verification Method
 
 ```bash
-# 1. 确认版本（不要盲信 SBOM 字段）
-# 容器内: dpkg -l | grep <package>
+# 1. Confirm the version (do not blindly trust the SBOM fields)
+# Inside the container: dpkg -l | grep <package>
 # Node: cat node_modules/<pkg>/package.json | jq .version
 # Python: pip show <package>
 
-# 2. 确认漏洞
-# 搜索 CVE: https://osv.dev / https://nvd.nist.gov
-# 查看受影响版本范围
-# 找到 GitHub Advisory / oss-security 邮件列表
+# 2. Confirm the vulnerability
+# Search CVE: https://osv.dev / https://nvd.nist.gov
+# View affected version range
+# Find the GitHub Advisory / oss-security mailing list
 
-# 3. 验证影响
-# 搜索公开 PoC: GitHub/Exploit-DB
-# 分析利用条件: 是否需要认证/本地访问/特定配置
-# 在隔离环境验证: docker run --rm -it vulnerable-image bash
+# 3. Verify Impact
+# Search public PoC: GitHub/Exploit-DB
+# Analysis Usage Conditions: Whether Authentication/Local Access/Specific Configuration is Required
+# Verify in an isolated environment: docker run --rm -it vulnerable-image bash
 ```
 
-## 持续监控
+## Continuous Monitoring
 
 ```yaml
-# 每日 SBOM 更新 + 扫描
+# Daily SBOM Update + Scan
 schedule:
   - cron: "0 6 * * *"  # 每天早上 6 点
     steps:

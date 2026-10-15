@@ -352,9 +352,9 @@ PY
     echo ""
     echo "---"
     echo ""
-    echo "## 能力状态视图 (Capability Status)"
+    echo "## Capability Status View"
     echo ""
-    echo "| 能力 | 工具可用 | Ready | MCP 已注册 | 服务在线 | MCP HTTP | 可自动安装 | 安装方式 |"
+    echo "| Ability | Tool Available | Ready | MCP Registered | Service Online | MCP HTTP | Auto-Installable | Installation Method |"
     echo "|------|---------|-------|-----------|---------|----------|-----------|---------|"
   } >> "$OUTPUT_MD"
 

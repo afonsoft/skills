@@ -1,95 +1,94 @@
-# CTF 资源精华速查
+# CTF Resource Essentials Quick Reference
 
-> 精选自 [awesome-ctf-resources](https://github.com/devploit/awesome-ctf-resources) 和 [awesome-ctf](https://github.com/apsdehal/awesome-ctf)
-> 按 CTF 题目类型分类，只保留最实用的工具和资源。
+> Selected from [awesome-ctf-resources](https://github.com/devploit/awesome-ctf-resources)] and [awesome-ctf](https://github.com/apsdehal/awesome-ctf)]
+> Classified by CTF challenge type, only keep the most practical tools and resources.
 
 ---
 
-## 综合框架
+## Comprehensive Framework
 
-| 工具 | 用途 | 链接 |
+| Tool | Purpose | Link |
 |------|------|------|
-| Pwntools | Exploit 开发框架（Python） | https://github.com/Gallopsled/pwntools |
-| ctf-tools | 一键安装 CTF 工具集 | https://github.com/zardus/ctf-tools |
-| Ciphey | AI 自动解密 | https://github.com/ciphey/ciphey |
-| CyberChef | 在线编解码/加解密 | https://gchq.github.io/CyberChef/ |
+| Pwntools | Exploit Development Framework (Python) | https://github.com/Gallopsled/pwntools |
+| ctf-tools | One-click installation of CTF toolset | https://github.com/zardus/ctf-tools |
+| Ciphey | AI Automatic Decryption | https://github.com/ciphey/ciphey |
+| CyberChef | Online Encoding/Decoding / Encryption/Decryption | https://gchq.github.io/CyberChef/ |
 
 ---
 
-## Web 类
+## Web Class
 
-### 工具
-| 工具 | 用途 |
+### Tools
+| Tool | Purpose |
 |------|------|
-| Burp Suite | HTTP 拦截/重放/扫描 |
-| SQLMap | SQL 注入 |
-| XSStrike | XSS 检测 |
-| dirsearch | 目录发现 |
-| JWT_Tool | JWT 攻击 |
-| SSRFmap | SSRF 利用 |
+| Burp Suite | HTTP Intercept/Replay/Scan |
+| SQLMap | SQL Injection |
+| XSStrike | XSS Detection |
+| dirsearch | Directory Discovery |
+| JWT_Tool | JWT Attack |
+| SSRFmap | SSRF Exploitation |
 
-### 常见考点
-- SQL 注入（联合查询/盲注/时间盲注/堆叠）
-- XSS（反射/存储/DOM）
-- SSRF（内网探测/云元数据）
-- 文件上传（绕过后缀/MIME/内容检测）
-- 反序列化（PHP/Java/Python pickle）
-- 模板注入（SSTI）
-- JWT 伪造/密钥混淆
+### Common Exam Points
+- SQL Injection (Union Query / Blind Injection / Time-based Blind Injection / Stacked)
+- XSS (Reflected/Stored/DOM)
+- SSRF (Internal Network Detection / Cloud Metadata)
+- File upload (bypassing suffix/MIME/content detection)
+- Deserialization (PHP/Java/Python pickle)
+- Template Injection (SSTI)
+- JWT forgery/key confusion
 
-### Payload 参考
+### Payload Reference
 - https://github.com/swisskyrepo/PayloadsAllTheThings
 - https://book.hacktricks.wiki/
 
 ---
 
-## Reverse 类
+## Reverse Class
 
-### 工具
-| 工具 | 用途 |
+### Tools
+| Tool | Purpose |
 |------|------|
-| IDA Pro / Ghidra | 反编译 |
-| radare2 / r2 | CLI 分析 |
-| angr | 符号执行 |
-| Frida | 动态 Hook |
-| GDB + pwndbg | 调试 |
-| uncompyle6 | Python 反编译 |
-| jadx | Android 反编译 |
-| dnSpy | .NET 反编译 |
+| IDA Pro / Ghidra | Decompilation |
+| radare2 / r2 | CLI Analysis |
+| angr | Symbolic Execution |
+| Frida | Dynamic Hook |
+| GDB + pwndbg | Debugging |
+| uncompyle6 | Python Decompilation |
+| jadx | Android decompilation |
+| dnSpy | .NET Decompilation |
 
-### 常见考点
-- 算法还原（加密/编码/自定义）
-- 反调试/反虚拟机绕过
-- 壳/混淆（UPX/VMProtect/OLLVM）
-- 符号执行求解约束
-- 动态 Hook 绕过检查
-- Go/Rust 逆向（符号恢复）
+### Common Exam Points
+- Algorithm restoration (encryption/encoding/custom)
+- Anti-debugging/anti-virtual machine bypass
+- Shell/Obfuscation (UPX/VMProtect/OLLVM)
+- Solve constraints with symbolic execution
+- Dynamic Hook bypass check
+- Go/Rust Reverse (Symbol Recovery)
 
 ---
 
-## Pwn 类
+## Pwn Class
 
-### 工具
-| 工具 | 用途 |
+### Tools
+| Tool | Purpose |
 |------|------|
-| Pwntools | Exploit 编写 |
-| GDB + pwndbg/GEF | 调试 |
-| ROPgadget | ROP 链构造 |
+| Pwntools | Exploit Writing |
+| GDB + pwndbg/GEF | Debug |
+| ROPgadget | ROP Chain Construction |
 | one_gadget | libc one-shot |
-| checksec | 保护检测 |
-| LibcSearcher | libc 版本识别 |
+| checksec | Protection Check |
+| LibcSearcher | libc version identification |
 
-### 常见考点
-- 栈溢出（ret2text/ret2libc/ret2shellcode/ROP）
-- 堆利用（UAF/double free/tcache/fastbin）
-- 格式化字符串（任意读写）
-- 整数溢出
-- 内核 Pwn（提权/条件竞争）
-- 沙箱逃逸（seccomp bypass）
+### Common Exam Points
+- Stack Overflow (ret2text/ret2libc/ret2shellcode/ROP)
+- Pile utilization (UAF/double free/tcache/fastbin)
+- Formatted string (arbitrary read/write)
+- Integer overflow
+- Kernel Pwn (Privilege Escalation / Race Condition)
+- Sandbox escape (seccomp bypass)
 
-### 常用 payload 模式
-```python
-# ret2libc 模板
+### Common payload modes```python
+# ret2libc template
 from pwn import *
 elf = ELF('./vuln')
 libc = ELF('./libc.so.6')
@@ -99,88 +98,88 @@ p = process('./vuln')
 
 ---
 
-## Crypto 类
+## Crypto Class
 
-### 工具
-| 工具 | 用途 |
+### Tools
+| Tool | Purpose |
 |------|------|
-| SageMath | 数学计算 |
-| RsaCtfTool | RSA 自动攻击 | 
-| hashcat/john | 哈希破解 |
-| CyberChef | 编解码 |
-| z3 (SMT solver) | 约束求解 |
+| SageMath | Mathematical Computation |
+| RsaCtfTool | RSA Automatic Attack |
+| hashcat/john | Hash Cracking |
+| CyberChef | Encoding and Decoding |
+| z3 (SMT solver) | Constraint Solving |
 
-### 常见考点
-- RSA（小公钥指数/共模/Wiener/Coppersmith）
-- AES（ECB/CBC padding oracle/bit flipping）
-- 古典密码（Caesar/Vigenere/置换）
-- 哈希长度扩展攻击
-- 椭圆曲线（ECDSA nonce 复用）
-- 格密码（LLL/CVP）
+### Common Exam Points
+- RSA (small public key exponent/common modulus/Wiener/Coppersmith)
+- AES (ECB/CBC padding oracle/bit flipping)
+- Classical cipher (Caesar/Vigenere/ permutation)
+- Hash length extension attack
+- Elliptic Curve (ECDSA nonce reuse)
+- Ge password (LLL/CVP)
 
 ---
 
-## Forensics 类
+## Forensics Class
 
-### 工具
-| 工具 | 用途 |
+### Tools
+| Tool | Purpose |
 |------|------|
-| Volatility | 内存取证 |
-| Autopsy/Sleuth Kit | 磁盘取证 |
-| Wireshark | 流量分析 |
-| binwalk | 固件/文件提取 |
-| foremost | 文件恢复 |
-| exiftool | 元数据提取 |
+| Volatility | Memory Forensics |
+| Autopsy/Sleuth Kit | Disk Forensics |
+| Wireshark | Traffic Analysis |
+| binwalk | Firmware/File Extraction |
+| foremost | File Recovery |
+| exiftool | Metadata Extraction |
 
-### 常见考点
-- 内存 dump 分析（进程/密码/恶意代码）
-- PCAP 流量分析（HTTP/DNS/TCP 重组）
-- 文件系统分析（删除文件恢复/隐藏分区）
-- 日志分析（Web 日志/系统日志）
-- 磁盘镜像分析
+### Common Exam Points
+- Memory dump analysis (process/password/malicious code)
+- PCAP traffic analysis (HTTP/DNS/TCP reassembly)
+- File System Analysis (Deleted File Recovery / Hidden Partition)
+- Log Analysis (Web Logs/System Logs)
+- Disk image analysis
 
 ---
 
-## Misc/Stego 类
+## Misc/Stego Class
 
-### 工具
-| 工具 | 用途 |
+### Tools
+| Tool | Purpose |
 |------|------|
-| StegSolve | 图片隐写分析 |
-| zsteg | PNG/BMP 隐写 |
-| steghide | JPEG 隐写 |
-| Audacity | 音频分析 |
-| strings/xxd | 基础分析 |
-| file/binwalk | 文件类型识别 |
+| StegSolve | Image Steganalysis |
+| zsteg | PNG/BMP Steganography |
+| steghide | JPEG Steganography |
+| Audacity | Audio Analysis |
+| strings/xxd | Basic Analysis |
+| file/binwalk | File Type Identification |
 
-### 常见考点
-- LSB 隐写（图片最低有效位）
-- 文件头修复/拼接
-- 二维码/条形码
-- 音频频谱图隐写
-- ZIP 伪加密/已知明文攻击
-- 编码识别（Base64/Hex/Morse/Braille）
+### Common Exam Points
+- LSB Steganography (Least Significant Bit of the image)
+- File Header Repair/Merging
+- QR Code/Barcode
+- Audio Spectrogram Steganography
+- ZIP pseudo-encryption / known-plaintext attack
+- Code Identification (Base64/Hex/Morse/Braille)
 
 ---
 
-## 在线平台
+## Online Platform
 
-| 平台 | 特点 | 链接 |
+| Platform | Features | Link |
 |------|------|------|
-| CTFTime | 赛事日历 + writeup | https://ctftime.org/ |
-| HackTheBox | 实战靶机 | https://www.hackthebox.com/ |
-| TryHackMe | 引导式学习 | https://tryhackme.com/ |
-| PicoCTF | 入门友好 | https://picoctf.org/ |
-| pwnable.kr | Pwn 专项 | http://pwnable.kr/ |
-| cryptopals | Crypto 专项 | https://cryptopals.com/ |
-| OverTheWire | War 系列挑战 | https://overthewire.org/ |
-| Root-Me | 综合挑战 | https://www.root-me.org/ |
+| CTFTime | Event Calendar + writeup | https://ctftime.org/ |
+| HackTheBox | Practical Target Machine | https://www.hackthebox.com/ |
+| TryHackMe | Guided Learning | https://tryhackme.com/ |
+| PicoCTF | Beginner-Friendly | https://picoctf.org/ |
+| pwnable.kr | Pwn Special | http://pwnable.kr/ |
+| cryptopals | Crypto Special | https://cryptopals.com/ |
+| OverTheWire | War Series Challenges | https://overthewire.org/ |
+| Root-Me | Comprehensive Challenge | https://www.root-me.org/ |
 
 ---
 
-## Writeup 资源
+## Writeup Resources
 
-| 资源 | 链接 |
+| Resource | Link |
 |------|------|
 | CTFTime Writeups | https://ctftime.org/writeups |
 | 0xdf hacks stuff | https://0xdf.gitlab.io/ |

@@ -1,87 +1,85 @@
-# [种子] Web API 未授权访问 + IDOR
+# [seed] Unauthorized access to Web API + IDOR
 
-## 场景分类
-渗透测试
+## Scene classification
+Penetration testing
 
-## 目标概述
-对某 Web 应用的 REST API 进行黑盒测试，发现未授权访问和 IDOR 漏洞。
+## Goal Overview
+Black-box testing of a web application's REST API revealed unauthorized access and IDOR vulnerabilities.
 
-## 完整执行链路
+## Complete execution link
 
-1. 信息收集：Nmap 扫描 → 发现 443 端口运行 Nginx + 后端 API
-2. 目录发现：FFUF 爆破 → 发现 `/api/v1/` 路径
-3. API 枚举：访问 `/api/v1/docs` → 发现 Swagger 文档暴露
-4. 认证分析：注册两个测试账号 A 和 B
-5. 测试 IDOR：用账号 A 的 token 访问账号 B 的资源 → 成功（水平越权）
-6. 测试未授权：去掉 Authorization header → 部分接口仍返回数据（未授权访问）
-7. 验证影响：确认可读取任意用户的个人信息（姓名、邮箱、手机号）
-8. 证据收集：保存请求/响应截图，脱敏后整理报告
+1. Information collection: Nmap scan → Found that port 443 is running Nginx + backend API
+2. Directory discovery: FFUF blast → Discover `/api/v1/` path
+3. API enumeration: access `/api/v1/docs` → found Swagger document exposure
+4. Certification analysis: register two test accounts A and B
+5. Test IDOR: Use the token of account A to access the resources of account B → Success (horizontal override)
+6. Test for unauthorized access: remove the Authorization header → some interfaces still return data (unauthorized access)
+7. Verification impact: Confirm that any user’s personal information (name, email, mobile phone number) can be read
+8. Evidence collection: save request/response screenshots, and compile reports after desensitization
 
-## 踩坑记录
+## Trampling on pit records
 
-| 问题 | 原因 | 解决方案 | 耗时 |
+| Problem | Cause | Solution | Time consuming |
 |------|------|---------|------|
-| FFUF 被 WAF 拦截 | 请求频率太高触发限流 | 降低速率 `-rate 10`，加 `-H "User-Agent: Mozilla/5.0..."` | 10min |
-| Swagger 文档 404 | 路径不是标准的 /swagger | 尝试 `/api/v1/docs`、`/api-docs`、`/openapi.json` | 5min |
-| IDOR 测试不确定是否成功 | 返回的数据没有明显的用户标识 | 对比两个账号的响应，找到 user_id 字段差异 | 15min |
-| 报告被 SRC 拒绝 | 只提交了截图没有完整复现步骤 | 补充 curl 命令 + 完整请求/响应 | 20min |
+| FFUF is intercepted by WAF | The request frequency is too high and triggers current limiting | Reduce the rate `-rate 10`, add `-H "User-Agent: Mozilla/5.0..."` | 10min |
+| Swagger Documentation 404 | Path is not standard /swagger | Try `/api/v1/docs`, `/api-docs`, `/openapi.json` | 5min |
+| The IDOR test is not sure whether it is successful | The returned data does not have obvious user identification | Compare the responses of the two accounts and find the difference in the user_id field | 15min |
+| Report rejected by SRC | Only screenshots submitted without complete reproduction steps | Supplementary curl command + complete request/response | 20min |
 
-## 工具链发现
+## Toolchain discovery
 
-- FFUF 比 Gobuster 快，但需要控制速率避免被封
-- Swagger/OpenAPI 文档暴露是最快的 API 枚举方式
-- IDOR 测试必须用两个自己的账号互测，不要碰别人的数据
-- SRC 报告必须有可复现的 curl 命令，不能只有截图
+- FFUF is faster than Gobuster, but needs to control the speed to avoid being blocked
+- Swagger/OpenAPI Documentation exposure is the fastest way to enumerate the API
+- IDOR testing must use two of your own accounts to test each other, do not touch other people's data
+- SRC reports must have reproducible curl commands, not just screenshots
 
-## 关键代码/命令
+## Key code/command
 
 ```bash
-# 目录发现
+# Table of Contents Discovery
 ffuf -u https://target.example.com/api/v1/FUZZ -w /path/to/SecLists/Discovery/Web-Content/api/api-endpoints.txt -rate 10
 
-# IDOR 测试
-# 用账号 A 的 token 访问账号 B 的资源
+# IDOR Test
+# Access Account B's resources using Account A's token
 curl -H "Authorization: Bearer <token_A>" https://target.example.com/api/v1/users/USER_B_ID
 
-# 未授权测试
+# Unauthorized Test
 curl https://target.example.com/api/v1/users/USER_B_ID
-# 如果返回 200 + 数据 → 未授权访问
+# If returns 200 + data → unauthorized access
 ```
 
-## 对本包的改进建议
+## Suggestions for improving this package
 
-- pentest-tools 应该加入"API 渗透测试"的专项 checklist
-- src-hunter 的 IDOR playbook 很好用，但缺少"如何判断 IDOR 影响范围"的指导
+- pentest-tools should add a special checklist for "API penetration testing"
+- src-hunter's IDOR playbook is very useful, but it lacks guidance on "how to determine the scope of IDOR influence"
 
-## 可复用的模式/脚本片段
+## Reusable patterns/script snippets
 
-**API 未授权测试三步法**：
-```text
-1. 正常请求（带 token）→ 记录正常响应
-2. 去掉 token → 看是否仍返回数据（未授权）
-3. 换另一个用户的 token → 看是否能访问（越权）
+**API unauthorized testing three-step method**:```text
+1. Normal request (with token) → record normal response
+2. Remove token → see if data is still returned (unauthorized)
+3. Change the token of another user → see if access is available (override of authority)
 ```
 
-**IDOR 快速验证**：
-```text
-1. 注册两个账号 A 和 B
-2. 获取 A 的资源 ID 和 B 的资源 ID
-3. 用 A 的 token 请求 B 的资源 ID
-4. 如果返回 B 的数据 → IDOR 确认
+**IDOR QUICK VERIFICATION**:```text
+1. Register two accounts A and B
+2. Get the resource ID of A and the resource ID of B
+3. Use A’s token to request B’s resource ID
+4. If the data of B is returned → IDOR confirmation
 ```
 
-## 进化动作
-- [ ] 无需更新路由矩阵
-- [ ] 无需更新 bootstrap-manifest
-- [ ] 无需更新子 skill 文档
+## Evolution action
+- [ ] No need to update routing matrix
+- [ ] No need to update bootstrap-manifest
+- [ ] No need to update child skill documents
 
-## 环境信息
-- OS: Windows（本机）→ 目标 Linux 服务器
-- 工具版本: FFUF 2.x, curl, Burp Suite
-- 目标平台: Web API (REST, JSON)
+## Environment information
+- OS: Windows (native) → target Linux server
+- Tool version: FFUF 2.x, curl, Burp Suite
+- Target platform: Web API (REST, JSON)
 
-## 脱敏要求
-本条目为种子数据，基于公开技术模式编写，不涉及真实目标。
+## Desensitization requirements
+This article is seed data, written based on public technical models, and does not involve real goals.
 
 ---
-<!-- [社区贡献] 种子数据，无需 PR -->
+<!-- [Community Contribution] Seed data, no PR required -->

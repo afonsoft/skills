@@ -1,126 +1,126 @@
-# 攻击链 Playbook 速查
+# Attack Chain Playbook Quick Check
 
-> 按目标类型选择对应 playbook，每个 playbook 定义了从初始访问到目标达成的标准路径。
-
----
-
-## Playbook 1: 外网 Web 应用 → 域控
-
-```
-1. 子域名枚举 + 端口扫描
-2. Web 指纹识别 → 找到已知漏洞组件
-3. 漏洞利用获取 Webshell / RCE
-4. 内网信息收集（ipconfig/ifconfig, arp, net user）
-5. 搭建隧道（frp/chisel/ssh）
-6. 内网扫描（存活主机、开放端口）
-7. 凭据获取（mimikatz/hashdump/配置文件）
-8. 横向移动（PTH/WMI/PsExec）
-9. 域信息收集（BloodHound）
-10. 域提权（Kerberoasting/DCSync/约束委派）
-11. 获取域控权限
-```
-
-**关键工具链**: subfinder → httpx → nuclei → sqlmap/sstimap → frp → nmap → mimikatz → crackmapexec → bloodhound → certipy
+> Select the corresponding playbook according to the goal type. Each playbook defines a standard path from initial access to goal achievement.
 
 ---
 
-## Playbook 2: 钓鱼 → 内网渗透
+## Playbook 1: External Web Application → Domain Control
 
 ```
-1. 目标员工信息收集（LinkedIn/脉脉）
-2. 构造钓鱼邮件（伪造发件人/合法主题）
-3. 制作载荷（宏文档/LNK/ISO/HTML走私）
-4. 发送钓鱼邮件
-5. 等待上线（C2 beacon）
-6. 本地信息收集 + 提权
-7. 凭据提取
-8. 横向移动
-9. 持久化
-10. 目标达成
+1. Subdomain enumeration + port scanning
+2. Web fingerprinting → Find known vulnerable components
+3. Exploit the vulnerability to obtain Webshell/RCE
+4. Intranet information collection (ipconfig/ifconfig, arp, net user)
+5. Build tunnel (frp/chisel/ssh)
+6. Intranet scanning (survival hosts, open ports)
+7. Credential acquisition (mimikatz/hashdump/ configuration file)
+8. Lateral movement (PTH/WMI/PsExec)
+9. Domain information collection (BloodHound)
+10. Domain privilege escalation (Kerberoasting/DCSync/ constrained delegation)
+11. Obtain domain control permissions
 ```
 
-**关键工具链**: theHarvester → gophish → msfvenom/cobalt-strike → mimikatz → bloodhound
+**Key toolchain**: subfinder → httpx → nuclei → sqlmap/sstimap → frp → nmap → mimikatz → crackmapexec → bloodhound → certipy
 
 ---
 
-## Playbook 3: 近源渗透 → 内网
+## Playbook 2: Phishing → Intranet Penetration
 
 ```
-1. 物理踩点（WiFi 信号、门禁类型、USB 口）
-2. WiFi 攻击（Fluxion 伪造热点 / WPA 破解）
-   或 BadUSB 植入（Rubber Ducky 键盘注入）
-   或 网络植入（Raspberry Pi / LAN Turtle）
-3. 获取内网接入点
-4. 内网扫描
-5. 后续同 Playbook 1 的步骤 5-11
+1. Collection of target employee information (LinkedIn/Maimai)
+2. Construct a phishing email (forged sender/legitimate subject)
+3. Create payload (macro document/LNK/ISO/HTML smuggling)
+4. Send phishing emails
+5. Waiting for online (C2 beacon)
+6. Local information collection + privilege escalation
+7. Credential extraction
+8. Lateral movement
+9. Sustainability
+10. Goal achieved
 ```
 
-**关键工具链**: fluxion/aircrack-ng → rubber-ducky → frp → nmap → crackmapexec
+**Key toolchain**: theHarvester → gophish → msfvenom/cobalt-strike → mimikatz → bloodhound
 
 ---
 
-## Playbook 4: 云环境渗透
+## Playbook 3: Near-source penetration → Intranet
 
 ```
-1. 云资产发现（子域名 → CNAME → 云服务商）
-2. 存储桶枚举（S3/OSS/Blob 公开访问）
-3. SSRF → 云元数据（169.254.169.254）
-4. 获取临时凭据（AK/SK/Token）
-5. 云 API 枚举（IAM/EC2/Lambda/RDS）
-6. 权限提升（PassRole/AssumeRole）
-7. 横向移动（跨账户/跨区域）
-8. 数据获取
+1. Physical checkpoints (WiFi signal, access control type, USB port)
+2. WiFi attack (Fluxion fake hotspot/WPA cracking)
+or BadUSB implant (Rubber Ducky keyboard injection)
+or network implant (Raspberry Pi / LAN Turtle)
+3. Obtain the intranet access point
+4. Intranet scanning
+5. Follow steps 5-11 as in Playbook 1.
 ```
 
-**关键工具链**: subfinder → nuclei(ssrf) → aws-cli → pacu → ScoutSuite
+**Key toolchain**: fluxion/aircrack-ng → rubber-ducky → frp → nmap → crackmapexec
 
 ---
 
-## Playbook 5: Bug Bounty / SRC 快速打点
+## Playbook 4: Cloud Environment Penetration
 
 ```
-1. 资产收集（子域名 + 端口 + JS 文件）
-2. 指纹识别 → 已知漏洞快速验证（nuclei）
-3. 参数发现（arjun/paramspider）
-4. 逐类测试：
-   - IDOR/越权（改 ID/改角色）
-   - SSRF（内网探测/云元数据）
-   - SQL 注入（sqlmap）
+1. Cloud asset discovery (subdomain name → CNAME → cloud service provider)
+2. Bucket enumeration (S3/OSS/Blob public access)
+3. SSRF → Cloud Metadata (169.254.169.254)
+4. Obtain temporary credentials (AK/SK/Token)
+5. Cloud API enumeration (IAM/EC2/Lambda/RDS)
+6. Privilege escalation (PassRole/AssumeRole)
+7. Lateral movement (cross-account/cross-region)
+8. Data acquisition
+```
+
+**Key toolchain**: subfinder → nuclei(ssrf) → aws-cli → pacu → ScoutSuite
+
+---
+
+## Playbook 5: Bug Bounty / SRC quick fix
+
+```
+1. Asset collection (subdomain name + port + JS file)
+2. Fingerprint identification → Quick verification of known vulnerabilities (nuclei)
+3. Parameter discovery (arjun/paramspider)
+4. Category-by-category testing:
+- IDOR/override (change ID/change role)
+- SSRF (intranet detection/cloud metadata)
+- SQL injection (sqlmap)
    - XSS（xsstrike）
-   - 文件上传（绕过检测）
-   - 逻辑漏洞（支付/验证码/密码重置）
-5. 编写 PoC + 提交报告
+- File upload (bypass detection)
+- Logic vulnerabilities (payment/verification code/password reset)
+5. Write PoC + submit report
 ```
 
-**关键工具链**: subfinder → httpx → nuclei → arjun → sqlmap → xsstrike → burpsuite
+**Key toolchain**: subfinder → httpx → nuclei → arjun → sqlmap → xsstrike → burpsuite
 
 ---
 
-## Playbook 6: AD CS 证书攻击
+## Playbook 6: AD CS Certificate Attack
 
 ```
-1. 发现 AD CS 服务（certipy find）
-2. 识别易受攻击的模板（ESC1-ESC8）
-3. 请求恶意证书
-4. 使用证书认证为目标用户
-5. 获取 NTLM Hash 或 TGT
-6. DCSync 导出所有凭据
+1. Discover the AD CS service (certipy find)
+2. Identify vulnerable templates (ESC1-ESC8)
+3. Requesting a malicious certificate
+4. Use the certificate to authenticate the target user
+5. Get NTLM Hash or TGT
+6. DCSync exports all credentials
 ```
 
-**关键工具链**: certipy → rubeus → mimikatz → secretsdump
+**Key toolchain**: certipy → rubeus → mimikatz → secretsdump
 
 ---
 
-## 通用决策矩阵
+## General decision matrix
 
-| 当前状态 | 下一步优先级 |
+| Current status | Next step priority |
 |---------|-------------|
-| 只有目标域名 | 子域名枚举 → 端口扫描 → Web 指纹 |
-| 有 Web 漏洞 | 获取 shell → 内网信息收集 |
-| 有低权限 shell | 提权 → 凭据提取 |
-| 有一台内网机器 | 搭隧道 → 内网扫描 → 横向 |
-| 有域用户凭据 | BloodHound → 找攻击路径 |
-| 有域管 Hash | DCSync → Golden Ticket |
-| 有云 AK/SK | 枚举权限 → 提权 → 数据获取 |
-| 钓鱼上线 | 本地提权 → 凭据 → 横向 |
-| 近源接入 | 内网扫描 → 同上 |
+| Target domain name only | Subdomain enumeration → Port scan → Web fingerprinting |
+| There are web vulnerabilities | Obtain shell → Intranet information collection |
+| Have low-privilege shell | Privilege escalation → Credential extraction |
+| There is an intranet machine | Build a tunnel → Intranet scan → Horizontal |
+| With domain user credentials | BloodHound → Find attack paths |
+| Domain managed Hash | DCSync → Golden Ticket |
+| Youyun AK/SK | Enumerate permissions → Elevate privileges → Data acquisition |
+| Phishing | Local privilege escalation → Credentials → Horizontal |
+| Near-source access | Intranet scanning → Same as above |

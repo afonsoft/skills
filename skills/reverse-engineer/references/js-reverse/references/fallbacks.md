@@ -1,8 +1,8 @@
-# 回退策略
+# Fallback strategy
 
-当当前路径无进展时按顺序回退：
+Rewind in sequence when there is no progress on the current path:
 
-1. 从断点回退到请求观察
-2. 从源码猜测回退到运行时证据
-3. 从 Node 补环境回退到页面取证
-4. 从深度去混淆回退到最小可复现链路
+1. Roll back from breakpoint to request observation
+2. Fall back from source code guessing to runtime evidence
+3. Return to page forensics from Node environment remediation
+4. Fall back from deep deobfuscation to the smallest reproducible link

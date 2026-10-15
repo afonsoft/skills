@@ -1,12 +1,12 @@
 {
   "schemaVersion": "1.0",
   "meta": {
-    "description": "reverse-skill 任务路由的单一事实源 (Single Source of Truth)。master-route.ps1 / verify-routing-coherence.ps1 / test-routing.ps1 / extract-summaries.ps1 均从此文件读取。修改路由规则请只改此文件，勿改散落在 markdown / ps1 里的路由表（文档由生成脚本维护，或至少与本站保持一致）。",
+    "description": "The single source of truth for reverse-skill task routing. master-route.ps1 / verify-routing-coherence.ps1 / test-routing.ps1 / extract-summaries.ps1 all read from this file. To modify routing rules, please only change this file and do not alter the routing tables scattered in markdown / ps1 (the documentation is maintained by the generation script, or at least kept consistent with this site).",
     "fallbackId": "R0",
-    "scoring": "每条关键字规则命中后计入候选集；按 priority 数组顺序取『命中分数最高』的为 PRIMARY；分数并列时 priority 靠前者胜出；未命中任何规则时回退 fallbackId。",
+    "scoring": "Each keyword rule hit is counted into the candidate set; according to the order of the priority array, the one with the 'highest hit score' is taken as PRIMARY; if scores are tied, the one earlier in priority wins; if no rule is hit, fallbackId is used.",
     "maintainers": [
-      "references/MASTER-ROUTING.md 中的优先级表与此文件 priority 字段一一对应",
-      "references/scripts/verify-routing-coherence.ps1 会校验二者一致性"
+      "The priority table in references/MASTER-ROUTING.md corresponds one-to-one with the priority field in this file",
+      "references/scripts/verify-routing-coherence.ps1 will check the consistency between the two"
     ]
   },
   "routes": {
@@ -14,324 +14,504 @@
       "label": "APK reverse",
       "skill": "apk-reverse/README.md",
       "keywords": [
-        { "must": "\\bapk\\b|smali|jadx|apktool|\\bandroid\\b|android.?reverse|安卓|反编译.?apk|apk.?加固|重打包|root.?detect|root.?检测|证书.?校验|certificate.?pinning|pinning.?绕过|签名.?校验", "note": "android 裸词/root 检测/证书校验/pinning 绕过 均为 APK 分析常见诉求" }
+        {
+          "must": "(?:\\bapk\\b|smali|jadx|apktool|\\bandroid\\b|android.?reverse|安卓|反编译.?apk|apk.?加固|重打包|root.?detect|root.?检测|证书.?校验|certificate.?pinning|pinning.?绕过|签名.?校验)|(?:\\bapk\\b|smali|jadx|apktool|\\bandroid\\b|android.?reverse|Android|decompile.?apk|apk.?protection|repackaging|root.?detect|root.?detection|certificate.?validation|certificate.?pinning|pinning.?bypass|signature.?validation)",
+          "note": "Bypass of Android naked words/root detection/certificate verification/pinning are all common requirements in APK analysis"
+        }
       ]
     },
     "R2": {
       "label": "Mobile reverse (Android+iOS)",
       "skill": "mobile-reverse/README.md",
       "keywords": [
-        { "must": "\\bipa\\b|ios.?reverse|objection|mobsf|mobile.?reverse|ios.?逆向" },
-        { "must": "越狱", "exclude": "模型|提示词|llm|prompt|jailbreak|garak|红队.?ai|ai.?红队", "note": "越狱 裸词分给 iOS 侧；LLM/模型上下文归 R14" },
-        { "must": "jailbreak", "mustAll": ["ios|iphone|ipad|mobile|objection|ipa"], "note": "jailbreak 仅当带 iOS 语境才归移动端" }
+        {
+          "must": "(?:\\bipa\\b|ios.?reverse|objection|mobsf|mobile.?reverse|ios.?逆向)|(?:\\bipa\\b|ios.?reverse|objection|mobsf|mobile.?reverse|iOS.?reverse engineering)"
+        },
+        {
+          "must": "(?:越狱)|(?:Prison break)",
+          "exclude": "model|prompt|llm|prompt|jailbreak|garak|red team.?ai|ai.?red team",
+          "note": "Jailbreak barewords are assigned to the iOS side; LLM/model context belongs to R14"
+        },
+        {
+          "must": "jailbreak",
+          "mustAll": [
+            "ios|iphone|ipad|mobile|objection|ipa"
+          ],
+          "note": "Jailbreak only belongs to mobile when in the context of iOS"
+        }
       ]
     },
     "R3": {
       "label": "JS / frontend reverse",
       "skill": "js-reverse/README.md",
       "keywords": [
-        { "must": "js.?reverse|webpack|cryptojs|frontend.?sign|jshook|cdp|encrypted.?param|前端.?签名|js.?逆向|加密.?参数|webpack.?逆向|抓包|http.?capture|请求.?重放|request.?replay|js.?加密|js.?解密|前端.?加密", "note": "抓包/HTTP 捕获/请求重放 属 JS 前端链路 (anything-analyzer)" }
+        {
+          "must": "(?:js.?reverse|webpack|cryptojs|frontend.?sign|jshook|cdp|encrypted.?param|前端.?签名|js.?逆向|加密.?参数|webpack.?逆向|抓包|http.?capture|请求.?重放|request.?replay|js.?加密|js.?解密|前端.?加密)|(?:js.?reverse|webpack|cryptojs|frontend.?sign|jshook|cdp|encrypted.?param|frontend.?signature|js.?reverse engineering|encrypted.?parameter|webpack.?reverse engineering|packet capture|http.?capture|request.?replay|js.?encryption|js.?decryption|frontend.?encryption)",
+          "note": "Packet capture/HTTP capture/request replay belongs to the JS frontend chain (anything-analyzer)"
+        }
       ]
     },
     "R4": {
       "label": "DSL VM reverse",
       "skill": "reverse-engineering/dsl-vm-reverse/README.md",
       "keywords": [
-        { "must": "dsl.?vm|fireye|opcode.?vm|custom.?vm|自定义.?虚拟机" }
+        {
+          "must": "(?:dsl.?vm|fireye|opcode.?vm|custom.?vm|自定义.?虚拟机)|(?:dsl.?vm|fireye|opcode.?vm|custom.?vm|custom.?virtual machine)"
+        }
       ]
     },
     "R5": {
       "label": ".NET reverse",
       "skill": "dotnet-reverse/README.md",
       "keywords": [
-        { "must": "\\.net|dnspy|de4dot|confuserex|csharp|dotnet|c#" }
+        {
+          "must": "\\.net|dnspy|de4dot|confuserex|csharp|dotnet|c#"
+        }
       ]
     },
     "R6": {
       "label": "IDA reverse",
       "skill": "ida-reverse/README.md",
       "keywords": [
-        { "must": "\\bida\\b|decompile|disassembl|反编译|反汇编|静态.?分析.?二进制|\\.so\\b|\\.elf\\b|so.?文件|native.?分析|jni", "note": ".so/.elf/native/JNI 分析归二进制静态分析（IDA/反汇编路线）" }
+        {
+          "must": "(?:\\bida\\b|decompile|disassembl|反编译|反汇编|静态.?分析.?二进制|\\.so\\b|\\.elf\\b|so.?文件|native.?分析|jni)|(?:\\bida\\b|decompile|disassembl|static.?analysis.?binary|\\.so\\b|\\.elf\\b|so.?file|native.?analysis|jni)",
+          "note": ".so/.elf/native/JNI analysis to binary static analysis (IDA/disassembly approach)"
+        }
       ]
     },
     "R7": {
       "label": "radare2",
       "skill": "radare2/README.md",
       "keywords": [
-        { "must": "radare|\\br2\\b" },
-        { "must": "r2xsql|r2mcp|r2http|radius2|r2pm|rabin2|rasm2|radiff2|rahash2|rax2" }
+        {
+          "must": "radare|\\br2\\b"
+        },
+        {
+          "must": "r2xsql|r2mcp|r2http|radius2|r2pm|rabin2|rasm2|radiff2|rahash2|rax2"
+        }
       ]
     },
     "R8": {
       "label": "Firmware pentest",
       "skill": "firmware-pentest/README.md",
       "keywords": [
-        { "must": "firmware|binwalk|iot|emba|firmadyne|固件|路由器.?固件|嵌入式" }
+        {
+          "must": "(?:firmware|binwalk|iot|emba|firmadyne|固件|路由器.?固件|嵌入式)|(?:firmware|binwalk|iot|emba|firmadyne|firmware|router.?firmware|embedded)"
+        }
       ]
     },
     "R9": {
       "label": "Malware analysis",
       "skill": "malware-analysis/README.md",
       "keywords": [
-        { "must": "malware|yara|virus.?sample|pe-?sieve|cape.?sandbox|恶意.?软件|病毒.?样本|木马.?分析|恶意.?样本|样本.?分析|ransomware|勒索|webshell|后门|backdoor" },
-        { "must": "sandbox", "mustAll": ["malware|virus|恶意|木马|样本|cape|any\\.run|triage"], "note": "裸 sandbox 归 R9 需恶意语境（防误伤云沙箱/开发语境）" }
+        {
+          "must": "(?:malware|yara|virus.?sample|pe-?sieve|cape.?sandbox|恶意.?软件|病毒.?样本|木马.?分析|恶意.?样本|样本.?分析|ransomware|勒索|webshell|后门|backdoor)|(?:malware|yara|virus.?sample|pe-?sieve|cape.?sandbox|malicious.?software|virus.?sample|trojan.?analysis|malicious.?sample|sample.?analysis|ransomware|ransom|webshell|backdoor|backdoor)"
+        },
+        {
+          "must": "sandbox",
+          "mustAll": [
+            "malware|virus|malicious|Trojan|sample|cape|any.run|triage"
+          ],
+          "note": "A bare sandbox returning to R9 requires a malicious context (to prevent accidental triggering in cloud sandbox/development context)"
+        }
       ]
     },
     "R10": {
       "label": "Attack chain",
       "skill": "attack-chain/README.md",
       "keywords": [
-        { "must": "attack.?chain|red.?team|lateral|domain.?pentest|internal.?network|full.?pentest|完整.?渗透|从外网|打到域控|红队|横向.?移动|内网.?渗透" }
+        {
+          "must": "(?:attack.?chain|red.?team|lateral|domain.?pentest|internal.?network|full.?pentest|完整.?渗透|从外网|打到域控|红队|横向.?移动|内网.?渗透)|(?:attack.?chain|red.?team|lateral|domain.?pentest|internal.?network|full.?pentest|complete.?penetration|from external network|reach domain controller|red team|lateral.?movement|internal network.?penetration)|domain.?controller|external.?network"
+        }
       ]
     },
     "R11": {
       "label": "Pentest tools",
       "skill": "pentest-tools/README.md",
       "keywords": [
-        { "must": "nmap|nuclei|sqlmap|ffuf|pentest|src.?hunt|bug.?bounty|waf.?bypass|渗透.?测试|端口.?扫描|漏洞.?扫描|目录.?爆破|sql.?注入|众测|burp|burpsuite|intruder|repeater|metasploit|hashcat|hydra|gobuster|dirsearch|提权|privilege.?escalat|安全.?评估|security.?assess|风险.?评估|risk.?assess", "note": "burp 家族/常见渗透工具/提权/评估 归 R11" }
+        {
+          "must": "(?:nmap|nuclei|sqlmap|ffuf|pentest|src.?hunt|bug.?bounty|waf.?bypass|渗透.?测试|端口.?扫描|漏洞.?扫描|目录.?爆破|sql.?注入|众测|burp|burpsuite|intruder|repeater|metasploit|hashcat|hydra|gobuster|dirsearch|提权|privilege.?escalat|安全.?评估|security.?assess|风险.?评估|risk.?assess)|(?:nmap|nuclei|sqlmap|ffuf|pentest|src.?hunt|bug.?bounty|waf.?bypass|penetration.?testing|port.?scanning|vulnerability.?scanning|directory.?brute force|sql.?injection|crowdtesting|burp|burpsuite|intruder|repeater|metasploit|hashcat|hydra|gobuster|dirsearch|privilege escalation|privilege.?escalat|security.?assessment|security.?assess|risk.?assessment|risk.?assess)|safety.?assess",
+          "note": "burp family/common penetration tools/privilege escalation/assessment Return to R11"
+        }
       ]
     },
     "R12": {
       "label": "API security",
       "skill": "api-security/README.md",
       "keywords": [
-        { "must": "graphql|bola|bfla|api.?secur|接口.?安全|越权|未授权.?访问|rest.?api.?secur" },
-        { "must": "\\boauth\\b", "exclude": "oauth2|oidc|saml|sso|openid|联邦|单点", "note": "OAuth 裸词分给 API；OIDC/SAML/SSO 归 R37" }
+        {
+          "must": "(?:graphql|bola|bfla|api.?secur|接口.?安全|越权|未授权.?访问|rest.?api.?secur)|(?:graphql|bola|bfla|api.?security|interface.?security|privilege escalation|unauthorized.?access|rest.?api.?security)"
+        },
+        {
+          "must": "\\boauth\\b|\\bidor\\b",
+          "exclude": "oauth2|oidc|saml|sso|openid|federation|single sign-on",
+          "note": "OAuth bare words go to API; OIDC/SAML/SSO belong to R37"
+        }
       ]
     },
     "R13": {
       "label": "Supply chain",
       "skill": "supply-chain-security/README.md",
       "keywords": [
-        { "must": "sbom|supply.?chain|trivy|gitleaks|syft|供应链|依赖.?扫描" }
+        {
+          "must": "(?:sbom|supply.?chain|trivy|gitleaks|syft|供应链|依赖.?扫描)|(?:sbom|supply.?chain|trivy|gitleaks|syft|supply chain|dependency.?scan)"
+        }
       ]
     },
     "R14": {
       "label": "LLM / Agent security",
       "skill": "llm-security/README.md",
       "keywords": [
-        { "must": "llm|prompt.?inject|jailbreak|agent.?secur|garak|owasp.?llm|提示词.?注入|模型.?红队|模型.?越狱|llm.?越狱|提示词.?越狱|ai.?红队" }
+        {
+          "must": "(?:llm|prompt.?inject|jailbreak|agent.?secur|garak|owasp.?llm|提示词.?注入|模型.?红队|模型.?越狱|llm.?越狱|提示词.?越狱|ai.?红队)|(?:llm|prompt.?inject|jailbreak|agent.?secur|garak|owasp.?llm|prompt.?injection|model.?red team|model.?jailbreak|llm.?jailbreak|prompt.?jailbreak|ai.?red team)"
+        }
       ]
     },
     "R15": {
       "label": "Binary diff / symbol migrate",
       "skill": "binary-diff/README.md",
       "keywords": [
-        { "must": "bindiff|symbol.?migrat|pdb|符号.?迁移|版本.?对比" }
+        {
+          "must": "(?:bindiff|symbol.?migrat|pdb|符号.?迁移|版本.?对比)|(?:bindiff|symbol.?migrat|pdb|symbol.?migration|version.?comparison)"
+        }
       ]
     },
     "R16": {
       "label": "Patch-diff / N-day",
       "skill": "patch-diff-exploit/README.md",
       "keywords": [
-        { "must": "n-?day|patch.?diff|patch.?tuesday|补丁.?差分|补丁.?分析" }
+        {
+          "must": "(?:n-?day|patch.?diff|patch.?tuesday|补丁.?差分|补丁.?分析)|(?:n-?day|patch.?diff|patch.?tuesday|patch.?difference|patch.?analysis)"
+        }
       ]
     },
     "R17": {
       "label": "Pwn chain",
       "skill": "pwn-chain/README.md",
       "keywords": [
-        { "must": "\\bpwn\\b|rop|ret2libc|heap.?overflow|stack.?overflow|buffer.?overflow|kernel.?pwn|exploit.?dev|pwntools|栈溢出|堆溢出|格式化.?字符串" }
+        {
+          "must": "(?:\\bpwn\\b|rop|ret2libc|heap.?overflow|stack.?overflow|buffer.?overflow|kernel.?pwn|exploit.?dev|pwntools|栈溢出|堆溢出|格式化.?字符串)|(?:\\bpwn\\b|rop|ret2libc|heap.?overflow|stack.?overflow|buffer.?overflow|kernel.?pwn|exploit.?dev|pwntools|stack overflow|heap overflow|format.?string)"
+        }
       ]
     },
     "R18": {
       "label": "EDR bypass RE",
       "skill": "edr-bypass-re/README.md",
       "keywords": [
-        { "must": "edr|av.?bypass|syscall|amsi|etw.?patch|hell.?s.?gate|免杀|反病毒" }
+        {
+          "must": "(?:edr|av.?bypass|syscall|amsi|etw.?patch|hell.?s.?gate|免杀|反病毒)|(?:edr|av.?bypass|syscall|amsi|etw.?patch|hell.?s.?gate|evasion|antivirus)"
+        }
       ]
     },
     "R19": {
       "label": "Browser / desktop automation",
       "skill": "browser-automation/README.md",
       "keywords": [
-        { "must": "playwright|browser.?auto|desktop.?auto|openreverse|fill.?form|浏览器.?自动化|桌面.?自动化|自动.?填表" }
+        {
+          "must": "(?:playwright|browser.?auto|desktop.?auto|openreverse|fill.?form|浏览器.?自动化|桌面.?自动化|自动.?填表)|(?:playwright|browser.?auto|desktop.?auto|openreverse|fill.?form|browser.?automation|desktop.?automation|auto.?fill form)"
+        }
       ]
     },
     "R20": {
       "label": "Docs generator",
       "skill": "docs-generator/README.md",
       "keywords": [
-        { "must": "writeup|write.?report|generate.?report|\\breport\\b|写.?报告|出.?报告|渗透.?报告|逆向.?报告" }
+        {
+          "must": "(?:writeup|write.?report|generate.?report|\\breport\\b|写.?报告|出.?报告|渗透.?报告|逆向.?报告)|(?:writeup|write.?report|generate.?report|\\breport\\b|write.?report|issue.?report|penetration.?report|reverse.?report)"
+        }
       ]
     },
     "R39": {
       "label": "Diagram generation",
       "skill": "diagram-generator/README.md",
       "keywords": [
-        { "must": "diagram|mermaid|graphviz|plantuml|flowchart|流程图|架构图|时序图|状态图|数据流图|攻击路径图|er.?图|画图|图表" }
+        {
+          "must": "(?:diagram|mermaid|graphviz|plantuml|flowchart|流程图|架构图|时序图|状态图|数据流图|攻击路径图|er.?图|画图|图表)|(?:diagram|mermaid|graphviz|plantuml|flowchart|flowchart|architecture diagram|sequence diagram|state diagram|data flow diagram|attack path diagram|er.? diagram|drawing|chart)|attack.?path"
+        }
       ]
     },
     "R21": {
       "label": "Protocol reverse",
       "skill": "protocol-reverse/README.md",
       "keywords": [
-        { "must": "protocol.?reverse|custom.?protocol|protobuf|grpc|pcap|wireshark|pcap.?protocol|wireshark.?dissector|协议.?逆向|自定义.?协议|流量.?逆向|流量.?分析" }
+        {
+          "must": "(?:protocol.?reverse|custom.?protocol|protobuf|grpc|pcap|wireshark|pcap.?protocol|wireshark.?dissector|协议.?逆向|自定义.?协议|流量.?逆向|流量.?分析)|(?:protocol.?reverse|custom.?protocol|protobuf|grpc|pcap|wireshark|pcap.?protocol|wireshark.?dissector|protocol.?reverse|custom.?protocol|traffic.?reverse|traffic.?analysis)"
+        }
       ]
     },
     "R22": {
       "label": "Ghidra reverse",
       "skill": "ghidra-reverse/README.md",
       "keywords": [
-        { "must": "ghidra|ghidra.?mcp|analyzeheadless|无.?ida|开源.?反编译" }
+        {
+          "must": "(?:ghidra|ghidra.?mcp|analyzeheadless|无.?ida|开源.?反编译)|(?:ghidra|ghidra.?mcp|analyzeheadless|no.?ida|open source.?decompile)"
+        }
       ]
     },
     "R23": {
       "label": "Cloud / K8s",
       "skill": "cloud-k8s/README.md",
       "keywords": [
-        { "must": "kubernetes|\\bk8s\\b|container.?escape|docker.?escape|kube-?bench|cloud.?secur|imds|169\\.254\\.169\\.254|容器.?逃逸|云.?安全|k8s.?渗透|s3|对象存储|存储桶", "note": "S3/对象存储归云安全" }
+        {
+          "must": "(?:kubernetes|\\bk8s\\b|container.?escape|docker.?escape|kube-?bench|cloud.?secur|imds|169\\.254\\.169\\.254|容器.?逃逸|云.?安全|k8s.?渗透|s3|对象存储|存储桶)|(?:kubernetes|\\bk8s\\b|container.?escape|docker.?escape|kube-?bench|cloud.?secur|imds|169\\.254\\.169\\.254|container.?escape|cloud.?security|k8s.?penetration|s3|object storage|storage bucket)",
+          "note": "S3/Object Storage Cloud Security"
+        }
       ]
     },
     "R24": {
       "label": "Windows / AD",
       "skill": "windows-ad/README.md",
       "keywords": [
-        { "must": "active.?directory|\\bad\\b.?cs|bloodhound|kerberoast|as-?rep|certipy|ntlm.?relay|dc.?sync|kerberos.?攻击|ad.?证书|impacket|mimikatz|secretsdump" },
-        { "must": "域.?渗透|域控", "exclude": "完整.?渗透|从外网|打到域控|attack.?chain|full.?pentest", "note": "完整渗透/打到域控 归 R10 攻击链" }
+        {
+          "must": "(?:active.?directory|\\bad\\b.?cs|bloodhound|kerberoast|as-?rep|certipy|ntlm.?relay|dc.?sync|kerberos.?攻击|ad.?证书|impacket|mimikatz|secretsdump)|(?:active.?directory|\\bad\\b.?cs|bloodhound|kerberoast|as-?rep|certipy|ntlm.?relay|dc.?sync|kerberos.?attack|ad.?certificate|impacket|mimikatz|secretsdump)"
+        },
+        {
+          "must": "(?:域.?渗透|域控)|(?:domain.?penetration|domain.?controller.?attack|kerberos|\\bwindows.?ad\\b|ad.?cs.?attack)",
+          "exclude": "Complete.?penetration|from external network|hitting domain controller|attack.?chain|full.?pentest",
+          "note": "Full penetration / reach the domain controller belongs to the R10 attack chain"
+        }
       ]
     },
     "R25": {
       "label": "Digital forensics",
       "skill": "digital-forensics/README.md",
       "keywords": [
-        { "must": "forensic|volatility|memory.?dump|plaso|timeline.?explorer|取证|内存.?转储|应急.?响应.?取证|手机.?取证|磁盘.?取证|autopsy|sleuth|encase|dump.?内存|内存.?dump|应急.?响应|incident.?response", "note": "应急响应/内存转储归数字取证" }
+        {
+          "must": "(?:forensic|volatility|memory.?dump|plaso|timeline.?explorer|取证|内存.?转储|应急.?响应.?取证|手机.?取证|磁盘.?取证|autopsy|sleuth|encase|dump.?内存|内存.?dump|应急.?响应|incident.?response)|(?:forensic|volatility|memory.?dump|plaso|timeline.?explorer|forensics|memory.?dump|emergency.?response.?forensics|mobile.?forensics|disk.?forensics|autopsy|sleuth|encase|dump.?memory|memory.?dump|emergency.?response|incident.?response)",
+          "note": "Emergency Response/Memory Dump Digital Forensics"
+        }
       ]
     },
     "R26": {
       "label": "Code audit / SAST",
       "skill": "code-audit/README.md",
       "keywords": [
-        { "must": "code.?audit|sast|semgrep|codeql|source.?review|白盒|代码.?审计|静态.?应用.?安全" }
+        {
+          "must": "(?:code.?audit|sast|semgrep|codeql|source.?review|白盒|代码.?审计|静态.?应用.?安全)|(?:code.?audit|sast|semgrep|codeql|source.?review|white box|code.?audit|static.?application.?security)"
+        }
       ]
     },
     "R27": {
       "label": "Threat hunting",
       "skill": "threat-hunting/README.md",
       "keywords": [
-        { "must": "threat.?hunt|detection.?engineer|blue.?team|sigma.?rule|\\bsigma\\b|威胁.?狩猎|检测.?工程|蓝队.?狩猎|检测.?规则" }
+        {
+          "must": "(?:threat.?hunt|detection.?engineer|blue.?team|sigma.?rule|\\bsigma\\b|威胁.?狩猎|检测.?工程|蓝队.?狩猎|检测.?规则)|(?:threat.?hunt|detection.?engineer|blue.?team|sigma.?rule|\\bsigma\\b|threat.?hunting|detection.?engineering|blue team.?hunting|detection.?rule)"
+        }
       ]
     },
     "R44": {
       "label": "Threat intelligence / OSINT",
       "skill": "threat-intelligence/README.md",
       "keywords": [
-        { "must": "\\bosint\\b|open.?source.?intelligence|threat.?intelligence|\\bcti\\b|ioc.?enrichment|indicator.?enrichment|威胁.?情报|开源.?情报|ioc.?扩充|ioc.?富化" },
-        { "must": "twitter|tweet|x\\.com|x.?post|推文|社交.?媒体", "mustAll": ["ioc|threat|malware|campaign|actor|phish|scam|impersonat|indicator|情报|威胁|恶意|钓鱼|诈骗|仿冒"], "note": "要求安全上下文，避免把通用社交分析路由到威胁情报" }
+        {
+          "must": "(?:\\bosint\\b|open.?source.?intelligence|threat.?intelligence|\\bcti\\b|ioc.?enrichment|indicator.?enrichment|威胁.?情报|开源.?情报|ioc.?扩充|ioc.?富化)|(?:\\bosint\\b|open.?source.?intelligence|threat.?intelligence|\\bcti\\b|ioc.?enrichment|indicator.?enrichment|threat.?intelligence|open.?source.?intelligence|ioc.?expansion|ioc.?enrichment)"
+        },
+        {
+          "must": "(?:twitter|tweet|x\\.com|x.?post|推文|社交.?媒体)|(?:twitter|tweet|x.com|x.?post|post|social.?media)",
+          "mustAll": [
+            "ioc|threat|malware|campaign|actor|phish|scam|impersonate|indicator|intelligence|threat|malicious|phishing|fraud|counterfeit"
+          ],
+          "note": "Require a secure context and avoid routing general social analysis to threat intelligence"
+        }
       ]
     },
     "R28": {
       "label": "OT / ICS",
       "skill": "ot-ics/README.md",
       "keywords": [
-        { "must": "\\bot\\b|\\bics\\b|scada|plc\\b|modbus|dnp3|s7comm|purdue|工控|工业.?控制|ot/?ics", "note": "\\bot\\b 词边界避免 forensics 误伤" }
+        {
+          "must": "(?:\\bot\\b|\\bics\\b|scada|plc\\b|modbus|dnp3|s7comm|purdue|工控|工业.?控制|ot/?ics)|(?:\\bot\\b|\\bics\\b|scada|plc\\b|modbus|dnp3|s7comm|purdue|industrial control|industrial.?control|ot/?ics)",
+          "note": "\\bot\\ word boundary prevents forensics from false positives"
+        }
       ]
     },
     "R29": {
       "label": "Wi-Fi / wireless",
       "skill": "wifi-wireless/README.md",
       "keywords": [
-        { "must": "wifi|wi-?fi|aircrack|airmon|wpa.?handshake|wireless.?pentest|无线.?渗透|wifi.?攻击" }
+        {
+          "must": "(?:wifi|wi-?fi|aircrack|airmon|wpa.?handshake|wireless.?pentest|无线.?渗透|wifi.?攻击)|(?:wifi|wi-?fi|aircrack|airmon|wpa.?handshake|wireless.?pentest|wireless.?penetration|wifi.?attack)"
+        }
       ]
     },
     "R30": {
       "label": "Browser extension reverse",
       "skill": "browser-extension-reverse/README.md",
       "keywords": [
-        { "must": "browser.?extension|chrome.?extension|\\bcrx\\b|\\bxpi\\b|mv3.?extension|浏览器.?扩展|chrome.?扩展" }
+        {
+          "must": "(?:browser.?extension|chrome.?extension|\\bcrx\\b|\\bxpi\\b|mv3.?extension|浏览器.?扩展|chrome.?扩展)|(?:browser.?extension|chrome.?extension|\\bcrx\\b|\\bxpi\\b|mv3.?extension|browser.?extension|chrome.?extension)"
+        }
       ]
     },
     "R31": {
       "label": "macOS / Mach-O reverse",
       "skill": "macos-reverse/README.md",
       "keywords": [
-        { "must": "macos|mach-?o|codesign|objective-?c|swift.?reverse|xpc|mac.?逆向|苹果.?桌面" }
+        {
+          "must": "(?:macos|mach-?o|codesign|objective-?c|swift.?reverse|xpc|mac.?逆向|苹果.?桌面)|(?:macos|mach-?o|codesign|objective-?c|swift.?reverse|xpc|mac.?reverse|Apple.?desktop)"
+        }
       ]
     },
     "R32": {
       "label": "Thick client security",
       "skill": "thick-client/README.md",
       "keywords": [
-        { "must": "thick.?client|desktop.?client|electron.?app|winforms|wpf|厚客户端|桌面.?客户端" }
+        {
+          "must": "(?:thick.?client|desktop.?client|electron.?app|winforms|wpf|厚客户端|桌面.?客户端)|(?:thick client|desktop client|electron app|winforms|wpf|thick client|desktop client)"
+        }
       ]
     },
     "R33": {
       "label": "Go / Rust reverse",
       "skill": "go-rust-reverse/README.md",
       "keywords": [
-        { "must": "\\bgolang\\b|\\brustc\\b|go.?binary|go.?二进|go.?语言|go.?程序|stripped.?go|gore.?sym|go.?malware|rust.?binary|go.?逆向|rust.?逆向" }
+        {
+          "must": "(?:\\bgolang\\b|\\brustc\\b|go.?binary|go.?二进|go.?语言|go.?程序|stripped.?go|gore.?sym|go.?malware|rust.?binary|go.?逆向|rust.?逆向)|(?:\\bgolang\\b|\\brustc\\b|go.?binary|go.?binary|go.?language|go.?program|stripped.?go|gore.?sym|go.?malware|rust.?binary|go.?reverse engineering|rust.?reverse engineering)"
+        }
       ]
     },
     "R34": {
       "label": "Hardware / debug interfaces",
       "skill": "hardware-security/README.md",
       "keywords": [
-        { "must": "uart|jtag|swd|debug.?pad|flashrom|硬件.?调试|串口.?shell|芯片.?提取|usb.?逆向|usb.?设备", "note": "USB 设备逆向归硬件调试接口" }
+        {
+          "must": "(?:uart|jtag|swd|debug.?pad|flashrom|硬件.?调试|串口.?shell|芯片.?提取|usb.?逆向|usb.?设备)|(?:uart|jtag|swd|debug.?pad|flashrom|hardware.?debugging|serial.?shell|chip.?extraction|usb.?reverse engineering|usb.?device)",
+          "note": "USB device reverse to hardware debugging interface"
+        }
       ]
     },
     "R35": {
       "label": "Database security",
       "skill": "database-security/README.md",
       "keywords": [
-        { "must": "database.?secur|\\bmysql\\b|\\bpostgres|mongodb|redis.?secur|mssql|数据库.?安全|数据库.?渗透" }
+        {
+          "must": "(?:database.?secur|\\bmysql\\b|\\bpostgres|mongodb|redis.?secur|mssql|数据库.?安全|数据库.?渗透)|(?:database.?secur|\\bmysql\\b|\\bpostgres|mongodb|redis.?secur|mssql|database.?security|database.?penetration)"
+        }
       ]
     },
     "R36": {
       "label": "Email / phishing analysis",
       "skill": "email-security/README.md",
       "keywords": [
-        { "must": "phish|spf|dkim|dmarc|bec\\b|email.?secur|钓鱼.?邮件|邮件.?安全" }
+        {
+          "must": "(?:phish|spf|dkim|dmarc|bec\\b|email.?secur|钓鱼.?邮件|邮件.?安全)|(?:phish|spf|dkim|dmarc|bec\\b|email.?secur|phishing.?email|email.?security)"
+        }
       ]
     },
     "R37": {
       "label": "Identity federation (SAML/OIDC)",
       "skill": "identity-federation/README.md",
       "keywords": [
-        { "must": "saml|oidc|openid.?connect|oauth2|sso\\b|联邦.?身份|单点.?登录" }
+        {
+          "must": "(?:saml|oidc|openid.?connect|oauth2|sso\\b|联邦.?身份|单点.?登录)|(?:saml|oidc|openid.?connect|oauth2|sso\\b|federated.?identity|single sign.?on)"
+        }
       ]
     },
     "R38": {
       "label": "RF / SDR research",
       "skill": "radio-sdr/README.md",
       "keywords": [
-        { "must": "\\bsdr\\b|hackrf|rtl-?sdr|gnu.?radio|\\burh\\b|射频|软件.?无线电|蓝牙|bluetooth|\\bble\\b", "note": "蓝牙/BLE 归射频研究" }
+        {
+          "must": "(?:\\bsdr\\b|hackrf|rtl-?sdr|gnu.?radio|\\burh\\b|射频|软件.?无线电|蓝牙|bluetooth|\\bble\\b)|(?:\\bsdr\\b|hackrf|rtl-?sdr|gnu.?radio|\\burh\\b|radio frequency|software.?defined radio|Bluetooth|bluetooth|\\bble\\b)",
+          "note": "Bluetooth/BLE Radio Frequency Research"
+        }
       ]
     },
     "R40": {
       "label": "Case evidence review",
       "skill": "case-review/README.md",
       "keywords": [
-        { "must": "case.?review|case.?audit|evidence.?chain|evidence.?graph|traceability|fixity.?check|证据.?链|证据.?图|可追溯性|案件.?审查|案例.?审计" }
+        {
+          "must": "(?:case.?review|case.?audit|evidence.?chain|evidence.?graph|traceability|fixity.?check|证据.?链|证据.?图|可追溯性|案件.?审查|案例.?审计)|(?:case review|case audit|evidence chain|evidence graph|traceability|fixity check|evidence chain|evidence graph|traceability|case review|case audit)"
+        }
       ]
     },
     "R41": {
       "label": "CTF sandbox orchestrator",
       "skill": "ctf-sandbox/README.md",
       "keywords": [
-        { "must": "\\bctf\\b|awd|靶场|比赛.?题", "exclude": "pwn|rop|栈溢出|堆溢出|ret2" }
+        {
+          "must": "(?:\\bctf\\b|awd|靶场|比赛.?题)|(?:\\bctf\\b|awd|training ground|competition.?question)",
+          "exclude": "pwn|rop|stack overflow|heap overflow|ret2"
+        }
       ]
     },
     "R45": {
       "label": "Binary Ninja reverse",
       "skill": "binary-ninja-reverse/README.md",
       "keywords": [
-        { "must": "binary.?ninja|binaryninja|\\bbinja\\b|binary[_-]ninja[_-]mcp|hlil|mlil", "note": "Binary Ninja GUI, IL, Python API, MCP, or localhost HTTP integration" }
+        {
+          "must": "binary.?ninja|binaryninja|\\bbinja\\b|binary[_-]ninja[_-]mcp|hlil|mlil",
+          "note": "Binary Ninja GUI, IL, Python API, MCP, or localhost HTTP integration"
+        }
       ]
     },
     "R0": {
       "label": "General reverse-engineering",
       "skill": "reverse-engineering/README.md",
       "keywords": [
-        { "must": "ollvm|anti-?debug|unicorn|angr|gdb|deobfuscat|控制流平坦|反调试|unity|il2cpp|游戏.?逆向|game.?reverse|anti-?cheat|反作弊", "note": "Unity/游戏逆向归通用逆向 (seed-014)" },
-        { "must": "frida", "exclude": "\\bapk\\b|smali|jadx|android|安卓", "note": "APK 语境下 frida 归 R1" },
-        { "must": "reverse|逆向", "exclude": "apk|js.?reverse|ios|mobile|\\.net|firmware|malware|安卓|固件|恶意|protocol|ghidra|extension|macos|mach|golang|rust|工控|厚客户端|取证|协议|扩展", "note": "泛逆向兜底；命中更具体域时让位" }
+        {
+          "must": "(?:ollvm|anti-?debug|unicorn|angr|gdb|deobfuscat|控制流平坦|反调试|unity|il2cpp|游戏.?逆向|game.?reverse|anti-?cheat|反作弊)|(?:ollvm|anti-debug|unicorn|angr|gdb|deobfuscat|control flow flattening|anti-debugging|unity|il2cpp|game.?reverse engineering|game.?reverse|anti-cheat|anti-cheat)",
+          "note": "Unity/Game Reverse Engineering to General Reverse Engineering (seed-014)"
+        },
+        {
+          "must": "frida",
+          "exclude": "\\bapk\\b|smali|jadx|android|Android",
+          "note": "In the context of APK, frida returns to R1"
+        },
+        {
+          "must": "(?:reverse|逆向)|(?:reverse|reverse)",
+          "exclude": "apk|js.?reverse|ios|mobile|\\.net|firmware|malware|Android|firmware|malicious|protocol|ghidra|extension|macos|mach|golang|rust|industrial control|thick client|forensics|protocol|extension",
+          "note": "General fallback for reverse direction; yield when hitting a more specific domain"
+        }
       ]
     }
   },
   "priority": [
-    "R4", "R1", "R2", "R3", "R30", "R31", "R33", "R5", "R9", "R21",
-    "R22", "R45", "R6", "R7", "R8", "R34", "R28", "R17", "R16", "R18", "R24",
-    "R37", "R23", "R35", "R25", "R44", "R36", "R29", "R38", "R32", "R26", "R27",
-    "R10", "R11", "R12", "R13", "R14", "R15", "R19", "R40", "R20", "R39", "R41", "R0"
+    "R4",
+    "R1",
+    "R2",
+    "R3",
+    "R30",
+    "R31",
+    "R33",
+    "R5",
+    "R9",
+    "R21",
+    "R22",
+    "R45",
+    "R6",
+    "R7",
+    "R8",
+    "R34",
+    "R28",
+    "R17",
+    "R16",
+    "R18",
+    "R24",
+    "R37",
+    "R23",
+    "R35",
+    "R25",
+    "R44",
+    "R36",
+    "R29",
+    "R38",
+    "R32",
+    "R26",
+    "R27",
+    "R10",
+    "R11",
+    "R12",
+    "R13",
+    "R14",
+    "R15",
+    "R19",
+    "R40",
+    "R20",
+    "R39",
+    "R41",
+    "R0"
   ]
 }

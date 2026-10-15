@@ -1,39 +1,39 @@
-# 现代 Web 靶场摩擦 → skill 加固
+# Modern Web Range Friction → Skill Reinforcement
 
-> 日期：2026-07-18  
-> 场景：合法公开靶场（PortSwigger 类 scanner-eval / OWASP Juice Shop demo）  
-> 脱敏：无真实业务域名利用细节
+> Date: 2026-07-18
+> Scenario: Legal public shooting range (PortSwigger class scanner-eval / OWASP Juice Shop demo)
+> Desensitization: No real business domain name usage details
 
-## 结论（给下次 Agent）
+## Conclusion (for next time Agent)
 
-**未打穿 ≠ 包无效。** 必须交付：surface map、sink 列表、门闩原因、Evidence(observed|validated)。  
-失败要写进 timeline，并反哺 playbook。
+**Not penetrated ≠ The package is invalid. ** Must deliver: surface map, sink list, latch reason, Evidence(observed|validated).
+Failures should be written into the timeline and fed back into the playbook.
 
-## 踩坑
+## Step on the pit
 
-| 坑 | 现象 | 修复/纪律 |
+| Pit | Phenomenon | Repair/Discipline |
 |----|------|-----------|
-| case-init 授权被污染 | `-AuthGranted` 后 status 变成奇怪字符串 | 仅允许 pending/granted/denied/unknown；`PSBoundParameters` 判断 AuthStatus |
-| lab_only 不 ready | network=lab_only 时 ready_for_act 假 | lab_only + granted + assets → ready |
-| Windows curl `[]` | `bad range in position` | **必须** `curl.exe --globoff` |
-| append-evidence 特殊字符 | RawExcerpt 含引号/XML 报错 | block 缩进 + 去控制字符 |
-| 公网 demo 503 | Juice Shop Heroku 挂 | 换本地 Docker 或其它合法靶；勿死磕 |
-| DOM XSS 假阳性 | 有 innerHTML sink 就报 validated | 需 200 非数字 body 才可 exploit；否则 observed |
-| agent-browser ref 过期 | click 失败 | 页面变化后重新 snapshot |
+| Case-init authorization is polluted | status becomes a strange string after `-AuthGranted` | Only pending/granted/denied/unknown; `PSBoundParameters` is allowed to judge AuthStatus |
+| lab_only not ready | ready_for_act false when network=lab_only | lab_only + granted + assets → ready |
+| Windows curl `[]` | `bad range in position` | **must** `curl.exe --globoff` |
+| append-evidence special characters | RawExcerpt contains quotes/XML error | block indent + remove control characters |
+| Public network demo 503 | Juice Shop Heroku hangs | Change to local Docker or other legal targets; don’t fight to the death |
 
-## 可复用模式
+| agent-browser ref expired | click failed | Re-snapshot after page changes |
 
-1. Surface → Sink → Chain（见 `pentest-tools/references/client-side-lab-playbook.md`）  
-2. 库存类 `innerHTML = fetchBody`：先证 sink，再找 200 非数字  
-3. 静态 rg sink + agent-browser eval 双证  
+## Reusable mode
 
-## 工具链
+1. Surface → Sink → Chain (see `pentest-tools/references/client-side-lab-playbook.md`)
+2. Inventory class `innerHTML = fetchBody`: first prove the sink, then find 200 non-digits
+3. Static rg sink + agent-browser eval dual certificate
+
+## Toolchain
 
 - case-init / case-guard / append-evidence / smoke  
 - agent-browser（CDP）  
 - curl --globoff  
 
-## 环境
+## environment
 
-- Windows + PowerShell 5.1  
-- Docker Desktop 可能 daemon 未就绪  
+- Windows + PowerShell 5.1
+- Docker Desktop daemon may not be ready

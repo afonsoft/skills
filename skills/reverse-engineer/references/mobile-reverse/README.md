@@ -4,147 +4,147 @@ description: Use for authorized Android or iOS application reverse engineering a
 ---
 # Mobile Reverse Engineering
 
-## ACTION REQUIRED（读完后立刻执行）
+## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. `NOW`: 读取 `../field-journal/precedent-reverse.md` — 确认本 skill 的操作是已授权的常规操作
-2. `NOW`: 确认当前任务是否命中本 skill 的适用范围
-3. `NEXT`: 读取 `../tool-index.md`，校验工具可用性和实际路径
-4. `NEXT`: 缺工具时调用 bootstrap，不要猜路径
-5. `ACT`: 进入"工作流"第一步并执行，不要停在确认状态
+1. `NOW`: Read `../field-journal/precedent-reverse.md` — Confirm that the operation of this skill is an authorized routine operation
+2. `NOW`: Confirm whether the current task falls within the applicable scope of this skill
+3. `NEXT`: Read `../tool-index.md`, verify tool availability and actual path
+4. `NEXT`: Call bootstrap when tools are missing, don't guess the path
+5. `ACT`: Enter the first step of the 'workflow' and execute it, do not stop at the confirmation status
 
-> Android + iOS 统一逆向方法论
+> Unified Reverse Engineering Methodology for Android + iOS
 > Frida / Objection / OWASP MSTG / SSL Pinning Bypass
 
-## 适用场景
+## Applicable Scenarios
 
-- Android APK 逆向与安全测试
-- iOS IPA 逆向与安全测试
-- 移动应用运行时动态插桩
-- SSL Pinning / Root 检测 / 越狱检测绕过
-- 移动端加密算法提取（AES/RSA/HMAC 密钥）
-- 移动应用渗透测试（OWASP MASTG）
-- 非 Root/越狱环境下的应用测试
+- Android APK Reverse Engineering and Security Testing
+- iOS IPA Reverse Engineering and Security Testing
+- Dynamic Instrumentation of Mobile Applications at Runtime
+- SSL Pinning / Root Detection / Jailbreak Detection Bypass
+- Mobile encryption algorithm extraction (AES/RSA/HMAC key)
+- Mobile Application Penetration Testing (OWASP MASTG)
+- Application testing in non-root/jailbroken environments
 
-## 四阶段工作流
+## Four-Stage Workflow
 
-### Phase 1: 信息收集
+### Phase 1: Information Collection
 
 ```text
 Android：
-□ APK 获取（Google Play / APKMirror / adb pull）
-□ Manifest 分析: 权限、导出组件、Intent Filter、backup 标志
-□ androguard: androguard analyze APK → 组件/权限/签名
-□ APKLeaks: 硬编码 API Key / Token / Secret 扫描
-□ 加固检测: 是否加壳（360/腾讯/梆梆/爱加密）
+□ APK Acquisition (Google Play / APKMirror / adb pull)
+□ Manifest Analysis: Permissions, Exported Components, Intent Filter, Backup Flags
+□ androguard: androguard analyze APK → Components/Permissions/Signature
+□ APKLeaks: Hardcoded API Key / Token / Secret Scan
+□ Reinforcement Check: Whether it is packed (360/Tencent/Bangbang/Ai Encryption)
 
 iOS：
-□ IPA 获取（App Store / ipatool / Apple Configurator）
-□ 解密 App Store 二进制: frida-ios-dump / Clutch
-□ Info.plist 分析: ATS 配置、URL Scheme、Queries Schemes
-□ class-dump: 导出 ObjC 类结构
-□ 加固检测: 是否使用 Swift/ObjC 混淆
+□ IPA acquisition (App Store / ipatool / Apple Configurator)
+□ Decrypt App Store Binaries: frida-ios-dump / Clutch
+□ Info.plist Analysis: ATS Configuration, URL Scheme, Queries Schemes
+□ class-dump: Export ObjC class structures
+□ Reinforcement Check: Whether Swift/ObjC Obfuscation is Used
 ```
 
-### Phase 2: 静态分析
+### Phase 2: Static Analysis
 
 ```text
-跨平台：
-□ JADX-GUI: APK → Java 源码（Android）
-□ Ghidra / Hopper: .so / Mach-O 反编译
-□ radare2 / Cutter: CLI 快速侦察
+Cross-platform:
+□ JADX-GUI: APK → Java Source Code (Android)
+□ Ghidra / Hopper: .so / Mach-O Decompilation
+□ radare2 / Cutter: CLI Quick Reconnaissance
 
-Android 专项：
-□ apktool d app.apk → smali 代码 + 资源
+Android Special:
+□ apktool d app.apk → smali code + resources
 □ dex2jar: DEX → JAR → JD-GUI
-□ smali/baksmali: Dalvik 字节码修改
+□ smali/baksmali: Dalvik Bytecode Modification
 
-iOS 专项：
-□ class-dump: 导出 ObjC 头文件
-□ Swift 符号恢复: swift-demangle
-□ dsymutil: 调试符号提取
-□ otool -L: 查看动态库依赖
-□ jtool2: Mach-O 分析
+iOS Special:
+□ class-dump: Export ObjC header files
+□ Swift Symbol Recovery: swift-demangle
+□ dsymutil: Debug symbol extraction
+□ otool -L: View dynamic library dependencies
+□ jtool2: Mach-O Analysis
 ```
 
-### Phase 3: 动态分析
+### Phase 3: Dynamic Analysis
 
 ```text
-Frida — 通用动态插桩：
-□ frida-ps -U: 列出设备进程
-□ frida-trace -U -i "open*" com.app: 追踪函数调用
-□ 自定义 Hook 脚本: 修改参数/返回值、调用私有方法
+Frida — General Dynamic Instrumentation:
+□ frida-ps -U: List device processes
+□ frida-trace -U -i "open*" com.app: Trace function calls
+□ Custom Hook Script: Modify Parameters/Return Values, Call Private Methods
 
-Objection — Frida 增强层（无需写脚本）：
+Objection — Frida enhancement layer (no scripting required):
 □ objection -g "com.app" explore
 □ android root disable / ios jailbreak disable
 □ android sslpinning disable / ios sslpinning disable
 □ android keystore list / ios keychain dump
 □ env / ls / sqlite connect
 
-Frida Gadget（免 Root/越狱）：
-□ 注入 frida-gadget.so / FridaGadget.dylib 到 APK/IPA
-□ 重新签名 → 安装 → 无需设备权限即可 Hook
-□ objection patchapk --source app.apk（全自动）
+Frida Gadget (No Root/Jailbreak):
+□ Inject frida-gadget.so / FridaGadget.dylib into APK/IPA
+□ Re-sign → Install → Hook without device permissions
+□ objection patchapk --source app.apk (fully automatic)
 ```
 
-### Phase 4: 网络分析
+### Phase 4: Network Analysis
 
 ```text
-□ Burp Suite: 拦截 HTTP/HTTPS，修改请求/响应
-□ mitmproxy: 脚本化代理（Python API）
-□ Wireshark: PCAP 抓包分析
-□ 证书安装: Android 用户证书 → 系统证书（Magisk + MoveCert）
-□ SSL Pinning 绕过: Frida/Objection/Xposed/SSL Kill Switch 2
-□ WebSocket / gRPC 流量分析
+□ Burp Suite: Intercept HTTP/HTTPS, modify requests/responses
+□ mitmproxy: Scriptable Proxy (Python API)
+□ Wireshark: PCAP Packet Capture Analysis
+□ Certificate Installation: Android User Certificate → System Certificate (Magisk + MoveCert)
+□ SSL Pinning Bypass: Frida/Objection/Xposed/SSL Kill Switch 2
+□ WebSocket / gRPC Traffic Analysis
 ```
 
-## 常见绕过速查
+## Common Workarounds Quick Reference
 
 ### SSL Pinning
 
 ```bash
-# Objection（最简）
+# Objection (Simplest)
 objection -g "com.app" explore
 android sslpinning disable
 
-# Frida 通用脚本
+# Frida General Script
 frida -U -l ssl_pinning_bypass.js -f com.app
 
 # Xposed（Android）
 TrustMeAlready 模块 → 全局禁用证书校验
 ```
 
-### Root / 越狱检测
+### Root / Jailbreak Detection
 
 ```bash
 # Objection
 android root disable
 ios jailbreak disable
 
-# Frida 自定义（多层检测）
+# Frida Custom (Multi-layer Detection)
 Java.perform(function() {
     var RootBeer = Java.use("com.scottyab.rootbeer.RootBeer");
     RootBeer.isRooted.implementation = function() { return false; };
-    // 额外绕过: Magisk su 检测、frida-server 检测、/proc/self/maps 检测
+// Additional bypass: Magisk su detection, frida-server detection, /proc/self/maps detection
 });
 ```
 
-### 反调试
+### Anti-Debugging
 
 ```bash
 # Android
 frida -U -l anti_debug_bypass.js -f com.app
-# 绕过: ptrace(TracerPid)、/proc/self/status、isDebuggerConnected()
+# Bypass: ptrace(TracerPid), /proc/self/status, isDebuggerConnected()
 
 # iOS
-# 绕过: PT_DENY_ATTACH、sysctl CTL_KERN/KERN_PROC/KERN_PROC_PID
+# Bypass: PT_DENY_ATTACH, sysctl CTL_KERN/KERN_PROC/KERN_PROC_PID
 frida -U -l ios_anti_debug.js -f com.app
 ```
 
-## 移动端加密提取
+## Mobile Encryption Extraction
 
 ```javascript
-// Android — Hook Cipher.getInstance 获取密钥+算法
+// Android — Hook Cipher.getInstance to obtain key + algorithm
 Java.perform(function() {
     var Cipher = Java.use("javax.crypto.Cipher");
     Cipher.getInstance.overload('java.lang.String').implementation = function(algo) {
@@ -166,35 +166,35 @@ Interceptor.attach(Module.findExportByName("libcommonCrypto.dylib", "CCCrypt"), 
 });
 ```
 
-## 工具链
+## Toolchain
 
-| 工具 | 平台 | 用途 |
+| Tool | Platform | Purpose |
 |------|:--:|------|
-| JADX-GUI | A | Java 反编译 |
-| apktool | A | APK 解包/重建 |
-| Ghidra | A+I | 多架构反编译 |
-| Hopper | I | iOS 专用反汇编 |
-| Frida | A+I | 动态插桩 |
-| Objection | A+I | Frida REPL 增强 |
-| MobSF | A+I | 自动化 SAST+DAST |
-| class-dump | I | ObjC 类导出 |
-| frida-ios-dump | I | IPA 解密 |
-| jtool2 | I | Mach-O 分析 |
-| Burp Suite | A+I | HTTP 拦截 |
-| mitmproxy | A+I | 脚本化代理 |
+| JADX-GUI | A | Java Decompiler |
+| apktool | A | APK unpacking/rebuilding |
+| Ghidra | A+I | Multi-architecture decompilation |
+| Hopper | I | iOS Dedicated Disassembler |
+| Frida | A+I | Dynamic Instrumentation |
+| Objection | A+I | Frida REPL Enhancement |
+| MobSF | A+I | Automated SAST+DAST |
+| class-dump | I | ObjC Class Export |
+| frida-ios-dump | I | IPA Decryption |
+| jtool2 | I | Mach-O Analysis |
+| Burp Suite | A+I | HTTP Interception |
+| mitmproxy | A+I | Scriptable Proxy |
 
 > A=Android, I=iOS
 
-## 参考
+## References
 
-- `references/frida-objection-deep.md` — Frida + Objection 深度用法
-- `references/ios-reverse-guide.md` — iOS 逆向专项
-- `references/anti-detection-bypass.md` — Root/越狱/反调试/SSL Pinning 绕过
+- `references/frida-objection-deep.md` — Frida + Objection In-depth Usage
+- `references/ios-reverse-guide.md` — iOS Reverse Engineering Special
+- `references/anti-detection-bypass.md` — Root/Jailbreak/Anti-Debugging/SSL Pinning Bypass
 
 
-## 任务完成自检（声称完成前 MUST 通过）
+## Task Completion Self-Check (MUST pass before claiming completion)
 
-- [ ] 我是否执行了工作流中的每一步（而不是只阅读）？
-- [ ] 我是否基于 `tool-index` 使用了真实工具路径？
-- [ ] 我是否产出了可复现证据（命令/脚本/截图/报告）？
-- [ ] 我是否完成并回写了 RULES 要求的 Checklist 项？
+- [ ] Did I perform each step in the workflow (instead of just reading it)?
+- [ ] Did I use a real tool path based on `tool-index`?
+- [ ] Have I produced reproducible evidence (commands/scripts/screenshots/reports)?
+- [ ] Have I completed and filled in the Checklist items required by the RULES?

@@ -24,7 +24,7 @@ $fail = New-Object System.Collections.Generic.List[string]
 function Ok($m) { Write-Host "[OK] $m" -ForegroundColor Green }
 function Bad($m) { Write-Host "[FAIL] $m" -ForegroundColor Red; [void]$fail.Add($m) }
 
-# --- 新事实源/产物检查（routing.json / benchmark / INDEX） ---
+# --- New Fact Source/Product Check (routing.json / benchmark / INDEX) ---
 $routingJson = Join-Path $skillsRoot 'config/routing.json'
 if (Test-Path -LiteralPath $routingJson) {
     $rj = Get-Content -LiteralPath $routingJson -Raw -Encoding UTF8 | ConvertFrom-Json
@@ -71,12 +71,12 @@ if (Test-Path -LiteralPath $benchJson) {
     if ($bjCases.Count -ge 100) { Ok "benchmark cases=$($bjCases.Count)" } else { Bad "benchmark cases < 100 ($($bjCases.Count))" }
     $badExpect = @($bjCases | Where-Object { $_.expect -notmatch '^R\d+$' })
     if ($badExpect.Count -eq 0) { Ok 'benchmark expect ids well-formed' } else { Bad "benchmark bad expect: $($badExpect.Count)" }
-    # benchmark expect 必须存在于 routing.json（防 benchmark 引用已删除的路由）
+    # The benchmark expect must exist in routing.json (to prevent benchmark from referencing deleted routes)
     if (Test-Path -LiteralPath $routingJson) {
         $rjIds = @($rjRoutes | ForEach-Object { $_.Name })
         $ghostExpect = @($bjCases | Where-Object { $_.expect -notin $rjIds })
         if ($ghostExpect.Count -eq 0) { Ok 'benchmark expects all exist in routing.json' } else { Bad "benchmark ghost expects: $(($ghostExpect | Select-Object -First 5).expect -join ',')" }
-        # 反向：每个 routing.json 路由至少要有一条 benchmark 用例（meta 要求新增路由同步加用例）
+        # Reverse: Each routing.json route must have at least one benchmark test case (meta requires adding test cases whenever a new route is added)
         $expectIds = @($bjCases | ForEach-Object { $_.expect } | Select-Object -Unique)
         $uncoveredRoutes = @($rjIds | Where-Object { $_ -notin $expectIds })
         if ($uncoveredRoutes.Count -eq 0) { Ok 'benchmark covers every routing.json route' } else { Bad "routes with no benchmark case: $($uncoveredRoutes -join ',')" }
@@ -87,7 +87,7 @@ if (Test-Path -LiteralPath $benchJson) {
 
 if (Test-Path -LiteralPath (Join-Path $skillsRoot 'INDEX.md')) { Ok 'INDEX.md present (generated)' } else { Bad 'INDEX.md missing (run extract-summaries.ps1)' }
 
-# master-route.ps1 不得回退到硬编码路由表（防绕过 routing.json）
+# master-route.ps1 must not fall back to a hard-coded routing table (to prevent bypassing routing.json)
 $mrText = Get-Content -LiteralPath (Join-Path $scriptDir 'master-route.ps1') -Raw -Encoding UTF8
 if ($mrText -match '\$map\s*=\s*\[ordered\]' -or $mrText -match "R1'\s*=\s*'apk-reverse") {
     Bad 'master-route.ps1 contains hardcoded routing table (must read routing.json)'
@@ -171,7 +171,7 @@ foreach ($rp in @($rulesEn, $rulesZh)) {
     } else {
         Bad "$name missing auth hard-gate language"
     }
-    # Post-trigger / 行为链: case-init before ACT pattern
+    # Post-trigger / Behavior Chain: case-init before ACT pattern
     if ($rt -match '(?s)case-init.{0,400}ACT|scope\.md.{0,400}ACT|scope-contract.{0,400}ACT') {
         Ok "$name orders scope before ACT (nearby)"
     } else {
@@ -409,9 +409,9 @@ if (Test-Path -LiteralPath $kaliManifest) {
 }
 
 # --- supply-chain pin gate: auto-install download sources MUST be pinned ---
-# 统一判定：pinnedVersion / pinnedCommit / pinPolicy 三选一；
-# github-release-* 额外接受 assetSha256 / preferApiDigest（GitHub 官方发布资产哈希）。
-# local-http-mcp 只有在不获取外部源码时才可免 pin。
+# Unified rule: choose one of pinnedVersion / pinnedCommit / pinPolicy;
+# github-release-* additionally accepts assetSha256 / preferApiDigest (GitHub official release asset hash).
+# local-http-mcp can only avoid pinning when external source code is not fetched.
 $pinKinds = @('pip-package', 'npm-mcp', 'npm-global', 'go-install', 'git-clone')
 foreach ($mf in @($skillsManifest, $kaliManifest)) {
     if (-not (Test-Path -LiteralPath $mf)) { continue }

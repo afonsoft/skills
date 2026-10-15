@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# tool-discovery.sh — Kali Linux 版工具发现库
-# 等价于 Windows 版的 ToolDiscovery.ps1
+# tool-discovery.sh — Tool discovery library for Kali Linux
+# Equivalent to the Windows version of ToolDiscovery.ps1
 
 set -euo pipefail
 
-# ─── 路径推导 ───────────────────────────────────────────────────────────────────
+# ─── Path derivation ──────────────────────────────────────────────────────────────
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 KALI_SCRIPTS_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -12,10 +12,10 @@ KALI_DIR="$(cd "$KALI_SCRIPTS_DIR/.." && pwd)"
 PROJECT_ROOT="$(cd "$KALI_DIR/.." && pwd)"
 SKILL_ROOT="$PROJECT_ROOT"
 
-# ─── 工具目录定义 ─────────────────────────────────────────────────────────────────
+# ─── Tool directory definition ─────────────────────────────────────────────────────────────
 
-# 每个工具的定义格式: name|skill|purpose|version_args|fallback_commands
-# fallback_commands 用逗号分隔
+# The definition format of each tool: name|skill|purpose|version_args|fallback_commands
+# fallback_commands separated by commas
 declare -a TOOL_CATALOG=(
     "jadx|apk-reverse|Java 反编译|--version|jadx,${HOME}/tools/jadx/bin/jadx,/opt/jadx/bin/jadx"
     "apktool|apk-reverse|APK 解包与重建|--version|apktool,${HOME}/tools/apktool/apktool,/usr/local/bin/apktool"
@@ -61,7 +61,7 @@ declare -a TOOL_CATALOG=(
     "strings|reverse-engineering|字符串提取|--version|strings"
     "file|reverse-engineering|文件类型识别|--version|file"
     "nuclei|pentest-tools|漏洞扫描|-version|nuclei"
-    # ─── Kali 2026.1 新增工具 ───
+    # ─── Kali 2026.1 new tools ───
     "metasploitmcp|pentest-tools|Metasploit MCP Server|-h|metasploitmcp"
     "mcp-kali-server|pentest-tools|Kali 官方 MCP Server（终端桥接）|-h|kali-server-mcp,mcp-server"
     "hexstrike-ai|pentest-tools|AI MCP 安全自动化平台（150+ 工具）||hexstrike-ai"
@@ -75,7 +75,7 @@ declare -a TOOL_CATALOG=(
     "evil-winrm-py|pentest-tools|Python WinRM 远程执行|-h|evil-winrm-py"
     "coercer|pentest-tools|Windows 认证强制（AD 攻击）|-h|coercer"
     "pentestswarm|pentest-tools|群体智能自主渗透框架（Swarm AI）|--version|pentestswarm"
-    # ─── Kali 经典预装但之前未列入的工具 ───
+    # ─── Tools that are pre-installed in Kali Classic but not previously included ───
     "netexec|pentest-tools|网络服务枚举与利用（CrackMapExec 继任）|--help|nxc,netexec"
     "responder|pentest-tools|LLMNR/NBT-NS/MDNS 投毒|-h|responder"
     "crackmapexec|pentest-tools|网络渗透瑞士军刀|--help|crackmapexec,cme"
@@ -88,7 +88,7 @@ declare -a TOOL_CATALOG=(
     "burpsuite|pentest-tools|Web 代理与漏洞扫描||burpsuite"
 )
 
-# 脚本引用映射
+# Script reference mapping
 declare -A SCRIPT_REFS=(
     ["jadx"]="apk-reverse/scripts/decode.sh"
     ["apktool"]="apk-reverse/scripts/decode.sh,apk-reverse/scripts/rebuild-sign-install.sh"
@@ -132,15 +132,15 @@ declare -A SCRIPT_REFS=(
     ["responder"]="pentest-tools/README.md"
 )
 
-# ─── 工具发现函数 ─────────────────────────────────────────────────────────────────
+# ─── Tool discovery function ─────────────────────────────────────────────────────────────
 
-# 查找命令的完整路径
+# Find the full path of the command
 find_command() {
     local name="$1"
     command -v "$name" 2>/dev/null || true
 }
 
-# 检测端口是否在监听
+# Check if the port is listening
 test_tcp_port() {
     local port="$1"
     local host="${2:-127.0.0.1}"
@@ -150,7 +150,7 @@ test_tcp_port() {
     return 1
 }
 
-# 获取工具版本
+# Get tool version
 get_tool_version() {
     local cmd="$1"
     local version_args="$2"
@@ -169,8 +169,8 @@ get_tool_version() {
     echo "$output"
 }
 
-# 解析工具定义并检测可用性
-# 返回: name|skill|purpose|available|resolved_path|version|source
+# Parse tool definitions and detect availability
+# Return: name|skill|purpose|available|resolved_path|version|source
 resolve_tool() {
     local entry="$1"
     IFS='|' read -r name skill purpose version_args fallbacks <<< "$entry"
@@ -178,7 +178,7 @@ resolve_tool() {
     IFS=',' read -ra candidates <<< "$fallbacks"
 
     for candidate in "${candidates[@]}"; do
-        # 展开 glob（如 build-tools/*/apksigner）
+        # Expand glob (such as build-tools/*/apksigner)
         local expanded
         expanded=$(compgen -G "$candidate" 2>/dev/null | head -n1) || expanded=""
 
@@ -189,7 +189,7 @@ resolve_tool() {
             return
         fi
 
-        # 尝试作为命令名查找
+        # Try to find as command name
         local cmd_path
         cmd_path=$(find_command "$candidate")
         if [[ -n "$cmd_path" ]]; then
@@ -200,16 +200,16 @@ resolve_tool() {
         fi
     done
 
-    # 未找到
+    # not found
     echo "${name}|${skill}|${purpose}|no|||missing"
 }
 
-# 获取 MCP 配置路径（Claude Code）
+# Get MCP configuration path (Claude Code)
 get_claude_mcp_config_path() {
     echo "${HOME}/.claude/mcp.json"
 }
 
-# 检查 MCP server 是否已注册
+# Check if the MCP server is registered
 check_mcp_registered() {
     local server_name="$1"
     local config_path
@@ -238,12 +238,12 @@ check_mcp_registered() {
     fi
 }
 
-# 获取 bootstrap manifest 路径
+# Get bootstrap manifest path
 get_bootstrap_manifest_path() {
     echo "${KALI_SCRIPTS_DIR}/bootstrap-manifest.json"
 }
 
-# 从 manifest 获取能力定义（需要 jq）
+# Get capability definition from manifest (requires jq)
 get_capability_definition() {
     local name="$1"
     local manifest
