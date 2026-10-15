@@ -7,18 +7,18 @@ description: Use for authorized OSINT and cyber threat intelligence that enriche
 
 ## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. `NOW`: Read `../ops/scope-contract.md` to verify the public source, target entity, time window, and intended use.
-2. `NOW`: Read `../field-journal/precedent-pentest.md` only when it is necessary to operate on precedents. Precedents cannot grant permissions.
-3. `NOW`: Write falsifiable intelligence questions and candidate conclusions that must be independently verified.
-4. `NEXT`: Read `../tool-index.md`. Check `xquik-mcp` when X data needs to be disclosed.
-5. `ACT`: Start with the narrowest read-only query, retain the source metadata, and then proceed to association and verification.
+1. xKx0000xKx: Read xKx0001xKx to verify the public source, target entity, time window, and intended use.
+2. xKx0002xKx: Read xKx0003xKx only when it is necessary to operate on precedents. Precedents cannot grant permissions.
+3. xKx0004xKx: Write falsifiable intelligence questions and candidate conclusions that must be independently verified.
+4. xKx0005xKx: Read xKx0006xKx. Check xKx0007xKx when X data needs to be disclosed.
+5. xKx0008xKx: Start with the narrowest read-only query, retain the source metadata, and then proceed to association and verification.
 
 ## Scope of Application
 
 - Supplement IOCs such as domain names, IPs, URLs, hashes, email addresses, or wallet addresses using public sources.
 - Track publicly disclosed malicious activities, phishing activities, impersonation accounts, and scam narratives.
-- Find clues from public X/Twitter posts and submit them for verification by samples, networks, or vendors.
-- Prepare intelligence packages for `threat-hunting/`, `malware-analysis/`, `email-security/`, or `digital-forensics/`.
+- Find clues from public xKx0009xKx posts and submit them for verification by samples, networks, or vendors.
+- Prepare intelligence packages for xKx0010xKx, xKx0011xKx, xKx0012xKx, or xKx0013xKx.
 
 This skill does not handle brand marketing, public opinion growth, automated posting, or social analysis without safety purposes.
 
@@ -26,14 +26,14 @@ This skill does not handle brand marketing, public opinion growth, automated pos
 
 - Internal tool selection, phase control, and field name usage in English.
 - The conclusion visible to the user defaults to Chinese, unless the user requests another language.
-- The status of evidence uses `线索 / lead`, `已佐证 / corroborated`, `已确认 / confirmed`.
+- The status of evidence uses xKx0014xKx, xKx0015xKx, xKx0016xKx.
 
 ## Tool Dependencies
 
 | Ability | Required | Usage | Access Method |
 |------|------|------|----------|
-| Xquik MCP | No | Public X/Twitter search, posts, and account reading | `xquik-mcp`, remote HTTPS + OAuth |
-| Xquik REST | No | Scripted public X data retrieval | `https://xquik.com/api/v1` + `XQUIK_API_KEY` |
+| Xquik MCP | No | Public xKx0017xKx search, posts, and account reading | xKx0018xKx, remote HTTPS + OAuth |
+| Xquik REST | No | Scripted public X data retrieval | xKx0019xKx + xKx0020xKx |
 | Other independent sources | Yes | Verify candidate conclusions from X sources | Vendor announcements, samples, DNS, certificates, repositories, or case evidence |
 
 Xquik is an independent third-party service. Not affiliated with X Corp. "Twitter" and "X" are trademarks of X Corp.

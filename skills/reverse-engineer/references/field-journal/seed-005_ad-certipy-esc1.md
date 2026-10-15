@@ -51,7 +51,7 @@ certipy find -u "$USER@$DOMAIN" -p "$PASS" -dc-ip "$DC" -stdout | grep -A5 "ESC"
 
 ## Suggestions for Improvement of This Package
 - certipy has been added to the Kali bootstrap manifest ✓
-- routing.md 已有 "Certipy/AD CS" 路由 ✓
+- routing.md already has the "Certipy/AD CS" route ✓
 
 ## Evolution Actions
 - [x] No update needed (already overwritten)

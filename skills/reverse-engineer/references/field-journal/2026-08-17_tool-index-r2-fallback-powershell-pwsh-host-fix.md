@@ -4,7 +4,7 @@
 Toolchain and Environment (Boot Phase Defect Fix)
 
 ## Overview of Goals
-Fix three types of defects that are gradually hidden in the native boot process: tool-index falsely reports the radare2 main analyzer `r2` as no; multiple test scripts hard-code `powershell` subprocess calls that fail on machines with only PowerShell 7+ installed; and the pin gate StrictMode property access bug that is masked by this failure.
+Fix three types of defects that are gradually hidden in the native boot process: tool-index falsely reports the radare2 main analyzer xKx0000xKx as no; multiple test scripts hard-code xKx0001xKx subprocess calls that fail on machines with only PowerShell 7+ installed; and the pin gate StrictMode property access bug that is masked by this failure.
 
 ## Scope Summary (Desensitized)
 - auth_basis: own_system (this repository itself)
@@ -40,25 +40,25 @@ Fix three types of defects that are gradually hidden in the native boot process:
 
 | E-id | severity | status | source_type | reusable command pattern | related Finding |
 |------|----------|--------|-------------|----------------|--------------|
-| E-r2 | info | validated | command | `pwsh -File references/scripts/refresh-tool-index.ps1` After tool-index.md in `r2` line = yes | F-r2 |
-| E-smoke | info | validated | command | `pwsh -File references/scripts/smoke.ps1` → `OVERALL: ALL PASS` | F-host |
-| E-route | info | validated | command | `pwsh -File references/scripts/test-routing.ps1` → `166/166 ALL PASS` | F-host |
-| E-p0 | info | validated | command | `pwsh -File references/scripts/test-p0-friction.ps1` → `OVERALL: ALL PASS` | F-host |
+| E-r2 | info | validated | command | xKx0079xKx After tool-index.md in xKx0080xKx line = yes | F-r2 |
+| E-smoke | info | validated | command | xKx0081xKx → xKx0082xKx | F-host |
+| E-route | info | validated | command | xKx0083xKx → xKx0084xKx | F-host |
+| E-p0 | info | validated | command | xKx0085xKx → xKx0086xKx | F-host |
 
 ## Finding / Path Summary
-- top_finding: Three types of defects cover each other layer by layer — `r2` fallback omission `.bat` entry → `verify` hard-coded `powershell` failure interruption → conceals pin gate StrictMode property access bug; grep-compatible scan also misses `powershell.exe` literals.
+- top_finding: Three types of defects cover each other layer by layer — xKx0087xKx fallback omission xKx0088xKx entry → xKx0089xKx hard-coded xKx0090xKx failure interruption → conceals pin gate StrictMode property access bug; grep-compatible scan also misses xKx0091xKx literals.
 - path_type: solve
-- path_one_liner: Use shared `Resolve-ReverseHostExe` (current process priority) to unify subprocess entry, provide `.bat`/`radare2.exe` fallback for `r2`, and safely access optional properties of PSCustomObject using hashtable.
+- path_one_liner: Use shared xKx0092xKx (current process priority) to unify subprocess entry, provide xKx0077xKx fallback for xKx0095xKx, and safely access optional properties of PSCustomObject using hashtable.
 
 ## Pitfall Record
 
 | Problem | Cause | Solution | Time Consumed |
 |------|------|---------|------|
-| tool-index marks `r2` as no, but other r2* tools in the same directory as yes | `ToolDiscovery.ps1`'s `r2` Fallbacks only look for `r2.exe`, while radare2 Windows distributions wrap `r2.bat` around `radare2.exe`, without `r2.exe` | patch `r2.bat` and `radare2.exe` path fallback | short |
-| smoke still FAIL: verify exit 1 | verify internally hard-coded `& powershell`, this machine only has pwsh 7+, no `powershell` | create `lib/HostRuntime.ps1` of `Resolve-ReverseHostExe`, 4 scripts replaced with `& $HostExe` | middle |
-| verify After fixing PowerShell, it failed again at 414 | Pre-existing bug covered by 257's PowerShell bug: accessing non-existent properties like `$cap.pinnedVersion` in StrictMode causes an error | `$cap` converts to hashtable `$capMap`, index access does not report an error | Short |
-| test-p0-friction failed again at 343/364 | `Start-Process -FilePath 'powershell.exe'` Hard-coded; previously the grep pattern `powershell\s+(-NoProfile...)` missed `powershell.exe` literal | grep `powershell\.exe` completion, changed to `$HostExe` | Short |
-| test-p0-friction outputs a large amount of `Exception: case-init.ps1:54` | Test 14b deliberately uses an illegal CaseName to trigger case-init to throw an exception, which is expected | No action required, the final FAIL_COUNT=0 means it passes | — |
+| tool-index marks xKx0096xKx as no, but other r2* tools in the same directory as yes | xKx0097xKx's xKx0098xKx Fallbacks only look for xKx0099xKx, while radare2 Windows distributions wrap xKx0100xKx around xKx0101xKx, without xKx0102xKx | patch xKx0103xKx and xKx0104xKx path fallback | short |
+| smoke still FAIL: verify exit 1 | verify internally hard-coded xKx0105xKx, this machine only has pwsh 7+, no xKx0106xKx | create xKx0107xKx of xKx0108xKx, 4 scripts replaced with xKx0109xKx | middle |
+| verify After fixing PowerShell, it failed again at 414 | Pre-existing bug covered by 257's PowerShell bug: accessing non-existent properties like xKx0110xKx in StrictMode causes an error | xKx0111xKx converts to hashtable xKx0112xKx, index access does not report an error | Short |
+| test-p0-friction failed again at xKx0113xKx | xKx0114xKx Hard-coded; previously the grep pattern xKx0115xKx missed xKx0116xKx literal | grep xKx0117xKx completion, changed to xKx0118xKx | Short |
+| test-p0-friction outputs a large amount of xKx0119xKx | Test 14b deliberately uses an illegal CaseName to trigger case-init to throw an exception, which is expected | No action required, the final FAIL_COUNT=0 means it passes | — |
 
 ## 工具链发现
 - **radare2 Windows 发行版结构**：主程序是 `radare2.exe`，`r2.bat`（`@"%~dp0\radare2" %*`）是其批处理包装器，**没有 `r2.exe`**。任何按 `r2.exe` 探测的工具扫描都会误报。同目录 `rabin2.exe`/`rasm2.exe` 等是独立 `.exe`，可正常探测。
@@ -66,7 +66,7 @@ Fix three types of defects that are gradually hidden in the native boot process:
 - **StrictMode 属性访问**：`Set-StrictMode -Version Latest` 下访问 `PSCustomObject` 不存在的属性会抛错；用 hashtable 索引访问不存在的 key 返回 `$null`，是 pin gate 这类"可选属性多"场景的安全写法。
 - **grep 兼容扫描盲区**：用 `powershell\s+(-NoProfile...)` 只能抓 `& powershell -File` 形式，漏掉 `Start-Process -FilePath 'powershell.exe'` 与 `cmd /c "powershell ..."`。兼容性扫描应同时覆盖 `powershell\s` 与 `powershell\.exe` 两类。
 
-## Key Code/Commands
+## Key xKx0142xKx
 
 ```powershell
 # lib/HostRuntime.ps1 —— Unified subprocess PowerShell entry (current process prioritized)

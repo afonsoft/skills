@@ -397,13 +397,13 @@ print(f"admin_session={payload_b64}.{sig_b64}")
 ```
 
 **Validation signals:**
-- `GET /api/admin/me` changes from `401 {"error":"unauthorized"}` to `200 {"admin":true}`.
+- xKx0000xKx changes from xKx0001xKx to xKx0002xKx.
 - Other read-only admin endpoints return real data with the forged cookie.
-- A JSON-cookie value like `admin_session=j:{}` causing `500` suggests Express/cookie-parser type confusion and confirms fragile cookie parsing; it is not required for the bypass but helps identify the stack and parsing assumptions.
+- A JSON-cookie value like xKx0003xKx causing xKx0004xKx suggests xKx0005xKx type confusion and confirms fragile cookie parsing; it is not required for the bypass but helps identify the stack and parsing assumptions.
 
 **What to avoid:** Do not brute-force admin passwords or enumerate unrelated user IDs when a signed-cookie structure is visible. Work offline on signatures and use low-frequency read-only verification.
 
-**Fix guidance:** Never use public route/access tokens as HMAC secrets. Use server-only cookie signing secrets, separate student/admin secrets, server-side sessions for admin identity, strict cookie type checks, and return `401` on parse/verify failure instead of `500`.
+**Fix guidance:** Never use public xKx0006xKx tokens as HMAC secrets. Use server-only cookie signing secrets, separate xKx0007xKx secrets, server-side sessions for admin identity, strict cookie type checks, and return xKx0008xKx on xKx0009xKx failure instead of xKx0010xKx.
 
 ## Web Phishing Infrastructure
 
@@ -412,21 +412,21 @@ print(f"admin_session={payload_b64}.{sig_b64}")
 Two-server phishing infrastructure impersonating a government agency. Full victim control system with server-driven status code redirection.
 
 **Architecture:**
-- `{target_domain_a}` — Presentation layer (phishing pages, JS polling client)
-- `{target_domain_b}` — Data layer (PHP+MySQL backend, admin panel)
+- xKx0011xKx — Presentation layer (phishing pages, JS polling client)
+- xKx0012xKx — Data layer (PHP+MySQL backend, admin panel)
 - Both behind NAT ({internal_ip} internal), nginx, SSL-only
-- Web root: `/www/wwwroot/{target_domain_b}/`
+- Web root: xKx0013xKx
 
-**Victim Flow:** Landing page (fake subsidy quotas) → 1.html (ID/bank card form → `submit.php`) → 4.html (PIN → `get-ayment.php`) → server-controlled staged pages (9-16) via 1-second `status_check.php` polling.
+**Victim Flow:** Landing page (fake subsidy quotas) → 1.html (xKx0014xKx card form → xKx0015xKx) → 4.html (PIN → xKx0016xKx) → server-controlled staged pages (9-16) via 1-second xKx0017xKx polling.
 
 **Key Findings:**
-- Admin panel at `register.php` → `qichuang.php` (login form), `list.php` (dashboard template)
-- Auth via PHP session (`PHPSESSID`); `login.php` and `check_login_ajax.php` removed (404)
-- **Data leak**: `db.php` returns victim name list without auth (49+ records, **no bank details** — only id/username/note/description fields)
-- **No-auth write**: `save_note.php` accepts data without authentication
-- `backend.php` gives SQL error suggesting admin registration endpoint (broken)
-- Rate limiting on `submit.php` (multi-factor), no SQLi or session bypass found
-- Status code system: admin sets 1-16, victim browser auto-redirects to `N.html`
+- Admin panel at xKx0018xKx → xKx0019xKx (login form), xKx0020xKx (dashboard template)
+- Auth via PHP session (xKx0021xKx); xKx0022xKx and xKx0023xKx removed (404)
+- **Data leak**: xKx0024xKx returns victim name list without auth (49+ records, **no bank details** — only xKx0025xKx fields)
+- **No-auth write**: xKx0026xKx accepts data without authentication
+- xKx0027xKx gives SQL error suggesting admin registration endpoint (broken)
+- Rate limiting on xKx0028xKx (multi-factor), no SQLi or session bypass found
+- Status code system: admin sets 1-16, victim browser auto-redirects to xKx0029xKx
 
 **Infrastructure:**
 | Domain | Public IP | Role |
@@ -438,102 +438,101 @@ Two-server phishing infrastructure impersonating a government agency. Full victi
 
 ---
 
-## 分析前预判：文件伪装与名字欺骗
+## Pre-analysis Prediction: File Camouflage and Name Deception
 
-### 文件后缀不可信
+### File suffix is not trustworthy
 
-**核心原则：永远用 `file` 命令或 magic bytes 判断文件类型，不要相信后缀名。**
+**Core Principle: Always use the `file` command or magic bytes to determine the file type; do not trust the file extension.**
 
-常见伪装手法：
+Common camouflage techniques:
 
-| 伪装后缀 | 实际类型 | 目的 |
+| Fake Suffix | Actual Type | Purpose |
 |---------|---------|------|
-| `.sh` | ELF 二进制 | 让人以为是脚本，降低警惕 |
-| `.txt` | PE/ELF | 绕过简单的文件类型过滤 |
-| `.jpg`/`.png` | 可执行文件或压缩包 | 隐藏在图片中 |
-| `.dll` | 实际是 .NET assembly | 混淆分析方向 |
-| `.so` | 实际是加密 payload | 需要先解密 |
-| 无后缀 | 任何类型 | Linux 下常见 |
+| `.sh` | ELF binary | Makes people think it is a script, lowering their guard |
+| `.txt` | PE/ELF | Bypass simple file type filtering |
+| `.jpg`/`.png` | Executable file or compressed package | Hidden in the image |
+| `.dll` | Actually a .NET assembly | Obfuscation analysis direction |
+| `.so` | Actually an encrypted payload | Needs to be decrypted first |
+| No suffix | Any type | Common on Linux |
 
 ```bash
-# 正确做法：用 file 命令
+# Correct approach: use the file command
 file suspicious_file.sh
-# 输出: ELF 64-bit LSB executable, ARM aarch64...
+# Output: ELF 64-bit LSB executable, ARM aarch64...
 
-# 用 xxd 看 magic bytes
+# Use xxd to view magic bytes
 xxd suspicious_file.sh | head -1
 # 7f454c46 = ELF magic
 ```
 
-### 文件名不可信
+### Filename Untrusted
 
-**"DriverLoader" 不一定加载驱动，"Updater" 不一定更新。**
+**"DriverLoader" does not necessarily load drivers, and "Updater" does not necessarily update.**
 
-常见名字欺骗：
+Common name deception:
 
-| 文件名暗示 | 实际行为 |
+| File Name Suggestion | Actual Behavior |
 |-----------|---------|
-| `DriverLoader` | 可能是 ptrace 注入器 / 进程 hook |
-| `SystemService` | 可能是后门 / C2 agent |
-| `Updater` / `Update` | 可能是 dropper / 下载器 |
-| `Helper` / `Assistant` | 可能是提权工具 |
-| `lib*.so` | 可能是注入 payload |
+| `DriverLoader` | May be a ptrace injector / process hook |
+| `SystemService` | Possible backdoor / C2 agent |
+| `Updater` / `Update` | Possibly a dropper / downloader |
+| `Helper` / `Assistant` | May be a privilege escalation tool |
+| `lib*.so` | may be an injected payload |
 
-**分析时应该：**
-- 忽略文件名暗示，按实际代码行为判断
-- 关注 `mmap`、`ptrace`、`/proc/self/mem` 等系统调用
-- 如果看到"加载驱动"但没有 `insmod`/`init_module` 调用，说明名不副实
+**When analyzing, one should:**
+- Ignore filename hints and judge based on actual code behavior
+- Focus on system calls such as `mmap`, `ptrace`, `/proc/self/mem`
+- If you see 'loading driver' but there is no `insmod`/`init_module` call, it means it's not what it claims to be.
 
-### 静态分析不够时的动态补充
+### Dynamic Supplement When Static Analysis Is Insufficient
 
-纯静态分析只能看到代码骨架。以下场景必须配合动态分析：
+Pure static analysis can only reveal the code skeleton. The following scenarios must be combined with dynamic analysis:
 
-| 场景 | 推荐动态方法 |
+| Scene | Recommended Dynamic Methods |
 |------|-------------|
-| 代码有解密/解压逻辑 | 在解密后下断点，dump 明文 |
-| 大量间接调用（函数指针表） | strace/ltrace 跟踪实际调用 |
-| 疑似反调试 | 先 strace 看 ptrace 调用 |
-| 内嵌 shellcode/payload | QEMU 用户态模拟执行 |
-| 网络通信协议未知 | tcpdump/Wireshark 抓包 |
+| The code has decryption/decompression logic | Set a breakpoint after decryption, dump the plaintext |
+| Extensive indirect calls (function pointer table) | strace/ltrace trace actual calls |
+| Suspected anti-debugging | First use strace to check ptrace calls |
+| Embedded shellcode/payload | QEMU User-mode Emulation Execution |
+| Network communication protocol unknown | tcpdump/Wireshark packet capture |
 
 ```bash
-# strace 跟踪系统调用（重点关注）
+# strace Track system calls (Focus on)
 strace -f -e trace=open,mmap,ptrace,execve,connect ./binary
 
-# ltrace 跟踪库函数调用
+# ltrace tracing library function calls
 ltrace -f ./binary
 
-# QEMU 用户态模拟（不需要真实设备）
+# QEMU User-mode Emulation (No Real Hardware Required)
 qemu-aarch64 -strace ./binary_arm64
 
-# 检查反调试：看是否 ptrace 自追踪
+# Check anti-debugging: see if ptrace is self-tracing
 strace ./binary 2>&1 | grep ptrace
-# 如果看到 ptrace(PTRACE_TRACEME, ...) 说明有反调试
+# If you see ptrace(PTRACE_TRACEME, ...) it indicates anti-debugging
 ```
 
-### 进程注入/保护壳类样本的常见模式
+### Common Patterns of Process Injection/Protection Shell Samples
 
-这类样本（如 `LinYuDriverLoader`）通常：
+These types of samples (such as `LinYuDriverLoader`) usually:
 
-1. **不是真正加载内核驱动**（需要 root 权限，大多数场景没有）
-2. **实际行为是进程注入**：
-   - `ptrace` attach 到目标进程
-   - 通过 `/proc/<pid>/mem` 读写目标内存
-   - `mmap` 映射 shellcode 到目标进程空间
-3. **内嵌加密 payload**：
-   - 运行时解密一段 shellcode
-   - 解密后的 payload 才是真正的 hook 代码
-4. **反调试保护**：
-   - `ptrace(PTRACE_TRACEME)` 自追踪
-   - 时间检测（`clock_gettime` 前后对比）
-   - `/proc/self/status` 检查 TracerPid
+1. **Not actually loading the kernel driver** (requires root permissions, which are not available in most scenarios)
+2. **The actual behavior is process injection**:
+   - `ptrace` attach to the target process
+- Read and write target memory via `/proc/<pid>/mem`
+   - `mmap` Map shellcode to the target process space
+3. **Embedded encrypted payload**:
+- Decrypt a piece of shellcode at runtime
+   - The decrypted payload is the real hook code
+4. **Anti-Debugging Protection**:
+   - `ptrace(PTRACE_TRACEME)` Self-tracking
+- Time Check (`clock_gettime` Before and After Comparison)
+   - `/proc/self/status` Check TracerPid
 
-**分析策略**：
-```text
-1. file 命令确认真实类型
-2. strings 看有没有明显的路径/库名/错误信息
-3. rabin2 -I 看架构/编译器/保护
-4. 静态找 mmap/ptrace/open 调用
-5. 如果有解密逻辑 → 动态跑到解密后 dump
-6. 如果有反调试 → 先 patch 掉或用 LD_PRELOAD 绕过
+**Analysis Strategy**:```text
+1. Use the file command to confirm the real type
+2. Check strings for any obvious paths/library names/error messages
+3. rabin2 -I Check architecture/compiler/protection
+4. Statically find mmap/ptrace/open calls
+5. If there is decryption logic → dynamically run and dump after decryption
+6. If there is anti-debugging → first patch it or bypass it using LD_PRELOAD
 ```

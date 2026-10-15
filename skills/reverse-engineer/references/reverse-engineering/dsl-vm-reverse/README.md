@@ -7,9 +7,9 @@ description: Reverse JavaScript-based custom DSL/VM interpreters, non-standard W
 
 ## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. `NOW`: Confirm that the current task is a custom JS opcode VM / risk control engine, not standard WASM or regular webpack
-2. `NOW`: `case-init` until `scope.md` is ready; offline samples use `offline` / `lab`
-3. `ACT`: Do file classification from '3. General Reverse Workflow' Phase 1, do not stop at the directories
+1. xKx0000xKx: Confirm that the current task is a custom JS opcode VM / risk control engine, not standard WASM or regular webpack
+2. xKx0001xKx: xKx0002xKx until xKx0003xKx is ready; offline samples use xKx0004xKx / xKx0005xKx
+3. xKx0006xKx: Do file classification from '3. General Reverse Workflow' Phase 1, do not stop at the directories
 
 > Used for reverse engineering custom WASM virtual machines / risk control engines implemented based on JavaScript
 
@@ -17,13 +17,13 @@ description: Reverse JavaScript-based custom DSL/VM interpreters, non-standard W
 
 ## Table of Contents
 
-- [1. Scope of Application ](#1-适用范围)
-- [2. DSL VM Recognition Feature ](#2-dsl-vm-识别特征)
-- [3. General Reverse Engineering Workflow ](#3-通用逆向工作流)
-- [4. Opcode Extraction and Classification ](#4-opcode-提取与分类)
-- [5. Runtime capture scheme ](#5-运行时捕获方案)
-- [6. Common Status Codes ](#6-常见状态码)
-- [7. Skill Self-Check List ](#7-skill-自检清单)
+- [1. Scope of Application xKx0007xKx
+- [2. DSL VM Recognition Feature xKx0008xKx
+- [3. General Reverse Engineering Workflow xKx0009xKx
+- [4. Opcode Extraction and Classification xKx0010xKx
+- [5. Runtime capture scheme xKx0011xKx
+- [6. Common Status Codes xKx0012xKx
+- [7. Skill Self-Check List xKx0013xKx
 
 ---
 
@@ -33,20 +33,20 @@ Use this skill when the target file meets any of the following **features**:
 
 | # | Feature | Description |
 |---|------|------|
-| 1 | IIFE beginning + a large number of single-letter variable names | `!function(){var U=void 0,y=parseInt,E0=Function,...}` |
-| 2 | Contains `DG()` or similar functions with switch-case loops | Interpreter main loop, `d[7]&31` decodes opcode |
+| 1 | IIFE beginning + a large number of single-letter variable names | xKx0014xKx |
+| 2 | Contains xKx0015xKx or similar functions with switch-case loops | Interpreter main loop, xKx0016xKx decodes opcode |
 | 3 | Large file (500KB+) but zero-byte proportion < 1% | Non-standard WASM, pure JS |
-| 4 | Includes `C[number]` constant table reference | `C[9][xxx]` function table/string table |
+| 4 | Includes xKx0017xKx constant table reference | xKx0018xKx function xKx0019xKx table |
 | 5 | Single-line compressed code | 583KB single line, obfuscated variable names |
 
 ### Exclusion Rules
 
 | Condition | Non-this skill | Transfer to |
 |------|-----------|------|
-| The file starts with `\x00asm` | Standard WASM binary | `reverse-engineering/languages.md` |
-| File contains WASM magic number with `Uint8Array([0,97,115,109])` | WASM embedded | After extracting .wasm, convert to IDA/Ghidra |
-| Standard Webpack Packaging (`function(e,t,n){...}`) | Regular JS | `js-reverse/` |
-| Zero byte ratio > 20% | WASM binary | `reverse-engineering/languages.md` |
+| The file starts with xKx0020xKx | Standard WASM binary | xKx0021xKx |
+| File contains WASM magic number with xKx0022xKx | WASM embedded | After extracting .wasm, convert to xKx0023xKx |
+| Standard Webpack Packaging (xKx0024xKx) | Regular JS | xKx0025xKx |
+| Zero byte ratio > 20% | WASM binary | xKx0026xKx |
 
 ---
 
@@ -350,13 +350,13 @@ async function run() {
 ## 7. Skill Self-Check List
 
 - [ ] Have I completed the DSL VM recognition (IIFE + single-letter variables + DG() interpreter)?
-- [ ] Have I extracted the variable mapping table (`var X=数字`)?
+- [ ] Have I extracted the variable mapping table (xKx0000xKx)?
 - [ ] Have I extracted and categorized the opcode list?
 - [ ] Have I analyzed the scope of references to the constant table C[9]?
 - [ ] Have I located the export function registration point?
 - [ ] When pure static analysis is not enough, have I tried a runtime injection solution?
 - [ ] After completing the task, was the field journal updated?
-- [ ] Have you discovered new tools/new scenarios → update routing.md?
+- [ ] Have you discovered new xKx0001xKx scenarios → update routing.md?
 
 ---
 
@@ -364,7 +364,7 @@ async function run() {
 
 | Type | Route |
 |------|------|
-| **Target Type**: WASM / DSL VM / Custom Instruction Set | `reverse-engineering/dsl-vm-reverse/README.md` |
+| **Target Type**: WASM / DSL VM / Custom Instruction Set | xKx0002xKx |
 | **User Intent**: "DSL VM / Risk Control Engine Reverse Engineering" | This skill |
 | **Toolchain**: Playwright / Selenium CDP | Browser Injection Solution |
 

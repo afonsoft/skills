@@ -2,7 +2,7 @@
 
 > This directory is the optimized adaptation layer for Kali Linux 2026.1. It is specifically optimized based on Kali 2026.1 (kernel 6.18) released in March 2026.
 > The core knowledge base (references/, CTF-Sandbox-Orchestrator/) is shared with the Windows version; the Kali-specific README and Bash entry need to cover the names of Windows core capabilities, while additionally providing Kali native tools/MCP capabilities.
-> Root Directory [README-kali.md](../README-kali.md) is only a short link, **refer to this file as the standard**.
+> Root Directory [README-kali.md](./README-kali.md) is only a short link, **refer to this file as the standard**.
 
 ---
 
@@ -20,7 +20,7 @@
 5. Report configuration results to the user
 ```
 
-General Agent guidance can be found at the root of the repository [README_AI.md](../README_AI.md) (read this file again when Kali is detected).
+General Agent guidance can be found at the root of the repository [README.md](../README.md) (read this file again when Kali is detected).
 
 ---
 

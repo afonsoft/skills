@@ -23,9 +23,9 @@ Objective: Reverse-engineer a large-scale captcha system in order to understand 
 ## Verified Technical Solutions
 
 ### Plan A: Selenium + CDP Drag and Drop (Recommended)
-Send native mouse events through CDP `Input.dispatchMouseEvent` and complete verification in a real browser.
+Send native mouse events through CDP xKx0000xKx and complete verification in a real browser.
 - Success rate: high
-- Dependency: Chrome + Selenium/Playwright
+- Dependency: Chrome + xKx0001xKx
 
 ### Plan B: Playwright Headless Browser Runner
 In Playwright, load the DSL VM and module loader, and expose the token via HTTP API.
@@ -33,7 +33,7 @@ In Playwright, load the DSL VM and module loader, and expose the token via HTTP 
 
 ### Plan C: Pure requests protocol verification
 Directly call the API endpoint via an HTTP request for verification.
-- Success rate: **Extremely low** (token is strongly bound to browser TLS/IP/ fingerprint)
+- Success rate: **Extremely low** (token is strongly bound to browser xKx0002xKx fingerprint)
 - Not recommended
 
 ## Key Findings
@@ -49,15 +49,15 @@ Directly call the API endpoint via an HTTP request for verification.
 ## Pitfall Record
 
 1. A test appkey will not trigger real verification; you must use the appkey from the real page.
-2. `initialize` returning a specific status code indicates slider mode, while returning `success` only confirms session creation
+2. xKx0003xKx returning a specific status code indicates slider mode, while returning xKx0004xKx only confirms session creation
 3. The URL events of JSONP requests in the performance log may be captured incompletely due to the injection method of the script tag
 4. The exported function name does not exist in the DSL VM file (it is encoded by the VM), and the actual export is exposed through the module registry.
 
 ## Reusable Patterns
 
-- **DSL VM Reverse Mode**: `case 提取 → opcode 分类 → 常量表分析 → 函数追踪 → 导出提取`
-- **General Architecture of the Verification Code System**: `入口JS → 模块加载器(WASM/DSL) → API通信层 → 前端UI → 服务端验证`
-- **CDP native event bypass**: `Input.dispatchMouseEvent` bypasses detection, unrelated to WebDriver
+- **DSL VM Reverse Mode**: xKx0005xKx
+- **General Architecture of the Verification Code System**: xKx0006xKx
+- **CDP native event bypass**: xKx0007xKx bypasses detection, unrelated to WebDriver
 
 ## Toolchain
 

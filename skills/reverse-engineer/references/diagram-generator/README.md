@@ -5,24 +5,24 @@ description: generate, refine, validate, and render diagrams from natural langua
 
 # Diagram Generator
 
-## ACTION REQUIRED（读完后立刻执行）
+## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. `NOW`：确认当前任务是否命中本 skill 的适用范围
-2. `NOW`：读取 `../tool-index.md`，校验工具可用性和实际路径
-3. `NEXT`：缺工具时调用 bootstrap，不要猜路径
-4. `ACT`：进入"工作流"第一步并执行，不要停在确认状态
+1. `NOW`: Confirm whether the current task falls within the applicable scope of this skill
+2. `NOW`: Read `../tool-index.md`, check tool availability and actual path
+3. `NEXT`: Call bootstrap when tools are missing, don't guess the path
+4. `ACT`: Enter the first step of the 'workflow' and execute, do not stay in the confirmation state
 
 ## Purpose
 
-Create clear, editable diagrams from messy or structured inputs. Prefer text-based diagram source first so the result can be reviewed, versioned, and refined. Render to files only when the user asks for an image/PDF or when a downloadable artifact would materially help.
+Create clear, editable diagrams from messy or structured inputs. Prefer text-based diagram source first so the result can be reviewed, versioned, and refined. Render to files only when the user asks for an xKx0005xKx or when a downloadable artifact would materially help.
 
 ## Default workflow
 
 1. Identify the user's intent, audience, and source material.
 2. Choose the diagram family and language using the decision table below.
-3. Normalize entities, relationships, labels, states, branches, and time/order information before writing diagram code.
+3. Normalize entities, relationships, labels, states, branches, and xKx0006xKx information before writing diagram code.
 4. Generate concise, readable diagram source.
-5. Validate the syntax mentally and, when creating files, run `scripts/render_diagram.py`.
+5. Validate the syntax mentally and, when creating files, run xKx0007xKx.
 6. Return the diagram source plus a short note about assumptions. When files are generated, include links to the output files.
 
 Do not over-ask for clarification. If the request is underspecified, make reasonable assumptions and label them briefly.
@@ -34,53 +34,53 @@ Use Mermaid unless another language is clearly better.
 | User wants | Prefer | Why |
 |---|---|---|
 | process flow, decision tree, simple swimlane | Mermaid flowchart | readable and easy to paste into Markdown |
-| sequence of system/user interactions | Mermaid sequenceDiagram or PlantUML sequence | Mermaid for docs; PlantUML for UML formality |
+| sequence of xKx0008xKx interactions | Mermaid sequenceDiagram or PlantUML sequence | Mermaid for docs; PlantUML for UML formality |
 | lifecycle, state machine, transitions | Mermaid stateDiagram-v2 or PlantUML state | compact transition syntax |
 | database schema, entities, relationships | Mermaid erDiagram | portable ER notation |
-| class/interface/object model | Mermaid classDiagram or PlantUML class | Mermaid for docs; PlantUML for detailed UML |
+| xKx0009xKx model | Mermaid classDiagram or PlantUML class | Mermaid for docs; PlantUML for detailed UML |
 | project schedule | Mermaid gantt | concise timeline syntax |
 | hierarchy, ideas, notes | Mermaid mindmap | good default for idea maps |
-| customer/product journey | Mermaid journey | built-in journey notation |
+| xKx0010xKx journey | Mermaid journey | built-in journey notation |
 | git history | Mermaid gitGraph | built-in git notation |
 | dependency graph, package graph, large network | Graphviz DOT | better layout engines for dense graphs |
 | architecture with layers, clusters, boundaries | Mermaid flowchart with subgraphs, Graphviz clusters, or PlantUML C4-style | choose based on requested fidelity |
-| weighted flow/sankey-like relationship | Mermaid sankey-beta when supported, otherwise SVG or Graphviz | Mermaid support may vary by renderer |
+| weighted xKx0011xKx relationship | Mermaid sankey-beta when supported, otherwise SVG or Graphviz | Mermaid support may vary by renderer |
 | custom visual where source languages fit poorly | SVG | precise control over layout and styling |
 
 ## Output policy
 
 - Always provide editable source unless the user explicitly asks only for an image.
 - Default to a single best diagram. Offer alternatives only when genuinely useful.
-- Prefer stable, simple syntax over fancy features that may not render in older Mermaid/PlantUML versions.
+- Prefer stable, simple syntax over fancy features that may not render in older xKx0012xKx versions.
 - Use short labels. Split long text into notes outside the diagram when needed.
 - Avoid ambiguous node IDs. Use ASCII IDs and human-readable labels.
 - Preserve user terminology, but standardize capitalization within a diagram.
-- For technical diagrams, include boundaries such as client, service, database, queue, external API, and operator/user when they are implied.
+- For technical diagrams, include boundaries such as client, service, database, queue, external API, and xKx0013xKx when they are implied.
 - For business-process diagrams, distinguish happy path, decision points, failures, retries, and manual steps when present.
-- For diagrams created from uncertain text, include an `Assumptions` section after the code.
+- For diagrams created from uncertain text, include an xKx0014xKx section after the code.
 
 ## Mermaid generation rules
 
-Consult `references/diagram-patterns.md` for compact templates.
+Consult xKx0015xKx for compact templates.
 
 General Mermaid rules:
-- Start with the correct diagram directive, for example `flowchart TD`, `sequenceDiagram`, `erDiagram`, `gantt`, `mindmap`, or `journey`.
-- For flowcharts, use `flowchart TD` unless the user asks for left-to-right; use `flowchart LR` for architecture and pipelines.
+- Start with the correct diagram directive, for example xKx0016xKx, xKx0017xKx, xKx0018xKx, xKx0019xKx, xKx0020xKx, or xKx0021xKx.
+- For flowcharts, use xKx0022xKx unless the user asks for left-to-right; use xKx0023xKx for architecture and pipelines.
 - Use subgraphs for swimlanes or architecture layers. Name subgraphs with readable labels.
-- Keep node IDs stable and ASCII-only, for example `ingest_service[Ingest Service]`.
+- Keep node IDs stable and ASCII-only, for example xKx0024xKx.
 - Quote labels that contain punctuation likely to confuse the parser.
-- Use decision diamonds for branching: `decision{Condition?}`.
-- Use consistent edge labels: `-- yes -->`, `-- no -->`, `-. async .->`, or `== critical ==>` only when meaningful.
-- In sequence diagrams, declare participants before messages. Use `actor` for humans and `participant` for systems.
-- Use `alt/else/end`, `opt/end`, `loop/end`, and `par/and/end` blocks for conditional, optional, repeated, and parallel flows.
+- Use decision diamonds for branching: xKx0025xKx.
+- Use consistent edge labels: xKx0026xKx, xKx0027xKx, xKx0028xKx, or xKx0029xKx only when meaningful.
+- In sequence diagrams, declare participants before messages. Use xKx0030xKx for humans and xKx0031xKx for systems.
+- Use xKx0032xKx, xKx0033xKx, xKx0034xKx, and xKx0035xKx blocks for conditional, optional, repeated, and parallel flows.
 
 ## Graphviz DOT generation rules
 
 Use Graphviz for large, dense, or layout-sensitive relationship diagrams.
 
-- Prefer `digraph G` for directed relationships and `graph G` for undirected networks.
-- Set layout-friendly graph attributes at the top: `rankdir=LR`, `nodesep`, `ranksep`, and `splines=true` when helpful.
-- Use `subgraph cluster_name` for boundaries and subsystems.
+- Prefer xKx0036xKx for directed relationships and xKx0037xKx for undirected networks.
+- Set layout-friendly graph attributes at the top: xKx0038xKx, xKx0039xKx, xKx0040xKx, and xKx0041xKx when helpful.
+- Use xKx0042xKx for boundaries and subsystems.
 - Use plain labels and restrained styling.
 - Use edge labels only when they add meaning.
 - For many nodes, group by domain with clusters and avoid crossing-heavy all-to-all edges.
@@ -89,24 +89,24 @@ Use Graphviz for large, dense, or layout-sensitive relationship diagrams.
 
 Use PlantUML when the user asks for UML or needs formal UML notation.
 
-- Wrap diagrams with `@startuml` and `@enduml`.
-- Use `actor`, `participant`, `database`, `queue`, `collections`, or `component` stereotypes when useful.
-- Use `package`, `rectangle`, or `node` for architecture boundaries.
-- For class diagrams, include only important fields/methods unless the user asks for exhaustive detail.
-- For activity diagrams, use clear start/end markers and explicit branch labels.
+- Wrap diagrams with xKx0043xKx and xKx0044xKx.
+- Use xKx0045xKx, xKx0046xKx, xKx0047xKx, xKx0048xKx, xKx0049xKx, or xKx0050xKx stereotypes when useful.
+- Use xKx0051xKx, xKx0052xKx, or xKx0053xKx for architecture boundaries.
+- For class diagrams, include only important xKx0054xKx unless the user asks for exhaustive detail.
+- For activity diagrams, use clear xKx0055xKx markers and explicit branch labels.
 
 ## SVG generation rules
 
 Use SVG only when text diagram languages cannot express the requested visual reliably.
 
 - Keep SVG simple, accessible, and editable.
-- Include `<title>` and meaningful text labels.
+- Include xKx0056xKx and meaningful text labels.
 - Prefer rectangles, lines, arrows, and groups over complex paths.
 - Do not embed external fonts or remote images.
 
 ## Rendering files
 
-When the user asks for PNG/SVG/PDF, create a source file and run:
+When the user asks for xKx0057xKx, create a source file and run:
 
 ```bash
 python "<SKILL_ROOT>/diagram-generator/scripts/render_diagram.py" input.mmd --format svg --out output.svg
@@ -114,7 +114,7 @@ python "<SKILL_ROOT>/diagram-generator/scripts/render_diagram.py" input.dot --fo
 python "<SKILL_ROOT>/diagram-generator/scripts/render_diagram.py" input.puml --format svg --out output.svg
 ```
 
-> `<SKILL_ROOT>` 是本包 `references/` 目录的实际路径，AI 应自动检测。
+> `<SKILL_ROOT>` is the actual path of the `references/` directory in this package, and AI should detect it automatically.
 
 The renderer is intentionally dependency-tolerant. It tries common local tools and reports actionable installation hints if a renderer is unavailable. Do not claim an image was rendered unless the script completed successfully and the output file exists.
 
@@ -134,7 +134,7 @@ Before finalizing:
 Use this structure for most diagram answers:
 
 ```markdown
-下面是可编辑的 [language] 版本：
+Below is the editable [language] version:
 
 ```[language]
 [source]
@@ -150,39 +150,39 @@ For English user requests, respond in English. For Chinese user requests, respon
 
 ---
 
-## 按需自举（On-Demand Bootstrap）
+## On-Demand Bootstrap
 
-### 自动化能力边界
+### Automation Capability Boundaries
 
-| 工具 | 可自动安装 | 安装方式 | 说明 |
+| Tool | Can be installed automatically | Installation method | Description |
 |------|-----------|---------|------|
-| Mermaid CLI (mmdc) | ✓ | npm install -g @mermaid-js/mermaid-cli | 渲染 Mermaid 为 PNG/SVG |
-| Graphviz (dot) | ✗ | 手动安装 | https://graphviz.org/download/ |
-| PlantUML | ✗ | 需要 Java + plantuml.jar | https://plantuml.com/download |
-| Python (render script) | ✓ | 已在 bootstrap 中 | `scripts/render_diagram.py` 依赖 |
+| Mermaid CLI (mmdc) | ✓ | npm install -g @mermaid-js/mermaid-cli | Render Mermaid to PNG/SVG |
+| Graphviz (dot) | ✗ | Manual Installation | https://graphviz.org/download/ |
+| PlantUML | ✗ | Requires Java + plantuml.jar | https://plantuml.com/download |
+| Python (render script) | ✓ | Already in bootstrap | `scripts/render_diagram.py` dependency |
 
-### 说明
+### Explanation
 
-本 skill 主要输出文本格式的图表源码（Mermaid/DOT/PlantUML），不一定需要本地渲染工具。只有当用户明确要求生成 PNG/SVG/PDF 文件时才需要对应的渲染器。
+This skill mainly outputs the source code of charts in text format (Mermaid/DOT/PlantUML), and a local rendering tool is not necessarily required. A corresponding renderer is only needed when the user explicitly requests to generate an PNG/SVG/PDF file.
 
-如果渲染器不可用，`scripts/render_diagram.py` 会输出安装提示而不是报错。
+If the renderer is unavailable, `scripts/render_diagram.py` will output an installation prompt instead of an error.
 
 ---
 
-## 路由上下文
+## Routing Context
 
-**上游入口**: `references/README.md`（总控）、`routing.md`
-**触发条件**: 用户说"画图"、"流程图"、"架构图"、"攻击路径图"、"时序图"、"Mermaid"、"Graphviz"、"PlantUML"
-**下游出口**:
-- 生成的图表可嵌入 `docs-generator/` 的报告中
-- 攻击路径图可配合 `pentest-tools/` 的渗透报告
+**Upstream Input**: `references/README.md` (Main Control), `routing.md`
+**Trigger conditions**: The user says "draw a diagram", "flowchart", "architecture diagram", "attack path diagram", "sequence diagram", "Mermaid", "Graphviz", "PlantUML"
+**Downstream Exports**:
+- The generated charts can be embedded in `docs-generator/`'s reports
+- The attack path diagram can be used in conjunction with `pentest-tools/`'s penetration report
 
-**同级关联模块**: `docs-generator/`（报告中嵌入图表）
+**Peer-related module**: `docs-generator/` (Charts embedded in the report)
 
 
-## 任务完成自检（声称完成前 MUST 通过）
+## Task Completion Self-Check (MUST pass before claiming completion)
 
-- [ ] 我是否执行了工作流中的每一步（而不是只阅读）？
-- [ ] 我是否基于 `tool-index` 使用了真实工具路径？
-- [ ] 我是否产出了可复现证据（命令/脚本/截图/报告）？
-- [ ] 我是否完成并回写了 RULES 要求的 Checklist 项？
+- [ ] Did I perform each step in the workflow (instead of just reading it)?
+- [ ] Did I use a real tool path based on `tool-index`?
+- [ ] Have I produced reproducible evidence (commands/scripts/screenshots/reports)?
+- [ ] Have I completed and filled in the Checklist items required by the RULES?

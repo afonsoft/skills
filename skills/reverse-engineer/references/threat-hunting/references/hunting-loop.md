@@ -1,5 +1,5 @@
-# 狩猎环
+# Hunting Loop
 
-Hypothesis → Data → Query → Investigate → Detect/Dismiss → Tune → Document
+Hypothesis → Data → Query → Investigate → xKx0000xKx → Tune → Document
 
-每轮输出：假说状态（confirmed/rejected/inconclusive）+ Evidence ID。
+Output per round: Hypothesis state (confirmed/rejected/inconclusive) + Evidence ID.

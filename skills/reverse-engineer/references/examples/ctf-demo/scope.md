@@ -8,22 +8,22 @@
 - primary_id: R17
 - lead_role: lead
 - specialist_roles: [pwn-specialist]
-- hint: CTF pwn 栈溢出 gets
+- hint: CTF pwn stack overflow gets
 
 ## auth
 - status: granted
-- basis: ctf_lab (CTF 靶场授权)
-- evidence_of_auth: 平台授权条款（靶场挑战自带授权）
+- basis: ctf_lab (CTF target range authorization)
+- evidence_of_auth: Platform authorization terms (authorization included with the target range challenge)
 - MUST NOT proceed if status != granted
 
 ## in_scope
 - assets:
-  - https://ctf.example.com/challenges/pwn1
+  - xKx0001xKx
 - surfaces: [binary download, remote service]
 - activities: [static analysis, exploit development, remote verification]
 
 ## out_of_scope
-- assets: [其他挑战、平台基础设施]
+- assets: [Other challenges, platform infrastructure]
 - activities: [dos, phishing_real_users, unrestricted_exfil]
 
 ## network_profile
@@ -50,11 +50,11 @@
   - [x] in_scope.assets non-empty OR offline sample path set
   - [x] network_profile.mode chosen
   - [x] out_of_scope reviewed
-  - [x] roles assigned (see references/ops/role-map.md)
+  - [x] roles assigned (see xKx0002xKx)
 
 ## ops_refs
-- references/ops/scope-contract.md
-- references/ops/evidence-finding-path.md
-- references/ops/role-map.md
-- references/ops/timeline-workitem.md
-- references/ops/IDENTITY.md
+- xKx0003xKx
+- xKx0004xKx
+- xKx0005xKx
+- xKx0006xKx
+- xKx0007xKx

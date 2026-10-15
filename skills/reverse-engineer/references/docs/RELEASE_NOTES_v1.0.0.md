@@ -43,8 +43,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File references/scripts/verify-ro
 
 ## Full changelog
 
-See [CHANGELOG.md](../CHANGELOG.md#100--2026-07-18).
+See `CHANGELOG.md` (upstream repo).
 
 ## License
 
-MIT — see [LICENSE](../LICENSE).
+MIT — see `LICENSE` (upstream repo).

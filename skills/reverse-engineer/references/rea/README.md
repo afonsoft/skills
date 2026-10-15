@@ -26,7 +26,7 @@ an older npm release. Keep complete inline Evidence when that server does not
 advertise retained references.
 
 If tools are absent, a call is blocked by the client, or a required provider is
-unavailable, read [connection and recovery](references/connection-and-recovery.md).
+unavailable, read [connection and recovery](connection-and-recovery.md).
 Diagnose the observed blocker, continue useful supported work, and resume the
 original task after repair. Client approval, shell PATH, registration and engine
 availability have different remedies; avoid repeating setup for all of them.
@@ -106,10 +106,10 @@ explicit path or endpoint and do not need it.
 - User-owned browser page already open: `list_browser_targets`.
 - Browser action the agent must perform (click, type, navigate):
   `capture_browser_scenario` with declared actions. See
-  [runtime observation](references/runtime-observation.md) for connect/launch
+  [runtime observation](runtime-observation.md) for connect/launch
   and the focused follow-up browser tools.
 - Fiddler Everywhere traffic or a native `.saz` capture: read the
-  [Fiddler workflow](references/runtime-observation.md#fiddler-everywhere-traffic-debugging).
+  [Fiddler workflow](runtime-observation.md#fiddler-everywhere-traffic-debugging).
   Inspect saved SAZ with `inspect_web_network_capture` and `format: "saz"`;
   connect Everywhere's separate MCP server for live traffic.
 - Retained HAR/SAZ/native mitmproxy/aioquic qlog capture: `inspect_web_network_capture`. Select
@@ -269,7 +269,7 @@ A client can also truncate a successful tool result without a REA transport
 error. Treat that preview as incomplete; use the retained parent ID for smaller
 views or export when the full record is needed. Do not parse the preview as
 canonical JSON or repeat the producer. For JavaScript, read the
-[module-view and trace recipes](references/javascript-applications.md) before
+[module-view and trace recipes](javascript-applications.md) before
 drilling into a large graph; a broad bidirectional trace can expand unrelated
 containment relationships even after summary analysis.
 
@@ -322,16 +322,16 @@ as complete while required questions remain open.
 ## Read only the relevant guide
 
 - Native binaries, managed assemblies, archives, and extraction:
-  [references/native-and-artifacts.md](references/native-and-artifacts.md)
+  [references/native-and-artifacts.md](native-and-artifacts.md)
 - ASARs, extracted JavaScript, feature tracing, and version comparison:
-  [references/javascript-applications.md](references/javascript-applications.md)
+  [references/javascript-applications.md](javascript-applications.md)
 - Android APK declarations, classes, methods, and static references:
-  [references/android-applications.md](references/android-applications.md)
+  [references/android-applications.md](android-applications.md)
 - Browser/Electron observation (passive and scenario) and static/runtime
   reconciliation:
-  [references/runtime-observation.md](references/runtime-observation.md)
+  [references/runtime-observation.md](runtime-observation.md)
 - Evidence paging, comparisons, residual unknowns, and verification:
-  [references/evidence-workflows.md](references/evidence-workflows.md)
+  [references/evidence-workflows.md](evidence-workflows.md)
 
 ## Finish the task
 

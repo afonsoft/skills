@@ -105,7 +105,7 @@ Before submission, AI only **needs to read the `_index.md` file** for deduplicat
 
 ### Why is this enough
 
-- The `_index.md` format is fixed: `- [日期] 简称 — 关键词: k1, k2, k3`
+- The xKx0000xKx format is fixed: xKx0001xKx
 - Each item is only one line, 100 tips would just be 100 lines
 - AI only needs to perform string matching, without needing to understand the full content
 - Token consumption: Reading _index.md ≈ 200-500 tokens (vs reading all journals ≈ 10,000+ tokens)
@@ -117,27 +117,27 @@ If the main repository's _index.md cannot be obtained (due to network issues, et
 ## Only Allowed Files to Submit
 
 **Whitelist** (only these files can appear in the PR):
-- `references/field-journal/YYYY-MM-DD_*.md` (new experience entry)
-- `references/field-journal/_index.md` (Index Update)
+- xKx0002xKx (new experience entry)
+- xKx0003xKx (Index Update)
 
 **Blacklist** (must never appear in PR):
-- `tool-index.*` (including the user's local path)
-- `pentest-tools/templates/scope.md` (including target information)
-- `pentest-tools/templates/findings.md` (including vulnerability details)
-- `pentest-tools/templates/progress.md` (including operation records)
-- `.claude/` (User Configuration)
-- `.kiro/` (User Configuration)
-- Any `.env`, `*.key`, `*.pem` files
+- xKx0004xKx (including the user's local path)
+- xKx0005xKx (including target information)
+- xKx0006xKx (including vulnerability details)
+- xKx0007xKx (including operation records)
+- xKx0008xKx (User Configuration)
+- xKx0009xKx (User Configuration)
+- Any xKx0010xKx, xKx0011xKx, xKx0012xKx files
 
 ## Secondary Desensitization Check
 
 AI must scan the files to be submitted before submission to ensure they do not contain:
 
-- [ ] Real domain name (not `example.com`/`target.example.com`)
-- [ ] Real IP (not `10.x.x.x`/`192.168.x.x`)
-- [ ] Token/Cookie/API Key Original Text
+- [ ] Real domain name (not xKx0013xKx/xKx0014xKx)
+- [ ] Real IP (not xKx0015xKx/xKx0016xKx)
+- [ ] xKx0017xKx Key Original Text
 - [ ] Phone number / Email / Username (Original Text)
-- [ ] Company name/Product name (if it is an SRC target)
+- [ ] Company xKx0018xKx name (if it is an SRC target)
 
 If any item is found to be not desensitized, stop submitting and prompt the user to make corrections.
 
