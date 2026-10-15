@@ -11,9 +11,9 @@
 | Type | Characteristics | Focus of Analysis |
 |------|------|---------|
 | WDM (Windows Driver Model) | Legacy driver, manually manages IRP | DriverEntry → Device creation → Dispatch routine |
-| KMDF (Kernel Mode Driver Framework) | Modern framework, event-driven | EvtDriverDeviceAdd → Queue → I/O callback |
+| KMDF (Kernel Mode Driver Framework) | Modern framework, event-driven | EvtDriverDeviceAdd → Queue → xKx0002xKx callback |
 | WDF (Windows Driver Foundation) | KMDF + UMDF collectively referred to | See WdfDriverCreate call |
-| Minifilter | File System Filter Driver | FltRegisterFilter → Pre/Post Callback |
+| Minifilter | File System Filter Driver | FltRegisterFilter → xKx0003xKx Callback |
 
 ### WDM Driver Analysis Process
 
@@ -120,55 +120,55 @@ unlocked_ioctl / compat_ioctl function
 
 | Technology | Features | Detection Methods |
 |------|------|---------|
-| syscall table hook | Modify `sys_call_table` entry | Compare the table in memory with vmlinux on disk |
-| VFS hook | Modify `file_operations` function pointer | Check whether fops pointer points outside the kernel code segment |
-| Netfilter hook | `nf_register_net_hook` | Traverse the netfilter hook linked list |
-| kprobe/ftrace hook | Register kprobe or ftrace callback | Check ftrace registration list |
-| eBPF rootkit | Load malicious BPF program | `bpftool prog list` |
+| syscall table hook | Modify xKx0000xKx entry | Compare the table in memory with vmlinux on disk |
+| VFS hook | Modify xKx0001xKx function pointer | Check whether fops pointer points outside the kernel code segment |
+| Netfilter hook | xKx0002xKx | Traverse the netfilter hook linked list |
+| xKx0003xKx hook | Register kprobe or ftrace callback | Check ftrace registration list |
+| eBPF rootkit | Load malicious BPF program | xKx0004xKx |
 | DKOM | Directly modify kernel objects (process lists) | Traverse task_struct list and compare with /proc |
 
 ### Tools
 
 | Tool | Purpose |
 |------|------|
-| `crash` | Kernel dump analysis |
-| `volatility3` | Memory Forensics (Linux profile) |
-| `dmesg` / `journalctl` | Kernel Log |
-| `lsmod` / `/proc/modules` | Loaded Module List |
-| `modinfo` | Module Meta Information |
-| `strace` | System Call Tracing (User-Space Perspective) |
+| xKx0005xKx | Kernel dump analysis |
+| xKx0006xKx | Memory Forensics (Linux profile) |
+| xKx0007xKx / xKx0008xKx | Kernel Log |
+| xKx0009xKx / xKx0010xKx | Loaded Module List |
+| xKx0011xKx | Module Meta Information |
+| xKx0012xKx | System Call Tracing (User-Space Perspective) |
 
 ---
 
-## C/C++ Reverse Mode Recognition
+## xKx0013xKx++ Reverse Mode Recognition
 
 ### Common Patterns in C Language
 
 | Source Code Mode | Disassembly Features |
 |---------|-----------|
-| `if-else` | `cmp` + `jcc` (conditional jump) |
-| `switch-case` | Jump table (`jmp [rax*8 + table]`) or continuous `cmp` |
-| `for` Loop | `cmp` + `jl/jle` + Loop Body + `inc/add` + `jmp` Jump Back |
-| `while` Loop | Conditional check at the top of the loop |
-| `do-while` | Conditional judgment at the bottom of the loop |
-| Function pointer call | `call rax` or `call [reg+offset]` |
-| `struct` Visit | `[reg+固定偏移]` (such as `[rdi+0x10]`) |
-| `malloc` + use | `call malloc` → return value stored in register → subsequent access using this register + offset |
-| String Comparison | `call strcmp` or `repe cmpsb` |
+| xKx0014xKx | xKx0015xKx + xKx0016xKx (conditional jump) |
+| xKx0017xKx | Jump table (xKx0018xKx) or continuous xKx0019xKx |
+| xKx0020xKx Loop | xKx0021xKx + xKx0022xKx + Loop Body + xKx0023xKx + xKx0024xKx Jump Back |
+| xKx0025xKx Loop | Conditional check at the top of the loop |
+| xKx0026xKx | Conditional judgment at the bottom of the loop |
+| Function pointer call | xKx0027xKx or xKx0028xKx |
+| xKx0029xKx Visit | xKx0030xKx (such as xKx0031xKx) |
+| xKx0032xKx + use | xKx0033xKx → return value stored in register → subsequent access using this register + offset |
+| String Comparison | xKx0034xKx or xKx0035xKx |
 
 ### C++ Specific Patterns
 
 | Source Code Mode | Disassembly Features |
 |---------|-----------|
-| **Virtual Function Call** | `mov rax, [rcx]` (get vtable) → `call [rax+offset]` (call virtual function) |
+| **Virtual Function Call** | xKx0036xKx (get vtable) → xKx0037xKx (call virtual function) |
 | **Constructor** | Allocate memory → Write vtable pointer → Initialize members |
-| **Destructor** | Cleans up members → may call `operator delete` |
-| **this pointer** | The first parameter (rcx/rdi) is the object pointer |
+| **Destructor** | Cleans up members → may call xKx0038xKx |
+| **this pointer** | The first parameter (xKx0039xKx) is the object pointer |
 | **Inheritance** | vtable contains parent class virtual functions + child class overrides |
 | **Multiple Inheritance** | The object has multiple vtable pointers (with different offsets) |
-| **RTTI** | There is an `type_info` pointer in front of the vtable |
-| **Exception Handling** | `__cxa_throw` / `_CxxThrowException` |
-| **STL Container** | `std::vector`: `{begin, end, capacity}` Three-pointer Structure |
+| **RTTI** | There is an xKx0040xKx pointer in front of the vtable |
+| **Exception Handling** | xKx0041xKx / xKx0042xKx |
+| **STL Container** | xKx0043xKx: xKx0044xKx Three-pointer Structure |
 | **std::string** | Small String Optimization (SSO): short strings are inlined, long strings are heap-allocated |
 
 ### vtable Reverse Engineering Methods

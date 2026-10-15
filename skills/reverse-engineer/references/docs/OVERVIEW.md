@@ -198,17 +198,17 @@ Keywords: AI Agent, Skill Router, Tool Orchestration, MCP, Workflow Automation, 
 ## Related documents
 
 - [README.md](../README.md): Main entry (English)
-- [README_zh.md](../README_zh.md): Main entry (Chinese)
-- [README_AI.md](../README_AI.md): AI bootstrap entry
+- [README_zh.md](../README.md): Main entry (Chinese)
+- [README_AI.md](../README.md): AI bootstrap entry
 - [OVERVIEW.md](OVERVIEW.md): Chinese overview
 - [PLATFORMS.md](PLATFORMS.md): platform support matrix
 - [platforms/linux.md](platforms/linux.md): generic Linux setup
 - [platforms/macos.md](platforms/macos.md): macOS setup
 - [RULES.md](../RULES.md): global execution rules
 - [ARCHITECTURE.md](ARCHITECTURE.md): architecture notes
-- [references/routing.md](../skills/routing.md): routing matrix
-- [burp-mcp-full/README.md](../burp-mcp-full/README.md): BurpSuite MCP module
+- [references/routing.md](../routing.md): routing matrix
+- `burp-mcp-full/` (upstream module, not bundled): BurpSuite MCP module
 
 ## License
 
-MIT License. See [LICENSE](../LICENSE).
+MIT License. See `LICENSE` (upstream repo).

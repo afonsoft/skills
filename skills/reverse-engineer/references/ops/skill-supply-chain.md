@@ -4,7 +4,7 @@
 > Search date: 2026-07-17
 > Applicable: When installing/writing/merging **any** skill, MCP, bootstrap scripts
 
-The **executable script side** of this package is static audit (backdoor/library deletion/pipeline execution): [`docs/PACKAGE-SECURITY-AUDIT.md`](../../docs/PACKAGE-SECURITY-AUDIT.md).
+The **executable script side** of this package is static audit (backdoor/library deletion/pipeline execution): [`docs/PACKAGE-SECURITY-AUDIT.md`](../docs/PACKAGE-SECURITY-AUDIT.md).
 
 ## 1. Why does reverse-skill need to manage this separately?
 

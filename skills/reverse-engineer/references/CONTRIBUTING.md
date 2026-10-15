@@ -129,21 +129,20 @@ In the `README.md` of each newly created skill, `MUST` contains the language beh
 ```markdown
 ## Language Act Contract
 
-- **Internal reasoning/tool selection/stage control**: Use English.
-- **User-visible messages/section labels/reports/next-step menus**: Use Chinese (unless the user requests another language).
-- **Default bilingual label format**: Chinese label comes first, followed by the English label, separated by ` / `.
+- **Internal xKx0000xKx xKx0001xKx control**: Use English.
+- **User-visible xKx0002xKx xKx0003xKx menus**: Use Chinese (unless the user requests another language).
+- **Default bilingual label format**: Chinese label comes first, followed by the English label, separated by xKx0004xKx.
 
 Common bilingual labels:
 
 | Chinese | English |
 |------|---------|
-| 当前阶段 | Current phase |
+| Current phase | Current phase |
 | Verified facts | Verified facts |
 | Key evidence | Key evidence |
 | Inference and Confidence | Inference and Confidence |
 | Risk/Vulnerability Candidate | Risk or Vulnerability Candidates |
-| Suggested next steps | Suggested next steps |
-```
+| Suggested next steps | Suggested next steps |```
 
 ### 3.4 Next-Step Menu Pattern
 
@@ -203,18 +202,16 @@ Supported `bootstrapKind`:
 
 Open `scripts/lib/ToolDiscovery.ps1`, add an entry in the `Get-ReverseToolCatalog` function:
 
-```powershell
-[pscustomobject]@{
+```powershell[pscustomobject]@{
     Name = '<tool-name>'
     Skill = '<new-skill-name>'
-    Purpose = '<中文用途说明>'
+    Purpose = '<Description of purpose in Chinese>'
     VersionArgs = @('--version')
     Fallbacks = @(
         [pscustomobject]@{ Type = 'command'; Value = '<tool-name>' },
-        [pscustomobject]@{ Type = 'path'; Value = (Join-Path $env:USERPROFILE 'Tools\<tool>\<executable>') }
+        [pscustomobject]@{ Type = 'path'; Value = （Join-Path $env：USERPROFILE 'Tools\<tool>\<executable>'） }
     )
-}
-```
+}```
 
 ### 4.3 Registering Script References in `refresh-tool-index.ps1`
 
@@ -276,9 +273,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "<SKILL_ROOT>\references\scr
 ```
 
 **Kali Linux**：
-```bash
-bash "<项目根目录>/kali/scripts/refresh-tool-index.sh"
-```
+```bashbash "<project root directory>/kali/scripts/refresh-tool-index.sh"```
 
 Confirm that the new tool appears in `tool-index.md` and `tool-index.json`.
 
@@ -296,9 +291,7 @@ Open `kali/scripts/bootstrap-manifest.json` and add the corresponding entries (`
 
 Open `kali/scripts/lib/tool-discovery.sh` and add to the `TOOL_CATALOG` array:
 
-```bash
-"<tool-name>|<skill-name>|<中文用途>|<version-args>|<fallback-commands>"
-```
+```bash"<tool-name>|<skill-name>|<Chinese Usage>|<version-args>|<fallback-commands>"```
 
 Add in `SCRIPT_REFS`:
 
@@ -377,18 +370,16 @@ references/ghidra-headless/
 
 ### ToolDiscovery.ps1 Added
 
-```powershell
-[pscustomobject]@{
+```powershell[pscustomobject]@{
     Name = 'analyzeHeadless'
     Skill = 'ghidra-headless'
-    Purpose = 'Ghidra 无头分析'
+    Purpose = 'Ghidra Headless Analysis'
     VersionArgs = @()
     Fallbacks = @(
-        [pscustomobject]@{ Type = 'command'; Value = 'analyzeHeadless' },
-        [pscustomobject]@{ Type = 'path'; Value = (Join-Path $env:USERPROFILE 'Tools\ghidra\support\analyzeHeadless.bat') }
+[pscustomobject]@{ Type = 'command'; Value = 'analyzeHeadless' },
+[pscustomobject]@{ Type = 'path'; Value = (Join-Path $env:USERPROFILE 'Tools\ghidra\support\analyzeHeadless.bat') }
     )
-}
-```
+}```
 
 ### Add Routing Matrix
 
@@ -508,39 +499,39 @@ Bootstrap will write headers into the configuration. Users will need to replace 
 If MCP is a local HTTP service, it is recommended to write an `scripts/start.ps1` in the skill directory:
 
 ```powershell
-# <skill-name>/scripts/start.ps1
+# xKx0000xKxxKx0001xKx
 param(
-    [int]$Port = <default-port>
+    [int]xKx0002xKx = xKx0003xKx
 )
 
-$ErrorActionPreference = 'Stop'
+xKx0004xKx = 'Stop'
 
 # Load shared tool discovery layer
-. (Join-Path $PSScriptRoot '..\..\scripts\lib\ToolDiscovery.ps1')
+. (Join-Path xKx0005xKx '.xKx0006xKx')
 
 # Check if the service is already running
-if (Test-ReverseTcpPort -Port $Port) {
-    Write-Output "OK:already-running:$Port"
+if (Test-ReverseTcpPort -Port xKx0007xKx) {
+    Write-Output "OK:already-running:xKx0008xKx"
     return
 }
 
 # Locate Project Directory
-$projectDir = "<找到项目的逻辑>"
+$projectDir = "<Logic to find the project>"
 
 # Start Service
-Start-Process -FilePath "<启动命令>" -ArgumentList @("<参数>") -WorkingDirectory $projectDir -WindowStyle Hidden
+Start-Process -FilePath "<Start Command>" -ArgumentList @("<Parameter>") -WorkingDirectory $projectDir -WindowStyle Hidden
 
 # Waiting to be ready
-$deadline = (Get-Date).AddSeconds(60)
-while ((Get-Date) -lt $deadline) {
-    if (Test-ReverseTcpPort -Port $Port) {
-        Write-Output "OK:started:$Port"
+xKx0011xKx = (Get-Date).AddSeconds(60)
+while ((Get-Date) -lt xKx0012xKx) {
+    if (Test-ReverseTcpPort -Port xKx0013xKx) {
+        Write-Output "OK:started:xKx0014xKx"
         return
     }
     Start-Sleep -Seconds 2
 }
 
-Write-Output "ERR:timeout:$Port"
+Write-Output "ERR:timeout:xKx0015xKx"
 ```
 
 ### 10.5 Writing Failure Boot
@@ -597,7 +588,7 @@ Assuming you want to connect to an sqlmap MCP service running through Docker:
   "docsUrl": "https://github.com/xxx/sqlmap-mcp",
   "canAutoInstall": false,
   "verificationMode": "service-or-registration",
-  "manualInstallHint": "需要 Docker：docker run -d -p 8775:8775 xxx/sqlmap-mcp"
+manualInstallHint: Requires Docker: docker run -d -p 8775:8775 xxx/sqlmap-mcp
 }
 ```
 

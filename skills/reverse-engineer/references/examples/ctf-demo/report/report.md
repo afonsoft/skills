@@ -1,26 +1,26 @@
-# ctf-demo — Final Report (示例)
+# ctf-demo — Final Report (Example)
 
-> 报告结构参考 `references/docs-generator/references/security-report-templates.md`。
+> For the report structure, refer to `references/docs-generator/references/security-report-templates.md`.
 
-## 1. 概述
+## 1. Overview
 
-| 项 | 值 |
+| Item | Value |
 |----|----|
-| 目标 | pwn1 (https://ctf.example.com/challenges/pwn1) |
-| 类型 | CTF pwn（栈溢出） |
-| 结果 | ✅ flag captured |
-| 耗时 | ~1.5h |
+| Target | pwn1 (https://ctf.example.com/challenges/pwn1) |
+| Type | CTF pwn (stack overflow) |
+| Result | ✅ flag captured |
+| Time Consumed | ~1.5h |
 
-## 2. 执行摘要
+## 2. Executive Summary
 
-pwn1 为无 PIE/无 canary 的 64 位 ELF，main 使用 `gets()` 读取 0x40 缓冲区。
-通过 0x48 偏移覆盖返回地址，调用程序内 win 函数获取 flag。远程验证成功。
+pwn1 is a 64-bit ELF without PIE/no canary, and main uses `gets()` to read a 0x40 buffer.
+Overwrite the return address through offset 0x48 to call the win function within the program to obtain the flag. Remote verification succeeded.
 
-## 3. 时间线
+## 3. Timeline
 
-见 `timeline.md`（5 个阶段：init → recon → static → exploit → wrap）。
+See `timeline.md` (5 stages: init → recon → static → exploit → wrap).
 
-## 4. 发现
+## 4. Findings
 
 ### F-01
 
@@ -33,11 +33,11 @@ pwn1 为无 PIE/无 canary 的 64 位 ELF，main 使用 `gets()` 读取 0x40 缓
 - impact: Remote code execution as the pwn1 process user; flag disclosure in CTF context.
 - repro_steps:
   1. Triage the binary (E-001)
-  2. Confirm the overflow offset with a cyclic/crash test (E-002)
+  2. Confirm the overflow offset with a xKx0004xKx test (E-002)
   3. Send the ret2win payload against the remote service (E-003)
-- remediation: Replace gets() with fgets/read; enable canary, PIE and full RELRO; rely on ASLR.
+- remediation: Replace gets() with xKx0005xKx; enable canary, PIE and full RELRO; rely on ASLR.
 
-## 5. 攻击路径（Evidence → Finding → Path）
+## 5. Attack Path (Evidence → Finding → Path)
 
 ### P-01
 
@@ -60,18 +60,18 @@ graph LR
   E --> F[远程验证 获取 flag]
 ```
 
-## 6. 复现
+## 6. Reproduction
 
 ```bash
 python3 exploit.py REMOTE
 ```
 
-## 7. 修复建议（若为真实应用）
+## 7. Repair Suggestions (If for Real Application)
 
-- 使用 `fgets`/`read` 替代 `gets`
-- 开启 canary + PIE + full RELRO
-- 部署 ASLR（服务器侧）
+- Use `fgets`/`read` to replace `gets`
+- Enable canary + PIE + full RELRO
+- Deploy ASLR (server-side)
 
-## 8. 附注
+## 8. Notes
 
-- field-journal 已脱敏沉淀（无真实目标信息）
+- field-journal has been desensitized and precipitated (no real target information)

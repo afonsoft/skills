@@ -5,81 +5,81 @@ description: Use for authorized Active Directory and Windows identity attacks in
 
 # Windows / Active Directory Security
 
-## ACTION REQUIRED（读完后立刻执行）
+## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. `NOW`: 读取 `../field-journal/precedent-pentest.md`
-2. `NOW`: **域/AD 测试必须明确授权范围**（含 DC、是否允许投毒/中继）
-3. `NOW`: case-init；network_profile 与禁止动作写清
-4. `NEXT`: tool-index（impacket/certipy/bloodhound 等常手动）
-5. `ACT`: 从身份枚举与 BloodHound 图开始，不先上破坏性利用
+1. `NOW`: Read `../field-journal/precedent-pentest.md`
+2. `NOW`: **Domain/AD testing must have clearly defined authorization scope** (including DC, whether poisoning/relay is allowed)
+3. `NOW`: case-init; clearly write the network_profile and prohibited actions
+4. `NEXT`: tool-index (impacket/certipy/bloodhound and other common manual operations)
+5. `ACT`: Start with identity enumeration and BloodHound mapping, without immediately proceeding to destructive exploitation
 
-## 适用场景
+## Applicable Scenarios
 
-- 域渗透、Kerberoasting、AS-REP、委派
-- AD CS（ESC1–ESC8 等）证书攻击
-- BloodHound / SharpHound 攻击路径
-- NTLM Relay / Coercer 强制认证
-- 本地提权到域路径（Potato 等作为跳板）
+- Domain penetration, Kerberoasting, AS-REP, delegation
+- AD CS (ESC1–ESC8, etc.) Certificate Attacks
+- BloodHound / SharpHound attack path
+- NTLM Relay / Coercer Forced Authentication
+- Local privilege escalation to domain path (using Potato, etc. as a springboard)
 
-## 与 attack-chain 关系
+## Relationship with attack-chain
 
-- **多阶段从外网到域控** → PRIMARY 可仍是 `attack-chain/`，本 skill 为 **AD 专科**
-- **已在域内专注身份** → PRIMARY = 本 skill
+- **Multi-stage from external network to domain controller** → PRIMARY can still be `attack-chain/`, this skill is **AD specialist**
+- **Already focused on identity within the domain** → PRIMARY = This skill
 
-## 工作流
+## Workflow
 
-### 1. 枚举
+### 1. Enumeration
 
 ```bash
-# 示例 Impacket / 内置（需凭据与授权）
+# Example Impacket / Built-in (requires credentials and authorization)
 nxc smb <range> -u user -p pass
 bloodhound-python -d domain.local -u user -p pass -c All -ns <DC>
 ```
 
-### 2. 常见路径（先图后枪）
+### 2. Common Routes (First Map, Then Gun)
 
 ```text
-□ Kerberoast / AS-REP → 离线破解
-□ ACL 滥用（GenericAll/WriteDacl）
-□ 委派（非约束/约束/基于资源）
-□ AD CS 模板错误 → Certipy
-□ 中继：LLMNR/NBT-NS + ntlmrelayx（确认授权）
+□ Kerberoast / AS-REP → Offline cracking
+□ ACL Abuse (GenericAll/WriteDacl)
+□ Delegation (Non-binding / Binding / Resource-based)
+□ AD CS Template Error → Certipy
+□ Relay: LLMNR/NBT-NS + ntlmrelayx (confirmed authorization)
 ```
 
-### 3. 凭证与横向
+### 3. Vouchers and Horizontal
 
 ```text
-□ secretsdump / lsassy / mimikatz（严格授权与清理）
-□ PtH / PtT / 黄金票仅在授权红队范围
-□ 每步写 Evidence；高危等用户确认
+□ secretsdump / lsassy / mimikatz (strict authorization and cleanup)
+□ PtH / PtT / Gold tickets are only within the authorized red team scope
+□ Write Evidence for each step; confirmation from high-risk users
 ```
 
-## 工具链
+## Toolchain
 
-| 工具 | 用途 |
+| Tool | Purpose |
 |------|------|
-| BloodHound / SharpHound | 路径图 |
+| BloodHound / SharpHound | Path Map |
 | Certipy | AD CS |
-| Impacket / NetExec | 横向与枚举 |
-| Rubeus / Mimikatz | 票据与凭证（授权） |
-| Coercer / Responder | 强制认证 / 投毒 |
+| Impacket / NetExec | Lateral Movement and Enumeration |
+| Rubeus / Mimikatz | Tickets and Credentials (Authorization) |
+| Coercer / Responder | Forced Authentication / Poisoning |
 
-## 参考
+## References
 
-- `references/ad-attack-paths.md`
-- `../pentest-tools/references/network-attack-defense.md`
-- `../attack-chain/`
-- seeds: `field-journal/seed-005_ad-certipy-esc1.md` `seed-007_ntlm-relay-coercer.md` `seed-013_kerberoasting-spn.md`
+- xKx0000xKx
+- xKx0001xKx
+- xKx0002xKx
+- seeds: xKx0003xKx xKx0004xKx xKx0005xKx
 
-## 路由上下文
+## Routing Context
 
-**上游**: MASTER R24  
-**下游**: 报告 `docs-generator`；需 EDR 研究 `edr-bypass-re`  
-**MUST NOT**: 无授权 DCSync / 黄金票打生产
+**Upstream**: MASTER R24
+**Downstream**: Report `docs-generator`; EDR study required `edr-bypass-re`
+**MUST NOT**: Unauthorized DCSync / Golden Ticket on production
 
-## 任务完成自检
+## Task Completion Self-Check
 
-- [ ] 是否先有图/枚举再有利用？
-- [ ] 是否记录可复现命令并脱敏？
-- [ ] 是否遵守 scope 禁止项？
-- [ ] Checklist？
+- [ ] Does the image/enumeration come before the utilization?
+- [ ] Should reproducible commands be recorded and desensitized?
+- [ ] Are the scope prohibitions being followed?
+- [ ] Checklist?

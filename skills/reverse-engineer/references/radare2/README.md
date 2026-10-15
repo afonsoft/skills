@@ -308,11 +308,11 @@ rax2 -s hello
 
 When encountering unknown samples, follow this order:
 
-1. `rabin2 -I` Check format, structure, entry point
-2. `rabin2 -z` View string
-3. `rabin2 -i` Check import function — **MUST + Evidence (hard requirement, see workflow 1)**
-4. If interactive analysis is needed, enter `r2` (only after the Evidence from step 3 has been saved to disk)
-5. First `aaa`, then `afl` / `iz` / `pdf`
+1. xKx0000xKx Check format, structure, entry point
+2. xKx0001xKx View string
+3. xKx0002xKx Check import function — **MUST + Evidence (hard requirement, see workflow 1)**
+4. If interactive analysis is needed, enter xKx0003xKx (only after the Evidence from step 3 has been saved to disk)
+5. First xKx0004xKx, then xKx0005xKx / xKx0006xKx / xKx0007xKx
 6. Gradually locate key functions through string references, import calls, and entry flow
 
 The advantage of this sequence is low noise and the ability to quickly establish a sense of direction. Step 3 is not an optional optimization; it is a hard gate before digging deeper.
@@ -320,7 +320,7 @@ The advantage of this sequence is low noise and the ability to quickly establish
 ## Windows Precautions
 
 - When there are spaces in the path, the command must correctly include quotation marks
-- If the current terminal cannot find `r2`, it may be that `PATH` was just updated; try opening a new terminal and trying again
+- If the current terminal cannot find xKx0008xKx, it may be that xKx0009xKx was just updated; try opening a new terminal and trying again
 - Some samples require administrator privileges to read, but do not elevate privileges by default unless the user explicitly needs it
 - Before performing dynamic debugging on suspicious samples, you must first confirm the user's intentions to avoid mistakes.
 
@@ -338,52 +338,52 @@ Don't just list the commands without explaining why they are done.
 
 ### Example 1: Analyzing an exe
 
-User: `帮我看看这个 exe 干了什么，用 radare2 就行`
+User: xKx0010xKx
 
 Handling Method:
 
-1. First use `rabin2 -I/-z/-i`
-2. Determine whether it is necessary to enter `r2`
-3. Use `aaa`, `afl`, `pdf` to further explore entry points and key string references
+1. First use xKx0011xKx
+2. Determine whether it is necessary to enter xKx0012xKx
+3. Use xKx0013xKx, xKx0014xKx, xKx0015xKx to further explore entry points and key string references
 
 ### Example 2: Finding Where a String Is Called
 
-User: `这个报错字符串在哪个函数里触发的`
+User: xKx0016xKx
 
 Handling Method:
 
-1. Use `iz~关键字` to find the string address
-2. Use `axt <addr>` to find references
-3. Jump to the reference point `s <addr>` after `pdf`
+1. Use xKx0017xKx to find the string address
+2. Use xKx0018xKx to find references
+3. Jump to the reference point xKx0019xKx after xKx0020xKx
 
 ### Example 3: Remove the jump
 
-User: `把这个 jne 改成 je`
+User: xKx0021xKx
 
 Handling method:
 
 1. First, confirm the target address
 2. Clearly inform to enter write mode
-3. Use `wa je <target>` or directly `wx`
+3. Use xKx0022xKx or directly xKx0023xKx
 4. Re-disassemble after modification to verify
 
 ## Practices to Avoid
 
-- Do not treat `radare2` as a tool that only has `aaa` as a command
+- Do not treat xKx0024xKx as a tool that only has xKx0025xKx as a command
 - Do not directly write mode to open user files without explaining the risks
 - Don't draw conclusions before doing basic reconnaissance
-- **Prohibit skipping import table check** (`rabin2 -i` / recon imports): Do not proceed to the next step without writing the Evidence; when a user requests to redo the import table, changing to other steps is forbidden
-- **Do not stubbornly persist with static analysis after IAT repair fails**: remember `E-iat-repair-fail` and then switch to dynamic; 64-bit samples must not use only ImportREC
-- Do not mislead web JS reverse engineering to this skill; that is the scope of `reverse-engineering`
+- **Prohibit skipping import table check** (xKx0026xKx / recon imports): Do not proceed to the next step without writing the Evidence; when a user requests to redo the import table, changing to other steps is forbidden
+- **Do not stubbornly persist with static analysis after IAT repair fails**: remember xKx0027xKx and then switch to dynamic; 64-bit samples must not use only ImportREC
+- Do not mislead web JS reverse engineering to this skill; that is the scope of xKx0028xKx
 
 ## References
 
-- Command Quick Reference: `references/cheatsheet.md`
-- Standard reconnaissance script: `scripts/recon.ps1`
+- Command Quick Reference: xKx0029xKx
+- Standard reconnaissance script: xKx0030xKx
 
 ## radare2-skills Ecosystem
 
-The radare2-skills project (radareorg/radare2-skills) provides a more complete ecosystem of tools and workflows:
+The radare2-skills project (xKx0031xKx) provides a more complete ecosystem of tools and workflows:
 
 - **r2xsql**: SQL query binary import tables / strings / functions
 - **r2mcp / r2http**: MCP tool with HTTP stateful command channel
@@ -392,13 +392,13 @@ The radare2-skills project (radareorg/radare2-skills) provides a more complete e
 - **decompiler plugins**: radare2 plugin mechanism
 
 **Usage Strategy**:
-- When the user mentions `r2xsql`, `r2mcp`, `r2http`, `radius2`, `r2pm`, `rabin2`, `rasm2`, `radiff2`, `rahash2`, `rax2`, prioritize routing to this skill (radare2/README.md)
-- These tools are just ecosystem accelerators and **cannot bypass**: authorization access control, `tool-index` verification, Evidence import, write mode confirmation
+- When the user mentions xKx0032xKx, xKx0033xKx, xKx0034xKx, xKx0035xKx, xKx0036xKx, xKx0037xKx, xKx0038xKx, xKx0039xKx, xKx0040xKx, xKx0041xKx, prioritize routing to this skill (xKx0042xKx)
+- These tools are just ecosystem accelerators and **cannot bypass**: authorization access control, xKx0043xKx verification, Evidence import, write mode confirmation
 - Provide a minimal reproducible command example:
-  - `r2xsql -s <file> -q "SELECT ..."`
-  - `curl.exe -sS --data-binary 'aaa' http://127.0.0.1:9393/cmd`
-  - `radius2 -p <binary> ...`
-  - `r2pm -ci <plugin>`
+  - xKx0044xKx
+  - xKx0045xKx
+  - xKx0046xKx
+  - xKx0047xKx
 
 This skill maintains the integrity of the original hard access control and evidence chain, and does not allow skipping any authorization or evidence steps.
 
@@ -406,14 +406,14 @@ This skill maintains the integrity of the original hard access control and evide
 
 ## Routing Context
 
-**Upstream Input**: `references/README.md` (Main Control), `routing.md`
-**Upstream Alternative**: `ida-reverse/` (upgrade to IDA when decompiling/pseudocode is needed)
+**Upstream Input**: xKx0048xKx (Main Control), xKx0049xKx
+**Upstream Alternative**: xKx0050xKx (upgrade to IDA when xKx0051xKx is needed)
 **Downstream Exports**:
-- Requires dynamic analysis → `reverse-engineering/tools-dynamic.md`（Frida/GDB）
-- Requires deep decompilation → `ida-reverse/`
-- After PAT discovers interesting strings, cross-referencing is required → `ida-reverse/` (IDA's xref is more powerful)
+- Requires dynamic analysis → xKx0052xKx（xKx0053xKx）
+- Requires deep decompilation → xKx0054xKx
+- After PAT discovers interesting strings, cross-referencing is required → xKx0055xKx (IDA's xref is more powerful)
 
-**Peer-related modules**: `ida-reverse/` (Complementary: r2 reconnaissance is fast, IDA decompilation is deep)
+**Peer-related modules**: xKx0056xKx (Complementary: r2 reconnaissance is fast, IDA decompilation is deep)
 
 ## On-Demand Bootstrap
 
@@ -423,7 +423,7 @@ The entry script for this skill has been integrated into the unified bootstrappi
 
 | Tool | Can be Automatically Installed | Installation Method | Description |
 |------|-----------|---------|------|
-| r2 | ✓ | GitHub Release ZIP (w64) | Automatically download and extract to `%USERPROFILE%\Tools\radare2\` |
+| r2 | ✓ | GitHub Release ZIP (w64) | Automatically download and extract to xKx0057xKx |
 | rabin2 | ✓ | Same as above (included in the radare2 distribution) | — |
 | rasm2 | ✓ | Same as above | — |
 | radiff2 | ✓ | Same as above | — |
@@ -432,20 +432,20 @@ The entry script for this skill has been integrated into the unified bootstrappi
 
 ### Bootstrap Trigger Point
 
-- `scripts/recon.ps1`: Automatically call `bootstrap-reverse.ps1` when `rabin2` or `r2` is missing
+- xKx0058xKx: Automatically call xKx0059xKx when xKx0060xKx or xKx0061xKx is missing
 
 ### When Bootstrapping Fails
 
 If the automatic installation fails (due to network issues, GitHub API rate limits, etc.), the script will throw a clear error and provide a link for manual installation.
 
-Manual installation: Download `radare2-*-w64.zip` from https://github.com/radareorg/radare2/releases, extract it to `%USERPROFILE%\Tools\radare2\`, and make sure the `bin\` directory is in the PATH.
+Manual installation: Download xKx0062xKx from xKx0063xKx extract it to xKx0064xKx, and make sure the xKx0065xKx directory is in the PATH.
 
 
 ## Task Completion Self-Check (MUST Pass Before Claiming Completion)
 
 - [ ] Did I perform each step in the workflow (instead of just reading it)?
-- [ ] Check if the import table has been executed and written to Evidence (E-imports / E-triage-imports or .NET equivalent)? Does DLL/SYS contain E-exports?
+- [ ] Check if the import table has been executed and written to Evidence (E-imports / E-triage-imports or .NET equivalent)? Does xKx0066xKx contain E-exports?
 - [ ] If IAT repair fails, should it log E-iat-repair-fail and switch to dynamic? Will a redo request return to the same step?
-- [ ] Did I use a real tool path based on `tool-index`?
-- [ ] Have I produced reproducible evidence (commands/scripts/screenshots/reports)?
+- [ ] Did I use a real tool path based on xKx0067xKx?
+- [ ] Have I produced reproducible evidence (xKx0068xKx)?
 - [ ] Have I completed and filled in the Checklist items required by the RULES?

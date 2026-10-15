@@ -5,33 +5,33 @@ description: Use for authorized digital forensics including memory dumps, disk t
 
 # Digital Forensics & IR Artifacts
 
-## ACTION REQUIRED（读完后立刻执行）
+## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. `NOW`: 读取 `../field-journal/precedent-pentest.md` 或组织 IR 授权说明
-2. `NOW`: 确认是**取证/溯源**而非进攻性扫描
-3. `NOW`: 建立 case；证据只读副本优先（原始介质写保护）
-4. `NEXT`: tool-index；Volatility 等常手动
-5. `ACT`: 保全哈希 → 时间线 → 关键伪影
+1. `NOW`: Read `../field-journal/precedent-pentest.md` or organize IR authorization instructions
+2. `NOW`: Confirm that it is **evidence collection/tracing** rather than offensive scanning
+3. `NOW`: Create case; evidence read-only copy preferred (original media write-protected)
+4. `NEXT`: tool-index; Volatility and other common manual methods
+5. `ACT`: Preserve Hash → Timeline → Key Artifact
 
-## 适用场景
+## Applicable Scenarios
 
-- 内存转储分析（Volatility 2/3）
-- 磁盘/ E01 / 落地文件时间线
-- PCAP 溯源与协议还原（可联合 `protocol-reverse/`）
-- 主机伪影：Prefetch、Shimcache、Event Log、浏览器历史
-- 应急响应 IOC 提炼（联合 `malware-analysis/` / `threat-hunting/`）
+- Memory dump analysis (Volatility 2/3)
+- Disk / E01 / Landing File Timeline
+- PCAP tracing and protocol reconstruction (can be combined with `protocol-reverse/`)
+- Host Artifacts: Prefetch, Shimcache, Event Log, Browser History
+- Emergency Response IOC Extraction (in collaboration with `malware-analysis/` / `threat-hunting/`)
 
-## 工作流
+## Workflow
 
-### 1. 保全
+### 1. Preservation
 
 ```text
-□ 计算 SHA256；记录时区与采集命令
-□ 工作在副本上；原始只读
-□ chain of custody 备注写入 timeline
+□ Calculate SHA256; record timezone and collection command
+□ Work on a copy; original is read-only
+□ chain of custody notes entered in the timeline
 ```
 
-### 2. 内存
+### 2. Memory
 
 ```bash
 vol -f mem.dmp windows.info
@@ -40,44 +40,44 @@ vol -f mem.dmp windows.netscan
 vol -f mem.dmp windows.cmdline
 ```
 
-### 3. 主机伪影
+### 3. Host Artifacts
 
 ```text
-□ 事件日志：Security / PowerShell / Sysmon
-□ 持久化：Run 键、服务、计划任务、WMI
-□ 执行痕迹：Amcache、Prefetch、BAM
+□ Event Logs: Security / PowerShell / Sysmon
+□ Persistence: Run key, services, scheduled tasks, WMI
+□ Execution traces: Amcache, Prefetch, BAM
 ```
 
-### 4. 网络
+### 4. Network
 
 ```text
-□ tshark 统计会话与 DNS
-□ 导出可疑流 → protocol-reverse 或 malware C2 分析
+□ tshark statistics for sessions and DNS
+□ Export suspicious traffic → protocol-reverse or malware C2 analysis
 ```
 
-## 工具链
+## Toolchain
 
-| 工具 | 用途 |
+| Tool | Purpose |
 |------|------|
-| Volatility 3 | 内存 |
-| Timeline Explorer / Plaso | 超级时间线 |
+| Volatility 3 | Memory |
+| Timeline Explorer / Plaso | Super Timeline |
 | tshark | PCAP |
-| Eric Zimmerman 工具集 | Windows 伪影 |
-| Autopsy / FTK Imager | 磁盘 |
+| Eric Zimmerman Toolkit | Windows Artifacts |
+| Autopsy / FTK Imager | Disk |
 
-## 参考
+## References
 
-- `references/forensics-triage.md`
-- `../malware-analysis/` `../threat-hunting/` `../protocol-reverse/`
+- xKx0000xKx
+- xKx0001xKx xKx0002xKx xKx0003xKx
 
-## 路由上下文
+## Routing Context
 
-**上游**: MASTER R25  
-**下游**: 恶意样本深挖 → malware-analysis；规则 → threat-hunting
+**Upstream**: MASTER R25
+**Downstream**: In-depth analysis of malicious samples → malware analysis; rules → threat hunting
 
-## 任务完成自检
+## Task Completion Self-Check
 
-- [ ] 是否保全哈希与副本策略？
-- [ ] 时间线是否可复核？
-- [ ] IOC 是否脱敏分级？
-- [ ] Checklist？
+- [ ] Preserve hash and replica strategy?
+- [ ] Can the timeline be reviewed?
+- [ ] Does the IOC have desensitization levels?
+- [ ] Checklist?

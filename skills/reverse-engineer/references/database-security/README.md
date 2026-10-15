@@ -5,52 +5,52 @@ description: Use for authorized database security assessment covering PostgreSQL
 
 # Database Security Assessment
 
-## ACTION REQUIRED（读完后立刻执行）
+## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. `NOW`: 读取 precedent-pentest；**生产库禁止破坏性语句** unless 明确允许
-2. `NOW`: scope 写清实例、账号权限、是否允许写/删
-3. `NEXT`: 客户端工具路径
-4. `ACT`: 暴露面 → 认证 → 授权 → 配置 → 利用链验证（安全）
+1. `NOW`: Read precedent-pentest; **destructive statements are prohibited in the production database** unless explicitly allowed
+2. `NOW`: scope Clearly state examples, account permissions, and whether writing/deleting is allowed
+3. `NEXT`: Client tool path
+4. `ACT`: Exposure → Authentication → Authorization → Configuration → Chain of utilization verification (Security)
 
-## 适用场景
+## Applicable Scenarios
 
-- 数据库未授权/弱口令/错误绑定 0.0.0.0
-- 权限过大、危险功能（xp_cmdshell、COPY PROGRAM、UDF）
-- 横向：从应用账号到 DBA
-- NoSQL 注入与 Redis 写文件等（授权环境）
+- Database unauthorized/weak password/misconfigured binding 0.0.0.0
+- Excessive permissions, dangerous functions (xp_cmdshell, COPY PROGRAM, UDF)
+- Horizontal: From application account to DBA
+- NoSQL injection and Redis file writing, etc. (authorized environment)
 
-## 工作流
+## Workflow
 
 ```text
-□ 网络暴露与 TLS
-□ 账号角色与 grantee
-□ 敏感表访问控制
-□ 危险配置：file_priv、xp_cmdshell、load_file
-□ 审计日志是否开启
-□ 备份与快照权限
+□ Network Exposure and TLS
+□ Account Roles and Grantee
+□ Sensitive Form Access Control
+□ Dangerous configurations: file_priv, xp_cmdshell, load_file
+□ Is the audit log enabled
+□ Backup and Snapshot Permissions
 ```
 
-## 工具链
+## Toolchain
 
-| 工具 | 用途 |
+| Tool | Purpose |
 |------|------|
-| 官方 CLI | 连接与枚举 |
-| sqlmap | 注入验证（授权） |
-| nuclei | 已知暴露模板 |
-| 云 RDS 控制台审计 | 配置 |
+| Official CLI | Connection and Enumeration |
+| sqlmap | Injection Verification (Authorized) |
+| nuclei | Known Exposure Template |
+| Cloud RDS Console Audit | Configuration |
 
-## 参考
+## References
 
-- `references/db-misconfig-checklist.md`
-- `../pentest-tools/` `../cloud-k8s/`
+- xKx0000xKx
+- xKx0001xKx xKx0002xKx
 
-## 路由上下文
+## Routing Context
 
-**上游**: MASTER R35  
-**下游**: 获 OS 命令 → attack-chain；云托管 → cloud-k8s
+**Upstream**: MASTER R35
+**Downstream**: Obtain OS command → attack-chain; Cloud hosting → cloud-k8s
 
-## 任务完成自检
+## Task Completion Self-Check
 
-- [ ] 是否避免未授权写删？
-- [ ] 是否区分配置问题与可利用链？
-- [ ] Checklist？
+- [ ] Whether to prevent unauthorized writing and deleting?
+- [ ] Whether to distinguish between configuration issues and available chains?
+- [ ] Checklist?

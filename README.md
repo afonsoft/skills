@@ -80,6 +80,10 @@ The skills are organized around the orchestrator's pipeline: **Harness Engineeri
 - **[`quality-test-implementation`](docs/en/quality-test-implementation.md)**: The whole-repo quality intervention. Fixes static-analysis warnings (Roslyn/Sonar, SpotBugs/Checkstyle, Bandit/Ruff), resolves security CVEs, and applies SOLID/DDD/Clean Architecture across .NET, Java, or Python repositories.
 - **[`sonarqube-autofix`](docs/en/sonarqube-autofix.md)**: The automated auditor. Integrates with SonarQube to identify and fix technical debt and smells systematically.
 
+### 🔬 Security & Reverse Engineering
+*Authorized analysis of shipped artifacts, protocols, and adversarial surfaces.*
+- **[`reverse-engineer`](docs/en/reverse-engineer.md)**: Consolidated RE hub merging REA (`rea-agents` CLI/MCP, evidence-ledger workflows) with the reverse-skill domain pack — 40+ guides covering binaries, APK/mobile, JS/Electron, .NET, firmware, protocols, malware, CTF, and authorized pentest lanes. Includes a deterministic router (`master-route.sh`), case/scope gates (`case-init.sh`, `auth.status=granted` required before ACT), a per-module tool-readiness checker (`check-tools.sh`), and an REA installer (`install-rea.sh`).
+
 ### 🎨 Frontend & Design
 *Shaping user-facing interfaces with mobile-first, responsive craft.*
 - **[`design`](docs/en/design.md)**: Frontend UI design for Angular, React, and Blazor. Covers mobile-first responsive layouts, typography, color, components, accessibility, motion, design tokens, Bootstrap/Tailwind CSS examples, and production hardening.
