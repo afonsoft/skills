@@ -17,10 +17,10 @@ jobs:
     name: Validate Spec (skills-ref)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.12'
 
@@ -53,10 +53,10 @@ jobs:
     name: Validate Quality (skill-validator)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           # skill-validator requires go >= 1.25.5; pinning an older version
           # triggers a toolchain auto-download that can 404. 'stable' avoids it.
@@ -94,10 +94,10 @@ jobs:
           - web-design-guidelines
           - wordpress-mcp
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Validate ${{ matrix.skill }}
-        uses: Flash-Brew-Digital/validate-skill@v1
+        uses: Flash-Brew-Digital/validate-skill@39c9da973b7ce3fd4d9632672a0c355bdd733d89 # v1
         with:
           path: ./skills/${{ matrix.skill }}
           validate-references: false
@@ -108,10 +108,10 @@ jobs:
     name: Validate Quality (skillcheck)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.12'
 
@@ -147,10 +147,10 @@ jobs:
     name: Security Scan (Snyk)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Setup Snyk
-        uses: snyk/actions/setup@master
+        uses: snyk/actions/setup@11b673cfb4b0dc0d860a1323caa199d54950dcce # master
 
       - name: Run Snyk test
         run: snyk test --all-projects --severity-threshold=high
@@ -172,10 +172,10 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.12'
 
@@ -255,7 +255,7 @@ jobs:
 
       - name: Upload SARIF to Code Scanning
         if: always() && hashFiles('results.sarif') != ''
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4
         with:
           sarif_file: results.sarif
         continue-on-error: true

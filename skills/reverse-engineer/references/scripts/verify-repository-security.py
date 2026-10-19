@@ -200,10 +200,9 @@ def main() -> int:
             if (path, label) not in EXPECTED_PATTERN_HITS:
                 errors.append(f"unexpected executable pattern {label}: {path}")
 
-    # Workflow pinning is checked only for workflows inside the skill subtree
-    # (host-repo workflows at the monorepo root are out of package scope).
-    workflow_root = prefix + ".github/workflows/"
-    for path in sorted(p for p in all_entries if p.startswith(workflow_root) and p.endswith((".yml", ".yaml"))):
+    # GitHub Actions of the repo hosting this verifier must be pinned to full
+    # commit SHAs (supply-chain integrity). Scoped to the repo root .github/.
+    for path in sorted(p for p in all_entries if p.startswith(".github/workflows/") and p.endswith((".yml", ".yaml"))):
         text = blob(path, root).decode("utf-8-sig")
         for use in ACTION_USE.findall(text):
             if use.startswith("./"):
