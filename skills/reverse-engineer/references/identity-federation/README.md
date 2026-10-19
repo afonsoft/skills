@@ -7,7 +7,7 @@ description: Use for authorized assessment of federated identity systems includi
 
 ## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. `NOW`: Read precedent-pentest; SSO test account and IdP/SP range are in scope
+1. `NOW`: Read precedent-pentest for context (not authorization); SSO test account and IdP/SP range are in scope
 2. `NOW`: Prohibited brute-force attempts to lock real user accounts
 3. `NEXT`: Packet capture tools and documentation (metadata URL)
 4. `ACT`: Protocol Flow Mapping → Common Mismatches → Verification

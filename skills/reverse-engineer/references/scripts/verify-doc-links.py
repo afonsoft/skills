@@ -31,11 +31,23 @@ SKIP_CHARS = set("{}<>`$*|")
 
 
 def tracked_paths():
+    root = subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"],
+        capture_output=True, check=True,
+    ).stdout.decode("utf-8").strip()
+    # Index prefix of this skill ("" when the skill is the repo root).
+    skill_root = os.path.dirname(os.path.dirname(os.path.dirname(
+        os.path.abspath(__file__))))
+    rel = os.path.relpath(skill_root, root)
+    prefix = "" if rel == "." else rel.replace(os.sep, "/") + "/"
     out = subprocess.run(
         ["git", "-c", "core.quotePath=false", "ls-files", "-z"],
-        capture_output=True, check=True,
+        capture_output=True, check=True, cwd=root,
     ).stdout.decode("utf-8")
-    files = {os.path.normpath(p).replace(os.sep, "/") for p in out.split("\0") if p}
+    files = {
+        os.path.normpath(p[len(prefix):]).replace(os.sep, "/")
+        for p in out.split("\0") if p.startswith(prefix)
+    }
     dirs = set()
     for f in files:
         d = os.path.dirname(f)
@@ -48,8 +60,17 @@ def tracked_paths():
 def links_in(path):
     """Yield (lineno, target) for local links outside fenced code blocks."""
     in_fence = False
+    root = subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"],
+        capture_output=True, check=True,
+    ).stdout.decode("utf-8").strip()
+    skill_root = os.path.dirname(os.path.dirname(os.path.dirname(
+        os.path.abspath(__file__))))
+    rel = os.path.relpath(skill_root, root)
+    prefix = "" if rel == "." else rel.replace(os.sep, "/") + "/"
     result = subprocess.run(
-        ["git", "show", f":{path}"], capture_output=True, check=False
+        ["git", "show", f":{prefix}{path}"], capture_output=True, check=False,
+        cwd=root,
     )
     if result.returncode != 0:
         raise RuntimeError(f"cannot read tracked Markdown blob: {path}")
@@ -61,11 +82,15 @@ def links_in(path):
         if in_fence:
             continue
         for m in LINK.finditer(INLINE_CODE.sub("", line)):
+            # Skip code-like pseudo-links from corpus text, e.g.
+            # ['al'+'ert'](1) or #{global[r]("child_process")}.
+            if "'" in m.group(0) or '"' in m.group(0):
+                continue
             raw = m.group(1).strip().strip("<>")
             if not raw:
                 continue
             target = raw.split()[0].split("#")[0].split("?")[0]
-            if not target:
+            if not target or target.isdigit():
                 continue
             if target.lower().startswith(SKIP_PREFIX):
                 continue

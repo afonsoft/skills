@@ -7,7 +7,7 @@ description: Use for authorized macOS and Mach-O reverse engineering including c
 
 ## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. `NOW`: Read `../field-journal/precedent-reverse.md`
+1. `NOW`: Read `../field-journal/precedent-reverse.md` for operator context — precedent is not authorization
 2. `NOW`: Confirm the target is macOS/Mach-O/App bundle (iOS IPA → `mobile-reverse/`)
 3. `NEXT`: tool-index; jtool2/lldb, etc.
 4. `ACT`: Signature and loading information → Static → Dynamic (lldb/Frida)

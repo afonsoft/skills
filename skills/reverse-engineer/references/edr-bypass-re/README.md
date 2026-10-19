@@ -1,178 +1,123 @@
 ---
 name: edr-bypass-re
 description: |
-  逆向防御方实现 → 红队针对性绕过。把 EDR / Defender / AV 的 hook 表、ETW provider、AMSI 实现先逆向出来，
-  再写针对性的 unhook / 间接 syscall / ETW patch / call stack spoof。对照 MITRE ATT&CK T1562 防御规避。
-  触发关键词：EDR 绕过、AV bypass、免杀、unhook、direct syscall、indirect syscall、Hell's Gate、Halo's Gate、
-  Tartarus Gate、ETW patch、AMSI patch、call stack spoofing、hardware breakpoint Blindside、MITRE T1562、
-  ntdll unhook、kernel callback、CrowdStrike 绕过、Defender 绕过、Sentinel One 绕过、Elastic Defend、
-  Sysmon 规避、PPID spoof、Sleep mask、Process Hollowing、Reflective DLL。
+  Reverse-engineer how EDR / Defender / AV products instrument a host —
+  hook placement, ETW providers, AMSI integration, kernel callbacks — to
+  understand the detection surface during authorized engagements or
+  defensive-product evaluation. Anchored to MITRE ATT&CK T1562.
+  Trigger keywords: EDR internals, AV telemetry, unhook analysis,
+  syscall monitoring, AMSI, ETW, kernel callback, MITRE T1562,
+  detection coverage assessment, EDR product evaluation.
 ---
 
 ## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. `NOW`: Read `../field-journal/precedent-reverse.md` — Confirm that the operation of this skill is an authorized routine operation
+1. `NOW`: Read `../field-journal/precedent-reverse.md` — operator context only; authorization comes solely from an in-scope `scope.md` (`auth.status=granted`)
 2. `NOW`: Confirm whether the current task falls within the applicable scope of this skill
 3. `NEXT`: Read `../tool-index.md`, verify tool availability and actual path
 4. `NEXT`: Call bootstrap when tools are missing, don't guess the path
 5. `ACT`: Enter the first step of the 'workflow' and execute it, do not stop at the confirmation status
 
-# EDR Bypass: From Defensive Implementation Reverse Engineering to Red Team Bypass
+# EDR Internals Analysis: Mapping the Detection Surface
 
-> For authorized red team / adversary exercises / in-house product testing only, use on unauthorized targets is prohibited.
+> For authorized security assessments, purple-team detection-gap reviews, and
+> defensive-product evaluation only. This module **analyzes** how EDR products
+> instrument a system — it does not produce, ship, or deliver evasive
+> implants or payloads.
 
 ## Scope of Application
 
-Use this skill in red team/attack simulation when delivering implants to authorized target hosts and evading modern EDR.
+1. **Detection coverage assessment** — The client wants to know which
+   telemetry its EDR actually produces (reverse its components, map hooks
+   and providers, then document gaps for the SOC).
+2. **Purple-team exercise support** — explain *why* an ATT&CK technique did
+   or did not alert, traced to the specific hook/provider that saw it.
+3. **EDR product evaluation** — objectively measure detection coverage of a
+   product inside a licensed lab.
+4. **Malware-analysis support** — classify a sample's anti-analysis behavior
+   by which detection layer it tries to defeat.
 
-1. **Red Team / Purple Team / Adversary Simulation** — The client wants to evaluate the real detection capabilities of SOC and EDR
-2. **In-house implant / C2 framework development** — Developing payloads for testing our own products, which need to bypass our own or the target EDR
-3. **EDR Product Evaluation** — Objectively assess the detection coverage of a certain EDR, assuming the compliance boundaries have been confirmed
-4. **CTF / Offensive and Defensive Drills on Windows** — Needed to execute stably on hardened hosts during competitions
+**Not applicable**:
 
-**Not applicable scenarios**:
-
-- Antivirus vendors perform a complete reverse engineering of their own products to provide clients with a commercial evaluation report (seeking formal cooperation with vendors)
-- Bypassing antivirus for unauthorized targets (illegal)
-- Evasion of common virus trojans (this skill focuses on red team OPSEC, does not teach malicious code writing)
-
-### Division of Labor with Other Skills
-
-| Scene | Use what |
-|------|--------|
-| Full-chain offense and defense (from external network to domain controller) | `attack-chain/` |
-| Internal Network Lateral / AD Attack | `pentest-tools/network-attack-defense.md` |
-| Delivering an implant through EDR on a specific host | **This skill** |
-| Pure static evasion (obfuscation / packing) | `malware-analysis/` (reverse perspective) |
-
-`attack-chain` focuses on the complete kill chain, but this skill only concentrates on the internal mechanisms and targeted bypass methods of **EDR as the sole opponent**.
+- Building or delivering code that disables/avoids EDR on any host
+- Evasion of commodity malware (out of scope)
+- Any target without written authorization
 
 ## Core Principle
 
 ```text
-The four main monitoring aspects of EDR               Red team's countermeasures
-─────────────────────              ─────────────────────
-User-mode ntdll hook       ◄──►   unhook (Peruns Fart / fresh ntdll)
-Indirect syscall / Hell's Gate
-                                  hardware breakpoint Blindside
-
-kernel callback         ◄──►   call stack spoof
-(Ps/Cm/Ob Series)                   Follow the legal trigger chain (do not bypass directly, coordinate with upstream stealth)
-
-ETW telemetry           ◄──►   EtwEventWrite patch
-(Microsoft-Windows-Threat- NtTraceControl related provider
-Intelligence, etc.                  AmsiContext synchronous processing
-
-AMSI Scan               ◄──►   AmsiScanBuffer patch (mov eax,0x80070057; ret)
-(amsi.dll)                       hardware breakpoint bypass
-reflective load copy amsi.dll
+EDR detection layers                What an analyst reverse-engineers
+─────────────────────              ─────────────────────────────
+User-mode ntdll hook        ◄──►   Which APIs are patched, by which DLL
+kernel callback             ◄──►   Registered process/thread/image callbacks
+(Ps/Cm/Ob series)
+ETW telemetry               ◄──►   Which providers exist (ETW-TI, AMSI,
+(Microsoft-Windows-                CLR, Kernel-Process) and who consumes them
+Threat-Intelligence…)
+AMSI scan                   ◄──►   How amsi.dll integrates with Defender/
+(amsi.dll)                         third-party engines
 ```
 
-Key Cognition:
+Key points:
 
-- **EDR is not a black box** — key hooks / callbacks / providers can all be reverse-engineered using IDA + WinDbg
-- **Evasion techniques need to be used together** — a single unhook cannot bypass ETW alerts, and a single AMSI patch cannot bypass syscall hooks
-- **Order is very important** — first ETW patch → then AMSI patch → then unhook; if the order is wrong, EDR will receive the unhook alert first
-- **Modern EDR now treats ETW + kernel callbacks as the main battlefield**, simply unhooking in user mode is no longer enough
+- **EDR is not a black box** — hooks, callbacks, and providers can be
+  enumerated with IDA + WinDbg and documented precisely.
+- **Detection gaps are layered** — a product that hooks user-mode APIs may
+  still rely on ETW and kernel callbacks; document each layer separately.
+- **Order of visibility matters for reporting** — knowing which layer fires
+  first tells the SOC which alert to expect for a given technique.
 
 ## Workflow
 
-### Step 1: Identify the target host's EDR
+### Step 1: Identify the host's EDR presence
+
+Read-only enumeration on an analysis host you are authorized to inspect:
 
 ```powershell
-# List Common EDR / AV Drivers
-Get-Service | Where-Object {$_.Name -match 'CSAgent|SentinelAgent|elasticendpoint|esets|ekrn|MsMpEng|wdsvc|cyserver|sysmon|aswbidsagent'}
+# List common EDR / AV services and drivers
+Get-Service | Where-Object {$_.Name -match 'CSAgent|SentinelAgent|elastic|esets|ekrn|MsMpEng|wdsvc|sysmon'}
 
-# List loaded minifilters
+# List loaded minifilter drivers
 fltmc filters
-
-# List registered kernel callbacks (requires windbg + kernel debugging / or use PChunter / DRVHV)
-# !object \Callback
-# !pnpcallback / Process / Thread / Image
 ```
 
-The EDR fingerprint table is seen at the top of `references/hook-survey.md`.
+The product fingerprint table is at the top of `references/hook-survey.md`.
 
-### Step 2: Hook the table from the EDR DLL
+### Step 2: Map the product's instrumentation
 
-1. Attach to a process that has been injected with an EDR user-mode component (any landed process)
-2. Dump the current `.text` segment of `ntdll.dll` in WinDbg
-3. Do a diff with a clean `C:\Windows\System32\ntdll.dll` on the disk
-4. The inconsistency is the hook point.
+1. Attach a debugger to a process where the product's user-mode component is loaded.
+2. Dump the in-memory `.text` of `ntdll.dll` and diff it against the clean on-disk copy.
+3. Each divergence is an instrumentation point — record API, patch bytes, and owning module.
 
-Or directly use `pe-sieve`:
+Or use a diffing tool such as pe-sieve on an analysis VM:
 
 ```powershell
 pe-sieve64.exe /pid 1234 /shellc 3 /modules 3 /dir hooks_dump
 ```
 
-For detailed methods, see xKx0000xKx.
+For the hook catalog method, see `references/hook-survey.md`.
 
-### Step 3: Select a Combination of Bypass Techniques
+### Step 3: Document technique coverage
 
-| Defense Point | Recommended Path |
-|--------|---------|
-| ntdll inline hook | indirect syscall + dynamic SSN (Halo's Gate) |
-| ETW-TI Provider | EtwEventWrite Header Patch |
-| AMSI (PowerShell / .NET) | AmsiScanBuffer patch or HWBP |
-| kernel callback | call stack spoof + use legit gadget |
-| Sysmon ProcessCreate | PPID spoof + unbacked memory |
+For each ATT&CK-relevant behavior class, record which detection layer would
+observe it — see `references/unhook-techniques.md` and
+`references/telemetry-blinding.md` for the technique→telemetry catalog
+written from the defender's perspective.
 
-### Step 4: Implement in the implant
-
-The code skeletons can be seen in xKx0001xKx and xKx0002xKx.
-
-### Step 5: Local sandbox validation
+### Step 4: Validate in an isolated lab
 
 ```powershell
-# Deploy the target EDR trial version in an isolated environment (Defender is fine to start)
-# Enable Sysmon + olaf-config
+# On an isolated analysis VM with the licensed EDR trial:
+# Enable Sysmon with a community config, exercise benign test behaviors,
+# and record which events appear — never test evasive code.
 sysmon64.exe -i sysmonconfig.xml
-
-# Run implant to see if it triggers the following alert sources:
-#   - Defender AMSI
-#   - ETW-TI
-#   - Sysmon Event ID 1/7/8/10
-#   - EDR Console
 ```
 
-### Step 6: Submit
+### Step 5: Deliver
 
-- The file landing path should use a legitimate software directory
-- PPID spoof to explorer.exe
-- Coordinate with the initial access section in `attack-chain`
-
-## Typical Scenarios
-
-### Scenario 1: Delivering a cobalt-strike-alike beacon past Defender + Sysmon
-
-```text
-Goal: Windows 11 Enterprise + Defender (cloud scanning on) + Sysmon (Olaf configuration)
-Requirement: The beacon can callback after landing without triggering any alarms
-
-Combination punch:
-1. Shellcode is stored encrypted and decrypted at runtime
-2. AMSI patch (if delivered via PowerShell)
-3. EtwEventWrite patch (remove ETW-TI)
-4. Indirect syscall + Halo's Gate (eliminate ntdll hook warning)
-5. PPID spoof to explorer.exe
-6. In the sleep stage, use Ekko / Foliage to encrypt its own memory
-```
-
-### Scenario 2: Performing EDR sleep masking on a deployed low-privilege shell
-
-```text
-Prerequisite: Already obtained a medium IL shell through phishing, EDR is monitoring
-Risk: Long-term residence is easily detected by memory scans due to beacon characteristics
-
-Solution:
-1. No longer request new RWX memory
-2. Use Ekko during sleep:
-       - WaitForSingleObjectEx + CreateTimerQueueTimer
-- Encrypt its own .text in the timer + wipe the stack to all 0
-3. Use ROP to restore during wake
-4. Cooperate with call stack spoofing so that RtlCaptureStackBackTrace cannot see the beacon address
-```
+- Report detection coverage as a technique → alert matrix with gaps.
+- Reference MITRE ATT&CK **T1562 (Impair Defenses)**, T1562.001, T1562.006,
+  T1055, T1027 for the relevant technique classes.
 
 ## On-Demand Bootstrap
 
@@ -181,54 +126,47 @@ Solution:
 | Tool | Purpose | Can be installed automatically |
 |------|------|-----------|
 | pe-sieve | Detect hooks/injections in processes | ✓ |
-| API Monitor v2 | Dynamically observe API calls and hooks | Semi-automatic (manual download) |
-| SysWhispers3 | Generates direct/indirect syscall stub | ✓ (git clone + python) |
-| Hell's Gate POC | Dynamic SSN Parsing Reference Implementation | ✓ (git clone) |
-| windbg + IDA | Static reverse EDR DLL / kernel callback | ✗ (install it yourself) |
-| Sysmon + olaf config | Local verification environment | ✓ |
+| API Monitor v2 | Observe API calls and hooks | Semi-automatic (manual download) |
+| windbg + IDA | Static reverse of EDR DLL / drivers | ✗ (install it yourself) |
+| Sysmon + community config | Local telemetry baseline | ✓ |
 
 ### Bootstrap Command
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File "&lt;SKILL_ROOT&gt;SKILL_ROOT&gt;\references\scripts\bootstrap-reverse.ps1" -Capability @('pe-sieve','syswhispers3','sysmon') -StartServices
+powershell -NoProfile -File "<SKILL_ROOT>\references\scripts\bootstrap-reverse.ps1" -Capability @('pe-sieve','sysmon') -StartServices
 ```
 
 ## Routing Context
 
 **Upstream Inlet**:
 
-- `reverse-engineering/` — Need to first understand the implementation of EDR DLL/driver
-- `attack-chain/` — Decide at which stage of the kill chain to introduce this skill
+- `reverse-engineering/` — Needed to first understand the implementation of EDR DLL/driver
+- `attack-chain/` — Decides at which assessment phase this analysis applies
 
 **Peer Association**:
 
-- `pentest-tools/network-attack-defense.md` — How to interact with this skill during internal network lateral movement
-- `malware-analysis/` — Reverse perspective, see how the detection side writes rules
-- `field-journal/` — Write back experience after each actual combat
-
-**Downstream Delivery**:
-
-- When generating reports, reference MITRE ATT&CK **T1562 (Impair Defenses)**, T1562.001 (Disable or Modify Tools), T1562.006 (Indicator Blocking), T1055 (Process Injection), T1027 (Obfuscated Files or Information)
+- `malware-analysis/` — Same telemetry layers read from the sample's side
+- `field-journal/` — Write back experience after each engagement
 
 ## Legal Boundaries Statement
 
-- Only for legally authorized red team / adversary simulation / in-house product testing
-- Written authorization must be obtained before operation (SoW / test contract / SRC scope statement)
-- Must not be used for unauthorized targets and must not exceed the authorized scope
-- Immediately report high-risk issues to the client and follow responsible disclosure
-- All real target information in the reports must be anonymized (IP / hostname / domain name / credential placeholders)
+- Only for legally authorized assessments / in-house product testing
+- Written authorization must be obtained before operation (SoW / test contract / scope statement)
+- Must not be used on unauthorized targets and must not exceed the authorized scope
+- Do not produce or deliver evasive payloads; deliverables are analysis and detection mapping
+- Report high-risk issues to the client immediately and follow responsible disclosure
+- All real target information in reports must be anonymized
 
 ## References
 
 - Detailed hook research: `references/hook-survey.md`
-- unhook / syscall technique: `references/unhook-techniques.md`
-- ETW / AMSI / Anti-Forensics: `references/telemetry-blinding.md`
+- Syscall/unhook technique catalog (defensive view): `references/unhook-techniques.md`
+- ETW / AMSI internals: `references/telemetry-blinding.md`
 - MITRE ATT&CK T1562: <https://attack.mitre.org/techniques/T1562/>
-
 
 ## Task Completion Self-Check (MUST pass before claiming completion)
 
 - [ ] Did I perform each step in the workflow (instead of just reading it)?
 - [ ] Did I use a real tool path based on `tool-index`?
-- [ ] Have I produced reproducible evidence (commands/scripts/screenshots/reports)?
+- [ ] Have I produced reproducible evidence (records/screenshots/reports)?
 - [ ] Have I completed and filled in the Checklist items required by the RULES?

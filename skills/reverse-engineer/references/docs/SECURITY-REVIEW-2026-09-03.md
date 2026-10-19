@@ -80,8 +80,8 @@ Residual limitation: an external Agent or user can bypass repository entry scrip
 ```powershell
 python references/scripts/verify-repository-security.py
 python references/scripts/verify-doc-links.py
-powershell -NoProfile -ExecutionPolicy Bypass -File references/scripts/verify-routing-coherence.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File references/scripts/smoke.ps1
+powershell -NoProfile -File references/scripts/verify-routing-coherence.ps1
+powershell -NoProfile -File references/scripts/smoke.ps1
 ```
 
 Inspect the quarantined payload without requiring a working-tree copy:

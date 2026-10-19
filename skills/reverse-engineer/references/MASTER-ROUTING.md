@@ -110,7 +110,7 @@ python3 references/case-review/scripts/review_case.py work/<case> --verify-hashe
 | **R32** | Thick Client Security | `thick-client/` |
 | **R26** | Code Audit / SAST / Semgrep | `code-audit/` |
 | **R27** | Threat Hunting / Detection Engineering / Blue Team | `threat-hunting/` |
-| **R10** | Attack Chain / Red Team / Lateral / Full Penetration | `attack-chain/` |
+| **R10** | Multi-Stage Assessment Orchestration (authorized) | `attack-chain/` |
 | **R11** | Nmap / Nuclei / SQLMap / SRC / Penetration Tools | `pentest-tools/` |
 | **R12** | API / GraphQL / BOLA / JWT Attack | `api-security/` |
 | **R13** | SBOM / Trivy / Supply Chain | `supply-chain-security/` |

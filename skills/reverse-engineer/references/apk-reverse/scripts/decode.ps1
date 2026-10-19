@@ -23,6 +23,7 @@ $ErrorActionPreference = 'Stop'
 $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 
 . (Join-Path $PSScriptRoot '..\..\scripts\lib\ToolDiscovery.ps1')
+. (Join-Path $PSScriptRoot '..\..\scripts\lib\HostRuntime.ps1')
 
 function Get-SafeName {
     param([Parameter(Mandatory = $true)][string]$PathValue)
@@ -68,14 +69,25 @@ $jadxSpec = $null
 $apktoolSpec = $null
 $bootstrapScript = Join-Path $PSScriptRoot '..\..\scripts\bootstrap-reverse.ps1'
 
+function Invoke-ReverseBootstrap {
+    # Runs the package bootstrapper in a child PowerShell process resolved to
+    # the current host (pwsh/powershell), honoring the machine execution
+    # policy — no -ExecutionPolicy Bypass pivot. The caller must still have
+    # approved the disclosed install effects per RULES.md before invoking
+    # this script.
+    param([Parameter(Mandatory = $true)][string]$Capability)
+    $hostExe = Resolve-ReverseHostExe
+    & $hostExe -NoProfile -File $bootstrapScript -Capability @($Capability) -SkipRefresh
+    if ($LASTEXITCODE -ne 0) {
+        throw "Bootstrap failed for $Capability (exit $LASTEXITCODE). Review output above or install manually."
+    }
+}
+
 if (-not $SkipJadx) {
     $jadxSpec = Resolve-ReverseToolSpec -Name 'jadx'
     if (-not $jadxSpec.Available) {
         Write-Host 'INFO: jadx not found, attempting auto-bootstrap...' -ForegroundColor Yellow
-        & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $bootstrapScript -Capability @('jadx') -SkipRefresh
-        if ($LASTEXITCODE -ne 0) {
-            throw 'Bootstrap failed for jadx. Please install manually: https://github.com/skylot/jadx'
-        }
+        Invoke-ReverseBootstrap -Capability 'jadx'
         $jadxSpec = Resolve-ReverseToolSpec -Name 'jadx'
         if (-not $jadxSpec.Available) {
             throw 'jadx still not available after bootstrap. Check installation at %USERPROFILE%\Tools\jadx\'
@@ -87,15 +99,35 @@ if (-not $SkipApktool) {
     $apktoolSpec = Resolve-ReverseToolSpec -Name 'apktool'
     if (-not $apktoolSpec.Available) {
         Write-Host 'INFO: apktool not found, attempting auto-bootstrap...' -ForegroundColor Yellow
-        & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $bootstrapScript -Capability @('apktool') -SkipRefresh
-        if ($LASTEXITCODE -ne 0) {
-            throw 'Bootstrap failed for apktool. Please install manually: https://apktool.org/'
-        }
+        Invoke-ReverseBootstrap -Capability 'apktool'
         $apktoolSpec = Resolve-ReverseToolSpec -Name 'apktool'
         if (-not $apktoolSpec.Available) {
             throw 'apktool still not available after bootstrap. Check installation at %USERPROFILE%\Tools\apktool\'
         }
         Write-Host 'INFO: apktool bootstrapped successfully.' -ForegroundColor Green
+    }
+}
+
+function Assert-SafeDeletePath {
+    # Containment guard: a path may only be recursively deleted if it resolves
+    # to a non-root directory strictly beneath the resolved output root.
+    param(
+        [Parameter(Mandatory = $true)][string]$Path,
+        [Parameter(Mandatory = $true)][string]$ResolvedOutRoot
+    )
+
+    $fullPath = [System.IO.Path]::GetFullPath($Path).TrimEnd('\', '/')
+    $fullRoot = [System.IO.Path]::GetFullPath($ResolvedOutRoot).TrimEnd('\', '/')
+    if ([string]::IsNullOrWhiteSpace($fullPath) -or $fullPath.Length -le $fullRoot.Length) {
+        throw "Refusing to delete '$fullPath': must be strictly beneath '$fullRoot'."
+    }
+    if (-not ($fullPath.StartsWith($fullRoot + [System.IO.Path]::DirectorySeparatorChar) -or
+              $fullPath.StartsWith($fullRoot + [System.IO.Path]::AltDirectorySeparatorChar))) {
+        throw "Refusing to delete '$fullPath': outside output root '$fullRoot'."
+    }
+    $fsRoot = [System.IO.Path]::GetPathRoot($fullPath)
+    if ($fullPath -eq $fsRoot.TrimEnd('\', '/')) {
+        throw "Refusing to delete filesystem root '$fullPath'."
     }
 }
 
@@ -110,6 +142,7 @@ if (-not (Test-Path -LiteralPath $resolvedOutRoot)) {
 }
 
 if ($Clean -and (Test-Path -LiteralPath $taskRoot)) {
+    Assert-SafeDeletePath -Path $taskRoot -ResolvedOutRoot $resolvedOutRoot
     Remove-Item -LiteralPath $taskRoot -Recurse -Force
 }
 
@@ -120,6 +153,7 @@ if (-not (Test-Path -LiteralPath $taskRoot)) {
 $jadxExitCode = $null
 if (-not $SkipJadx) {
     if (Test-Path -LiteralPath $jadxOut) {
+        Assert-SafeDeletePath -Path $jadxOut -ResolvedOutRoot $resolvedOutRoot
         Remove-Item -LiteralPath $jadxOut -Recurse -Force
     }
     & $jadxSpec.Command @($jadxSpec.PrefixArgs + @('-d', $jadxOut, $ApkPath))
@@ -129,6 +163,7 @@ if (-not $SkipJadx) {
 $apktoolExitCode = $null
 if (-not $SkipApktool) {
     if (Test-Path -LiteralPath $apktoolOut) {
+        Assert-SafeDeletePath -Path $apktoolOut -ResolvedOutRoot $resolvedOutRoot
         Remove-Item -LiteralPath $apktoolOut -Recurse -Force
     }
     & $apktoolSpec.Command @($apktoolSpec.PrefixArgs + @('d', $ApkPath, '-o', $apktoolOut, '-f'))

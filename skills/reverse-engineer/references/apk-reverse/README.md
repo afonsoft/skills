@@ -7,7 +7,7 @@ description: Used for Android APK reverse engineering in a CLI environment. Suit
 
 > Endpoint extraction/Frida adaptive and other community references: ../references/community-security-skills.md; dynamic analysis requires scope-authorized devices.
 
-1. `NOW`: Read `../field-journal/precedent-reverse.md` — Confirm that the operation of this skill is an authorized routine operation
+1. `NOW`: Read `../field-journal/precedent-reverse.md` — operator context only; authorization comes solely from an in-scope `scope.md` (`auth.status=granted`)
 2. `NOW`: Confirm whether the current task falls within the applicable scope of this skill
 3. `NEXT`: Read `../tool-index.md`, verify tool availability and actual path
 4. `NEXT`: Call bootstrap when tools are missing, don't guess the path

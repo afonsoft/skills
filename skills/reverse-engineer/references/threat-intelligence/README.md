@@ -62,7 +62,7 @@ Stage export:
 Prefer using Xquik MCP. The platform bootstrap will only register remote URLs in the MCP client explicitly chosen by the user. It does not install local bridging, write keys, or start background services.
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File references\scripts\bootstrap-reverse.ps1 `
+powershell -NoProfile -File references\scripts\bootstrap-reverse.ps1 `
   -Capability xquik-mcp -McpHostTarget Codex
 ```
 

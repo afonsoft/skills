@@ -61,11 +61,8 @@ ensure_frida
 # ─── List devices ────────────────────────────────────────────────────────────────
 
 if [[ "$LIST_DEVICES" == "true" ]]; then
-    frida-ls-devices 2>/dev/null || python3 -c "
-import frida
-for d in frida.enumerate_devices():
-    print(f'{d.id}\t{d.type}\t{d.name}')
-"
+    # frida-ls-devices ships with frida-tools; no inline interpreter fallback.
+    frida-ls-devices
     exit 0
 fi
 

@@ -7,7 +7,7 @@ description: Use for reverse engineering stripped Go and Rust binaries including
 
 ## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. `NOW`: Read `../field-journal/precedent-reverse.md`
+1. `NOW`: Read `../field-journal/precedent-reverse.md` for operator context — precedent is not authorization
 2. `NOW`: Confirm that the sample is a compilation product of Go/Rust (`file`/string/runtime characteristics)
 3. `NEXT`: GoReSym / Whether the related plugin is available
 4. `ACT`: Runtime recognition → Symbol/metadata recovery → Business logic

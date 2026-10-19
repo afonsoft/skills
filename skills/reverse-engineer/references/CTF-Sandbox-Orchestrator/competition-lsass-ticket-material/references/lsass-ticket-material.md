@@ -1,5 +1,10 @@
 # LSASS Ticket Material Checklist
 
+> Analyst-side checklist for an authorized CTF/lab artifact: characterize
+> credential-like material found in a dump or cache and prove which
+> sandbox-internal service accepts it. Recovered material is challenge
+> evidence — never reuse or replay it outside the sandbox.
+
 ## First Pass
 
 - Logon sessions, LUIDs, package names, ticket caches, SSP artifacts, DPAPI context, account names

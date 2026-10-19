@@ -7,7 +7,7 @@ description: Use for authorized database security assessment covering PostgreSQL
 
 ## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. `NOW`: Read precedent-pentest; **destructive statements are prohibited in the production database** unless explicitly allowed
+1. `NOW`: Read precedent-pentest for context (not authorization); **destructive statements are prohibited in the production database** unless explicitly allowed
 2. `NOW`: scope Clearly state examples, account permissions, and whether writing/deleting is allowed
 3. `NEXT`: Client tool path
 4. `ACT`: Exposure → Authentication → Authorization → Configuration → Chain of utilization verification (Security)

@@ -7,7 +7,7 @@ description: Use for free/open reverse engineering with Ghidra (headless or GUI)
 
 ## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. `NOW`: Read `../field-journal/precedent-reverse.md`
+1. `NOW`: Read `../field-journal/precedent-reverse.md` for operator context — precedent is not authorization
 2. `NOW`: Confirm that **Ghidra** is needed (no IDA / preference for open source / batch headless)
 3. `NEXT`: Read `../tool-index.md` to check the ghidra / ghidra-mcp path
 4. `NEXT`: Missing tools → bootstrap `ghidra-mcp` (if manifest is supported) or install Ghidra manually according to the steps

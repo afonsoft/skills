@@ -90,7 +90,9 @@ copy C:\Windows\System32\ntdll.dll C:\temp\ntdll_clean.dll
 
 ## 3. Kernel callback monitoring points
 
-Common kernel callbacks registered by EDR (all can be unregistered by the BYOVD route in `attack-chain`, but at a high cost):
+Common kernel callbacks registered by EDR products — enumerate them to map
+the detection surface (kernel-level tampering is out of scope for this
+module):
 
 | API | Callback Timing for Registration | Defender's Use |
 |-----|--------------|-----------|
@@ -175,9 +177,12 @@ modified_modules.tag example:
 
 It can be directly fed to IDA to jump to the corresponding RVA for subsequent analysis.
 
-### Embedding pe-sieve (self-check) in the implant
+### Note on instrumented self-checks
 
-In practice, `pe-sieve` is often compiled as lib (`libpe-sieve`), so that when the implant starts, it first performs a self-check: if ntdll has hooks, it triggers the unhook process; if it finds that it itself is hooked, it should be careful, as it might be in a sandbox.
+Be aware that adversaries embed similar hook-detection logic in samples to
+decide whether to unhook or to go dormant in sandboxes. When analyzing a
+sample, look for pe-sieve-style scans (disk-`ntdll` reads, export-byte
+diffing) as a host-based indicator.
 
 ## 6. API Monitor v2 Dynamic Observation
 
@@ -223,4 +228,6 @@ After confirming the target EDR, decide which DLL to reverse engineer to obtain 
 
 ## Route Callback
 
-After completing the hook research, return to Step 3 of `README.md` to select the bypass technology combination, then execute according to `references/unhook-techniques.md` and `references/telemetry-blinding.md`.
+After completing the hook research, return to Step 3 of `README.md` to
+document technique coverage, cross-referencing
+`references/unhook-techniques.md` and `references/telemetry-blinding.md`.

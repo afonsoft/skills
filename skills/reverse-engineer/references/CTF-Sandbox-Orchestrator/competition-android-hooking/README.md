@@ -7,6 +7,8 @@ description: Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox
 
 Use this skill only as a downstream specialization after `$ctf-sandbox-orchestrator` is already active and has established sandbox assumptions, node ownership, and evidence priorities. If that has not happened yet, return to `$ctf-sandbox-orchestrator` first.
 
+> **Sandbox boundary**: all analysis and validation happen inside the authorized CTF/lab environment established by the orchestrator. Challenge artifacts, decoded data, and recovered secrets are handled as evidence — never reused, replayed, or exfiltrated outside the sandbox scope.
+
 Use this skill when the decisive path runs through an Android app's live trust boundary rather than static strings alone.
 
 Reply in Simplified Chinese unless the user explicitly requests English.

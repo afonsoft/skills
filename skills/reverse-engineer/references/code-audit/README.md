@@ -7,7 +7,7 @@ description: Use for authorized source-code security review and SAST workflows i
 
 ## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. `NOW`: Read `../field-journal/precedent-pentest.md` or code audit authorization
+1. `NOW`: Read `../field-journal/precedent-pentest.md` for context; confirm code audit authorization via scope.md
 2. `NOW`: Confirm access to **source code/repository** (no source code binary → switch to RE skill)
 3. `NOW`: Clarify the language stack and scope (directory/service/PR diff)
 4. `NEXT`: tool-index; semgrep, etc.

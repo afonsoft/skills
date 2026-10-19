@@ -7,7 +7,7 @@ description: Use for authorized wireless security assessment including Wi-Fi cap
 
 ## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. `NOW`: Read precedent-pentest; **Wireless attacks carry high legal risks**, written authorization and physical scope are required
+1. `NOW`: Read precedent-pentest for context (not authorization); **Wireless attacks carry high legal risks**, written authorization and physical scope are required
 2. `NOW`: scope specifies the target SSID/BSSID/ site; scanning neighbors' networks is prohibited
 3. `NEXT`: Confirm adapter listening mode capability
 4. `ACT`: Reconnaissance → Collection → Analysis (Laboratory First)

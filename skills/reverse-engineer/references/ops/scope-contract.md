@@ -9,12 +9,12 @@
 Windows：
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File references\scripts\case-init.ps1 -Hint "<任务一句话>" -CaseName "my-case"
+powershell -NoProfile -File references\scripts\case-init.ps1 -Hint "<任务一句话>" -CaseName "my-case"
 # Default output: work/<case>/scope.md of the current analysis project
 # When calling a skill from another directory, explicitly specify: -ProjectRoot "C:\path\to\analysis-project"
 
 # Legal local offline sample: auth granted + offline + explicit sample → ready_for_act=true
-powershell -NoProfile -ExecutionPolicy Bypass -File references\scripts\case-init.ps1 `
+powershell -NoProfile -File references\scripts\case-init.ps1 `
   -Hint "offline apk" -CaseName "my-sample" -Preset offline-sample -Sample ".\app.apk"
 ```
 

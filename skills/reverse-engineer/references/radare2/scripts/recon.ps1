@@ -17,6 +17,7 @@ $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $ErrorActionPreference = 'Stop'
 
 . (Join-Path $PSScriptRoot '..\..\scripts\lib\ToolDiscovery.ps1')
+. (Join-Path $PSScriptRoot '..\..\scripts\lib\HostRuntime.ps1')
 
 $bootstrapScript = Join-Path $PSScriptRoot '..\..\scripts\bootstrap-reverse.ps1'
 
@@ -28,10 +29,13 @@ function Get-RequiredToolSpec {
 
     $spec = Resolve-ReverseToolSpec -Name $Name
     if (-not $spec.Available) {
-        # Attempt auto-bootstrap
+        # Attempt auto-bootstrap in a child PowerShell process resolved to the
+        # current host; the machine execution policy is honored (no
+        # -ExecutionPolicy Bypass pivot).
         if (Test-Path -LiteralPath $bootstrapScript) {
             Write-Output "INFO: $Name not found, attempting auto-bootstrap..."
-            & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $bootstrapScript -Capability @($Name) -SkipRefresh
+            $hostExe = Resolve-ReverseHostExe
+            & $hostExe -NoProfile -File $bootstrapScript -Capability @($Name) -SkipRefresh
             $spec = Resolve-ReverseToolSpec -Name $Name
         }
         if (-not $spec.Available) {

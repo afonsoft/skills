@@ -22,7 +22,7 @@ AI-powered skill router for authorized reverse engineering, penetration testing,
 git clone https://github.com/zhaoxuya520/reverse-skill.git
 cd reverse-skill
 # Windows
-powershell -NoProfile -ExecutionPolicy Bypass -File references/scripts/refresh-tool-index.ps1
+powershell -NoProfile -File references/scripts/refresh-tool-index.ps1
 # Linux / macOS
 bash references/scripts/refresh-tool-index.sh
 ```
@@ -32,8 +32,8 @@ Point your AI client at `RULES.md` / `README_AI.md`. See [README.md](../README.m
 ## Verify
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File references/scripts/smoke.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File references/scripts/verify-routing-coherence.ps1
+powershell -NoProfile -File references/scripts/smoke.ps1
+powershell -NoProfile -File references/scripts/verify-routing-coherence.ps1
 ```
 
 ## Breaking / intentional product boundary

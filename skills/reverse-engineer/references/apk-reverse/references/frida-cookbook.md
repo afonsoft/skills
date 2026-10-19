@@ -2,6 +2,11 @@
 
 > Featured from open source projects such as [awesome-frida](https://github.com/dweinstein/awesome-frida), [Frida-Mobile-Scripts](https://github.com/m0bilesecurity/Frida-Mobile-Scripts), [frida-codeshare-scripts](https://github.com/zengfr/frida-codeshare-scripts)], etc.
 > Classify by scene, copy and use directly.
+>
+> **Authorized use only.** These snippets instrument an app's runtime —
+> use them only on apps/devices you own or are explicitly authorized to
+> test (CTF, lab, client scope). Everything a hook prints is case data:
+> keep it inside the case workspace and never forward it elsewhere.
 
 ---
 

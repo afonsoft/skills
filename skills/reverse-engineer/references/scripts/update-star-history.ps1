@@ -9,7 +9,7 @@
   Writes UTF-8 SVG without BOM. Does not commit.
 
 .EXAMPLE
-  powershell -NoProfile -ExecutionPolicy Bypass -File references/scripts/update-star-history.ps1
+  powershell -NoProfile -File references/scripts/update-star-history.ps1
 #>
 param(
     [string]$Owner = 'zhaoxuya520',

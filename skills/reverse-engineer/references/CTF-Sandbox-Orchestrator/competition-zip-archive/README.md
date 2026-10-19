@@ -7,6 +7,8 @@ description: Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox
 
 Use this skill only as a downstream specialization after `$ctf-sandbox-orchestrator` is active and has established sandbox assumptions, evidence priorities, and the analysis project root. If that has not happened yet, return to `$ctf-sandbox-orchestrator` first.
 
+> **Sandbox boundary**: all analysis and validation happen inside the authorized CTF/lab environment established by the orchestrator. Challenge artifacts, decoded data, and recovered secrets are handled as evidence — never reused, replayed, or exfiltrated outside the sandbox scope.
+
 Use this skill when the decisive path is an encrypted ZIP/PKZIP archive rather than an upload parser or a generic crypto blob. Prefer the legacy ZipCrypto known-plaintext path when the challenge gives a predictable file, format header, template, or other recoverable plaintext. Do not begin with blind password brute force.
 
 Reply in Simplified Chinese unless the user explicitly requests English. Keep commands and tool output in their original form.
@@ -25,8 +27,8 @@ Reply in Simplified Chinese unless the user explicitly requests English. Keep co
 Use the normal tool index and bootstrap path before guessing an executable location:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File references/scripts/refresh-tool-index.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File references/scripts/bootstrap-reverse.ps1 -Capability bkcrack
+powershell -NoProfile -File references/scripts/refresh-tool-index.ps1
+powershell -NoProfile -File references/scripts/bootstrap-reverse.ps1 -Capability bkcrack
 ```
 
 On Kali, use the equivalent capability command:

@@ -27,7 +27,7 @@
 
 ```powershell
 # Initialize real case (authorized target)
-powershell -NoProfile -ExecutionPolicy Bypass -File references/scripts/case-init.ps1 `
+powershell -NoProfile -File references/scripts/case-init.ps1 `
   -Hint "你的任务" -CaseName my-case -AuthGranted -TargetUrl "https://target/" `
   -NetworkProfile authorized_target_only
 

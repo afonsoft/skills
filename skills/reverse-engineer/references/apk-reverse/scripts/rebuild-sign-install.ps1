@@ -28,6 +28,8 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+
+. (Join-Path $PSScriptRoot '..\..\scripts\lib\HostRuntime.ps1')
 [Console]::InputEncoding = [System.Text.UTF8Encoding]::new($false)
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
@@ -77,7 +79,10 @@ function Get-ToolPath {
     $bootstrapSupported = @('adb', 'apktool')
     if ($Name -in $bootstrapSupported -and (Test-Path -LiteralPath $bootstrapScript)) {
         Write-Host "INFO: $Name not found, attempting auto-bootstrap..." -ForegroundColor Yellow
-        & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $bootstrapScript -Capability @($Name) -SkipRefresh
+        # Child process on the current host; machine execution policy honored
+        # (no -ExecutionPolicy Bypass pivot).
+        $hostExe = Resolve-ReverseHostExe
+        & $hostExe -NoProfile -File $bootstrapScript -Capability @($Name) -SkipRefresh
         $cmd = Get-Command $Name -ErrorAction SilentlyContinue
         if ($cmd) {
             Write-Host "INFO: $Name bootstrapped successfully." -ForegroundColor Green

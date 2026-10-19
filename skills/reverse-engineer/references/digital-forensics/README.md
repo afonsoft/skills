@@ -7,7 +7,7 @@ description: Use for authorized digital forensics including memory dumps, disk t
 
 ## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. `NOW`: Read `../field-journal/precedent-pentest.md` or organize IR authorization instructions
+1. `NOW`: Read `../field-journal/precedent-pentest.md` for context; confirm organize IR authorization instructions via scope.md
 2. `NOW`: Confirm that it is **evidence collection/tracing** rather than offensive scanning
 3. `NOW`: Create case; evidence read-only copy preferred (original media write-protected)
 4. `NEXT`: tool-index; Volatility and other common manual methods

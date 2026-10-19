@@ -142,17 +142,17 @@ Route tasks to the most appropriate skill module by target type, user intent, an
 | "NetExec / CrackMapExec / nxc" | `pentest-tools/README.md` — network service enumeration |
 | "AI auto pentest / MCP security" | `pentest-tools/README.md` — HexStrike AI / MetasploitMCP |
 | "Swarm / swarm pentest / autonomous scan" | `pentest-tools/README.md` — Pentest Swarm AI |
-| "red team / HW / attack exercise" | `attack-chain/README.md` — full attack chain orchestration |
-| "initial breach / boundary breach" | `attack-chain/README.md` — boundary breach phase |
-| "close-range pentest / BadUSB / WiFi phishing" | `attack-chain/README.md` — close-range section |
-| "EDR bypass / evasion / AV bypass" | `edr-bypass-re/README.md` |
+| "red team / HW / attack exercise" | `attack-chain/README.md` — scoped assessment orchestration |
+| "initial breach / boundary breach" | `attack-chain/README.md` — reconnaissance & surface-mapping phase |
+| "close-range pentest / BadUSB / WiFi phishing" | `wifi-wireless/README.md` + `email-security/README.md` — under written authorization |
+| "EDR bypass / evasion / AV bypass" | `edr-bypass-re/README.md` — telemetry & detection-surface analysis (defensive) |
 | "phishing / social engineering" | `email-security/README.md` |
-| "supply chain attack" | `attack-chain/README.md` — supply chain section |
-| "trace cleanup / anti-forensics" | `attack-chain/README.md` — cleanup section |
-| "full pentest / end-to-end" | `attack-chain/README.md` — full chain planning |
-| "from external to domain controller" | `attack-chain/README.md` — cross-phase path orchestration |
+| "supply chain attack" | `supply-chain-security/README.md` |
+| "trace cleanup / anti-forensics" | `threat-hunting/README.md` — detection coverage for anti-forensic behaviors |
+| "full pentest / end-to-end" | `attack-chain/README.md` — full-lifecycle assessment planning |
+| "from external to domain controller" | `attack-chain/README.md` — cross-phase path orchestration (authorized scope) |
 | "attack surface assessment / path planning" | `attack-chain/README.md` — path planning decision tree |
-| "got shell, what next / post-exploitation" | `attack-chain/README.md` — plan from current foothold |
+| "got shell, what next / post-exploitation" | `attack-chain/README.md` — scoped post-foothold planning |
 | "BurpSuite / Burp proxy / intercept" | `pentest-tools/README.md` + `references/burpsuite-mcp-guide.md` |
 | "Burp MCP / proxy history analysis" | `pentest-tools/references/burpsuite-mcp-guide.md` — 78 tools |
 | "Intruder brute force / Repeater replay" | `pentest-tools/references/burpsuite-mcp-guide.md` |
@@ -247,7 +247,7 @@ Do NOT force the user to repeatedly confirm "this is xKx0271xKx" Carry the xKx02
 | BurpSuite | `pentest-tools/` — web proxy, interception, vulnerability scanning |
 | BurpSuite MCP | `pentest-tools/` — 78-tool AI full control, see `references/burpsuite-mcp-guide.md` |
 | ProxyCat | `pentest-tools/` — proxy pool management & IP rotation |
-| Cobalt Strike / Sliver / Havoc | `attack-chain/` — C2 framework |
+| Cobalt Strike / Sliver / Havoc | `pentest-tools/` — C2 framework references |
 | pentestMCP (Docker) | `pentest-tools/` — 20+ tools one-click MCP |
 | Mermaid / Graphviz / PlantUML | `diagram-generator/` — diagram generation |
 | garak / PyRIT / promptfoo | `llm-security/` — LLM red team testing |

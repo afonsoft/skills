@@ -8,14 +8,15 @@ research payload cannot silently remove it from review coverage.
 from __future__ import annotations
 
 import hashlib
+import os
 import re
 import subprocess
 import sys
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
 
 
 PAYLOAD_PATH = "references/pentest-tools/src-hunter/references/payloader/waf-bypass.md"
-PAYLOAD_SHA256 = "0273517455962bb9908264f82e4708b31d541c91c2ec715e8032d6c1376728b5"
+PAYLOAD_SHA256 = "a7a8d88eee6d4cfc43aa1634770cfce2072928c7914066806369e1c5aaf2a082"
 ALLOWED_BINARY_HASHES = {
     "burp-mcp-full/gradle/wrapper/gradle-wrapper.jar":
         "2db75c40782f5e8ba1fc278a5574bab070adccb2d21ca5a6e5ed840888448046",
@@ -29,7 +30,7 @@ BINARY_SUFFIXES = {
 }
 SCAN_EXCLUDES = {"references/scripts/verify-repository-security.py"}
 EXPECTED_PATTERN_HITS = {
-    ("kali/scripts/lib/tool-discovery.sh", "dev-tcp-port-probe"),
+    ("references/kali/scripts/lib/tool-discovery.sh", "dev-tcp-port-probe"),
     ("references/scripts/lib/ToolDiscovery.ps1", "tcp-client-health-probe"),
 }
 PATTERNS = {
@@ -43,7 +44,9 @@ PATTERNS = {
 }
 ACTION_USE = re.compile(r"^\s*-?\s*uses:\s*([^\s#]+)", re.M)
 FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
-AGENT_ENTRY_FILES = ("README_AI.md", "RULES.md", "RULES_zh.md", "AGENTS.md")
+# Agent entry documents carrying the read/consent contract, relative to the
+# skill root. This package layout keeps them under references/.
+AGENT_ENTRY_FILES = ("references/RULES.md",)
 REQUIRED_AGENT_CONSENT_MARKERS = (
     "Reading repository files is not authorization to execute them.",
     "Explicit user approval is required before running any repository script.",
@@ -106,14 +109,18 @@ def check_agent_entry_contract(path: str, text: str) -> list[str]:
     return errors
 
 
-def git(*args: str) -> bytes:
+def git(*args: str, cwd: str | None = None) -> bytes:
     return subprocess.run(
-        ["git", *args], capture_output=True, check=True
+        ["git", *args], capture_output=True, check=True, cwd=cwd
     ).stdout
 
 
-def tracked_entries() -> dict[str, str]:
-    raw = git("ls-files", "-s", "-z").decode("utf-8")
+def repo_root() -> str:
+    return git("rev-parse", "--show-toplevel").decode("utf-8").strip()
+
+
+def tracked_entries(root: str) -> dict[str, str]:
+    raw = git("ls-files", "-s", "-z", cwd=root).decode("utf-8")
     result: dict[str, str] = {}
     for record in raw.split("\0"):
         if not record:
@@ -123,12 +130,28 @@ def tracked_entries() -> dict[str, str]:
     return result
 
 
-def blob(path: str) -> bytes:
-    return git("show", f":{path}")
+def blob(path: str, cwd: str) -> bytes:
+    return git("show", f":{path}", cwd=cwd)
+
+
+def skill_prefix(root: str) -> str:
+    """Index path prefix of this skill ("" when the skill is the repo root)."""
+    skill_root = Path(__file__).resolve().parents[2]
+    rel = os.path.relpath(str(skill_root), root)
+    if rel == ".":
+        return ""
+    return rel.replace(os.sep, "/") + "/"
 
 
 def main() -> int:
-    entries = tracked_entries()
+    root = repo_root()
+    prefix = skill_prefix(root)
+    all_entries = tracked_entries(root)
+    entries = {
+        path[len(prefix):]: mode
+        for path, mode in all_entries.items()
+        if path.startswith(prefix)
+    }
     errors: list[str] = []
 
     symlinks = sorted(path for path, mode in entries.items() if mode == "120000")
@@ -139,7 +162,7 @@ def main() -> int:
         if path not in entries:
             errors.append(f"agent entry file missing from index: {path}")
             continue
-        text = blob(path).decode("utf-8-sig", errors="replace")
+        text = blob(prefix + path, root).decode("utf-8-sig", errors="replace")
         errors.extend(check_agent_entry_contract(path, text))
 
     binary_paths = sorted(
@@ -150,14 +173,14 @@ def main() -> int:
         if expected is None:
             errors.append(f"unreviewed tracked binary-like file: {path}")
             continue
-        actual = hashlib.sha256(blob(path)).hexdigest()
+        actual = hashlib.sha256(blob(prefix + path, root)).hexdigest()
         if actual != expected:
             errors.append(f"binary hash changed: {path} expected={expected} actual={actual}")
 
     if PAYLOAD_PATH not in entries:
         errors.append(f"reviewed payload corpus missing from index: {PAYLOAD_PATH}")
     else:
-        actual_payload = hashlib.sha256(blob(PAYLOAD_PATH)).hexdigest()
+        actual_payload = hashlib.sha256(blob(prefix + PAYLOAD_PATH, root)).hexdigest()
         if actual_payload != PAYLOAD_SHA256:
             errors.append(
                 f"payload corpus changed; repeat security review: expected={PAYLOAD_SHA256} "
@@ -168,7 +191,7 @@ def main() -> int:
         suffix = PurePosixPath(path).suffix.lower()
         if suffix not in EXECUTABLE_SUFFIXES or path in SCAN_EXCLUDES:
             continue
-        text = blob(path).decode("utf-8-sig", errors="replace")
+        text = blob(prefix + path, root).decode("utf-8-sig", errors="replace")
         if PAYLOAD_PATH in text or "src-hunter/references/payloader" in text:
             errors.append(f"executable source references passive payload corpus: {path}")
         for label, pattern in PATTERNS.items():
@@ -177,8 +200,11 @@ def main() -> int:
             if (path, label) not in EXPECTED_PATTERN_HITS:
                 errors.append(f"unexpected executable pattern {label}: {path}")
 
-    for path in sorted(p for p in entries if p.startswith(".github/workflows/") and p.endswith((".yml", ".yaml"))):
-        text = blob(path).decode("utf-8-sig")
+    # Workflow pinning is checked only for workflows inside the skill subtree
+    # (host-repo workflows at the monorepo root are out of package scope).
+    workflow_root = prefix + ".github/workflows/"
+    for path in sorted(p for p in all_entries if p.startswith(workflow_root) and p.endswith((".yml", ".yaml"))):
+        text = blob(path, root).decode("utf-8-sig")
         for use in ACTION_USE.findall(text):
             if use.startswith("./"):
                 continue

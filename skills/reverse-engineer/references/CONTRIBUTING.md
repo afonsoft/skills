@@ -231,7 +231,7 @@ $bootstrapScript = Join-Path $PSScriptRoot '..\..\scripts\bootstrap-reverse.ps1'
 $spec = Resolve-ReverseToolSpec -Name '<tool-name>'
 if (-not $spec.Available) {
     Write-Host 'INFO: <tool> not found, attempting auto-bootstrap...' -ForegroundColor Yellow
-    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $bootstrapScript -Capability @('<tool-name>') -SkipRefresh
+    & powershell.exe -NoProfile -File $bootstrapScript -Capability @('<tool-name>') -SkipRefresh
     $spec = Resolve-ReverseToolSpec -Name '<tool-name>'
     if (-not $spec.Available) {
         throw '<tool> still not available after bootstrap. Install manually: <url>'
@@ -269,7 +269,7 @@ After completing the above steps, run:
 
 **Windows**：
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File "<SKILL_ROOT>\references\scripts\refresh-tool-index.ps1"
+powershell -NoProfile -File "<SKILL_ROOT>\references\scripts\refresh-tool-index.ps1"
 ```
 
 **Kali Linux**：

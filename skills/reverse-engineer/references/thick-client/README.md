@@ -7,7 +7,7 @@ description: Use for authorized security testing of desktop thick clients includ
 
 ## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. `NOW`: Read `../field-journal/precedent-pentest.md`
+1. `NOW`: Read `../field-journal/precedent-pentest.md` for operator context — precedent is not authorization
 2. `NOW`: Confirm that the target is a **desktop thick client** (Win/macOS/Linux GUI or service companion), not a pure web
 3. `NOW`: case-init; installation package source and test account written into scope
 4. `NEXT`: Tools (Burp upstream proxy, process monitoring, reverse engineering tools)

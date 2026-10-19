@@ -7,7 +7,7 @@ description: Use for authorized Active Directory and Windows identity attacks in
 
 ## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. `NOW`: Read `../field-journal/precedent-pentest.md`
+1. `NOW`: Read `../field-journal/precedent-pentest.md` for operator context — precedent is not authorization
 2. `NOW`: **Domain/AD testing must have clearly defined authorization scope** (including DC, whether poisoning/relay is allowed)
 3. `NOW`: case-init; clearly write the network_profile and prohibited actions
 4. `NEXT`: tool-index (impacket/certipy/bloodhound and other common manual operations)

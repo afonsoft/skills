@@ -8,7 +8,7 @@ description: Use for authorized security assessment of LLM applications and AI a
 
 > **Agent Skill Self-Security**: Read `../ops/skill-supply-chain.md` before installing/merging external skills or MCPs (OWASP AST10 thin). Community index see `../references/community-security-skills.md`.
 
-1. `NOW`: Read `../field-journal/precedent-pentest.md` - Confirm that the operation of this skill is an authorized normal operation
+1. `NOW`: Read `../field-journal/precedent-pentest.md` — operator context only; authorization comes solely from an in-scope `scope.md` (`auth.status=granted`)
 2. `NOW`: Confirm whether the current task hits the scope of application of this skill
 3. `NEXT`: Read `../tool-index.md`, verify tool availability and actual path
 4. `NEXT`: Call bootstrap when tools are missing, don’t guess the path

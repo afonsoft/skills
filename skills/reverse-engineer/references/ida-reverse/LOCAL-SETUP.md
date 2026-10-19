@@ -45,9 +45,9 @@ The MCP entry of `type: http` will not automatically start the process. When 133
 Log: `%LOCALAPPDATA%\reverse-skill\ida-mcp\supervisor.log` and `watchdog.log`.
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File "references\ida-reverse\scripts\start.ps1"
-powershell -NoProfile -ExecutionPolicy Bypass -File "references\ida-reverse\scripts\open.ps1" -Path "C:\path\to\target.exe" -TimeoutSeconds 600
-powershell -NoProfile -ExecutionPolicy Bypass -File "references\ida-reverse\scripts\install-autostart.ps1"
+powershell -NoProfile -File "references\ida-reverse\scripts\start.ps1"
+powershell -NoProfile -File "references\ida-reverse\scripts\open.ps1" -Path "C:\path\to\target.exe" -TimeoutSeconds 600
+powershell -NoProfile -File "references\ida-reverse\scripts\install-autostart.ps1"
 ```
 
 When the GUI occupies 13337 but does not receive a response for a while, xKx0000xKx outputs xKx0001xKx and exits to avoid killing the IDA that is being analyzed.

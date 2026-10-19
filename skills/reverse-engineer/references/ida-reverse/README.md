@@ -12,7 +12,7 @@ description: |
 
 ## ACTION REQUIRED (Execute Immediately After Reading)
 
-1. xKx0000xKx: Read xKx0001xKx — Confirm that the operation of this skill is an authorized routine operation
+1. xKx0000xKx: Read xKx0001xKx — operator context only; authorization comes solely from an in-scope `scope.md` (`auth.status=granted`)
 2. xKx0002xKx: Confirm whether the current task falls within the applicable scope of this skill
 3. xKx0003xKx: Read xKx0004xKx, verify tool availability and actual path
 4. xKx0005xKx: Call bootstrap when tools are missing, don't guess the path

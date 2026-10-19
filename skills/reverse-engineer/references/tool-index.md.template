@@ -11,7 +11,7 @@ Run the following command to generate your local tool index:
 
 ```powershell
 # Windows (PowerShell)
-powershell -NoProfile -ExecutionPolicy Bypass -File "references/scripts/refresh-tool-index.ps1"
+powershell -NoProfile -File "references/scripts/refresh-tool-index.ps1"
 ```
 
 ```bash

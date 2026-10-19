@@ -1,5 +1,10 @@
 # DPAPI Credential Chain Checklist
 
+> Analyst-side checklist for an authorized CTF/lab artifact: map a
+> DPAPI-protected secret to the context that unwraps it and to the
+> sandbox-internal service that accepts it. Recovered secrets are challenge
+> evidence — never reuse or replay them outside the sandbox.
+
 ## First Pass
 
 - Blob source, masterkey path, SID, protector scope, profile path, store name, wrapper metadata

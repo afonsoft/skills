@@ -139,7 +139,7 @@ When adding a new skill, follow the standard process of `CONTRIBUTING.md` to ens
 When the workflow detects a missing tool, do not report an error directly. Always call the platform's native bootstrap:
 
 Windows：
-```powershellpowershell -NoProfile -ExecutionPolicy Bypass -File "<skill-root>\scripts\bootstrap-reverse.ps1" -Capability @('ToolName') -StartServices```
+```powershellpowershell -NoProfile -File "<skill-root>\scripts\bootstrap-reverse.ps1" -Capability @('ToolName') -StartServices```
 
 Linux / macOS：
 ```bashbash <skill-root>/scripts/bootstrap-reverse.sh tool name --start-services```

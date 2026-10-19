@@ -23,6 +23,8 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+
+. (Join-Path $PSScriptRoot '..\..\scripts\lib\HostRuntime.ps1')
 [Console]::InputEncoding = [System.Text.UTF8Encoding]::new($false)
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
@@ -67,11 +69,14 @@ function Get-ToolPath {
         }
     }
 
-    # Attempt auto-bootstrap for frida tools
+    # Attempt auto-bootstrap for frida tools in a child PowerShell process
+    # resolved to the current host — the machine execution policy is
+    # honored (no -ExecutionPolicy Bypass pivot).
     $bootstrapScript = Join-Path $PSScriptRoot '..\..\scripts\bootstrap-reverse.ps1'
     if (($Name -in @('frida', 'frida-ps', 'frida-ls-devices')) -and (Test-Path -LiteralPath $bootstrapScript)) {
         Write-Host "INFO: $Name not found, attempting auto-bootstrap (pip install frida-tools)..." -ForegroundColor Yellow
-        & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $bootstrapScript -Capability @('frida') -SkipRefresh
+        $hostExe = Resolve-ReverseHostExe
+        & $hostExe -NoProfile -File $bootstrapScript -Capability @('frida') -SkipRefresh
         $cmd = Get-Command $Name -ErrorAction SilentlyContinue
         if ($cmd) {
             Write-Host "INFO: $Name bootstrapped successfully." -ForegroundColor Green
@@ -90,16 +95,9 @@ function Get-ToolPath {
 $fridaLsDevices = Get-ToolPath -Name 'frida-ls-devices'
 $fridaPs = Get-ToolPath -Name 'frida-ps'
 $frida = Get-ToolPath -Name 'frida'
-$python = Get-Command python -ErrorAction SilentlyContinue
-
-if (-not $python) {
-    throw 'Missing required CLI tool: python'
-}
-
-$pythonExe = $python.Source
 
 if ($ListDevices) {
-    & $pythonExe -c "import frida; [print(f'{d.id}`t{d.type}`t{d.name}') for d in frida.enumerate_devices()]"
+    & $fridaLsDevices
     exit $LASTEXITCODE
 }
 
@@ -124,6 +122,12 @@ if ($ListProcesses) {
 
 if (-not (Test-Path -LiteralPath $ScriptPath)) {
     throw "Frida script not found: $ScriptPath"
+}
+if ([System.IO.Path]::GetExtension($ScriptPath) -ne '.js') {
+    throw "Frida script must be a .js file: $ScriptPath"
+}
+if (-not $Usb -and ($RemoteHost -notmatch '^[A-Za-z0-9._-]+:\d+$')) {
+    throw "RemoteHost must be in host:port form: $RemoteHost"
 }
 
 $fridaArgs = @($deviceFlag)
