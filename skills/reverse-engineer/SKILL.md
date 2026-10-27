@@ -1,8 +1,8 @@
 ---
 name: reverse-engineer
-description: Use when reverse engineering binaries, firmware, mobile apps, JavaScript/Electron apps, .NET assemblies, network protocols, or malware samples; when decompiling, deobfuscating, unpacking, debugging, or hooking shipped artifacts; when solving CTF challenges (pwn, crypto, forensics, web); when a conclusion needs evidence from a shipped artifact rather than available source; or when coordinating authorized security assessments. Analysis-first and consent-gated — all active work requires written authorization and an approved scope. Do not use for ordinary review of source code you already have.
+description: Use when reverse engineering binaries, firmware, mobile apps, JavaScript/Electron apps, .NET assemblies, network protocols, or malware samples; when decompiling, deobfuscating, unpacking, debugging, or hooking shipped artifacts; when building agent environments (AgentEnv bundles) of a web application from a live instance or a capture; when solving CTF challenges (pwn, crypto, forensics, web); when a conclusion needs evidence from a shipped artifact rather than available source; or when coordinating authorized security assessments. Analysis-first and consent-gated — all active work requires written authorization and an approved scope. Do not use for ordinary review of source code you already have.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   upstream:
     - https://github.com/zhaoxuya520/reverse-skill
     - https://github.com/morluto/rea
@@ -15,7 +15,8 @@ It merges two upstream packs:
 
 - **REA** (`references/rea/`) — evidence-ledger workflows for the REA CLI/MCP
   server (`rea-agents` on npm): native, managed, Electron/JS, packaged,
-  firmware, browser, EVM, and crash-dump targets.
+  firmware, browser, EVM, crash-dump, packet/signal-capture, and metadata-artifact
+  targets, plus AgentEnv environment bundles of web applications.
 - **reverse-skill** (`references/`) — 45+ domain guides, a 40+ CTF competition
   playbook pack (`references/CTF-Sandbox-Orchestrator/`), a structured router,
   case/scope scripts, and a field journal.
@@ -52,19 +53,25 @@ It merges two upstream packs:
 
 | Target / task | First tool or guide |
 |---|---|
-| Native exe/dll/elf/so, unknown binary | REA `open_binary` → `analyze_function` / pseudocode; else `references/reverse-engineering/README.md` (triage→static→dynamic→synthesis) |
+| Native exe/dll/elf/so, unknown binary | REA `open_binary` → `analyze_function` / pseudocode (providers: Ghidra/IDA/Hopper/Kuna); else `references/reverse-engineering/README.md` (triage→static→dynamic→synthesis) |
 | Managed PE (.NET/C#) | REA `inspect_managed_artifact`; else `references/dotnet-reverse/` |
 | ASAR / Electron / bundled JS | REA `analyze_javascript_application`; else `references/js-reverse/` |
 | APK / Android | REA `inspect_android_package`; else `references/apk-reverse/`, `references/mobile-reverse/` |
-| ZIP/APK/IPA/MSIX/DMG member inventory | REA `open_binary` (archive route) |
+| APK/AAB signing identity & lineage | REA `inspect_apk_signature` |
+| ZIP/APK/IPA/MSIX/AppX/DMG member inventory, PyInstaller exe | REA `open_binary` (archive route) → `inspect_artifact` |
+| Apple bundle resources (plist, .nib, .car, keyed archives) | REA `open_bundle_resources` |
 | Firmware image | REA `inspect_firmware_regions` / `extract_firmware`; else `references/firmware-pentest/` |
 | ELF layout/symbols/mitigations (offline) | REA `inspect_binary_layout`; else `references/radare2/` |
 | Linux x86-64 core dump | REA `inspect_recorded_crash` |
-| PE resources | REA `inspect_pe_resources` |
+| PE/ELF static metadata (Authenticode, imports, TLS/load-config, exports, ELF notes, PE resources) | REA `inspect_pe_certificates` / `inspect_pe_imports` / `inspect_pe_load_config` / `inspect_native_exports` / `inspect_elf_notes` / `inspect_pe_resources` (target-free, no engine) |
+| WASM / IL2CPP metadata / GGUF·safetensors / .pyc / .beam / SQLite / Apple .ips / kernel .ko / GPU code objects | Target-free REA inspectors: `inspect_wasm_artifact`, `inspect_il2cpp_metadata`, `inspect_model_artifact`, `inspect_python_pyc`, `inspect_erlang_beam`, `inspect_sqlite_database`, `inspect_apple_ips`, `inspect_kernel_module`, `inspect_gpu_code_objects` — details in `references/rea/README.md` |
 | EVM bytecode blob | REA `inspect_evm_interface` |
-| Open browser page / Electron runtime | REA `list_browser_targets` / `list_electron_targets`; else `references/browser-automation/` |
-| HAR / mitmproxy capture | REA `inspect_web_network_capture` |
-| Go/Rust stripped binary | `references/go-rust-reverse/`, REA Ghidra provider |
+| Open browser page / Electron runtime | REA `list_browser_targets` / `list_electron_targets` (check `inspect_electron_fuses` first); else `references/browser-automation/` |
+| Native runtime observation (instrument, debug, record process) | `references/rea/runtime-observation.md` workflows; else Frida/GDB per domain guide |
+| HAR / SAZ / mitmproxy / qlog capture | REA `inspect_web_network_capture` (`format: "saz"` for Fiddler .saz) |
+| Packet/logic captures (PCAP fields, pcap summaries, sigrok) | REA `inspect_packet_fields` → `inspect_packet_capture`, `inspect_pcap_capture`, `inspect_signal_decoders` → `decode_signal_recording`; else `references/protocol-reverse/` |
+| AgentEnv bundle of a web app (from live instance or capture) | `references/rea/environments.md` — `capture_browser_scenario` → `export_environment_bundle` / `rea environment-serve` |
+| Go/Rust stripped binary | REA `inspect_go_binary` / `inspect_rust_binary` (embedded metadata, no engine); deep RE: `references/go-rust-reverse/`, REA Ghidra provider |
 | Kernel driver / LKM / .sys | `references/reverse-engineering/kernel-driver-reverse.md` |
 | OLLVM / control-flow-flattening obfuscation | `references/reverse-engineering/references/ollvm-deobfuscation.md` |
 | Custom VM / DSL VM (JS opcode switch) | `references/reverse-engineering/dsl-vm-reverse/` |
